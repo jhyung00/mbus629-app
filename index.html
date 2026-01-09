@@ -1,58 +1,165 @@
-<h1>MBUS 629 – Interactive Accounting Modules</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MBUS 629 – Interactive Accounting Modules</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<p>
-This site contains interactive simulations and in-class activities used
-throughout MBUS 629. Select a module below based on the course schedule.
-</p>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --accent: #2563eb;
+      --border: #e2e8f0;
+    }
 
-<ul>
-  <li>
-    <a href="transactions/">Transactions & Financial Statement Construction</a><br>
-    <small>Recording transactions and building financial statements</small>
-  </li>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
 
-  <li>
-    <a href="articulation/">Financial Statement Articulation</a><br>
-    <small>How the income statement, balance sheet, and cash flow statement fit together</small>
-  </li>
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+    }
 
-  <li>
-    <a href="inventory/">Inventory Accounting</a><br>
-    <small>FIFO vs LIFO and inventory method conversions</small>
-  </li>
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
 
-  <li>
-    <a href="accounts-receivable/">Accounts Receivable</a><br>
-    <small>AR turnover, allowance estimation, and credit risk</small>
-  </li>
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 2rem;
+      max-width: 720px;
+    }
 
-  <li>
-    <a href="deferred-rev/">Deferred Revenue</a><br>
-    <small>Unearned revenue analysis: Netflix vs Costco</small>
-  </li>
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
 
-  <li>
-    <a href="ppe/">Property, Plant & Equipment (PPE)</a><br>
-    <small>PPE investment and depreciation: Gonzaga vs WSU</small>
-  </li>
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.4rem;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
 
-  <li>
-    <a href="cash-flows/">Cash Flow Analysis</a><br>
-    <small>Interpreting operating, investing, and financing cash flows</small>
-  </li>
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+      border-color: var(--accent);
+    }
 
-  <li>
-    <a href="dupont/">DuPont Analysis</a><br>
-    <small>ROE decomposition and advanced disaggregation</small>
-  </li>
+    .card h2 {
+      font-size: 1.05rem;
+      margin: 0 0 0.35rem 0;
+    }
 
-  <li>
-    <a href="10-K/">10-K Scavenger Hunt</a><br>
-    <small>Guided tour of Form 10-K disclosures</small>
-  </li>
+    .card p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
 
-  <li>
-    <a href="DEF14/">Corporate Governance (DEF 14A)</a><br>
-    <small>Comparing governance and executive compensation</small>
-  </li>
-</ul>
+    footer {
+      margin-top: 3rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <h1>MBUS 629 – Interactive Accounting Modules</h1>
+    <p class="subtitle">
+      This site contains interactive simulations and in-class activities used
+      throughout MBUS 629. Select a module below based on the course schedule.
+    </p>
+
+    <div class="grid">
+
+      <a class="card" href="transactions/">
+        <h2>Transactions & Financial Statement Construction</h2>
+        <p>Recording transactions and building financial statements</p>
+      </a>
+
+      <a class="card" href="articulation/">
+        <h2>Financial Statement Articulation</h2>
+        <p>How the income statement, balance sheet, and cash flow statement fit together</p>
+      </a>
+
+      <a class="card" href="inventory/">
+        <h2>Inventory Accounting</h2>
+        <p>FIFO vs LIFO and inventory method conversions</p>
+      </a>
+
+      <a class="card" href="accounts-receivable/">
+        <h2>Accounts Receivable</h2>
+        <p>AR turnover, allowance estimation, and credit risk</p>
+      </a>
+
+      <a class="card" href="deferred-rev/">
+        <h2>Deferred Revenue</h2>
+        <p>Unearned revenue analysis: Netflix vs Costco</p>
+      </a>
+
+      <a class="card" href="ppe/">
+        <h2>Property, Plant & Equipment (PPE)</h2>
+        <p>PPE investment and depreciation: Gonzaga vs WSU</p>
+      </a>
+
+      <a class="card" href="cash-flows/">
+        <h2>Cash Flow Analysis</h2>
+        <p>Interpreting operating, investing, and financing cash flows</p>
+      </a>
+
+      <a class="card" href="dupont/">
+        <h2>DuPont Analysis</h2>
+        <p>ROE decomposition and advanced disaggregation</p>
+      </a>
+
+      <a class="card" href="10-K/">
+        <h2>10-K Scavenger Hunt</h2>
+        <p>Guided tour of Form 10-K disclosures</p>
+      </a>
+
+      <a class="card" href="DEF14/">
+        <h2>Corporate Governance (DEF 14A)</h2>
+        <p>Comparing governance and executive compensation</p>
+      </a>
+
+    </div>
+
+    <footer>
+      © MBUS 629 · Interactive course materials
+    </footer>
+
+  </div>
+  <div style="
+  position: fixed;
+  bottom: 12px;
+  right: 16px;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  pointer-events: none;
+">
+  Produced by Joo Ha
+</div>
+
+</body>
+</html>
