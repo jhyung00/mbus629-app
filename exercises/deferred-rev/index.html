@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deferred Revenue Simulation: Netflix vs. Costco</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome for robust icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide-in { animation: slideIn 0.3s ease-out; }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Instructor Key Styling */
+        .instructor-key {
+            display: none;
+            color: #7c3aed; /* Violet-600 */
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            background-color: #f5f3ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px dashed #ddd6fe;
+        }
+        .instructor-mode .instructor-key { display: block; }
+        
+        /* Input Validation Styles */
+        .input-correct { border-color: #22c55e !important; background-color: #f0fdf4 !important; }
+        .input-incorrect { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+        
+        /* Input Icon Wrapper */
+        .input-wrapper { position: relative; }
+        .validation-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 h-screen flex flex-col overflow-hidden">
+
+    <!-- INSTRUCTOR STICKY TOOLBAR -->
+    <div id="instructor-toolbar" class="hidden fixed top-0 left-0 w-full bg-purple-700 text-white z-50 shadow-md py-2 px-6 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="bg-white/20 p-1.5 rounded">
+                <i class="fas fa-chalkboard-teacher text-lg"></i>
+            </div>
+            <div>
+                <span class="font-bold text-sm uppercase tracking-wide">Instructor Mode Active</span>
+                <span class="text-xs text-purple-200 block">Editing Enabled</span>
+            </div>
+        </div>
+        <div class="flex gap-3">
+            <button onclick="instructorAutoFill()" class="bg-white text-purple-700 hover:bg-purple-50 px-3 py-1.5 rounded text-sm font-bold transition-colors flex items-center gap-2">
+                <i class="fas fa-magic"></i> Auto-Fill All
+            </button>
+            <button onclick="requestClearAll()" class="bg-purple-900 hover:bg-purple-950 text-white border border-purple-500 px-3 py-1.5 rounded text-sm font-bold transition-colors flex items-center gap-2">
+                <i class="fas fa-sign-out-alt"></i> Clear & Exit
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Layout Wrapper (pushes down when toolbar is active) -->
+    <div id="app-wrapper" class="flex flex-1 md:flex-row flex-col h-full overflow-hidden transition-all duration-300">
+
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-white border-r border-slate-200 flex flex-col z-20 shadow-sm flex-shrink-0">
+            <div class="p-6 border-b border-slate-100">
+                <h1 class="text-xl font-bold text-slate-900 tracking-tight">Deferred Revenue <span class="text-indigo-600">Sim</span></h1>
+                <p class="text-xs text-slate-500 mt-1">Interactive Case Study</p>
+            </div>
+            
+            <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+                <button onclick="navTo('intro')" id="btn-intro" class="nav-btn w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors bg-indigo-50 text-indigo-700 border border-indigo-100">
+                    1. Introduction
+                </button>
+                
+                <div class="pt-4 pb-1 px-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Case Studies</div>
+                
+                <button onclick="navTo('netflix')" id="btn-netflix" class="nav-btn w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors flex justify-between items-center">
+                    <span>2. Netflix (2023)</span>
+                    <span id="netflix-status" class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">0%</span>
+                </button>
+                
+                <button onclick="navTo('costco')" id="btn-costco" class="nav-btn w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors flex justify-between items-center">
+                    <span>3. Costco (2023)</span>
+                    <span id="costco-status" class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">0%</span>
+                </button>
+                
+                <div class="pt-4 pb-1 px-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Advanced</div>
+                
+                <button onclick="navTo('bonus')" id="btn-bonus" class="nav-btn w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                    4. Forecasting Bonus
+                </button>
+            </nav>
+            
+            <div class="p-4 border-t border-slate-100 bg-slate-50">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-xs">S</div>
+                    <div class="text-xs">
+                        <p class="font-bold text-slate-700">Student Mode</p>
+                        <p class="text-slate-500">Progress Saved</p>
+                    </div>
+                </div>
+                
+                <!-- Student Download Button -->
+                <button onclick="openStudentModal()" class="w-full mb-2 flex items-center justify-center gap-2 text-xs text-white bg-indigo-600 hover:bg-indigo-700 border border-transparent py-2.5 rounded transition-all font-semibold shadow-sm">
+                    <i class="fas fa-file-download text-sm"></i>
+                    <span>Save / Download Work</span>
+                </button>
+
+                <!-- Instructor Access Button (Robust with Icon + Text) -->
+                <button onclick="openTeacherModal()" class="w-full flex items-center justify-center gap-2 text-xs text-slate-500 hover:text-indigo-600 hover:bg-white border border-slate-200 hover:border-indigo-200 py-2.5 rounded transition-all font-semibold">
+                    <i class="fas fa-lock text-sm"></i>
+                    <span>Instructor Access</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto relative scroll-smooth bg-slate-50" id="main-content">
+            
+            <!-- SECTION 1: INTRO -->
+            <section id="intro" class="section-view p-6 md:p-12 max-w-4xl mx-auto fade-in">
+                <div class="mb-8">
+                    <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Concept Primer</span>
+                    <h2 class="text-3xl font-bold text-slate-900 mt-4 mb-2">Understanding Deferred Revenue</h2>
+                    <p class="text-lg text-slate-600 leading-relaxed">
+                        Why is cash collected not always revenue? In this simulation, you will explore the accounting mechanics behind subscription models using real data from <strong>Netflix</strong> and <strong>Costco</strong>.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-10">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-lg mb-3 flex items-center gap-2">
+                        <span class="text-xl">💰</span> The Liability
+                    </h3>
+                    <p class="text-sm text-slate-600 mb-4">
+                        When a customer pays in advance (e.g., an annual fee), the company has an obligation to provide service. This is recorded as <strong>Unearned (Deferred) Revenue</strong>, a liability.
+                    </p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-lg mb-3 flex items-center gap-2">
+                        <span class="text-xl">📉</span> The Revenue
+                    </h3>
+                    <p class="text-sm text-slate-600 mb-4">
+                        As time passes and service is delivered, the liability decreases and revenue is recognized on the Income Statement.
+                    </p>
+                </div>
+            </div>
+
+            <button onclick="navTo('netflix')" class="group bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2">
+                    Start Netflix Case
+                    <span class="group-hover:translate-x-1 transition-transform">→</span>
+                </button>
+            </section>
+
+            <!-- SECTION 2: NETFLIX -->
+            <section id="netflix" class="section-view hidden p-6 md:p-12 max-w-5xl mx-auto fade-in">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-red-600 rounded flex items-center justify-center text-white font-bold text-lg">N</div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">Netflix Case Study (2023)</h2>
+                        <p class="text-sm text-slate-500">Analysis of Monthly Subscription Revenue Flow</p>
+                    </div>
+                </div>
+
+                <!-- Step 1: Extraction -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-8">
+                    <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-700">Step 1: Data Extraction</h3>
+                        <span id="n-step1-status" class="text-xs font-bold text-amber-500 bg-amber-50 px-2 py-1 rounded">In Progress</span>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <p class="text-sm text-slate-600">Please enter the key figures from the Netflix 2023 Financials (in thousands).</p>
+                            <a href="https://www.sec.gov/ix?doc=/Archives/edgar/data/0001065280/000106528024000030/nflx-20231231.htm" target="_blank" class="flex items-center gap-1 text-xs bg-red-50 text-red-700 px-3 py-1 rounded hover:bg-red-100 border border-red-200 transition-colors">
+                                 Open 10-K
+                            </a>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="input-wrapper">
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Beginning Unearned Revenue</label>
+                                <input type="text" id="n-beg" class="smart-input w-full border border-slate-300 rounded p-2 text-sm focus:ring-2 focus:ring-red-500 outline-none" placeholder="Check 10-K...">
+                            </div>
+                            <div class="input-wrapper">
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Revenue Recognized</label>
+                                <input type="text" id="n-rev" class="smart-input w-full border border-slate-300 rounded p-2 text-sm focus:ring-2 focus:ring-red-500 outline-none" placeholder="Check 10-K...">
+                            </div>
+                            <div class="input-wrapper">
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Ending Unearned Revenue</label>
+                                <input type="text" id="n-end" class="smart-input w-full border border-slate-300 rounded p-2 text-sm focus:ring-2 focus:ring-red-500 outline-none" placeholder="Check 10-K...">
+                            </div>
+                        </div>
+                        <button onclick="checkNetflixData()" class="mt-4 bg-slate-800 text-white px-4 py-2 rounded text-sm hover:bg-slate-700">Verify Data</button>
+                        <p id="n-data-msg" class="mt-2 text-xs font-bold"></p>
+                    </div>
+                </div>
+
+                <!-- Step 2: Cash Collection -->
+                <div id="n-step2" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-8 opacity-50 pointer-events-none transition-all">
+                    <div class="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                        <h3 class="font-bold text-slate-700">Step 2: Calculate Cash Collection</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex flex-wrap justify-center items-center gap-2 mb-6 font-mono text-sm md:text-base bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <div class="text-center"><span class="block text-xs text-slate-400">Beg. Bal</span><span id="disp-n-beg" class="font-bold">???</span></div>
+                            <div class="text-slate-400 font-bold">+</div>
+                            <div class="text-center p-2 bg-white border border-dashed border-slate-300 rounded"><span class="block text-xs text-indigo-500 font-bold">Cash (X)</span>?</div>
+                            <div class="text-slate-400 font-bold">-</div>
+                            <div class="text-center"><span class="block text-xs text-slate-400">Rev Rec.</span><span id="disp-n-rev" class="font-bold">???</span></div>
+                            <div class="text-slate-400 font-bold">=</div>
+                            <div class="text-center"><span class="block text-xs text-slate-400">End. Bal</span><span id="disp-n-end" class="font-bold">???</span></div>
+                        </div>
+                        
+                        <p class="text-sm text-slate-600 mb-2"><strong>Q1 A:</strong> Estimate how much Netflix collected in advance during fiscal year 2023.</p>
+                        <div class="flex gap-3 items-start">
+                            <div class="input-wrapper">
+                                <input type="text" id="n-calc-input" class="smart-input border border-slate-300 rounded p-2 text-sm w-48" placeholder="Calculate X...">
+                            </div>
+                            <button onclick="checkNetflixCalc()" class="bg-red-600 text-white px-4 py-2 rounded text-sm hover:bg-red-700 h-[38px]">Check Step</button>
+                        </div>
+                        <p id="n-calc-msg" class="mt-2 text-xs font-bold"></p>
+                    </div>
+                </div>
+
+                <!-- Step 3: Analysis -->
+                <div id="n-step3" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-8 opacity-50 pointer-events-none transition-all">
+                    <div class="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                        <h3 class="font-bold text-slate-700">Step 3: Recognition Analysis</h3>
+                    </div>
+                    <div class="p-6 grid md:grid-cols-2 gap-8">
+                        <div>
+                            <!-- Assumption Check -->
+                            <div class="bg-amber-50 p-3 rounded border border-amber-200 mb-4 text-xs">
+                                <p class="font-bold text-amber-800 mb-2">Assumption Check:</p>
+                                <p class="text-amber-800 mb-2">
+                                    We assume the <strong>Beginning Unearned Revenue</strong> (collected last year) is recognized as revenue <em>first</em> before any new collections.
+                                </p>
+                            </div>
+
+                            <div class="mb-4">
+                                <p class="text-sm text-slate-600 mb-1"><strong>Q1 B:</strong> Revenue from fees collected <u>this year</u>?</p>
+                                <p class="text-xs text-slate-400 mb-2">Formula: Total Revenue - Prior Year collection</p>
+                                <div class="flex gap-2 items-start">
+                                    <div class="input-wrapper">
+                                        <input type="text" id="n-q1b" class="smart-input border border-slate-300 rounded p-2 text-sm w-32" placeholder="Amount...">
+                                    </div>
+                                    <button onclick="checkNetflixAnalysis()" class="bg-slate-800 text-white px-3 py-2 rounded text-sm h-[38px]">Check</button>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <p class="text-sm text-slate-600 mb-1"><strong>Q1 C:</strong> % of collected fees recognized this year?</p>
+                                <p class="text-xs text-slate-400 mb-2">Formula: (Revenue from fees collected this year / Total Cash Collected) * 100</p>
+                                <div class="flex gap-2 items-start">
+                                    <div class="input-wrapper">
+                                        <input type="text" id="n-q1c" class="smart-input border border-slate-300 rounded p-2 text-sm w-24" placeholder="%">
+                                    </div>
+                                    <button onclick="checkNetflixAnalysis()" class="bg-slate-800 text-white px-3 py-2 rounded text-sm h-[38px]">Check</button>
+                                </div>
+                            </div>
+                            <p id="n-analysis-msg" class="text-xs font-bold min-h-[1.5em]"></p>
+                        </div>
+                        <div class="flex flex-col items-center justify-center bg-slate-50 rounded-lg p-4">
+                            <h4 class="text-xs font-bold text-slate-500 uppercase mb-2">Revenue Composition</h4>
+                            <div class="chart-container">
+                                <canvas id="netflixChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Impact Quiz (unchanged) -->
+                <div id="n-step4" class="bg-indigo-50 rounded-xl shadow-sm border border-indigo-100 overflow-hidden mb-8 opacity-50 pointer-events-none transition-all">
+                    <div class="px-6 py-4 border-b border-indigo-100">
+                        <h3 class="font-bold text-indigo-900">Step 4: Alternative Accounting Treatment</h3>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-sm text-indigo-800 mb-4"><strong>Q2:</strong> If Netflix used <strong>Cash Basis</strong> accounting (recognizing revenue immediately), how would the 2023 financials compare to current Accrual records?</p>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                            <!-- Net Income -->
+                            <div class="bg-white p-3 rounded border border-indigo-100">
+                                <span class="text-xs font-bold text-slate-500 block mb-2">Net Income would be...</span>
+                                <div class="flex gap-1">
+                                    <button onclick="quizAnswer('ni', 'high')" id="btn-ni-high" class="quiz-btn flex-1 py-1 text-xs border rounded hover:bg-slate-50">Higher</button>
+                                    <button onclick="quizAnswer('ni', 'same')" id="btn-ni-same" class="quiz-btn flex-1 py-1 text-xs border rounded hover:bg-slate-50">Same</button>
+                                    <button onclick="quizAnswer('ni', 'low')" id="btn-ni-low" class="quiz-btn flex-1 py-1 text-xs border rounded hover:bg-slate-50">Lower</button>
+                                </div>
+                            </div>
+                             <!-- Assets -->
+                             <div class="bg-white p-3 rounded border border-indigo-100">
+                                <span class="text-xs font-bold text-slate-500 block mb-2">Total Assets would be...</span>
+                                <div class="flex gap-1">
+                                    <button onclick="quizAnswer('as', 'high')" id="btn-as-high" class="quiz-btn flex-1 py-1 text-xs border rounded hover:bg-slate-50">Higher</button>
+                                    <button onclick="quizAnswer('as', 'same')" id="btn-as-same" class="quiz-btn flex-1 py-1 text-xs border rounded hover:bg-slate-50">Same</button>
+                                    <button onclick="quizAnswer('as', 'low')" id="btn-as-low" class="quiz-btn flex-1 py-1 text-xs border rounded hover:bg-slate-50">Lower</button>
+                                </div>
+                            </div>
+                             <!-- Liabilities -->
+                             <div class="bg-white p-3 rounded border border-indigo-100">
+                                <span class="text-xs font-bold text-slate-500 block mb-2">Liabilities would be...</span>
+                                <div class="flex gap-1">
+                                    <button onclick="quizAnswer('li', 'high')" id="btn-li-high" class="quiz-btn flex-1 py-1 text-xs border rounded hover:bg-slate-50">Higher</button>
+                                    <button onclick="quizAnswer('li', 'same')" id="btn-li-same" class="quiz-btn flex-1 py-1 text-xs border rounded hover:bg-slate-50">Same</button>
+                                    <button onclick="quizAnswer('li', 'low')" id="btn-li-low" class="quiz-btn flex-1 py-1 text-xs border rounded hover:bg-slate-50">Lower</button>
+                                </div>
+                            </div>
+                             <!-- Equity -->
+                             <div class="bg-white p-3 rounded border border-indigo-100">
+                                <span class="text-xs font-bold text-slate-500 block mb-2">Equity would be...</span>
+                                <div class="flex gap-1">
+                                    <button onclick="quizAnswer('eq', 'high')" id="btn-eq-high" class="quiz-btn flex-1 py-1 text-xs border rounded hover:bg-slate-50">Higher</button>
+                                    <button onclick="quizAnswer('eq', 'same')" id="btn-eq-same" class="quiz-btn flex-1 py-1 text-xs border rounded hover:bg-slate-50">Same</button>
+                                    <button onclick="quizAnswer('eq', 'low')" id="btn-eq-low" class="quiz-btn flex-1 py-1 text-xs border rounded hover:bg-slate-50">Lower</button>
+                                </div>
+                            </div>
+                        </div>
+                        <p id="quiz-msg" class="text-xs font-bold text-indigo-700 min-h-[1.5em]"></p>
+                    </div>
+                </div>
+                
+                <div id="netflix-complete" class="hidden text-center p-6">
+                    <button onclick="navTo('costco')" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-bold shadow-lg transition-transform hover:-translate-y-1">
+                        Proceed to Costco Case →
+                    </button>
+                </div>
+            </section>
+
+            <!-- SECTION 3: COSTCO -->
+            <section id="costco" class="section-view hidden p-6 md:p-12 max-w-5xl mx-auto fade-in">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-blue-700 rounded flex items-center justify-center text-white font-bold text-lg">C</div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">Costco Case Study (2023)</h2>
+                        <p class="text-sm text-slate-500">Analysis of Annual Membership Revenue Flow</p>
+                    </div>
+                </div>
+
+                <!-- Step 1: Extraction -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-8">
+                    <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-700">Step 1: Data Extraction</h3>
+                        <span id="c-step1-status" class="text-xs font-bold text-amber-500 bg-amber-50 px-2 py-1 rounded">In Progress</span>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <p class="text-sm text-slate-600">Enter Costco 2023 Financials (in millions).</p>
+                            <a href="https://www.sec.gov/ix?doc=/Archives/edgar/data/0000909832/000090983223000042/cost-20230903.htm" target="_blank" class="flex items-center gap-1 text-xs bg-blue-50 text-blue-700 px-3 py-1 rounded hover:bg-blue-100 border border-blue-200 transition-colors">
+                                 Open 10-K
+                            </a>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="input-wrapper"><label class="block text-xs font-bold text-slate-500 mb-1">Beg. Unearned</label><input type="text" id="c-beg" class="smart-input w-full border border-slate-300 rounded p-2 text-sm" placeholder="Check 10-K..."></div>
+                            <div class="input-wrapper"><label class="block text-xs font-bold text-slate-500 mb-1">Rev. Recognized</label><input type="text" id="c-rev" class="smart-input w-full border border-slate-300 rounded p-2 text-sm" placeholder="Check 10-K..."></div>
+                            <div class="input-wrapper"><label class="block text-xs font-bold text-slate-500 mb-1">End. Unearned</label><input type="text" id="c-end" class="smart-input w-full border border-slate-300 rounded p-2 text-sm" placeholder="Check 10-K..."></div>
+                        </div>
+                        <button onclick="checkCostcoData()" class="mt-4 bg-slate-800 text-white px-4 py-2 rounded text-sm hover:bg-slate-700">Verify Data</button>
+                        <p id="c-data-msg" class="mt-2 text-xs font-bold"></p>
+                    </div>
+                </div>
+
+                <!-- Step 2: Q1 Logic -->
+                <div id="c-step2" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-8 opacity-50 pointer-events-none transition-all">
+                    <div class="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                        <h3 class="font-bold text-slate-700">Step 2: Prior Year Carryover</h3>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-sm text-slate-600 mb-3"><strong>Q1:</strong> How much revenue recognized in 2023 is related to memberships initiated in 2022?</p>
+                        <div class="bg-blue-50 border border-blue-100 p-3 rounded mb-4">
+                            <p class="text-xs text-blue-800 font-bold mb-1">Assumption:</p>
+                            <p class="text-xs text-blue-700">Assume the entire Beginning Balance of unearned revenue (collected last year) is recognized as revenue in the current year first.</p>
+                        </div>
+                        <div class="flex gap-3 items-start">
+                            <div class="input-wrapper">
+                                <input type="text" id="c-q1" class="smart-input border border-slate-300 rounded p-2 text-sm w-40" placeholder="Amount...">
+                            </div>
+                            <button onclick="checkCostcoQ1()" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 h-[38px]">Check</button>
+                        </div>
+                        <p id="c-q1-msg" class="mt-2 text-xs font-bold text-slate-500"></p>
+                    </div>
+                </div>
+
+                <!-- Step 3: Q2 Collection -->
+                <div id="c-step3" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-8 opacity-50 pointer-events-none transition-all">
+                    <div class="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                        <h3 class="font-bold text-slate-700">Step 3: Cash Collection</h3>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-sm text-slate-600 mb-3"><strong>Q2:</strong> Total membership fees collected in fiscal year 2023?</p>
+                        <div class="p-3 bg-slate-50 rounded border border-slate-200 mb-4 font-mono text-xs text-slate-500">
+                            Formula: End + Rev - Beg = Collected
+                        </div>
+                        <div class="flex gap-3 items-start">
+                            <div class="input-wrapper">
+                                <input type="text" id="c-q2" class="smart-input border border-slate-300 rounded p-2 text-sm w-40" placeholder="Amount...">
+                            </div>
+                            <button onclick="checkCostcoQ2()" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 h-[38px]">Check</button>
+                        </div>
+                        <p id="c-q2-msg" class="mt-2 text-xs font-bold"></p>
+                    </div>
+                </div>
+
+                <!-- Step 4: Q3 Percentage -->
+                <div id="c-step4" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-8 opacity-50 pointer-events-none transition-all">
+                    <div class="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                        <h3 class="font-bold text-slate-700">Step 4: Percentage Analysis</h3>
+                    </div>
+                    <div class="p-6 grid md:grid-cols-2 gap-8">
+                        <div>
+                            <p class="text-sm text-slate-600 mb-3"><strong>Q3:</strong> What % of fees collected in 2023 was also recorded as revenue in 2023?</p>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="text-xs text-slate-400 block mb-1">Step A: Revenue from Current Year Fees</label>
+                                    <p class="text-xs text-slate-400 italic mb-1">(Total Rev - Prior Yr Carryover)</p>
+                                    <div class="input-wrapper">
+                                        <input type="text" id="c-q3a" class="smart-input border border-slate-300 rounded p-2 text-sm w-full" placeholder="Calculate...">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-slate-400 block mb-1">Step B: Percentage</label>
+                                    <p class="text-xs text-slate-400 italic mb-1">(Result from A / Total Collected)</p>
+                                    <div class="flex gap-2 items-start">
+                                        <div class="input-wrapper">
+                                            <input type="text" id="c-q3b" class="smart-input border border-slate-300 rounded p-2 text-sm w-24" placeholder="%">
+                                        </div>
+                                        <button onclick="checkCostcoQ3()" class="bg-slate-800 text-white px-3 py-2 rounded text-sm h-[38px]">Verify</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <p id="c-q3-msg" class="mt-2 text-xs font-bold"></p>
+                        </div>
+                        <div class="flex flex-col items-center justify-center bg-slate-50 rounded-lg p-4">
+                            <h4 class="text-xs font-bold text-slate-500 uppercase mb-2">Costco Revenue Split</h4>
+                            <div class="chart-container">
+                                <canvas id="costcoChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Reflection -->
+                <div id="c-step5" class="bg-slate-900 rounded-xl shadow-lg border border-slate-800 overflow-hidden mb-8 opacity-50 pointer-events-none transition-all text-white">
+                    <div class="px-6 py-4 border-b border-slate-700">
+                        <h3 class="font-bold text-indigo-300">Step 5: Business Model Reflection</h3>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-sm text-slate-300 mb-4"><strong>Q4:</strong> Why is Netflix's recognition rate (95.7%) so much higher than Costco's (50.7%)?</p>
+                        <button onclick="toggleReflection()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded font-bold transition-colors">Reveal Explanation</button>
+                        
+                        <div id="reflection-content" class="hidden mt-4 space-y-3 text-sm bg-slate-800 p-4 rounded border border-slate-700">
+                            <p><strong class="text-red-400">Netflix:</strong> Charges <strong>monthly</strong>. Service is delivered and revenue is earned almost immediately within the same month/year. Little deferral.</p>
+                            <p><strong class="text-blue-400">Costco:</strong> Charges <strong>annually</strong>. Service is obligated for 12 months. At any year-end, a large chunk of cash collected is still unearned.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="costco-complete" class="hidden text-center p-6">
+                     <button onclick="navTo('bonus')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg font-bold shadow-lg transition-transform hover:-translate-y-1">
+                        Go to Forecasting Bonus →
+                    </button>
+                </div>
+            </section>
+
+            <!-- SECTION 4: BONUS -->
+            <section id="bonus" class="section-view hidden p-6 md:p-12 max-w-4xl mx-auto fade-in">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-indigo-600 rounded flex items-center justify-center text-white font-bold text-lg">B</div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">Bonus: Forecasting (2024)</h2>
+                        <p class="text-sm text-slate-500">Projecting Costco's Future Revenue</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
+                    <h3 class="font-bold text-slate-700 mb-4 border-b pb-2">Assumptions</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-600 space-y-2">
+                        <li>2022 Collections: <strong>$4,224</strong></li>
+                        <li>2023 Collections: <strong>$4,380</strong></li>
+                        <li>Recognition Rate remains constant at <strong>50.7%</strong></li>
+                    </ul>
+                    
+                    <!-- Step 1: Growth -->
+                    <div class="mt-6 p-4 bg-slate-50 rounded border border-slate-200">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2">Step 1: Calculate Growth Rate</p>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-sm font-mono text-slate-700">Growth = (4,380 - 4,224) / 4,224 = </span>
+                            <div class="input-wrapper">
+                                <input type="text" id="b-growth" class="smart-input border border-slate-300 rounded p-1 text-sm w-20" placeholder="%">
+                            </div>
+                            <span class="text-sm text-slate-700 font-bold">%</span>
+                            <button onclick="checkBonusGrowth()" class="text-xs bg-slate-800 text-white px-2 py-1 rounded ml-2 h-[30px]">Check</button>
+                        </div>
+                        <p id="b-growth-msg" class="text-xs font-bold text-green-600"></p>
+                    </div>
+
+                    <!-- Step 2: Collection -->
+                    <div id="b-step2" class="mt-6 p-4 bg-slate-50 rounded border border-slate-200 opacity-50 pointer-events-none transition-all">
+                        <p class="text-xs font-bold text-slate-500 uppercase mt-2 mb-2">Step 2: Project 2024 Collections</p>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-sm font-mono text-slate-700">2023 Collections * (1 + Growth Rate) =</span>
+                            <div class="input-wrapper">
+                                <input type="text" id="b-proj-coll" class="smart-input border border-slate-300 rounded p-1 text-sm w-24" placeholder="?">
+                            </div>
+                            <button onclick="checkBonusCollections()" class="text-xs bg-slate-800 text-white px-2 py-1 rounded h-[30px]">Check</button>
+                        </div>
+                        <p id="b-s1-msg" class="text-xs font-bold text-green-600"></p>
+                    </div>
+
+                    <!-- Step 3: Final Calculation -->
+                    <div id="b-step3" class="mt-6 p-4 bg-slate-50 rounded border border-slate-200 opacity-50 pointer-events-none transition-all">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2">Step 3: Solve for 2024 Revenue (X)</p>
+                        <p class="text-sm text-slate-600 mb-2">Using formula: <em>(Revenue 2024 - Ending Unearned 2023) / 2024 Collections = Recognition Rate</em></p>
+                        <p class="text-xs text-slate-400 mb-4 font-mono italic">Remember: Recognition Rate is 50.7%</p>
+                        
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Enter Final Revenue Projection (X):</label>
+                        <div class="flex gap-2 items-start">
+                            <div class="input-wrapper">
+                                <input type="text" id="b-final" class="smart-input border border-slate-300 rounded p-2 text-sm w-40" placeholder="e.g. 4000.0">
+                            </div>
+                             <button onclick="checkBonusFinal()" class="bg-indigo-600 text-white px-4 py-2 rounded text-sm hover:bg-indigo-700 h-[38px]">Check Final</button>
+                        </div>
+                         <p id="b-final-msg" class="mt-2 text-xs font-bold min-h-[1.5em]"></p>
+                    </div>
+
+                    <!-- Step 4: Comparison Analysis -->
+                    <div id="b-step4" class="mt-6 p-4 bg-slate-50 rounded border border-slate-200 opacity-50 pointer-events-none transition-all">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2">Step 4: Error Analysis</p>
+                        <div class="flex justify-between items-start mb-4">
+                            <p class="text-sm text-slate-600 w-3/4">Compare your projection to the actual 2024 Membership Revenue. Calculate the error percentage.</p>
+                            <a href="https://www.sec.gov/ix?doc=/Archives/edgar/data/0000909832/000090983224000049/cost-20240901.htm" target="_blank" class="flex items-center gap-1 text-xs bg-blue-50 text-blue-700 px-3 py-1 rounded hover:bg-blue-100 border border-blue-200 transition-colors">
+                                 2024 10-K
+                            </a>
+                        </div>
+                        
+                        <div class="bg-white p-3 rounded border border-slate-200 mb-3 text-sm">
+                            <p><strong>Actual 2024 Revenue:</strong> 4,828</p>
+                            <p><strong>Your Projection:</strong> 4,639.6</p>
+                        </div>
+
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Calculate Error % ((Actual - Projected) / Projected):</label>
+                        <div class="flex gap-2 items-center items-start">
+                             <div class="input-wrapper">
+                                <input type="text" id="b-error" class="smart-input border border-slate-300 rounded p-2 text-sm w-24" placeholder="%">
+                             </div>
+                             <button onclick="checkBonusError()" class="bg-indigo-600 text-white px-4 py-2 rounded text-sm hover:bg-indigo-700 h-[38px]">Verify Error</button>
+                        </div>
+                         <p id="b-error-msg" class="mt-2 text-xs font-bold min-h-[1.5em]"></p>
+                    </div>
+                </div>
+                
+                <div id="bonus-complete" class="hidden bg-green-50 text-green-800 p-6 rounded-xl text-center border border-green-200">
+                    <h3 class="text-lg font-bold mb-2">Simulation Complete! 🎉</h3>
+                    <p class="text-sm mb-4">You have successfully analyzed the Deferred Revenue mechanics for both Netflix and Costco.</p>
+                    
+                    <!-- Download Button (Redundant but kept for flow, calls same modal) -->
+                    <button onclick="openStudentModal()" class="bg-green-700 hover:bg-green-800 text-white px-6 py-3 rounded-lg font-bold shadow-md transition-colors flex items-center justify-center mx-auto gap-2">
+                        <i class="fas fa-file-download"></i>
+                        Download Submission Report
+                    </button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- STUDENT SUBMISSION MODAL -->
+    <div id="student-modal" class="fixed inset-0 bg-black/70 z-[80] hidden flex justify-center items-center backdrop-blur-sm animate-fade-in">
+        <div class="bg-white w-11/12 max-w-md rounded-xl shadow-2xl p-6 animate-slide-in">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-slate-900">Save Your Work</h3>
+                <button onclick="closeStudentModal()" class="text-slate-400 hover:text-slate-600">✕</button>
+            </div>
+            
+            <p class="text-sm text-slate-600 mb-4">Enter your full name to generate the submission file. This file contains all your current answers.</p>
+            
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-slate-500 mb-1">Student Name</label>
+                <input type="text" id="student-name-input" class="w-full border border-slate-300 rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="e.g. Jane Doe">
+                <p id="student-modal-error" class="text-red-500 text-xs mt-1 hidden">Please enter your name.</p>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="closeStudentModal()" class="flex-1 py-2 rounded-lg font-semibold text-slate-600 hover:bg-slate-100 transition-colors">Cancel</button>
+                <button onclick="generateReport()" class="flex-1 py-2 rounded-lg font-semibold bg-indigo-600 text-white hover:bg-indigo-700 shadow-md transition-colors">
+                    <i class="fas fa-download mr-1"></i> Download .txt
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TEACHER MODAL -->
+    <div id="teacher-modal" class="fixed inset-0 bg-black/70 z-[60] hidden flex justify-center items-center backdrop-blur-sm animate-fade-in">
+        <div class="bg-white w-11/12 max-w-2xl rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-slide-in">
+            <!-- Modal Header -->
+            <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-user-shield"></i>
+                    <span class="font-bold tracking-wide">Teacher Dashboard</span>
+                </div>
+                <button onclick="closeTeacherModal()" class="text-slate-400 hover:text-white transition-colors">✕</button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto flex-1 bg-slate-50">
+                
+                <!-- Authentication View -->
+                <div id="auth-view" class="flex flex-col items-center justify-center py-8">
+                    <div class="bg-indigo-100 p-4 rounded-full mb-4">
+                        <i class="fas fa-lock text-2xl text-indigo-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Restricted Access</h3>
+                    <p class="text-sm text-slate-500 mb-6">Enter the teacher password to view the answer key.</p>
+                    
+                    <div class="flex gap-2 w-full max-w-xs">
+                        <input type="password" id="teacher-password" placeholder="Password..." class="flex-1 border border-slate-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <button onclick="authenticate()" class="bg-slate-900 text-white px-6 py-2 rounded-lg font-bold hover:bg-slate-800 transition-colors">Unlock</button>
+                    </div>
+                    <p id="auth-error" class="text-red-500 text-sm font-bold mt-4 hidden">Incorrect password</p>
+                </div>
+
+                <!-- Answer Key & Tools View -->
+                <div id="key-view" class="hidden space-y-8">
+                    
+                    <!-- Dashboard Tools -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-purple-50 p-4 rounded-lg border border-purple-100">
+                            <h4 class="font-bold text-purple-900 text-sm mb-2"><i class="fas fa-check-circle mr-1"></i> Board Control</h4>
+                            <p class="text-xs text-purple-700 mb-3">Enable Instructor Mode to see keys on board and auto-fill.</p>
+                            <button onclick="enableInstructorMode()" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded text-xs font-bold">Enable Instructor Mode</button>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                             <h4 class="font-bold text-blue-900 text-sm mb-2"><i class="fas fa-shield-alt mr-1"></i> Verification Tool</h4>
+                             <p class="text-xs text-blue-700 mb-3">Verify a student's submission hash.</p>
+                             <button onclick="showVerifyTool()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded text-xs font-bold">Open Verifier</button>
+                        </div>
+                    </div>
+
+                    <!-- Hash Generator/Verifier Area (Hidden by default) -->
+                    <div id="verify-area" class="hidden bg-white p-4 rounded border border-slate-200">
+                        <h4 class="font-bold text-slate-800 text-sm mb-3 border-b pb-1">Submission Integrity Check</h4>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs font-bold text-slate-500">Paste Verification Hash:</label>
+                                <textarea id="verify-hash-input" class="w-full text-xs font-mono border p-2 rounded h-16" placeholder="Paste hash here..."></textarea>
+                            </div>
+                            <button onclick="verifyHash()" class="bg-slate-800 text-white px-3 py-1 rounded text-xs font-bold">Verify Hash</button>
+                            <div id="verify-result" class="hidden mt-2 p-2 bg-slate-100 rounded text-xs font-mono"></div>
+                            
+                            <div class="pt-4 border-t mt-4">
+                                <label class="text-xs font-bold text-slate-500 block mb-1">Hash Generator (For Testing):</label>
+                                <div class="flex gap-2">
+                                    <input type="text" id="gen-name" placeholder="Name" class="border p-1 text-xs w-24">
+                                    <button onclick="generateTestHash()" class="bg-slate-200 px-2 py-1 rounded text-xs">Generate</button>
+                                </div>
+                                <div id="gen-result" class="text-xs font-mono mt-1 text-slate-500 break-all"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-200">
+                            <h3 class="font-bold text-lg text-slate-800">Master Answer Key</h3>
+                            <span class="text-xs font-mono bg-emerald-100 text-emerald-700 px-2 py-1 rounded">ACCESS GRANTED</span>
+                        </div>
+
+                        <table class="w-full text-sm border-collapse bg-white shadow-sm rounded-lg overflow-hidden">
+                            <thead class="bg-slate-100 text-slate-600 uppercase text-xs">
+                                <tr>
+                                    <th class="p-3 text-left border-b border-slate-200">Question / Metric</th>
+                                    <th class="p-3 text-left border-b border-slate-200">Correct Value</th>
+                                </tr>
+                            </thead>
+                            <tbody id="key-tbody" class="divide-y divide-slate-100">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOM CONFIRMATION MODAL (For Clear Action) -->
+    <div id="confirm-modal" class="fixed inset-0 bg-black/50 z-[70] hidden flex justify-center items-end pb-10 animate-fade-in">
+        <div class="bg-white w-full max-w-sm rounded-xl shadow-2xl p-6 mx-4 animate-slide-in">
+            <h3 class="text-lg font-bold text-slate-900 mb-2">Clear & Exit?</h3>
+            <p class="text-sm text-slate-600 mb-6">This will reset all progress, clear all answers, and exit Instructor Mode. This action cannot be undone.</p>
+            <div class="flex gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 py-2.5 rounded-lg font-semibold text-slate-600 hover:bg-slate-100 transition-colors">Cancel</button>
+                <button onclick="performClear()" class="flex-1 py-2.5 rounded-lg font-semibold bg-red-600 text-white hover:bg-red-700 shadow-md transition-colors">Yes, Clear All</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Navigation Logic ---
+        function navTo(id) {
+            document.querySelectorAll('.section-view').forEach(el => el.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('bg-indigo-50', 'text-indigo-700', 'border-indigo-100');
+                el.classList.add('text-slate-600');
+            });
+            document.getElementById(`btn-${id}`).classList.add('bg-indigo-50', 'text-indigo-700', 'border-indigo-100');
+            document.getElementById(`btn-${id}`).classList.remove('text-slate-600');
+            if(id === 'netflix' && netflixChart) netflixChart.resize();
+            if(id === 'costco' && costcoChart) costcoChart.resize();
+        }
+
+        // --- Helper: Unlock Next Step ---
+        function unlock(id) {
+            const el = document.getElementById(id);
+            if(el) el.classList.remove('opacity-50', 'pointer-events-none');
+        }
+
+        // --- Helper: Update Status ---
+        function updateStatus(id, percent) {
+            document.getElementById(id).innerText = percent + '%';
+            if (percent === 100) {
+                document.getElementById(id).classList.remove('bg-slate-100', 'text-slate-500');
+                document.getElementById(id).classList.add('bg-green-100', 'text-green-600');
+            }
+        }
+        
+        const clean = (val) => parseFloat(val.toString().replace(/,/g, ''));
+        const fmt = (num) => num.toLocaleString('en-US');
+        const isClose = (a, b) => Math.abs(a - b) <= (Math.abs(b) * 0.02); // 2% tolerance as requested
+
+        // ================= SMART INPUT SYSTEM =================
+        const QUESTIONS_CONFIG = {
+            'n-beg': { val: 1264661 },
+            'n-rev': { val: 33640458 },
+            'n-end': { val: 1442969 },
+            'n-calc-input': { val: 33818766 },
+            'n-q1b': { val: 32375797 },
+            'n-q1c': { val: 95.7, isPct: true },
+            'c-beg': { val: 2174 },
+            'c-rev': { val: 4580 },
+            'c-end': { val: 2337 },
+            'c-q1': { val: 2174 },
+            'c-q2': { val: 4743 },
+            'c-q3a': { val: 2406 },
+            'c-q3b': { val: 50.7, isPct: true },
+            'b-growth': { val: 3.69, isPct: true },
+            'b-proj-coll': { val: 4541.6 },
+            'b-final': { val: 4639.6 },
+            'b-error': { val: 4.06, isPct: true }
+        };
+
+        function evaluateMath(expression) {
+            try {
+                // Remove any unsafe characters, allow numbers, operators, dots, parens
+                const sanitized = expression.replace(/[^0-9+\-*/().\s]/g, '');
+                if (!sanitized) return NaN;
+                // Use Function constructor for safer eval
+                return new Function('return ' + sanitized)();
+            } catch (e) {
+                return NaN;
+            }
+        }
+
+        function setupSmartInputs() {
+            for (const [id, config] of Object.entries(QUESTIONS_CONFIG)) {
+                const input = document.getElementById(id);
+                if (!input) continue;
+
+                // Create Key Display (Hidden)
+                const keyDiv = document.createElement('div');
+                keyDiv.className = 'instructor-key';
+                keyDiv.innerText = `Key: ${config.val}${config.isPct ? '%' : ''}`;
+                input.parentNode.insertBefore(keyDiv, input.nextSibling);
+
+                // Create Validation Icon (Hidden)
+                const icon = document.createElement('i');
+                icon.className = 'validation-icon fas hidden';
+                input.parentNode.appendChild(icon);
+
+                // Event Listeners
+                const validate = () => {
+                    let rawVal = input.value;
+                    let val = evaluateMath(rawVal);
+                    
+                    if (isNaN(val)) {
+                        setVisuals(input, icon, 'neutral');
+                        return;
+                    }
+
+                    // Handle Percentage Logic (e.g. 0.067 == 6.7%)
+                    let isCorrect = false;
+                    if (config.isPct) {
+                        // Check as raw number (6.7) OR decimal (0.067)
+                        const asRaw = isClose(val, config.val);
+                        const asDecimal = isClose(val * 100, config.val);
+                        isCorrect = asRaw || asDecimal;
+                    } else {
+                        isCorrect = isClose(val, config.val);
+                    }
+
+                    if (isCorrect) setVisuals(input, icon, 'correct');
+                    else setVisuals(input, icon, 'incorrect');
+                };
+
+                input.addEventListener('blur', validate);
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        validate();
+                        input.blur();
+                    }
+                });
+            }
+        }
+
+        function setVisuals(input, icon, state) {
+            input.classList.remove('input-correct', 'input-incorrect');
+            icon.classList.remove('hidden', 'text-green-500', 'text-red-500', 'fa-check', 'fa-times');
+            
+            if (state === 'correct') {
+                input.classList.add('input-correct');
+                icon.classList.add('fa-check', 'text-green-500');
+                icon.classList.remove('hidden');
+            } else if (state === 'incorrect') {
+                input.classList.add('input-incorrect');
+                icon.classList.add('fa-times', 'text-red-500');
+                icon.classList.remove('hidden');
+            }
+        }
+
+        // ================= INSTRUCTOR MODE =================
+        function openTeacherModal() {
+            document.getElementById('teacher-modal').classList.remove('hidden');
+            document.getElementById('teacher-modal').classList.add('flex');
+            document.getElementById('teacher-password').value = '';
+            document.getElementById('auth-view').classList.remove('hidden');
+            document.getElementById('key-view').classList.add('hidden');
+            document.getElementById('auth-error').classList.add('hidden');
+        }
+
+        function closeTeacherModal() {
+            document.getElementById('teacher-modal').classList.add('hidden');
+            document.getElementById('teacher-modal').classList.remove('flex');
+        }
+
+        function authenticate() {
+            const pw = document.getElementById('teacher-password').value;
+            if (pw.toLowerCase() === 'teacher') {
+                document.getElementById('auth-view').classList.add('hidden');
+                document.getElementById('key-view').classList.remove('hidden');
+                renderKey();
+            } else {
+                document.getElementById('auth-error').classList.remove('hidden');
+            }
+        }
+
+        function enableInstructorMode() {
+            document.body.classList.add('instructor-mode');
+            document.getElementById('instructor-toolbar').classList.remove('hidden');
+            document.getElementById('app-wrapper').style.marginTop = '50px'; // Push down
+            closeTeacherModal();
+            // Reveal all sections
+            document.querySelectorAll('section').forEach(s => {
+                if(s.id !== 'intro') s.classList.remove('pointer-events-none', 'opacity-50');
+            });
+            unlock('n-step2'); unlock('n-step3'); unlock('n-step4');
+            unlock('c-step2'); unlock('c-step3'); unlock('c-step4'); unlock('c-step5');
+            unlock('b-step2'); unlock('b-step3'); unlock('b-step4');
+        }
+
+        function instructorAutoFill() {
+            for (const [id, config] of Object.entries(QUESTIONS_CONFIG)) {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.value = config.val;
+                    // Trigger validation event manually
+                    el.dispatchEvent(new Event('blur'));
+                }
+            }
+            // Trigger chart renders logic if needed
+            renderNetflixChart();
+            renderCostcoChart();
+        }
+
+        function requestClearAll() {
+            document.getElementById('confirm-modal').classList.remove('hidden');
+        }
+        
+        function closeConfirmModal() {
+            document.getElementById('confirm-modal').classList.add('hidden');
+        }
+
+        function performClear() {
+            closeConfirmModal();
+            document.body.classList.remove('instructor-mode');
+            document.getElementById('instructor-toolbar').classList.add('hidden');
+            document.getElementById('app-wrapper').style.marginTop = '0';
+            
+            // Reset inputs
+            document.querySelectorAll('input').forEach(i => {
+                i.value = '';
+                i.classList.remove('input-correct', 'input-incorrect');
+                const icon = i.parentNode.querySelector('.validation-icon');
+                if(icon) icon.classList.add('hidden');
+            });
+            
+            // Reset Layout (simple reload or manual hide)
+            navTo('intro');
+            location.reload(); // Simplest way to ensure clean state
+        }
+
+        // --- Instructor Verification Tools ---
+        function showVerifyTool() {
+            document.getElementById('verify-area').classList.remove('hidden');
+        }
+
+        function verifyHash() {
+            const hash = document.getElementById('verify-hash-input').value.trim();
+            const resDiv = document.getElementById('verify-result');
+            resDiv.classList.remove('hidden');
+            try {
+                // Expected format: Base64 encoded JSON
+                const jsonStr = atob(hash);
+                const data = JSON.parse(jsonStr);
+                
+                resDiv.innerHTML = `
+                    <div class="text-green-700 font-bold"><i class="fas fa-check-circle"></i> Valid Hash Structure</div>
+                    <div><strong>Student:</strong> ${data.name}</div>
+                    <div><strong>Score:</strong> ${data.score || 'N/A'}</div>
+                    <div><strong>Date:</strong> ${new Date(data.ts).toLocaleString()}</div>
+                `;
+            } catch (e) {
+                resDiv.innerHTML = `<div class="text-red-600 font-bold"><i class="fas fa-times-circle"></i> Invalid Hash</div>`;
+            }
+        }
+
+        function generateTestHash() {
+            const name = document.getElementById('gen-name').value || "TestUser";
+            const data = {
+                name: name,
+                score: "100%", // Mock score
+                ts: Date.now()
+            };
+            const hash = btoa(JSON.stringify(data));
+            document.getElementById('gen-result').innerText = hash;
+        }
+
+        // ================= EXISTING LOGIC WRAPPERS =================
+        // Kept for "Check" button flows, but values are now pre-validated by smart inputs
+        
+        function renderKey() {
+            const tbody = document.getElementById('key-tbody');
+            tbody.innerHTML = '';
+            for (const [id, config] of Object.entries(QUESTIONS_CONFIG)) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-3 py-2 text-slate-700 font-medium">${id}</td>
+                    <td class="px-3 py-2 font-mono text-indigo-700 font-bold">${config.val}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+        }
+
+        // --- Netflix Logic ---
+        function checkNetflixData() {
+            // Logic is redundant visually but needed to unlock next step
+            const valid = ['n-beg', 'n-rev', 'n-end'].every(id => 
+                document.getElementById(id).classList.contains('input-correct')
+            );
+            
+            if(valid) {
+                document.getElementById('n-data-msg').innerHTML = `<span class="text-green-600">✓ Correct! Proceed.</span>`;
+                document.getElementById('n-step1-status').innerText = 'Complete';
+                document.getElementById('n-step1-status').className = "text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded";
+                
+                document.getElementById('disp-n-beg').innerText = fmt(QUESTIONS_CONFIG['n-beg'].val);
+                document.getElementById('disp-n-rev').innerText = fmt(QUESTIONS_CONFIG['n-rev'].val);
+                document.getElementById('disp-n-end').innerText = fmt(QUESTIONS_CONFIG['n-end'].val);
+                unlock('n-step2');
+                updateStatus('netflix-status', 25);
+            } else {
+                document.getElementById('n-data-msg').innerHTML = `<span class="text-red-500">⚠ Please correct the highlighted fields.</span>`;
+            }
+        }
+
+        function checkNetflixCalc() {
+             if(document.getElementById('n-calc-input').classList.contains('input-correct')) {
+                document.getElementById('n-calc-msg').innerHTML = `<span class="text-green-600">✓ Correct</span>`;
+                unlock('n-step3');
+                updateStatus('netflix-status', 50);
+            } else {
+                document.getElementById('n-calc-msg').innerHTML = `<span class="text-red-500">⚠ Incorrect. Formula: End + Rev - Beg</span>`;
+            }
+        }
+
+        function checkNetflixAnalysis() {
+            const b = document.getElementById('n-q1b').classList.contains('input-correct');
+            const c = document.getElementById('n-q1c').classList.contains('input-correct');
+
+            if (b && c) {
+                document.getElementById('n-analysis-msg').innerHTML = `<span class="text-green-600">✓ Excellent Analysis!</span>`;
+                unlock('n-step4');
+                updateStatus('netflix-status', 75);
+                renderNetflixChart();
+            } else {
+                document.getElementById('n-analysis-msg').innerHTML = `<span class="text-red-500">⚠ Check highlighted fields.</span>`;
+            }
+        }
+        
+        let netflixChart, costcoChart;
+        function renderNetflixChart() {
+            const ctx = document.getElementById('netflixChart').getContext('2d');
+            if(netflixChart) netflixChart.destroy();
+            netflixChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Fees Collected 2023'],
+                    datasets: [
+                        { label: 'Recognized Immediately', data: [95.7], backgroundColor: '#ef4444' },
+                        { label: 'Deferred', data: [4.3], backgroundColor: '#e2e8f0' }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { stacked: true, max: 100 }, x: { stacked: true } } }
+            });
+        }
+
+        // --- Costco Logic ---
+        function checkCostcoData() {
+             const valid = ['c-beg', 'c-rev', 'c-end'].every(id => 
+                document.getElementById(id).classList.contains('input-correct')
+            );
+            if(valid) {
+                document.getElementById('c-data-msg').innerHTML = `<span class="text-green-600">✓ Verified.</span>`;
+                document.getElementById('c-step1-status').innerText = 'Complete';
+                document.getElementById('c-step1-status').className = "text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded";
+                unlock('c-step2');
+                updateStatus('costco-status', 20);
+            } else {
+                document.getElementById('c-data-msg').innerHTML = `<span class="text-red-500">⚠ Check highlighted fields.</span>`;
+            }
+        }
+
+        function checkCostcoQ1() {
+            if(document.getElementById('c-q1').classList.contains('input-correct')) {
+                document.getElementById('c-q1-msg').innerHTML = `<span class="text-green-600">✓ Correct.</span>`;
+                unlock('c-step3');
+                updateStatus('costco-status', 40);
+            }
+        }
+        function checkCostcoQ2() {
+            if(document.getElementById('c-q2').classList.contains('input-correct')) {
+                document.getElementById('c-q2-msg').innerHTML = `<span class="text-green-600">✓ Correct.</span>`;
+                unlock('c-step4');
+                updateStatus('costco-status', 60);
+            }
+        }
+        function checkCostcoQ3() {
+             const a = document.getElementById('c-q3a').classList.contains('input-correct');
+             const b = document.getElementById('c-q3b').classList.contains('input-correct');
+             if(a && b) {
+                document.getElementById('c-q3-msg').innerHTML = `<span class="text-green-600">✓ Correct.</span>`;
+                unlock('c-step5');
+                updateStatus('costco-status', 80);
+                renderCostcoChart();
+             }
+        }
+        
+        function renderCostcoChart() {
+            const ctx = document.getElementById('costcoChart').getContext('2d');
+            if(costcoChart) costcoChart.destroy();
+            costcoChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Recognized 2023', 'Deferred to 2024'],
+                    datasets: [{ data: [50.7, 49.3], backgroundColor: ['#1d4ed8', '#e2e8f0'] }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+        
+        function toggleReflection() {
+            document.getElementById('reflection-content').classList.remove('hidden');
+            updateStatus('costco-status', 100);
+            document.getElementById('costco-complete').classList.remove('hidden');
+        }
+
+        // --- Bonus Logic ---
+        function checkBonusGrowth() {
+            if(document.getElementById('b-growth').classList.contains('input-correct')) {
+                document.getElementById('b-growth-msg').innerText = "✓ Correct";
+                unlock('b-step2');
+            }
+        }
+        function checkBonusCollections() {
+            if(document.getElementById('b-proj-coll').classList.contains('input-correct')) {
+                document.getElementById('b-s1-msg').innerText = "✓ Correct";
+                unlock('b-step3');
+            }
+        }
+        function checkBonusFinal() {
+            if(document.getElementById('b-final').classList.contains('input-correct')) {
+                document.getElementById('b-final-msg').innerHTML = `<span class="text-green-600 text-lg">✓ Correct!</span>`;
+                unlock('b-step4');
+            }
+        }
+        function checkBonusError() {
+            if(document.getElementById('b-error').classList.contains('input-correct')) {
+                document.getElementById('b-error-msg').innerHTML = `<span class="text-green-600">✓ Correct!</span>`;
+                document.getElementById('bonus-complete').classList.remove('hidden');
+            }
+        }
+
+        // --- Quiz Logic (unchanged) ---
+        const quizState = { ni:null, as:null, li:null, eq:null };
+        const quizKey = { ni:'high', as:'same', li:'low', eq:'high' };
+        function quizAnswer(cat, val) {
+            quizState[cat] = val;
+            ['high', 'same', 'low'].forEach(v => {
+                const btn = document.getElementById(`btn-${cat}-${v}`);
+                if (v === val) {
+                    btn.classList.add('bg-indigo-600', 'text-white');
+                    btn.classList.remove('hover:bg-slate-50');
+                } else {
+                    btn.classList.remove('bg-indigo-600', 'text-white');
+                    btn.classList.add('hover:bg-slate-50');
+                }
+            });
+            let allCorrect = true;
+            for(let k in quizKey) { if(quizState[k] !== quizKey[k]) allCorrect = false; }
+            if(allCorrect) {
+                document.getElementById('quiz-msg').innerHTML = "✓ Correct!";
+                updateStatus('netflix-status', 100);
+                document.getElementById('netflix-complete').classList.remove('hidden');
+            }
+        }
+
+        // --- Submission Logic ---
+        function openStudentModal() {
+            document.getElementById('student-modal').classList.remove('hidden');
+            document.getElementById('student-modal').classList.add('flex');
+            document.getElementById('student-name-input').focus();
+        }
+
+        function closeStudentModal() {
+            document.getElementById('student-modal').classList.add('hidden');
+            document.getElementById('student-modal').classList.remove('flex');
+            document.getElementById('student-modal-error').classList.add('hidden');
+        }
+
+        function generateReport() {
+            const name = document.getElementById('student-name-input').value.trim();
+            
+            if (!name) {
+                document.getElementById('student-modal-error').classList.remove('hidden');
+                return;
+            }
+
+            closeStudentModal();
+
+            const getVal = (id) => {
+                const el = document.getElementById(id);
+                return (el && el.value) ? el.value : "Not Answered";
+            };
+            const ts = Date.now();
+            
+            // Generate robust hash
+            const reportData = {
+                name: name,
+                answers: Object.fromEntries(Object.keys(QUESTIONS_CONFIG).map(k => [k, getVal(k)])),
+                ts: ts
+            };
+            const hash = btoa(JSON.stringify(reportData));
+            
+            const text = `DEFERRED REVENUE SIMULATION REPORT\n` +
+                         `==========================================\n` +
+                         `Student Name: ${name}\n` +
+                         `Date Completed: ${new Date(ts).toLocaleString()}\n` +
+                         `==========================================\n\n` +
+                         
+                         `PART 1: NETFLIX CASE (Monthly Subscription)\n` +
+                         `------------------------------------------\n` +
+                         `Q: Beginning Unearned Revenue\n` +
+                         `   > Answer: ${getVal('n-beg')}\n\n` +
+                         `Q: Revenue Recognized\n` +
+                         `   > Answer: ${getVal('n-rev')}\n\n` +
+                         `Q: Ending Unearned Revenue\n` +
+                         `   > Answer: ${getVal('n-end')}\n\n` +
+                         `Q: Calculated Cash Collected (Step 2)\n` +
+                         `   > Answer: $${getVal('n-calc-input')}\n\n` +
+                         `Q: Revenue from fees collected this year (Step 3)\n` +
+                         `   > Answer: $${getVal('n-q1b')}\n\n` +
+                         `Q: % of collected fees recognized this year\n` +
+                         `   > Answer: ${getVal('n-q1c')}%\n\n` +
+                         
+                         `PART 2: COSTCO CASE (Annual Membership)\n` +
+                         `------------------------------------------\n` +
+                         `Q: Beginning Unearned Revenue\n` +
+                         `   > Answer: ${getVal('c-beg')}\n\n` +
+                         `Q: Revenue Recognized\n` +
+                         `   > Answer: ${getVal('c-rev')}\n\n` +
+                         `Q: Ending Unearned Revenue\n` +
+                         `   > Answer: ${getVal('c-end')}\n\n` +
+                         `Q: Revenue from Prior Year Carryover (Step 2)\n` +
+                         `   > Answer: $${getVal('c-q1')}\n\n` +
+                         `Q: Total Cash Collected (Step 3)\n` +
+                         `   > Answer: $${getVal('c-q2')}\n\n` +
+                         `Q: Revenue from Current Year Fees (Step 4a)\n` +
+                         `   > Answer: $${getVal('c-q3a')}\n\n` +
+                         `Q: % Recognized (Step 4b)\n` +
+                         `   > Answer: ${getVal('c-q3b')}%\n\n` +
+                         
+                         `PART 3: FORECASTING BONUS\n` +
+                         `------------------------------------------\n` +
+                         `Q: Growth Rate\n` +
+                         `   > Answer: ${getVal('b-growth')}%\n\n` +
+                         `Q: Projected Collections 2024\n` +
+                         `   > Answer: $${getVal('b-proj-coll')}\n\n` +
+                         `Q: Projected Revenue 2024\n` +
+                         `   > Answer: $${getVal('b-final')}\n\n` +
+                         `Q: Forecast Error %\n` +
+                         `   > Answer: ${getVal('b-error')}%\n\n` +
+                         
+                         `==========================================\n` +
+                         `VERIFICATION HASH (Instructor Use Only):\n${hash}\n` +
+                         `==========================================\n`;
+            
+            const element = document.createElement("a");
+            const file = new Blob([text], {type: 'text/plain'});
+            element.href = URL.createObjectURL(file);
+            // Updated filename format to {studentname}_submission.txt
+            element.download = `${name.replace(/[^a-z0-9]/gi, '_')}_submission.txt`;
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        // Init
+        setupSmartInputs();
+    </script>
+</body>
+</html>
