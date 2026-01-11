@@ -20,76 +20,90 @@
 
     <style>
         body {
-            background-color: #1a1a2e;
-            color: #e2e8f0;
+            background-color: #f8fafc; /* slate-50 */
+            color: #1e293b; /* slate-800 */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
         /* Animation classes */
-        .fade-in { animation: fadeIn 0.3s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .sticky-toolbar {
             position: sticky;
             top: 0;
             z-index: 50;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         /* Statement Styles */
         .statement-paper {
-            background-color: #fff;
-            color: #1e293b;
-            padding: 2rem;
-            border-radius: 4px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            background-color: #ffffff;
+            color: #0f172a;
+            padding: 3rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
             margin-bottom: 2rem;
-            max-width: 800px;
+            max-width: 850px;
             margin-left: auto;
             margin-right: auto;
         }
         .statement-header {
             text-align: center;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid #334155;
-            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 3px double #334155;
+            padding-bottom: 1.5rem;
         }
-        .statement-header h2 { font-size: 1.5rem; font-weight: 800; color: #0f172a; }
-        .statement-header h3 { font-size: 1.1rem; font-weight: 600; color: #475569; }
-        .statement-header p { font-size: 0.9rem; color: #64748b; italic; }
+        .statement-header h2 { font-size: 1.75rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem; }
+        .statement-header h3 { font-size: 1.25rem; font-weight: 600; color: #334155; margin-bottom: 0.25rem; }
+        .statement-header p { font-size: 0.95rem; color: #64748b; font-style: italic; }
         
         .statement-row {
             display: flex;
             justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px dashed #e2e8f0;
+            padding: 0.6rem 0;
+            border-bottom: 1px dotted #cbd5e1;
         }
+        .statement-row:last-child { border-bottom: none; }
+        
         .statement-row.total {
             font-weight: 800;
             border-top: 2px solid #0f172a;
             border-bottom: 4px double #0f172a;
             padding-top: 0.75rem;
             margin-top: 0.5rem;
+            color: #0f172a;
         }
         .statement-row.subtotal {
             font-weight: 600;
             border-top: 1px solid #334155;
             margin-top: 0.5rem;
             padding-top: 0.5rem;
+            color: #1e293b;
         }
         .statement-sub-header {
             font-weight: 700;
-            color: #475569;
-            margin-top: 1rem;
-            border-bottom: 1px solid #cbd5e1;
+            color: #334155;
+            margin-top: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
             padding-bottom: 0.25rem;
             margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* Input Styles */
+        input:focus, select:focus {
+            outline: 2px solid #3b82f6;
+            outline-offset: -1px;
         }
     </style>
 </head>
@@ -100,7 +114,7 @@
         const { useState, useEffect, useMemo, useRef } = React;
 
         // --- ICONS ---
-        const Icon = ({ name, size = 16, className }) => {
+        const Icon = ({ name, size = 18, className }) => {
             useEffect(() => {
                 if (window.lucide) window.lucide.createIcons();
             }, [name]);
@@ -119,25 +133,111 @@
         ];
 
         // Correct Answers Config
+        // Instructor Key Updated: correctAccounts ensures specific revenue/expense accounts are selected.
         const TRANSACTIONS_CONFIG = [
-            { id: 1, text: "Apr 1: Roulstone contributed $11,500 cash for stock.", correct: { cash: 11500, noncash: 0, liab: 0, cc: 11500, ec: 0, rev: 0, exp: 0 } },
-            { id: 2, text: "Apr 2: Paid $6,100 cash for a used truck.", correct: { cash: -6100, noncash: 6100, liab: 0, cc: 0, ec: 0, rev: 0, exp: 0 } },
-            { id: 3, text: "Apr 2: Purchased $6,200 equipment; paid $1,000 cash, rest AP.", correct: { cash: -1000, noncash: 6200, liab: 5200, cc: 0, ec: 0, rev: 0, exp: 0 } },
-            { id: 4, text: "Apr 3: Paid $2,880 cash for 24-mo insurance.", correct: { cash: -2880, noncash: 2880, liab: 0, cc: 0, ec: 0, rev: 0, exp: 0 } },
-            { id: 5, text: "Apr 5: Purchased $1,200 supplies on credit.", correct: { cash: 0, noncash: 1200, liab: 1200, cc: 0, ec: 0, rev: 0, exp: 0 } },
-            { id: 6, text: "Apr 5: Received $1,800 cash advance for future work.", correct: { cash: 1800, noncash: 0, liab: 1800, cc: 0, ec: 0, rev: 0, exp: 0 } },
-            { id: 7, text: "Apr 12: Billed customers $5,500 for services.", correct: { cash: 0, noncash: 5500, liab: 0, cc: 0, ec: 0, rev: 5500, exp: 0 } },
-            { id: 8, text: "Apr 18: Collected $4,900 from Apr 12 customers.", correct: { cash: 4900, noncash: -4900, liab: 0, cc: 0, ec: 0, rev: 0, exp: 0 } },
-            { id: 9, text: "Apr 29: Paid $675 cash for fuel.", correct: { cash: -675, noncash: 0, liab: 0, cc: 0, ec: 0, rev: 0, exp: 675 } },
-            { id: 10, text: "Apr 30: Paid $100 cash for advertising.", correct: { cash: -100, noncash: 0, liab: 0, cc: 0, ec: 0, rev: 0, exp: 100 } },
-            { id: 11, text: "Apr 30: Paid $4,500 cash for wages.", correct: { cash: -4500, noncash: 0, liab: 0, cc: 0, ec: 0, rev: 0, exp: 4500 } },
-            { id: 12, text: "Apr 30: Billed customers $4,000 for services.", correct: { cash: 0, noncash: 4000, liab: 0, cc: 0, ec: 0, rev: 4000, exp: 0 } },
+            { 
+                id: 1, 
+                text: "Apr 1: Roulstone contributed $11,500 cash for stock.", 
+                correct: { cash: 11500, noncash: 0, liab: 0, cc: 11500, ec: 0, rev: 0, exp: 0 },
+                correctAccounts: { noncash: "", liab: "", rev: "", exp: "" }
+            },
+            { 
+                id: 2, 
+                text: "Apr 2: Paid $6,100 cash for a used truck.", 
+                correct: { cash: -6100, noncash: 6100, liab: 0, cc: 0, ec: 0, rev: 0, exp: 0 },
+                correctAccounts: { noncash: "Truck", liab: "", rev: "", exp: "" }
+            },
+            { 
+                id: 3, 
+                text: "Apr 2: Purchased $6,200 equipment; paid $1,000 cash, rest AP.", 
+                correct: { cash: -1000, noncash: 6200, liab: 5200, cc: 0, ec: 0, rev: 0, exp: 0 },
+                correctAccounts: { noncash: "Equipment", liab: "Accounts Payable", rev: "", exp: "" }
+            },
+            { 
+                id: 4, 
+                text: "Apr 3: Paid $2,880 cash for 24-mo insurance.", 
+                correct: { cash: -2880, noncash: 2880, liab: 0, cc: 0, ec: 0, rev: 0, exp: 0 },
+                correctAccounts: { noncash: "Prepaid Insurance", liab: "", rev: "", exp: "" }
+            },
+            { 
+                id: 5, 
+                text: "Apr 5: Purchased $1,200 supplies on credit.", 
+                correct: { cash: 0, noncash: 1200, liab: 1200, cc: 0, ec: 0, rev: 0, exp: 0 },
+                correctAccounts: { noncash: "Supplies", liab: "Accounts Payable", rev: "", exp: "" }
+            },
+            { 
+                id: 6, 
+                text: "Apr 5: Received $1,800 cash advance for future work.", 
+                correct: { cash: 1800, noncash: 0, liab: 1800, cc: 0, ec: 0, rev: 0, exp: 0 },
+                correctAccounts: { noncash: "", liab: "Unearned Revenue", rev: "", exp: "" }
+            },
+            { 
+                id: 7, 
+                text: "Apr 12: Billed customers $5,500 for services.", 
+                correct: { cash: 0, noncash: 5500, liab: 0, cc: 0, ec: 0, rev: 5500, exp: 0 },
+                correctAccounts: { noncash: "Accounts Receivable", liab: "", rev: "Service Revenue", exp: "" }
+            },
+            { 
+                id: 8, 
+                text: "Apr 18: Collected $4,900 from Apr 12 customers.", 
+                correct: { cash: 4900, noncash: -4900, liab: 0, cc: 0, ec: 0, rev: 0, exp: 0 },
+                correctAccounts: { noncash: "Accounts Receivable", liab: "", rev: "", exp: "" }
+            },
+            { 
+                id: 9, 
+                text: "Apr 29: Paid $675 cash for fuel.", 
+                correct: { cash: -675, noncash: 0, liab: 0, cc: 0, ec: 0, rev: 0, exp: 675 },
+                correctAccounts: { noncash: "", liab: "", rev: "", exp: "Fuel Expense" }
+            },
+            { 
+                id: 10, 
+                text: "Apr 30: Paid $100 cash for advertising.", 
+                correct: { cash: -100, noncash: 0, liab: 0, cc: 0, ec: 0, rev: 0, exp: 100 },
+                correctAccounts: { noncash: "", liab: "", rev: "", exp: "Advertising Expense" }
+            },
+            { 
+                id: 11, 
+                text: "Apr 30: Paid $4,500 cash for wages.", 
+                correct: { cash: -4500, noncash: 0, liab: 0, cc: 0, ec: 0, rev: 0, exp: 4500 },
+                correctAccounts: { noncash: "", liab: "", rev: "", exp: "Wages Expense" }
+            },
+            { 
+                id: 12, 
+                text: "Apr 30: Billed customers $4,000 for services.", 
+                correct: { cash: 0, noncash: 4000, liab: 0, cc: 0, ec: 0, rev: 4000, exp: 0 },
+                correctAccounts: { noncash: "Accounts Receivable", liab: "", rev: "Service Revenue", exp: "" }
+            },
             // Adjusting Entries
-            { id: 13, text: "Adj: Record insurance expense for the month. (Policy: $2,880 for 24 mo).", correct: { cash: 0, noncash: -120, liab: 0, cc: 0, ec: 0, rev: 0, exp: 120 } },
-            { id: 14, text: "Adj: Supplies count at month-end shows $200 remaining.", correct: { cash: 0, noncash: -1000, liab: 0, cc: 0, ec: 0, rev: 0, exp: 1000 } },
-            { id: 15, text: "Adj: Depreciation on Truck is $125.", correct: { cash: 0, noncash: -125, liab: 0, cc: 0, ec: 0, rev: 0, exp: 125 } },
-            { id: 16, text: "Adj: Depreciation on Equipment is $35.", correct: { cash: 0, noncash: -35, liab: 0, cc: 0, ec: 0, rev: 0, exp: 35 } },
-            { id: 17, text: "Adj: 25% of the work related to the Apr 5 advance has been performed.", correct: { cash: 0, noncash: 0, liab: -450, cc: 0, ec: 0, rev: 450, exp: 0 } },
+            { 
+                id: 13, 
+                text: "Adj: Record insurance expense for the month. (Policy: $2,880 for 24 mo).", 
+                correct: { cash: 0, noncash: -120, liab: 0, cc: 0, ec: 0, rev: 0, exp: 120 },
+                correctAccounts: { noncash: "Prepaid Insurance", liab: "", rev: "", exp: "Insurance Expense" }
+            },
+            { 
+                id: 14, 
+                text: "Adj: Supplies count at month-end shows $200 remaining.", 
+                correct: { cash: 0, noncash: -1000, liab: 0, cc: 0, ec: 0, rev: 0, exp: 1000 },
+                correctAccounts: { noncash: "Supplies", liab: "", rev: "", exp: "Supplies Expense" }
+            },
+            { 
+                id: 15, 
+                text: "Adj: Depreciation on Truck is $125.", 
+                correct: { cash: 0, noncash: -125, liab: 0, cc: 0, ec: 0, rev: 0, exp: 125 },
+                correctAccounts: { noncash: "Accum. Depr: Truck", liab: "", rev: "", exp: "Depr. Expense-Truck" }
+            },
+            { 
+                id: 16, 
+                text: "Adj: Depreciation on Equipment is $35.", 
+                correct: { cash: 0, noncash: -35, liab: 0, cc: 0, ec: 0, rev: 0, exp: 35 },
+                correctAccounts: { noncash: "Accum. Depr: Equipment", liab: "", rev: "", exp: "Depr. Expense-Equip" }
+            },
+            { 
+                id: 17, 
+                text: "Adj: 25% of the work related to the Apr 5 advance has been performed.", 
+                correct: { cash: 0, noncash: 0, liab: -450, cc: 0, ec: 0, rev: 450, exp: 0 },
+                correctAccounts: { noncash: "", liab: "Unearned Revenue", rev: "Service Revenue", exp: "" }
+            },
         ];
 
         const ERROR_SCENARIOS_CONFIG = [
@@ -242,15 +342,15 @@
                 if (e.key === 'Enter') e.target.blur();
             };
 
-            let borderClass = "border-slate-600 focus:border-blue-500";
-            if (isValid === true) borderClass = "border-green-500 bg-green-900/20";
-            else if (isValid === false) borderClass = "border-red-500 bg-red-900/20";
+            let borderClass = "border-slate-300 focus:border-blue-500 bg-white";
+            if (isValid === true) borderClass = "border-green-500 bg-green-50 text-green-700";
+            else if (isValid === false) borderClass = "border-red-500 bg-red-50 text-red-700";
 
             return (
                 <div className="relative w-full">
                     <input
                         type="text"
-                        className={`w-full px-2 py-1 text-right rounded bg-[#16213e] text-white border outline-none transition-colors ${borderClass}`}
+                        className={`w-full px-2 py-1.5 text-right rounded text-sm border outline-none transition-colors shadow-sm ${borderClass}`}
                         value={localVal}
                         onChange={(e) => { setLocalVal(e.target.value); onChange(e.target.value); }}
                         onBlur={handleBlur}
@@ -258,17 +358,64 @@
                         placeholder={placeholder}
                     />
                     {isValid === true && (
-                        <div className="absolute right-1 top-1.5 text-green-500 pointer-events-none">
-                            <Icon name="check" size={12} />
+                        <div className="absolute right-1 top-1.5 text-green-600 pointer-events-none">
+                            <Icon name="check" size={14} />
                         </div>
                     )}
                     {instructorMode && (
-                        <div className="mt-1 text-xs font-bold text-center bg-purple-900/50 text-purple-200 border border-purple-500/30 rounded py-0.5 fade-in">
+                        <div className="mt-1 text-xs font-bold text-center bg-purple-100 text-purple-700 border border-purple-200 rounded py-0.5 fade-in">
                             Key: {correctValue}
                         </div>
                     )}
                 </div>
             );
+        };
+
+        // --- COMPONENT: SMART SELECT ---
+        const SmartSelect = ({ value, onChange, options, correctValue, instructorMode }) => {
+            const checkValidity = () => {
+                // UPDATE: If value is empty, treat as neutral regardless of correctValue
+                // This ensures empty fields do not show as red/incorrect.
+                if (value === "") return null;
+
+                if (!correctValue && !value) return null; // Neutral if both empty
+                // Strict equality check for account string
+                return value === (correctValue || "");
+            };
+
+            const validState = checkValidity();
+            
+            let className = "w-full mt-1.5 text-xs rounded border p-1.5 outline-none transition-colors cursor-pointer shadow-sm ";
+            
+            if (validState === true && value) {
+                className += "border-green-500 bg-green-50 text-green-700 font-semibold";
+            } else if (validState === false) {
+                className += "border-red-500 bg-red-50 text-red-700";
+            } else {
+                className += "border-slate-300 bg-white text-slate-700 hover:border-blue-400";
+            }
+
+            return (
+                <div className="relative">
+                    <select 
+                        className={className} 
+                        value={value} 
+                        onChange={(e) => onChange(e.target.value)}
+                    >
+                        {options.map(opt => <option key={opt} value={opt}>{opt === "" ? "- Select Account -" : opt}</option>)}
+                    </select>
+                    {validState === true && value && (
+                        <div className="absolute right-5 top-1.5 text-green-600 pointer-events-none">
+                            <Icon name="check" size={12} />
+                        </div>
+                    )}
+                    {instructorMode && correctValue && (
+                        <div className="mt-1 text-[10px] font-bold text-center bg-purple-100 text-purple-700 border border-purple-200 rounded py-0.5 fade-in">
+                            Acc: {correctValue}
+                        </div>
+                    )}
+                </div>
+            )
         };
 
         // --- COMPONENT: APP ---
@@ -435,20 +582,12 @@
                 const filled = transactions.map(t => {
                     let accts = { ...t.userAccounts };
                     
-                    if(t.correct.noncash !== 0) {
-                        if(t.text.includes("truck")) accts.noncash = "Truck";
-                        else if(t.text.includes("equipment") || t.text.includes("Equipment")) accts.noncash = "Equipment";
-                        else if(t.text.includes("supplies") || t.text.includes("Supplies")) accts.noncash = "Supplies";
-                        else if(t.text.includes("insurance") || t.text.includes("Insurance")) accts.noncash = "Prepaid Insurance";
-                        else if(t.text.includes("Billed")) accts.noncash = "Accounts Receivable";
-                        else if(t.text.includes("Depreciation")) {
-                             if(t.text.includes("Truck")) accts.noncash = "Accum. Depr: Truck";
-                             else accts.noncash = "Accum. Depr: Equipment";
-                        }
-                    }
-                    if(t.correct.liab !== 0) {
-                        if(t.text.includes("AP") || t.text.includes("supplies") || t.text.includes("equipment")) accts.liab = "Accounts Payable";
-                        else if(t.text.includes("advance") || t.text.includes("Fees earned")) accts.liab = "Unearned Revenue";
+                    // Use the correctAccounts config for robust autofill
+                    if (t.correctAccounts) {
+                        if (t.correctAccounts.noncash) accts.noncash = t.correctAccounts.noncash;
+                        if (t.correctAccounts.liab) accts.liab = t.correctAccounts.liab;
+                        if (t.correctAccounts.rev) accts.rev = t.correctAccounts.rev;
+                        if (t.correctAccounts.exp) accts.exp = t.correctAccounts.exp;
                     }
 
                     return {
@@ -596,55 +735,69 @@ ${hash}
                 return (val || 0).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
             };
 
+            const TabButton = ({ id, label, number }) => (
+                <button 
+                    onClick={() => setActiveTab(id)}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-lg transition-all shadow-sm ${activeTab === id ? 'bg-blue-600 text-white shadow-lg scale-105' : 'bg-white text-slate-500 hover:bg-slate-50 border border-slate-200 hover:text-blue-500'}`}
+                >
+                    <span className={`flex items-center justify-center w-6 h-6 rounded-full text-xs ${activeTab === id ? 'bg-white text-blue-600' : 'bg-slate-200 text-slate-500'}`}>{number}</span>
+                    {label}
+                </button>
+            );
+
             return (
-                <div className="min-h-screen pb-20 relative">
+                <div className="min-h-screen pb-20 relative font-sans">
                     {/* Header */}
-                    <div className="bg-slate-900 border-b border-slate-700 p-4">
+                    <div className="bg-white border-b border-slate-200 p-4 shadow-sm sticky top-0 z-40">
                         <div className="max-w-7xl mx-auto flex justify-between items-center">
-                            <h1 className="text-2xl font-bold text-blue-400">Accounting Simulator <span className="text-slate-500 text-sm font-normal">v2.4</span></h1>
+                            <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+                                <Icon name="calculator" className="text-blue-600" />
+                                Accounting Simulator 
+                                <span className="text-slate-400 text-sm font-normal bg-slate-100 px-2 py-0.5 rounded-full">v3.0</span>
+                            </h1>
                             <button 
                                 onClick={() => setShowAuthModal(true)}
-                                className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded text-slate-300 transition-colors border border-slate-600"
+                                className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg text-white transition-colors shadow-sm"
                             >
                                 <Icon name="lock" size={16} />
-                                <span className="font-semibold">Instructor Access</span>
+                                <span className="font-semibold text-sm">Instructor</span>
                             </button>
                         </div>
                     </div>
 
                     {/* INSTRUCTOR STICKY TOOLBAR */}
                     {isInstructor && (
-                        <div className="sticky-toolbar bg-purple-900/95 text-white p-3 backdrop-blur-md border-b-4 border-purple-500 fade-in">
+                        <div className="sticky-toolbar bg-white/95 text-slate-800 p-3 backdrop-blur-md border-b-2 border-purple-500 fade-in">
                             <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
                                 <div className="flex items-center gap-2">
-                                    <Icon name="shield-check" className="text-green-400" />
-                                    <span className="font-bold text-lg">Instructor Mode Active</span>
+                                    <Icon name="shield-check" className="text-purple-600" />
+                                    <span className="font-bold text-lg text-purple-900">Instructor Mode Active</span>
                                 </div>
                                 <div className="flex gap-3">
-                                    <button onClick={autoFill} className="bg-blue-600 hover:bg-blue-500 px-4 py-1.5 rounded font-bold shadow-lg flex items-center gap-2">
+                                    <button onClick={autoFill} className="bg-blue-100 hover:bg-blue-200 text-blue-800 px-4 py-1.5 rounded-md font-bold transition-colors flex items-center gap-2">
                                         <Icon name="wand-2" size={16} /> Auto-Fill All
                                     </button>
-                                    <button onClick={clearAll} className="bg-red-600 hover:bg-red-500 px-4 py-1.5 rounded font-bold shadow-lg flex items-center gap-2">
+                                    <button onClick={clearAll} className="bg-red-100 hover:bg-red-200 text-red-800 px-4 py-1.5 rounded-md font-bold transition-colors flex items-center gap-2">
                                         <Icon name="trash-2" size={16} /> Clear & Exit
                                     </button>
                                 </div>
                             </div>
                             
                             {/* Verification Tools Panel */}
-                            <div className="max-w-7xl mx-auto mt-3 pt-3 border-t border-purple-700 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                            <div className="max-w-7xl mx-auto mt-3 pt-3 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                                 {/* Verifier */}
-                                <div className="flex gap-2 items-center bg-purple-950/50 p-2 rounded">
+                                <div className="flex gap-2 items-center bg-slate-50 p-2 rounded border border-slate-200">
                                     <input 
                                         value={verifyHash} 
                                         onChange={e => setVerifyHash(e.target.value)} 
                                         placeholder="Paste Student Verification Hash..." 
-                                        className="bg-purple-900 text-white px-2 py-1 rounded border border-purple-600 flex-1 outline-none"
+                                        className="bg-white text-slate-800 px-2 py-1 rounded border border-slate-300 flex-1 outline-none focus:border-purple-500"
                                     />
-                                    <button onClick={verifyCode} className="bg-green-600 px-3 py-1 rounded text-white">Verify</button>
+                                    <button onClick={verifyCode} className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-white font-medium">Verify</button>
                                     {verifyResult && (
                                         <div className="ml-2 text-xs">
-                                            {verifyResult.error ? <span className="text-red-300">{verifyResult.error}</span> : 
-                                                <span className="text-green-300 font-bold">
+                                            {verifyResult.error ? <span className="text-red-500 font-bold">{verifyResult.error}</span> : 
+                                                <span className="text-green-600 font-bold">
                                                     {verifyResult.name} | Score: {verifyResult.score} | {verifyResult.timestamp}
                                                 </span>
                                             }
@@ -652,11 +805,11 @@ ${hash}
                                     )}
                                 </div>
                                 {/* Generator */}
-                                <div className="flex gap-2 items-center bg-purple-950/50 p-2 rounded">
-                                    <input value={genName} onChange={e => setGenName(e.target.value)} placeholder="Name" className="w-20 bg-purple-900 px-2 py-1 rounded border border-purple-600" />
-                                    <input value={genScore} onChange={e => setGenScore(e.target.value)} placeholder="Score" className="w-16 bg-purple-900 px-2 py-1 rounded border border-purple-600" />
-                                    <button onClick={generateHash} className="bg-blue-600 px-3 py-1 rounded text-white text-xs">Gen Hash</button>
-                                    {generatedHash && <span className="ml-2 font-mono text-xs bg-black px-2 py-1 rounded select-all cursor-pointer" onClick={() => navigator.clipboard.writeText(generatedHash)} title="Click to copy">{generatedHash.substring(0,10)}...</span>}
+                                <div className="flex gap-2 items-center bg-slate-50 p-2 rounded border border-slate-200">
+                                    <input value={genName} onChange={e => setGenName(e.target.value)} placeholder="Name" className="w-24 bg-white px-2 py-1 rounded border border-slate-300 outline-none focus:border-purple-500" />
+                                    <input value={genScore} onChange={e => setGenScore(e.target.value)} placeholder="Score" className="w-16 bg-white px-2 py-1 rounded border border-slate-300 outline-none focus:border-purple-500" />
+                                    <button onClick={generateHash} className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white text-xs font-medium">Gen Hash</button>
+                                    {generatedHash && <span className="ml-2 font-mono text-xs bg-slate-200 px-2 py-1 rounded select-all cursor-pointer text-slate-700 border border-slate-300" onClick={() => navigator.clipboard.writeText(generatedHash)} title="Click to copy">{generatedHash.substring(0,10)}...</span>}
                                 </div>
                             </div>
                         </div>
@@ -664,119 +817,101 @@ ${hash}
 
                     {/* Main Content */}
                     <div className="max-w-[1600px] mx-auto p-6">
-                        {/* Tabs */}
-                        <div className="flex justify-center gap-4 mb-8">
-                            <button 
-                                onClick={() => setActiveTab('transactions')}
-                                className={`px-6 py-3 rounded-lg font-bold text-lg transition-all ${activeTab === 'transactions' ? 'bg-blue-600 text-white shadow-lg scale-105' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}
-                            >
-                                1. Transaction Analysis
-                            </button>
-                            <button 
-                                onClick={() => setActiveTab('errors')}
-                                className={`px-6 py-3 rounded-lg font-bold text-lg transition-all ${activeTab === 'errors' ? 'bg-blue-600 text-white shadow-lg scale-105' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}
-                            >
-                                2. Impact of Errors
-                            </button>
-                            <button 
-                                onClick={() => setActiveTab('statements')}
-                                className={`px-6 py-3 rounded-lg font-bold text-lg transition-all ${activeTab === 'statements' ? 'bg-blue-600 text-white shadow-lg scale-105' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}
-                            >
-                                3. Financial Statements
-                            </button>
-                            <button 
-                                onClick={() => setActiveTab('quiz')}
-                                className={`px-6 py-3 rounded-lg font-bold text-lg transition-all ${activeTab === 'quiz' ? 'bg-blue-600 text-white shadow-lg scale-105' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}
-                            >
-                                4. Articulation Quiz
-                            </button>
+                        {/* Tabs - Updated Order */}
+                        <div className="flex justify-center gap-4 mb-8 flex-wrap">
+                            <TabButton id="transactions" label="Transaction Analysis" number="1" />
+                            <TabButton id="statements" label="Financial Statements" number="2" />
+                            <TabButton id="errors" label="Impact of Errors" number="3" />
+                            <TabButton id="quiz" label="Articulation Quiz" number="4" />
                         </div>
 
-                        {/* TRANSACTION TAB */}
+                        {/* TRANSACTION TAB (1) */}
                         {activeTab === 'transactions' && (
-                            <div className="overflow-x-auto bg-[#252540] rounded-xl shadow-2xl border border-slate-700 p-4 animate-fade-in">
+                            <div className="overflow-x-auto bg-white rounded-xl shadow-lg border border-slate-200 p-1 animate-fade-in">
                                 <table className="w-full border-collapse min-w-[1200px]">
                                     <thead>
-                                        <tr className="bg-[#0f172a] text-blue-200">
-                                            <th className="p-3 text-left border border-slate-700 sticky left-0 z-10 bg-[#0f172a]" rowSpan="2">Transaction</th>
-                                            <th className="border border-slate-700 text-center" colSpan="2">ASSETS</th>
-                                            <th className="w-8 text-center font-bold text-slate-500">=</th>
-                                            <th className="border border-slate-700 text-center">LIAB</th>
-                                            <th className="w-8 text-center font-bold text-slate-500">+</th>
-                                            <th className="border border-slate-700 text-center" colSpan="2">EQUITY</th>
-                                            <th className="w-1 bg-slate-600 p-0"></th>
-                                            <th className="border border-slate-700 text-center" colSpan="3">INCOME STATEMENT</th>
+                                        <tr className="bg-slate-50 text-slate-700 text-sm border-b border-slate-200">
+                                            <th className="p-3 text-left border-r border-slate-200 sticky left-0 z-10 bg-slate-50 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]" rowSpan="2">Transaction</th>
+                                            <th className="border-r border-slate-200 text-center py-2 bg-blue-50/50" colSpan="2">ASSETS</th>
+                                            <th className="w-8 text-center font-bold text-slate-400">=</th>
+                                            <th className="border-r border-slate-200 text-center py-2 bg-orange-50/50">LIABILITIES</th>
+                                            <th className="w-8 text-center font-bold text-slate-400">+</th>
+                                            <th className="border-r border-slate-200 text-center py-2 bg-green-50/50" colSpan="2">EQUITY</th>
+                                            <th className="w-1 bg-slate-200 p-0"></th>
+                                            <th className="border-r border-slate-200 text-center py-2 bg-purple-50/50" colSpan="3">INCOME STATEMENT</th>
                                         </tr>
-                                        <tr className="bg-[#1e293b] text-xs text-slate-400">
-                                            <th className="p-2 border border-slate-700 w-28">Cash</th>
-                                            <th className="p-2 border border-slate-700 w-28">Non-Cash</th>
+                                        <tr className="bg-slate-100 text-xs text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200">
+                                            <th className="p-2 border-r border-slate-200 w-32">Cash</th>
+                                            <th className="p-2 border-r border-slate-200 w-32">Non-Cash</th>
                                             <th></th>
-                                            <th className="p-2 border border-slate-700 w-28">Liabilities</th>
+                                            <th className="p-2 border-r border-slate-200 w-32">Accounts</th>
                                             <th></th>
-                                            <th className="p-2 border border-slate-700 w-28">Cont. Cap</th>
-                                            <th className="p-2 border border-slate-700 w-28">Earn. Cap</th>
-                                            <th className="w-1 bg-slate-600 p-0"></th>
-                                            <th className="p-2 border border-slate-700 w-28">Revenue</th>
-                                            <th className="p-2 border border-slate-700 w-28">Expense</th>
-                                            <th className="p-2 border border-slate-700 w-24">Net Inc</th>
+                                            <th className="p-2 border-r border-slate-200 w-32">Cont. Cap</th>
+                                            <th className="p-2 border-r border-slate-200 w-32">Earn. Cap</th>
+                                            <th className="w-1 bg-slate-200 p-0"></th>
+                                            <th className="p-2 border-r border-slate-200 w-36">Revenue</th>
+                                            <th className="p-2 border-r border-slate-200 w-36">Expense</th>
+                                            <th className="p-2 border-r border-slate-200 w-24">Net Inc</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {transactions.map((t, idx) => (
-                                            <tr key={t.id} className="hover:bg-slate-800/50 transition-colors border-b border-slate-700/50">
-                                                <td className="p-3 text-sm text-slate-300 border-r border-slate-700 sticky left-0 bg-[#252540] z-10 w-64">
-                                                    <span className="font-bold text-blue-400 mr-2">{t.id}.</span>{t.text}
+                                            <tr key={t.id} className="hover:bg-blue-50/30 transition-colors border-b border-slate-100 last:border-0">
+                                                <td className="p-3 text-sm text-slate-600 border-r border-slate-200 sticky left-0 bg-white z-10 w-72 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
+                                                    <span className="font-bold text-blue-600 mr-2">{t.id}.</span>{t.text}
                                                 </td>
                                                 
                                                 {/* Input Columns */}
                                                 {['cash', 'noncash', 'liab', 'cc', 'ec'].map(field => (
                                                     <React.Fragment key={field}>
-                                                        {field === 'liab' && <td className="text-center text-slate-600 font-bold">=</td>}
-                                                        {field === 'cc' && <td className="text-center text-slate-600 font-bold">+</td>}
+                                                        {field === 'liab' && <td className="text-center text-slate-300 font-bold">=</td>}
+                                                        {field === 'cc' && <td className="text-center text-slate-300 font-bold">+</td>}
                                                         
-                                                        <td className="p-2 border-r border-slate-700/50">
+                                                        <td className="p-2 border-r border-slate-100">
                                                             <SmartInput 
                                                                 value={t.userValues[field]} 
                                                                 onChange={(val) => handleTransactionChange(t.id, field, val)}
                                                                 correctValue={t.correct[field]}
                                                                 instructorMode={isInstructor}
+                                                                placeholder="Amount"
                                                             />
-                                                            <select 
-                                                                className="w-full mt-1 bg-slate-900 text-xs text-slate-400 rounded border border-slate-700 p-1"
+                                                            <SmartSelect 
                                                                 value={t.userAccounts[field]}
-                                                                onChange={(e) => handleAccountChange(t.id, field, e.target.value)}
-                                                            >
-                                                                {ACCOUNT_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                                                            </select>
+                                                                onChange={(val) => handleAccountChange(t.id, field, val)}
+                                                                options={ACCOUNT_OPTIONS}
+                                                                correctValue={t.correctAccounts ? t.correctAccounts[field] : ""}
+                                                                instructorMode={isInstructor}
+                                                            />
                                                         </td>
                                                     </React.Fragment>
                                                 ))}
 
-                                                <td className="w-1 bg-slate-600 p-0"></td>
+                                                <td className="w-1 bg-slate-200 p-0"></td>
 
                                                 {/* Income Statement Columns */}
                                                 {['rev', 'exp'].map(field => (
-                                                    <td key={field} className="p-2 border-r border-slate-700/50">
+                                                    <td key={field} className="p-2 border-r border-slate-100 bg-purple-50/10">
                                                         <SmartInput 
                                                             value={t.userValues[field]} 
                                                             onChange={(val) => handleTransactionChange(t.id, field, val)}
                                                             correctValue={t.correct[field]}
                                                             instructorMode={isInstructor}
+                                                            placeholder="Amount"
                                                         />
-                                                        <select 
-                                                            className="w-full mt-1 bg-slate-900 text-xs text-slate-400 rounded border border-slate-700 p-1"
+                                                        <SmartSelect 
                                                             value={t.userAccounts[field]}
-                                                            onChange={(e) => handleAccountChange(t.id, field, e.target.value)}
-                                                        >
-                                                            {ACCOUNT_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                                                        </select>
+                                                            onChange={(val) => handleAccountChange(t.id, field, val)}
+                                                            options={ACCOUNT_OPTIONS}
+                                                            correctValue={t.correctAccounts ? t.correctAccounts[field] : ""}
+                                                            instructorMode={isInstructor}
+                                                        />
                                                     </td>
                                                 ))}
 
                                                 {/* Computed NI */}
-                                                <td className="p-2 text-center">
-                                                    <div className={`py-1 px-2 rounded font-bold ${
-                                                        (parseFloat(t.userValues.rev) || 0) - (parseFloat(t.userValues.exp) || 0) !== 0 ? 'bg-slate-700 text-white' : 'text-slate-600'
+                                                <td className="p-2 text-center bg-slate-50">
+                                                    <div className={`py-1 px-2 rounded font-bold text-sm ${
+                                                        (parseFloat(t.userValues.rev) || 0) - (parseFloat(t.userValues.exp) || 0) !== 0 ? 'text-blue-600 bg-blue-100' : 'text-slate-400'
                                                     }`}>
                                                         {((parseFloat(t.userValues.rev) || 0) - (parseFloat(t.userValues.exp) || 0)) || '-'}
                                                     </div>
@@ -785,75 +920,30 @@ ${hash}
                                         ))}
                                     </tbody>
                                     <tfoot>
-                                        <tr className={`font-bold text-lg ${isBalanced ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-orange-400'}`}>
-                                            <td className="p-4 text-right border-t-2 border-slate-500 sticky left-0 z-10 bg-[#1e293b]">TOTALS:</td>
-                                            <td className="p-4 border-t-2 border-slate-500 text-center">{totals.cash}</td>
-                                            <td className="p-4 border-t-2 border-slate-500 text-center">{totals.noncash}</td>
-                                            <td className="border-t-2 border-slate-500"></td>
-                                            <td className="p-4 border-t-2 border-slate-500 text-center">{totals.liab}</td>
-                                            <td className="border-t-2 border-slate-500"></td>
-                                            <td className="p-4 border-t-2 border-slate-500 text-center">{totals.cc}</td>
-                                            <td className="p-4 border-t-2 border-slate-500 text-center">{totals.ec}</td>
-                                            <td className="w-1 bg-slate-600 p-0 border-t-2 border-slate-500"></td>
-                                            <td className="p-4 border-t-2 border-slate-500 text-center">{totals.rev}</td>
-                                            <td className="p-4 border-t-2 border-slate-500 text-center">{totals.exp}</td>
-                                            <td className="p-4 border-t-2 border-slate-500 text-center">{totals.ni}</td>
+                                        <tr className={`font-bold text-lg border-t-2 border-slate-300 ${isBalanced ? 'bg-green-50 text-green-700' : 'bg-red-50 text-orange-600'}`}>
+                                            <td className="p-4 text-right sticky left-0 z-10 bg-white border-t-2 border-slate-300 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">TOTALS:</td>
+                                            <td className="p-4 text-center">{totals.cash}</td>
+                                            <td className="p-4 text-center">{totals.noncash}</td>
+                                            <td></td>
+                                            <td className="p-4 text-center">{totals.liab}</td>
+                                            <td></td>
+                                            <td className="p-4 text-center">{totals.cc}</td>
+                                            <td className="p-4 text-center">{totals.ec}</td>
+                                            <td className="w-1 bg-slate-300 p-0"></td>
+                                            <td className="p-4 text-center">{totals.rev}</td>
+                                            <td className="p-4 text-center">{totals.exp}</td>
+                                            <td className="p-4 text-center">{totals.ni}</td>
                                         </tr>
                                     </tfoot>
                                 </table>
                             </div>
                         )}
 
-                        {/* ERRORS TAB */}
-                        {activeTab === 'errors' && (
-                            <div className="space-y-6 animate-fade-in max-w-4xl mx-auto">
-                                <p className="text-center text-slate-400 mb-6">Determine the impact (Overstated, Understated, or No Effect) if these transactions were <strong>NOT RECORDED</strong>.</p>
-                                
-                                {errorScenarios.map((scen, idx) => (
-                                    <div key={scen.id} className="bg-[#252540] p-6 rounded-lg shadow-lg border border-slate-700 relative overflow-hidden">
-                                        <div className="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>
-                                        <h3 className="text-xl font-bold text-white mb-1">{scen.company}</h3>
-                                        <p className="text-slate-400 mb-4 text-sm">{scen.desc}</p>
-                                        
-                                        <div className="grid grid-cols-4 gap-4 bg-slate-900/50 p-4 rounded-lg">
-                                            {['asset', 'liab', 'eq', 'ni'].map((field, i) => {
-                                                const label = ['Assets', 'Liabilities', 'Equity', 'Net Income'][i];
-                                                const val = scen.userSelects[field];
-                                                const correct = scen.correct[field];
-                                                const isCorrect = val === correct;
-                                                
-                                                return (
-                                                    <div key={field} className="flex flex-col gap-2">
-                                                        <label className="text-xs text-slate-500 font-bold uppercase tracking-wider">{label}</label>
-                                                        <select 
-                                                            className={`bg-slate-800 border ${val && isCorrect ? 'border-green-500 text-green-400' : val ? 'border-red-500 text-red-400' : 'border-slate-600'} rounded p-2 outline-none focus:border-blue-500 transition-colors`}
-                                                            value={val}
-                                                            onChange={(e) => handleErrorSelect(scen.id, field, e.target.value)}
-                                                        >
-                                                            <option value="">-- Select --</option>
-                                                            <option value="No Effect">No Effect</option>
-                                                            <option value="Overstated">Overstated</option>
-                                                            <option value="Understated">Understated</option>
-                                                        </select>
-                                                        {isInstructor && (
-                                                            <div className="text-xs text-purple-400 text-center bg-purple-900/30 rounded py-1">
-                                                                Key: {correct}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-
-                        {/* FINANCIAL STATEMENTS TAB */}
+                        {/* FINANCIAL STATEMENTS TAB (2 - Now in position 2) */}
                         {activeTab === 'statements' && (
                             <div className="space-y-12 animate-fade-in">
-                                <div className="text-center text-slate-300 mb-8 max-w-2xl mx-auto">
-                                    <p>These financial statements are automatically generated based on the totals and account classifications entered in the <strong>Transaction Analysis</strong> tab. Ensure you have selected the correct account names for items to appear properly below.</p>
+                                <div className="text-center text-slate-600 mb-8 max-w-2xl mx-auto bg-blue-50 p-4 rounded-lg border border-blue-100">
+                                    <p className="text-sm"><strong className="text-blue-700">Note:</strong> These statements are generated from your entries in the <strong>Transaction Analysis</strong> tab. If accounts are missing or amounts are wrong, these reports will reflect those errors.</p>
                                 </div>
 
                                 {/* Income Statement */}
@@ -863,14 +953,19 @@ ${hash}
                                         <h3>Income Statement</h3>
                                         <p>For the Month Ended April 30</p>
                                     </div>
+                                    
+                                    <div className="statement-sub-header">Revenues</div>
                                     <div className="statement-row">
                                         <span>Service Revenue</span>
                                         <span>{formatCurrency(totals.rev)}</span>
                                     </div>
+
+                                    <div className="statement-sub-header">Expenses</div>
                                     <div className="statement-row">
-                                        <span>Expenses</span>
+                                        <span>Total Expenses</span>
                                         <span>{formatCurrency(totals.exp)}</span>
                                     </div>
+
                                     <div className="statement-row total">
                                         <span>Net Income</span>
                                         <span>{formatCurrency(totals.ni)}</span>
@@ -885,7 +980,7 @@ ${hash}
                                         <p>For the Month Ended April 30</p>
                                     </div>
                                     <table className="w-full text-right">
-                                        <thead className="border-b-2 border-slate-700 text-slate-700 text-sm">
+                                        <thead className="border-b-2 border-slate-800 text-slate-800 text-sm font-bold uppercase">
                                             <tr>
                                                 <th className="text-left py-2"></th>
                                                 <th className="py-2 px-4">Common Stock</th>
@@ -894,35 +989,35 @@ ${hash}
                                             </tr>
                                         </thead>
                                         <tbody className="text-slate-800">
-                                            <tr className="border-b border-dashed border-slate-200">
-                                                <td className="text-left py-2">Beginning Balance, Apr 1</td>
-                                                <td className="py-2 px-4">$0.00</td>
-                                                <td className="py-2 px-4">$0.00</td>
-                                                <td className="py-2 px-4">$0.00</td>
+                                            <tr className="border-b border-dashed border-slate-300">
+                                                <td className="text-left py-3 font-medium">Beginning Balance, Apr 1</td>
+                                                <td className="py-3 px-4">$0.00</td>
+                                                <td className="py-3 px-4">$0.00</td>
+                                                <td className="py-3 px-4">$0.00</td>
                                             </tr>
-                                            <tr className="border-b border-dashed border-slate-200">
-                                                <td className="text-left py-2">Issuance of Stock</td>
-                                                <td className="py-2 px-4">{formatCurrency(totals.cc)}</td>
-                                                <td className="py-2 px-4">-</td>
-                                                <td className="py-2 px-4">{formatCurrency(totals.cc)}</td>
-                                            </tr>
-                                            <tr className="border-b border-dashed border-slate-200">
-                                                <td className="text-left py-2">Net Income</td>
-                                                <td className="py-2 px-4">-</td>
-                                                <td className="py-2 px-4">{formatCurrency(totals.ni)}</td>
-                                                <td className="py-2 px-4">{formatCurrency(totals.ni)}</td>
-                                            </tr>
-                                            <tr className="border-b border-dashed border-slate-200">
-                                                <td className="text-left py-2">Dividends</td>
-                                                <td className="py-2 px-4">-</td>
-                                                <td className="py-2 px-4">$0.00</td>
-                                                <td className="py-2 px-4">$0.00</td>
-                                            </tr>
-                                            <tr className="font-bold border-t-2 border-slate-900 border-b-4 double">
-                                                <td className="text-left py-3">Ending Balance, Apr 30</td>
+                                            <tr className="border-b border-dashed border-slate-300">
+                                                <td className="text-left py-3 font-medium">Issuance of Stock</td>
                                                 <td className="py-3 px-4">{formatCurrency(totals.cc)}</td>
+                                                <td className="py-3 px-4">-</td>
+                                                <td className="py-3 px-4">{formatCurrency(totals.cc)}</td>
+                                            </tr>
+                                            <tr className="border-b border-dashed border-slate-300">
+                                                <td className="text-left py-3 font-medium">Net Income</td>
+                                                <td className="py-3 px-4">-</td>
                                                 <td className="py-3 px-4">{formatCurrency(totals.ni)}</td>
-                                                <td className="py-3 px-4">{formatCurrency(totals.cc + totals.ni)}</td>
+                                                <td className="py-3 px-4">{formatCurrency(totals.ni)}</td>
+                                            </tr>
+                                            <tr className="border-b border-dashed border-slate-300">
+                                                <td className="text-left py-3 font-medium">Dividends</td>
+                                                <td className="py-3 px-4">-</td>
+                                                <td className="py-3 px-4">$0.00</td>
+                                                <td className="py-3 px-4">$0.00</td>
+                                            </tr>
+                                            <tr className="font-bold border-t-2 border-slate-900 border-b-4 double text-lg bg-slate-50">
+                                                <td className="text-left py-4 pl-2">Ending Balance, Apr 30</td>
+                                                <td className="py-4 px-4">{formatCurrency(totals.cc)}</td>
+                                                <td className="py-4 px-4">{formatCurrency(totals.ni)}</td>
+                                                <td className="py-4 px-4">{formatCurrency(totals.cc + totals.ni)}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -938,19 +1033,16 @@ ${hash}
                                     <div className="grid grid-cols-2 gap-12">
                                         {/* Assets Side */}
                                         <div>
-                                            <h4 className="font-bold text-lg mb-2 text-slate-800 border-b border-slate-400">Assets</h4>
+                                            <h4 className="font-bold text-lg mb-2 text-slate-800 border-b-2 border-slate-800 pb-1">Assets</h4>
                                             
                                             <div className="statement-sub-header">Current Assets</div>
                                             <div className="statement-row">
                                                 <span>Cash</span>
                                                 <span>{formatCurrency(balanceSheetDetails.assets['Cash'])}</span>
                                             </div>
-                                            {/* Dynamically list other assets based on user input */}
+                                            {/* Dynamically list other assets */}
                                             {Object.entries(balanceSheetDetails.assets).map(([name, val]) => {
-                                                if(name === 'Cash') return null; // Already shown
-                                                // Assuming items with "Accum" are contra-assets but usually listed in property section.
-                                                // For simplicity, we list everything non-cash here unless we want complex categorization logic.
-                                                // Let's filter out "Accum" for a second section if present, or just list all.
+                                                if(name === 'Cash') return null; 
                                                 return (
                                                     <div key={name} className="statement-row">
                                                         <span>{name}</span>
@@ -959,7 +1051,7 @@ ${hash}
                                                 );
                                             })}
 
-                                            <div className="statement-row total">
+                                            <div className="statement-row total mt-8">
                                                 <span>Total Assets</span>
                                                 <span>{formatCurrency(totals.cash + totals.noncash)}</span>
                                             </div>
@@ -967,7 +1059,7 @@ ${hash}
 
                                         {/* Liab + Equity Side */}
                                         <div>
-                                            <h4 className="font-bold text-lg mb-2 text-slate-800 border-b border-slate-400">Liabilities</h4>
+                                            <h4 className="font-bold text-lg mb-2 text-slate-800 border-b-2 border-slate-800 pb-1">Liabilities</h4>
                                             <div className="statement-sub-header">Current Liabilities</div>
                                             
                                             {Object.keys(balanceSheetDetails.liabilities).length === 0 && (
@@ -986,7 +1078,7 @@ ${hash}
                                                 <span>{formatCurrency(totals.liab)}</span>
                                             </div>
 
-                                            <h4 className="font-bold text-lg mt-6 mb-2 text-slate-800 border-b border-slate-400">Stockholders' Equity</h4>
+                                            <h4 className="font-bold text-lg mt-8 mb-2 text-slate-800 border-b-2 border-slate-800 pb-1">Stockholders' Equity</h4>
                                             <div className="statement-row">
                                                 <span>Common Stock</span>
                                                 <span>{formatCurrency(totals.cc)}</span>
@@ -1000,7 +1092,7 @@ ${hash}
                                                 <span>{formatCurrency(totals.cc + totals.ec)}</span>
                                             </div>
 
-                                            <div className="statement-row total">
+                                            <div className="statement-row total mt-4">
                                                 <span>Total Liab. & Equity</span>
                                                 <span>{formatCurrency(totals.liab + totals.cc + totals.ec)}</span>
                                             </div>
@@ -1032,7 +1124,7 @@ ${hash}
                                     </div>
 
                                     {/* Investing */}
-                                    <div className="statement-sub-header mt-4">Cash Flows from Investing Activities</div>
+                                    <div className="statement-sub-header mt-6">Cash Flows from Investing Activities</div>
                                     <div className="statement-row">
                                         <span>Purchase of property and equipment</span>
                                         <span>{formatCurrency(cashFlowDetails.investing.total)}</span>
@@ -1043,7 +1135,7 @@ ${hash}
                                     </div>
 
                                     {/* Financing */}
-                                    <div className="statement-sub-header mt-4">Cash Flows from Financing Activities</div>
+                                    <div className="statement-sub-header mt-6">Cash Flows from Financing Activities</div>
                                     <div className="statement-row">
                                         <span>Issuance of common stock</span>
                                         <span>{formatCurrency(cashFlowDetails.financing.total)}</span>
@@ -1054,16 +1146,16 @@ ${hash}
                                     </div>
 
                                     {/* Summary */}
-                                    <div className="mt-6 border-t-2 border-slate-800 pt-2">
-                                        <div className="statement-row font-bold">
+                                    <div className="mt-8 border-t-2 border-slate-800 pt-2 bg-slate-50 p-4 rounded-md">
+                                        <div className="statement-row font-bold text-slate-800">
                                             <span>Net Increase in Cash</span>
                                             <span>{formatCurrency(totals.cash)}</span>
                                         </div>
-                                        <div className="statement-row">
+                                        <div className="statement-row text-slate-600">
                                             <span>Cash Balance, Beginning</span>
                                             <span>$0.00</span>
                                         </div>
-                                        <div className="statement-row total">
+                                        <div className="statement-row total text-xl">
                                             <span>Cash Balance, Ending</span>
                                             <span>{formatCurrency(totals.cash)}</span>
                                         </div>
@@ -1072,69 +1164,99 @@ ${hash}
                             </div>
                         )}
 
-                        {/* QUIZ TAB */}
+                        {/* ERRORS TAB (3 - Now in position 3) */}
+                        {activeTab === 'errors' && (
+                            <div className="space-y-6 animate-fade-in max-w-5xl mx-auto">
+                                <div className="text-center mb-8">
+                                    <h2 className="text-2xl font-bold text-slate-800">Impact of Omitted Errors</h2>
+                                    <p className="text-slate-500 mt-2">Analyze the effect on the financial statements if these transactions were <strong>NOT RECORDED</strong>.</p>
+                                </div>
+                                
+                                {errorScenarios.map((scen, idx) => (
+                                    <div key={scen.id} className="bg-white p-6 rounded-lg shadow-md border border-slate-200 hover:shadow-lg transition-shadow relative overflow-hidden group">
+                                        <div className="absolute top-0 left-0 w-1.5 h-full bg-orange-400 group-hover:bg-orange-500 transition-colors"></div>
+                                        <div className="flex flex-col md:flex-row gap-6">
+                                            <div className="md:w-1/3 border-r border-slate-100 pr-4 flex flex-col justify-center">
+                                                <h3 className="text-lg font-bold text-slate-800 mb-1">{scen.company}</h3>
+                                                <p className="text-slate-500 text-sm leading-relaxed">{scen.desc}</p>
+                                            </div>
+                                            
+                                            <div className="md:w-2/3 grid grid-cols-4 gap-4">
+                                                {['asset', 'liab', 'eq', 'ni'].map((field, i) => {
+                                                    const label = ['Assets', 'Liabilities', 'Equity', 'Net Income'][i];
+                                                    const val = scen.userSelects[field];
+                                                    const correct = scen.correct[field];
+                                                    const isCorrect = val === correct;
+                                                    
+                                                    return (
+                                                        <div key={field} className="flex flex-col gap-1.5">
+                                                            <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider text-center">{label}</label>
+                                                            <select 
+                                                                className={`w-full bg-slate-50 border ${val && isCorrect ? 'border-green-500 bg-green-50 text-green-700' : val ? 'border-red-500 bg-red-50 text-red-700' : 'border-slate-300 hover:border-blue-400'} rounded p-2 text-sm outline-none transition-colors cursor-pointer`}
+                                                                value={val}
+                                                                onChange={(e) => handleErrorSelect(scen.id, field, e.target.value)}
+                                                            >
+                                                                <option value="">- Select -</option>
+                                                                <option value="No Effect">No Effect</option>
+                                                                <option value="Overstated">Overstated</option>
+                                                                <option value="Understated">Understated</option>
+                                                            </select>
+                                                            {isInstructor && (
+                                                                <div className="text-[10px] font-bold text-center text-purple-600 bg-purple-100 rounded py-0.5">
+                                                                    Key: {correct}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )
+                                                })}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* QUIZ TAB (4 - Now in position 4) */}
                         {activeTab === 'quiz' && (
-                            <div className="space-y-12 animate-fade-in max-w-4xl mx-auto">
-                                <div className="text-center text-slate-300 mb-8">
-                                    <h2 className="text-2xl font-bold text-white mb-2">Articulation Quiz</h2>
-                                    <p>Demonstrate your understanding of how the financial statements link together by answering the questions below.</p>
+                            <div className="space-y-8 animate-fade-in max-w-4xl mx-auto">
+                                <div className="text-center text-slate-800 mb-8">
+                                    <h2 className="text-3xl font-bold mb-2">Articulation Quiz</h2>
+                                    <p className="text-slate-500">Demonstrate your understanding of how the financial statements link together.</p>
                                 </div>
 
                                 {/* Part 1: Trace the Numbers */}
-                                <div className="bg-[#252540] p-6 rounded-lg shadow-lg border border-slate-700">
-                                    <h3 className="text-xl font-bold text-blue-400 mb-4 border-b border-slate-600 pb-2 flex items-center gap-2">
-                                        <Icon name="search" size={20} /> Part 1: Trace the Numbers
+                                <div className="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                                    <h3 className="text-xl font-bold text-blue-600 mb-6 border-b border-slate-100 pb-4 flex items-center gap-3">
+                                        <div className="bg-blue-100 p-2 rounded-lg"><Icon name="search" size={24} className="text-blue-600"/></div>
+                                        Part 1: Trace the Numbers
                                     </h3>
-                                    <p className="text-sm text-slate-400 mb-4">Find these values in your financial statements and enter them below to prove they articulate correctly.</p>
                                     
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div>
-                                            <label className="block text-sm font-bold text-slate-300 mb-1">1. Net Income (from Income Statement)</label>
-                                            <SmartInput 
-                                                value={quizTracing.ni}
-                                                onChange={(val) => handleTracingChange('ni', val)}
-                                                correctValue={totals.ni}
-                                                instructorMode={isInstructor}
-                                                placeholder="Enter Net Income"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-bold text-slate-300 mb-1">2. Total Assets (from Balance Sheet)</label>
-                                            <SmartInput 
-                                                value={quizTracing.assets}
-                                                onChange={(val) => handleTracingChange('assets', val)}
-                                                correctValue={totals.cash + totals.noncash}
-                                                instructorMode={isInstructor}
-                                                placeholder="Enter Total Assets"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-bold text-slate-300 mb-1">3. Ending Retained Earnings (from Equity Stmt)</label>
-                                            <SmartInput 
-                                                value={quizTracing.re}
-                                                onChange={(val) => handleTracingChange('re', val)}
-                                                correctValue={totals.ec + totals.ni}
-                                                instructorMode={isInstructor}
-                                                placeholder="Enter Ending R.E."
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-bold text-slate-300 mb-1">4. Net Cash from Operating Activities</label>
-                                            <SmartInput 
-                                                value={quizTracing.cash_op}
-                                                onChange={(val) => handleTracingChange('cash_op', val)}
-                                                correctValue={cashFlowDetails.operating.total}
-                                                instructorMode={isInstructor}
-                                                placeholder="Enter Operating Cash Flow"
-                                            />
-                                        </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        {[
+                                            { id: 'ni', label: '1. Net Income (from Income Statement)', correct: totals.ni },
+                                            { id: 'assets', label: '2. Total Assets (from Balance Sheet)', correct: totals.cash + totals.noncash },
+                                            { id: 're', label: '3. Ending Retained Earnings (from Equity Stmt)', correct: totals.ec + totals.ni },
+                                            { id: 'cash_op', label: '4. Net Cash from Operating Activities', correct: cashFlowDetails.operating.total }
+                                        ].map(item => (
+                                            <div key={item.id} className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                                <label className="block text-sm font-bold text-slate-700 mb-2">{item.label}</label>
+                                                <SmartInput 
+                                                    value={quizTracing[item.id]}
+                                                    onChange={(val) => handleTracingChange(item.id, val)}
+                                                    correctValue={item.correct}
+                                                    instructorMode={isInstructor}
+                                                    placeholder="Enter value..."
+                                                />
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
 
                                 {/* Part 2: Concepts */}
-                                <div className="bg-[#252540] p-6 rounded-lg shadow-lg border border-slate-700">
-                                    <h3 className="text-xl font-bold text-purple-400 mb-4 border-b border-slate-600 pb-2 flex items-center gap-2">
-                                        <Icon name="brain-circuit" size={20} /> Part 2: Concept Checks
+                                <div className="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                                    <h3 className="text-xl font-bold text-purple-600 mb-6 border-b border-slate-100 pb-4 flex items-center gap-3">
+                                        <div className="bg-purple-100 p-2 rounded-lg"><Icon name="brain-circuit" size={24} className="text-purple-600"/></div>
+                                        Part 2: Concept Checks
                                     </h3>
                                     
                                     <div className="space-y-6">
@@ -1143,10 +1265,10 @@ ${hash}
                                             const isCorrect = val === q.correct;
                                             
                                             return (
-                                                <div key={q.id} className="flex flex-col gap-2">
-                                                    <label className="text-sm font-bold text-slate-300">{idx + 1}. {q.question}</label>
+                                                <div key={q.id} className="flex flex-col gap-2 p-4 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-200">
+                                                    <label className="text-base font-semibold text-slate-800">{idx + 1}. {q.question}</label>
                                                     <select 
-                                                        className={`bg-slate-800 border ${val && isCorrect ? 'border-green-500 text-green-400' : val ? 'border-red-500 text-red-400' : 'border-slate-600'} rounded p-3 outline-none focus:border-blue-500 transition-colors w-full`}
+                                                        className={`bg-white border ${val && isCorrect ? 'border-green-500 bg-green-50 text-green-700 font-bold' : val ? 'border-red-500 bg-red-50 text-red-700' : 'border-slate-300'} rounded-lg p-3 outline-none focus:border-blue-500 transition-colors w-full shadow-sm cursor-pointer`}
                                                         value={val}
                                                         onChange={(e) => handleQuizAnswer(q.id, e.target.value)}
                                                     >
@@ -1154,8 +1276,8 @@ ${hash}
                                                         {q.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                                                     </select>
                                                     {isInstructor && (
-                                                        <div className="text-xs text-purple-400 text-left bg-purple-900/30 rounded py-1 px-2">
-                                                            Key: {q.correct}
+                                                        <div className="text-xs font-bold text-purple-600 bg-purple-100 rounded py-1 px-3 w-fit">
+                                                            Correct Answer: {q.correct}
                                                         </div>
                                                     )}
                                                 </div>
@@ -1168,10 +1290,10 @@ ${hash}
                     </div>
 
                     {/* Floating Action Button */}
-                    <div className="fixed bottom-6 right-6 z-[60]">
+                    <div className="fixed bottom-8 right-8 z-[60]">
                         <button 
                             onClick={handleDownloadClick}
-                            className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-transform hover:scale-105 active:scale-95"
+                            className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95 ring-4 ring-slate-200"
                         >
                             <Icon name="download" /> Download Report
                         </button>
@@ -1179,58 +1301,61 @@ ${hash}
 
                     {/* Confirmation Modal (Clear & Exit) */}
                     {confirmation.isOpen && (
-                        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[110] fade-in">
-                            <div className="bg-white p-6 rounded-lg shadow-xl w-80 text-black">
-                                <h3 className="font-bold text-lg mb-4 text-gray-800">Confirm Action</h3>
-                                <p className="text-sm text-gray-600 mb-6">{confirmation.message}</p>
-                                <div className="flex justify-end gap-2">
+                        <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-[110] fade-in backdrop-blur-sm">
+                            <div className="bg-white p-6 rounded-xl shadow-2xl w-96 text-center">
+                                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <Icon name="alert-triangle" className="text-red-600" />
+                                </div>
+                                <h3 className="font-bold text-xl mb-2 text-slate-800">Confirm Action</h3>
+                                <p className="text-slate-600 mb-6">{confirmation.message}</p>
+                                <div className="flex justify-center gap-3">
                                     <button 
                                         onClick={() => setConfirmation({ isOpen: false, message: '', onConfirm: null })} 
-                                        className="px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded"
+                                        className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-medium transition-colors"
                                     >
                                         Cancel
                                     </button>
                                     <button 
                                         onClick={confirmation.onConfirm} 
-                                        className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm font-medium"
+                                        className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold shadow-lg shadow-red-200 transition-colors"
                                     >
-                                        Confirm
+                                        Yes, Clear All
                                     </button>
                                 </div>
                             </div>
                         </div>
                     )}
 
-                    {/* Download Modal (New) */}
+                    {/* Download Modal */}
                     {showDownloadModal && (
-                        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[110] fade-in">
-                            <div className="bg-white p-6 rounded-lg shadow-xl w-80 text-black">
-                                <h3 className="font-bold text-lg mb-4 text-gray-800 flex items-center gap-2">
-                                    <Icon name="file-text" className="text-blue-500" /> Save Report
+                        <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-[110] fade-in backdrop-blur-sm">
+                            <div className="bg-white p-6 rounded-xl shadow-2xl w-96">
+                                <h3 className="font-bold text-xl mb-4 text-slate-800 flex items-center gap-2">
+                                    <Icon name="file-text" className="text-blue-600" /> Save Report
                                 </h3>
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Student Name</label>
+                                <div className="mb-6">
+                                    <label className="block text-sm font-bold text-slate-700 mb-2">Student Name</label>
                                     <input 
                                         type="text" 
                                         value={studentName}
                                         onChange={(e) => setStudentName(e.target.value)}
-                                        className="w-full border p-2 rounded outline-none focus:border-blue-500 text-black bg-white"
-                                        placeholder="Enter name..."
+                                        className="w-full border border-slate-300 p-3 rounded-lg outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all"
+                                        placeholder="Enter your full name..."
                                         autoFocus
                                     />
                                 </div>
-                                <div className="flex justify-end gap-2">
+                                <div className="flex justify-end gap-3">
                                     <button 
                                         onClick={() => setShowDownloadModal(false)} 
-                                        className="px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded"
+                                        className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-medium transition-colors"
                                     >
                                         Cancel
                                     </button>
                                     <button 
                                         onClick={executeDownload} 
-                                        className="px-4 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm font-medium flex items-center gap-1"
+                                        className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold shadow-lg shadow-green-200 flex items-center gap-2 transition-colors"
                                     >
-                                        <Icon name="download" size={14} /> Save
+                                        <Icon name="download" size={18} /> Save
                                     </button>
                                 </div>
                             </div>
@@ -1239,29 +1364,31 @@ ${hash}
 
                     {/* Auth Modal */}
                     {showAuthModal && (
-                        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4 backdrop-blur-sm animate-fade-in">
-                            <div className="bg-white text-slate-900 p-8 rounded-xl shadow-2xl max-w-sm w-full relative">
-                                <button onClick={() => setShowAuthModal(false)} className="absolute top-2 right-3 text-2xl text-slate-400 hover:text-slate-600">&times;</button>
+                        <div className="fixed inset-0 bg-slate-900/60 flex items-center justify-center z-[100] p-4 backdrop-blur-sm animate-fade-in">
+                            <div className="bg-white text-slate-800 p-8 rounded-2xl shadow-2xl max-w-sm w-full relative border border-slate-100">
+                                <button onClick={() => setShowAuthModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+                                    <Icon name="x" size={24} />
+                                </button>
                                 <div className="text-center mb-6">
                                     <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                         <Icon name="lock" size={32} className="text-slate-700" />
                                     </div>
                                     <h2 className="text-2xl font-bold">Instructor Access</h2>
-                                    <p className="text-slate-500 text-sm">Enter password to unlock teacher tools.</p>
+                                    <p className="text-slate-500 text-sm mt-1">Enter password to unlock teacher tools.</p>
                                 </div>
                                 <input 
                                     type="password" 
-                                    className="w-full border border-slate-300 rounded p-3 mb-4 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all"
+                                    className="w-full border border-slate-300 rounded-lg p-3 mb-4 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
                                     placeholder="Password"
                                     value={teacherPass}
                                     onChange={e => setTeacherPass(e.target.value)}
                                     onKeyDown={e => e.key === 'Enter' && attemptLogin()}
                                     autoFocus
                                 />
-                                {authError && <p className="text-red-500 text-sm mb-4 text-center bg-red-50 p-2 rounded">{authError}</p>}
+                                {authError && <p className="text-red-600 text-sm mb-4 text-center bg-red-50 p-2 rounded-lg font-medium border border-red-100">{authError}</p>}
                                 <button 
                                     onClick={attemptLogin}
-                                    className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded transition-colors"
+                                    className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-lg transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                                 >
                                     Unlock Dashboard
                                 </button>
