@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class 8: Statement of Cash Flows</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<!-- Confetti Library -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+    :root {
+        --bg-color: #fffbf3;
+        --card-bg: #ffffff;
+        --text-main: #041330;
+        --accent: #265cff;
+        --accent-dim: rgba(38, 92, 255, 0.1);
+        --border: #e0e0e0;
+        --success: #059669;
+        --error: #dc2626;
+        --fin-chart: #f59e0b;
+        
+        /* Presentation Scale */
+        --h1-size: 3.5vmin;
+        --h2-size: 2.8vmin;
+        --p-size: 2.2vmin;
+        --mono-size: 1.8vmin;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        background-image: 
+            linear-gradient(to right, rgba(38, 92, 255, 0.05) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(38, 92, 255, 0.05) 1px, transparent 1px);
+        background-size: 40px 40px;
+    }
+
+    #deck-container {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .slide {
+        flex: 1;
+        display: none;
+        padding: 2vmin 6vmin;
+        overflow-y: auto;
+        animation: fadeEnter 0.3s ease-out;
+        flex-direction: column;
+    }
+
+    .slide.active { display: flex; }
+
+    /* Layout Variations */
+    .slide-grid {
+        display: grid;
+        grid-template-columns: 45% 55%; /* Fixed split for Financials */
+        gap: 3vmin;
+        height: 100%;
+        align-content: start;
+    }
+    
+    .slide-full {
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    @keyframes fadeEnter {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 { font-size: var(--h1-size); font-weight: 800; margin-bottom: 1.5vmin; color: var(--text-main); }
+    h2 { font-size: var(--h2-size); color: var(--accent); margin-bottom: 1vmin; font-weight: 600; }
+    p, li { font-size: var(--p-size); line-height: 1.4; margin-bottom: 1vmin; }
+    .mono { font-family: 'JetBrains Mono', monospace; font-size: var(--mono-size); color: var(--accent); text-transform: uppercase; display: block; margin-bottom: 0.5vmin; }
+
+    .card {
+        background: var(--card-bg);
+        border: 2px solid var(--border);
+        padding: 2vmin;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        height: fit-content;
+    }
+
+    /* Scrollable Data Box (Persistent Left Panel) */
+    .data-panel {
+        height: 80vh;
+        overflow-y: auto;
+        border: 2px solid var(--text-main);
+        padding: 2vmin;
+        background: #fff;
+        font-size: 1.6vmin;
+        box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; font-size: 1.8vmin; background: white; font-family: 'JetBrains Mono', monospace; margin-bottom: 1vmin; border: 1px solid var(--border); }
+    th, td { padding: 0.8vmin; border-bottom: 1px solid #eee; text-align: right; }
+    th { background: var(--accent-dim); color: var(--accent); font-weight: 600; text-align: center; position: sticky; top: 0; z-index: 5;}
+    td:first-child { text-align: left; font-weight: 600; color: var(--text-main); }
+    .highlight-row { background: #f0f9ff; font-weight: 700; color: var(--accent); }
+    .highlight-cell { background: #fef3c7; font-weight: 900; border: 2px solid var(--fin-chart); color: var(--text-main); }
+    
+    /* Cheatsheet Table Specifics */
+    .cheatsheet-table { width: 100%; margin-top: 1vmin; border: 2px solid var(--text-main); }
+    .cheatsheet-table th { background: #e0e7ff; color: var(--text-main); }
+    .cheatsheet-table td { font-weight: bold; text-align: center; }
+
+    /* Nav Bar */
+    .nav-bar {
+        height: 60px;
+        background: white;
+        border-top: 2px solid var(--border);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0 4vmin;
+        z-index: 100;
+        width: 100%;
+        position: relative;
+    }
+    
+    .progress { font-family: 'JetBrains Mono'; font-size: 2.5vmin; color: var(--accent); font-weight:bold; }
+
+    /* Floating Arrow Buttons */
+    .arrow-btn {
+        position: fixed; top: 50%; transform: translateY(-50%);
+        width: 60px; height: 60px;
+        background: white; border: 2px solid var(--border); border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; z-index: 150;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.2s;
+        font-size: 30px; color: var(--accent); opacity: 0.7;
+    }
+    .arrow-btn:hover { background: var(--accent); color: white; border-color: var(--accent); opacity: 1; }
+    .arrow-prev { left: 20px; }
+    .arrow-next { right: 20px; }
+
+    /* Intel Boxes (Hierarchy) */
+    .hierarchy-container { display: flex; flex-direction: column; align-items: center; gap: 2vmin; margin-top: 1vmin; width: 100%; }
+    .h-box { 
+        border: 3px solid #ccc; padding: 1.5vmin; background: white; text-align: center; border-radius: 8px; min-width: 18vmin; flex: 1;
+        display: flex; flex-direction: column; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .h-box h4 { margin: 0; font-size: 1.8vmin; text-transform: uppercase; color: #666; }
+    .h-box .val { font-size: 3vmin; font-weight: 800; margin: 0.5vmin 0; }
+    .h-box .desc { font-size: 1.5vmin; opacity: 0.8; }
+    .h-row { display: flex; gap: 2vmin; justify-content: center; width: 80%; }
+    
+    .use { border-color: var(--error); background: #fef2f2; }
+    .source { border-color: var(--success); background: #f0fdf4; }
+    .neutral { border-color: var(--accent); background: #f0f9ff; }
+
+    /* Interactive Reveal */
+    .reveal-box {
+        background: white; border: 2px dashed var(--accent); padding: 1.5vmin;
+        cursor: pointer; text-align: center; border-radius: 6px; margin-bottom: 1.5vmin;
+    }
+    .reveal-box:hover { background: var(--accent-dim); }
+    .reveal-box .hidden-content { display: none; font-weight: bold; color: var(--success); margin-top: 0.5vmin; font-size: 2.5vmin; }
+    .reveal-box.open { border-style: solid; border-color: var(--success); }
+    .reveal-box.open .hidden-content { display: block; }
+    
+    /* Click-to-Reveal Row */
+    .click-row {
+        cursor: pointer;
+        background: white;
+        border: 1px solid var(--border);
+        padding: 1.5vmin;
+        margin-bottom: 1vmin;
+        transition: all 0.3s;
+        border-left: 4px solid #ccc;
+    }
+    .click-row:hover { background-color: #f8fafc; border-left-color: var(--accent); }
+    .click-row .details { display: none; margin-top: 1vmin; color: #555; font-size: 1.8vmin; border-top: 1px dashed #eee; padding-top: 1vmin;}
+    .click-row.revealed { border-left-color: var(--success); }
+    .click-row.revealed .details { display: block; }
+    
+    /* Hidden Table Row */
+    tr.hidden-row { display: none; animation: fadeEnter 0.5s; }
+    tr.visible-row { display: table-row; }
+
+    /* Summary Reveal Items */
+    .summary-item { 
+        opacity: 0.3; transform: translateX(0); transition: all 0.3s ease; margin-bottom: 2vmin;
+        background: white; padding: 2vmin; border-left: 4px solid #ccc; color: #999; cursor: pointer;
+    }
+    .summary-item.visible { opacity: 1; border-left-color: var(--accent); color: var(--text-main); font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+
+    /* Poll Overlay */
+    .poll-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(5px);
+        z-index: 2000;
+        display: none;
+        flex-direction: column; justify-content: center; align-items: center;
+    }
+    .poll-box {
+        background: white; padding: 4vmin; border: 4px solid var(--accent);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2); width: 60%; text-align: center;
+    }
+    .poll-option {
+        padding: 2vmin; margin: 1vmin 0; border: 2px solid #ddd; background: white; cursor: pointer; font-size: 2.5vmin; width: 100%; display: block;
+    }
+    .poll-option:hover { border-color: var(--accent); }
+    .poll-option.correct { background: var(--success); color: white; border-color: var(--success); }
+    .poll-option.wrong { background: var(--error); color: white; border-color: var(--error); }
+
+    /* Flip Card */
+    .flip-container { perspective: 1000px; width: 100%; height: 200px; cursor: pointer; margin: 0 auto; }
+    .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+    .flip-container.flipped .flip-inner { transform: rotateY(180deg); }
+    .flip-front, .flip-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border: 2px solid var(--accent); border-radius: 8px; padding: 20px; text-align: center; font-size: 2.5vmin; background: white; }
+    .flip-back { background: var(--accent); color: white; transform: rotateY(180deg); }
+
+    /* Quiz */
+    .quiz-question { margin-bottom: 4vmin; background: white; padding: 3vmin; border-radius: 8px; border: 1px solid var(--border); }
+    .quiz-opt { display: block; margin: 1vmin 0; font-size: 2.5vmin; cursor: pointer; padding: 1vmin; }
+    .quiz-opt:hover { background: var(--accent-dim); }
+    .quiz-opt input { margin-right: 15px; transform: scale(1.5); }
+
+</style>
+</head>
+<body>
+
+<div id="deck-container">
+
+    <!-- Poll Overlay -->
+    <div id="poll-layer" class="poll-overlay">
+        <div class="poll-box">
+            <h2 id="poll-q">Question</h2>
+            <div id="poll-opts"></div>
+            <button class="nav-btn" style="margin-top:20px; padding:15px; font-size:2vmin; background:var(--text-main); color:white; border:none; cursor:pointer;" onclick="closePoll()">Continue</button>
+        </div>
+    </div>
+
+    <!-- Floating Navigation -->
+    <div class="arrow-btn arrow-prev" onclick="prevSlide()">&#8592;</div>
+    <div class="arrow-btn arrow-next" onclick="nextSlide()">&#8594;</div>
+
+    <!-- Slide 1: Title -->
+    <div class="slide active">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+            <span class="mono">Class 8 / Financial Analysis</span>
+            <h1 style="font-size:6vmin;">Statement of Cash Flows & Earnings Quality</h1>
+            <p style="font-size:3vmin;">Focus: Indirect Method Mechanics & Analysis</p>
+            <div class="card" style="text-align:center; padding:5vmin; margin-top:4vmin;">
+                <div style="font-size:12vmin; font-weight:800; color:var(--accent);">SCF</div>
+                <p style="font-size:3vmin;">"Profit is Opinion.<br>Cash is Fact."</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: Objectives -->
+    <div class="slide">
+        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
+            <div>
+                <span class="mono">Roadmap</span>
+                <h2>Today's Agenda</h2>
+                <ul>
+                    <li><strong>Framework:</strong> 3 Pillars (Operating, Investing, Financing).</li>
+                    <li><strong>Mechanics:</strong> Indirect Method (Reconciling Net Income).</li>
+                    <li><strong>Case Study:</strong> Java House (Full Build).</li>
+                    <li><strong>Analysis:</strong> Earnings Quality (Intel) & Life Cycle.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>Interactive Check</h3>
+                <p>Click the box below to test interactivity:</p>
+                <div class="reveal-box" onclick="this.classList.toggle('open')">
+                    <div class="question">Click Me</div>
+                    <div class="hidden-content">Good to go!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Insights -->
+    <div class="slide slide-full">
+        <h2>Why SCF Matters</h2>
+        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
+            <div>
+                <p>The Income Statement uses <strong>Accrual Accounting</strong> (matching revenues/expenses) but ignores cash timing. This can obscure a company's true health.</p>
+                <p>The Statement of Cash Flows reveals:</p>
+                <ul>
+                    <li><strong>Liquidity:</strong> Can we pay our short-term bills today?</li>
+                    <li><strong>Solvency:</strong> Can we service our long-term debt?</li>
+                    <li><strong>Earnings Quality:</strong> Is our Net Income backed by hard cash or just accounting adjustments?</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>4 Dimensions of Insight</h3>
+                <ol>
+                    <li>Activity Type (Operating, Investing, Financing)</li>
+                    <li>Liquidity Role in Operations</li>
+                    <li>Detail (Depreciation, Gains, Stock Comp)</li>
+                    <li>Earnings Quality Assessment</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Equation -->
+    <div class="slide slide-full" style="text-align:center;">
+        <h1>The Fundamental Equation</h1>
+        <div class="card" style="display:inline-block; text-align:left; padding:5vmin; margin-top:2vmin; width:80%;">
+            <p class="mono" style="font-size:3vmin;">Beginning Cash Balance (Prior Year BS)</p>
+            <p style="font-size:5vmin; font-weight:bold; color:var(--accent);">+ Net Change in Cash (The SCF)</p>
+            <hr style="border:1px solid #ccc; margin:2vmin 0;">
+            <p class="mono" style="font-size:3vmin;"><strong>= Ending Cash Balance (Current Year BS)</strong></p>
+        </div>
+    </div>
+
+    <!-- Slide 5: Microsoft BS -->
+    <div class="slide slide-full">
+        <span class="mono">Real World Data</span>
+        <h1>Microsoft: Comparative Balance Sheet</h1>
+        <p><strong>Goal:</strong> Explain the $16.4 Billion decrease in cash.</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>(In Millions)</th>
+                    <th>June 30, 2024</th>
+                    <th>June 30, 2023</th>
+                    <th>Change</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="highlight-row">
+                    <td>Cash and Cash Equivalents</td>
+                    <td>$18,315</td>
+                    <td>$34,704</td>
+                    <td style="color:var(--error); font-weight:bold;">($16,389)</td>
+                </tr>
+                <tr>
+                    <td>Short-term Investments</td>
+                    <td>57,228</td>
+                    <td>76,558</td>
+                    <td>(19,330)</td>
+                </tr>
+                <tr>
+                    <td>Total Liquid Assets</td>
+                    <td>$75,543</td>
+                    <td>$111,262</td>
+                    <td>($35,719)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Slide 6: Classification Rules -->
+    <div class="slide">
+        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
+            <div>
+                <h2>The 3 Activities</h2>
+                <p>We classify all cash transactions into three buckets:</p>
+                <div class="reveal-box" onclick="this.classList.toggle('open')">
+                    <div class="question">Operating (O)</div>
+                    <div class="hidden-content">Day-to-day business activities (Sales, Wages, Inventory, Interest)</div>
+                </div>
+                <div class="reveal-box" onclick="this.classList.toggle('open')">
+                    <div class="question">Investing (I)</div>
+                    <div class="hidden-content">Buying/Selling Long-term Assets (PP&E, Investments)</div>
+                </div>
+                <div class="reveal-box" onclick="this.classList.toggle('open')">
+                    <div class="question">Financing (F)</div>
+                    <div class="hidden-content">Funding the business (Debt, Equity, Dividends Paid)</div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Rule of Thumb</h3>
+                <p><strong>Operating:</strong> Items found on the Income Statement.</p>
+                <p><strong>Investing:</strong> Items related to Long-term Assets.</p>
+                <p><strong>Financing:</strong> Items related to Long-term Debt & Equity.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Classification Drill -->
+    <div class="slide slide-full">
+        <h1>Drill: Classify These Activities</h1>
+        <p>Click to check your understanding.</p>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:2vmin;">
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Pay Dividends</div><div class="hidden-content" style="color:var(--fin-chart)">Financing</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Pay Interest</div><div class="hidden-content" style="color:var(--success)">Operating*</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Sell Equipment</div><div class="hidden-content" style="color:var(--accent)">Investing</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Issue Stock</div><div class="hidden-content" style="color:var(--fin-chart)">Financing</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Buy Inventory</div><div class="hidden-content" style="color:var(--success)">Operating</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Collect Loan Principal</div><div class="hidden-content" style="color:var(--accent)">Investing</div></div>
+        </div>
+        <p style="font-size:1.5vmin; margin-top:2vmin; text-align:center;">*Note: Interest Paid is Operating under US GAAP.</p>
+    </div>
+
+    <!-- Slide 8: Life Cycle Table -->
+    <div class="slide slide-full">
+        <h1>Life Cycle Patterns</h1>
+        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="card">
+                <p>Cash flows evolve as a company matures:</p>
+                <ul>
+                    <li><strong>Intro:</strong> Burning cash to grow (Neg Ops).</li>
+                    <li><strong>Growth:</strong> Investing heavily (Neg Inv).</li>
+                    <li><strong>Maturity:</strong> Cash Cow (Pos Ops, Neg Fin).</li>
+                    <li><strong>Decline:</strong> Liquidation (Pos Inv).</li>
+                </ul>
+            </div>
+            <table>
+                <tr><th>Stage</th><th>Ops</th><th>Inv</th><th>Fin</th></tr>
+                <tr><td>Intro</td><td style="color:var(--error)">-</td><td style="color:var(--error)">-</td><td style="color:var(--success)">+</td></tr>
+                <tr><td>Growth</td><td>+/-</td><td style="color:var(--error)">-</td><td style="color:var(--success)">+</td></tr>
+                <tr><td>Maturity</td><td style="color:var(--success)">+</td><td style="color:var(--error)">-</td><td style="color:var(--error)">-</td></tr>
+                <tr><td>Decline</td><td style="color:var(--error)">-</td><td style="color:var(--success)">+</td><td style="color:var(--error)">-</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Slide 9: General Life Cycle Chart -->
+    <div class="slide slide-full">
+        <h1>General Life Cycle Patterns</h1>
+        
+        <div style="height:55vh; width:90%; margin:2vmin auto; position:relative; background:white; border:2px solid #333;">
+            <div style="position:absolute; top:10px; right:10px; background:white; padding:5px 10px; border:1px solid #ccc; font-size:1.5vmin; font-family:'JetBrains Mono'; z-index:10; display:flex; flex-direction:column;">
+                <span style="color:#f59e0b">● Revenues</span>
+                <span style="color:var(--accent)">● Net Income</span>
+                <span style="color:var(--success)">● OCF (Ops)</span>
+                <span style="color:var(--error)">● Investing</span>
+                <span style="color:#8b5cf6">● Financing</span>
+            </div>
+
+            <svg viewBox="0 0 100 60" style="width:100%; height:100%; overflow:visible;">
+                <!-- Stages -->
+                <line x1="25" y1="0" x2="25" y2="60" stroke="#eee" stroke-width="0.5" stroke-dasharray="2"/>
+                <line x1="50" y1="0" x2="50" y2="60" stroke="#eee" stroke-width="0.5" stroke-dasharray="2"/>
+                <line x1="75" y1="0" x2="75" y2="60" stroke="#eee" stroke-width="0.5" stroke-dasharray="2"/>
+                
+                <text x="12" y="58" font-size="2" text-anchor="middle">Introduction</text>
+                <text x="37" y="58" font-size="2" text-anchor="middle">Growth</text>
+                <text x="62" y="58" font-size="2" text-anchor="middle">Maturity</text>
+                <text x="87" y="58" font-size="2" text-anchor="middle">Decline</text>
+                
+                <!-- Zero Line -->
+                <line x1="0" y1="30" x2="100" y2="30" stroke="#333" stroke-width="1"/>
+                <text x="-3" y="30" font-size="2">0</text>
+
+                <!-- Revenue (Orange) -->
+                <path d="M0,45 Q25,25 50,10 T100,20" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
+
+                <!-- Net Income (Blue) -->
+                <path d="M0,40 Q25,35 50,20 T100,35" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+
+                <!-- OCF (Green) -->
+                <path d="M0,38 Q25,32 50,15 T100,32" fill="none" stroke="var(--success)" stroke-width="1.5" stroke-dasharray="2"/>
+
+                <!-- Investing (Red) -->
+                <path d="M0,42 Q25,48 50,45 T100,25" fill="none" stroke="var(--error)" stroke-width="1.5" stroke-dasharray="2"/>
+
+                <!-- Financing (Purple) -->
+                <path d="M0,20 Q25,25 50,40 T100,35" fill="none" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="2"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Slide 10: Coca Cola Chart -->
+    <div class="slide slide-full">
+        <h1>Real World Example: Coca-Cola</h1>
+        <p><strong>CFO (Green):</strong> Consistent "Cash Machine". <strong>CFI (Red):</strong> Reinvesting (except 2018 sale). <strong>CFF (Blue):</strong> Paying Shareholders.</p>
+        
+        <div style="height:55vh; width:90%; margin:2vmin auto; position:relative; background:white; border:2px solid #333;">
+            <div style="position:absolute; top:10px; right:10px; background:white; padding:5px 10px; border:1px solid #ccc; font-size:1.5vmin; font-family:'JetBrains Mono'; z-index:10; display:flex; flex-direction:column;">
+                <span style="color:var(--success)">● CFO</span>
+                <span style="color:var(--error)">● CFI</span>
+                <span style="color:var(--accent)">● CFF</span>
+            </div>
+
+            <svg viewBox="0 0 100 60" style="width:100%; height:100%; overflow:visible;">
+                <!-- Grid -->
+                <line x1="0" y1="10" x2="100" y2="10" stroke="#eee" stroke-width="0.5"/>
+                <line x1="0" y1="20" x2="100" y2="20" stroke="#eee" stroke-width="0.5"/>
+                <line x1="0" y1="30" x2="100" y2="30" stroke="#333" stroke-width="1"/> <!-- Zero Line -->
+                <line x1="0" y1="40" x2="100" y2="40" stroke="#eee" stroke-width="0.5"/>
+                <line x1="0" y1="50" x2="100" y2="50" stroke="#eee" stroke-width="0.5"/>
+
+                <!-- Y-Axis Labels -->
+                <text x="-5" y="10" font-size="1.5">$10B</text>
+                <text x="-5" y="20" font-size="1.5">$5B</text>
+                <text x="-5" y="30" font-size="1.5">0</text>
+                <text x="-5" y="40" font-size="1.5">-$5B</text>
+                <text x="-5" y="50" font-size="1.5">-$10B</text>
+
+                <!-- Operating (Green) -->
+                <polyline points="0,15 10,12 20,14 30,18 40,16 50,14 60,12 70,11 80,9 90,10 100,11" 
+                          fill="none" stroke="var(--success)" stroke-width="1.5"/>
+
+                <!-- Investing (Red) - Spike in middle (2018 is approx 50%) -->
+                <polyline points="0,32 10,34 20,35 30,36 40,33 50,20 60,32 70,35 80,31 90,34 100,33" 
+                          fill="none" stroke="var(--error)" stroke-width="1.5"/>
+
+                <!-- Financing (Blue) -->
+                <polyline points="0,35 10,38 20,37 30,42 40,40 50,45 60,42 70,44 80,48 90,46 100,49" 
+                          fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+                
+                <!-- Years -->
+                <text x="0" y="63" font-size="1.5">2013</text>
+                <text x="50" y="63" font-size="1.5">2018</text>
+                <text x="100" y="63" font-size="1.5">2022</text>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Slide 11: Presentation Methods -->
+    <div class="slide slide-full">
+        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
+            <div>
+                <h2>Presentation Methods of Cash Flow from Operating Activities</h2>
+                <p><strong>Indirect Method (98%):</strong> Starts with Net Income and adjusts. Shows the difference between profit and cash. Used by Microsoft, Intel, Apple.</p>
+            </div>
+            <div>
+                <h2>Direct Method (2%)</h2>
+                <p>Lists actual cash receipts and payments. Intuitive but rare.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 12: Microsoft Indirect (Moved) -->
+    <div class="slide slide-full">
+        <h1>Microsoft: Indirect Method (2023)</h1>
+        <table>
+            <thead><tr><th>Year Ended June 30</th><th>Amount (M)</th></tr></thead>
+            <tbody>
+                <tr class="highlight-row"><td>Net Income</td><td>$72,361</td></tr>
+                <tr><td>Depreciation/Amortization</td><td>13,861</td></tr>
+                <tr><td>Stock-based Comp</td><td>9,611</td></tr>
+                <tr><td>Deferred Taxes</td><td>(6,059)</td></tr>
+                <tr><td>Change in A/R</td><td>(4,087)</td></tr>
+                <tr><td>Change in Inventory</td><td>1,242</td></tr>
+                <tr class="highlight-row"><td><strong>Net Operating Cash</strong></td><td><strong>$87,582</strong></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Slide 13: CVS Direct -->
+    <div class="slide slide-full">
+        <span class="mono">Rare Example</span>
+        <h1>CVS Health: Direct Method (2023)</h1>
+        <table>
+            <thead><tr><th>Activity</th><th>Amount (M)</th></tr></thead>
+            <tbody>
+                <tr><td>Cash receipts from customers</td><td>$345,464</td></tr>
+                <tr><td>Cash paid for inventory/prescriptions</td><td>(208,848)</td></tr>
+                <tr><td>Insurance benefits paid</td><td>(84,097)</td></tr>
+                <tr><td>Cash paid to suppliers/employees</td><td>(34,735)</td></tr>
+                <tr><td>Taxes Paid</td><td>(3,524)</td></tr>
+                <tr class="highlight-row"><td><strong>Net Operating Cash</strong></td><td><strong>$13,426</strong></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Slide 14: Indirect Mechanics -->
+    <div class="slide slide-full">
+        <h1>Indirect Method: The 4 Steps</h1>
+        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="card">
+                <h3>The Process</h3>
+                <ol>
+                    <li>Start with <strong>Net Income</strong>.</li>
+                    <li>Adjust <strong>Non-Cash Items</strong>.</li>
+                    <li>Reverse <strong>Gains/Losses</strong>.</li>
+                    <li>Adjust <strong>Working Capital</strong>.</li>
+                </ol>
+            </div>
+            <div class="card" style="display:flex; align-items:center; justify-content:center;">
+                <div class="flip-container" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-inner">
+                        <div class="flip-front">
+                            <h3>Formula: NI ± Adj = OCF</h3>
+                            <p>(Click for Example)</p>
+                        </div>
+                        <div class="flip-back">
+                            <h3>Why?</h3>
+                            <p>Net Income ($100) minus Depreciation ($20) = $80 profit, but cash didn't leave. So we start at $80 and add back $20 to get true cash of $100.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 15: Step 2 Detail -->
+    <div class="slide">
+        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
+            <div>
+                <h2>Step 2: Non-Cash Items</h2>
+                <p><strong>Expenses (e.g., Depreciation):</strong> Reduced NI, didn't use cash. <span style="color:var(--success); font-weight:bold;">ADD BACK</span>.</p>
+                <p><strong>Revenues (e.g., Unrealized Gains):</strong> Increased NI, no cash received. <span style="color:var(--error); font-weight:bold;">SUBTRACT</span>.</p>
+            </div>
+            <div class="card">
+                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Depreciation Expense</div><div class="hidden-content" style="color:var(--success)">ADD BACK</div></div>
+                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Unrealized Gain on Stock</div><div class="hidden-content" style="color:var(--error)">SUBTRACT</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 16: Step 3 Detail -->
+    <div class="slide">
+        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
+            <div>
+                <h2>Step 3: Gains/Losses</h2>
+                <p>A Gain is an accounting "Paper Gain" in Operating.</p>
+                <p>We figure out the <strong>Total Investing Amount</strong> (Sale Price) and put that in Investing.</p>
+                <p>So, we remove the Gain from Operating to avoid double counting.</p>
+            </div>
+            <div class="card">
+                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Gain on Sale ($500)</div><div class="hidden-content" style="color:var(--error)">SUBTRACT (Ops)</div></div>
+                <p style="margin-top:2vmin; font-size:2.5vmin;">Total Investing Inflow = Book Value + Gain</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 17: Step 4 Cheatsheet -->
+    <div class="slide slide-full">
+        <h1>Step 4: Working Capital Adjustments</h1>
+        <div class="slide-grid">
+            <div class="card" style="background:#f0f9ff;">
+                <h3 style="text-align:center; color:var(--accent);">ASSETS (Inv, A/R)</h3>
+                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">INCREASE ↑</div><div class="hidden-content" style="color:var(--error)">SUBTRACT</div></div>
+                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">DECREASE ↓</div><div class="hidden-content" style="color:var(--success)">ADD</div></div>
+                <p style="text-align:center;"><strong>Inverse</strong></p>
+            </div>
+            <div class="card" style="background:#fff7ed;">
+                <h3 style="text-align:center; color:var(--fin-chart);">LIABILITIES (A/P)</h3>
+                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">INCREASE ↑</div><div class="hidden-content" style="color:var(--success)">ADD</div></div>
+                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">DECREASE ↓</div><div class="hidden-content" style="color:var(--error)">SUBTRACT</div></div>
+                <p style="text-align:center;"><strong>Direct</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 18: Logic Assets -->
+    <div class="slide">
+        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
+            <div>
+                <h2>Why? Current Assets</h2>
+                <p><strong>Asset Increase = Cash Outflow</strong></p>
+                <p>If Inventory goes UP, you spent cash to buy it.</p>
+                <p>If A/R goes UP, you recorded revenue but didn't get cash.</p>
+            </div>
+            <div class="card"><div style="font-size:10vmin; text-align:center; color:var(--accent);">↔</div><div class="stat-caption">Opposite Direction</div></div>
+        </div>
+    </div>
+
+    <!-- Slide 19: Logic Liabilities -->
+    <div class="slide">
+        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
+            <div>
+                <h2>Why? Current Liabilities</h2>
+                <p><strong>Liability Increase = Cash Inflow</strong></p>
+                <p>If A/P goes UP, you bought something but <em>kept</em> your cash. It's like an interest-free loan (Source).</p>
+            </div>
+            <div class="card"><div style="font-size:10vmin; text-align:center; color:var(--accent);">=</div><div class="stat-caption">Same Direction</div></div>
+        </div>
+    </div>
+
+    <!-- Slide 20: Working Capital Cheatsheet -->
+    <div class="slide slide-full">
+        <h1>Reference: Working Capital Cheatsheet</h1>
+        <table>
+            <thead><tr><th>Balance Sheet Account</th><th>Increase In Account</th><th>Decrease In Account</th></tr></thead>
+            <tbody>
+                <tr><td>Current Assets (A/R, Inv, Prepaid)</td><td style="color:var(--error); font-weight:bold;">Cash Outflow (Subtract)</td><td style="color:var(--success); font-weight:bold;">Cash Inflow (Add)</td></tr>
+                <tr><td>Current Liabilities (A/P, Tax Pay)</td><td style="color:var(--success); font-weight:bold;">Cash Inflow (Add)</td><td style="color:var(--error); font-weight:bold;">Cash Outflow (Subtract)</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Slide 21: Drill -->
+    <div class="slide slide-full">
+        <h1>Drill: Adjustments</h1>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:2vmin;">
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Inventory Increase</div><div class="hidden-content" style="color:var(--error)">Subtract</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">A/P Decrease</div><div class="hidden-content" style="color:var(--error)">Subtract</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Prepaid Rent Decrease</div><div class="hidden-content" style="color:var(--success)">Add</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Wages Payable Increase</div><div class="hidden-content" style="color:var(--success)">Add</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">A/R Increase</div><div class="hidden-content" style="color:var(--error)">Subtract</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Taxes Payable Decrease</div><div class="hidden-content" style="color:var(--error)">Subtract</div></div>
+        </div>
+    </div>
+
+    <!-- Slide 22: Example 1 -->
+    <div class="slide slide-full">
+        <h1>Example 1</h1>
+        <p>You operate a lemonade stand. You made $1,000 sales all in cash. You spent $700 cash during the period to generate this sales.</p>
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:2vmin;">
+            <div class="card">
+                <h3>Income Statement</h3>
+                <p>Sales: $1,000</p>
+                <p>Exp: ($700)</p>
+                <hr>
+                <p><strong>NI: $300</strong></p>
+            </div>
+            <div class="card">
+                <h3>Cash Flow Calculation</h3>
+                <p>Sales: $1,000</p>
+                <p>Exp: ($700)</p>
+                <hr>
+                <p><strong>CFO: $300</strong></p>
+            </div>
+            <div class="card" style="border-color:var(--success);">
+                <h3>Reconciliation</h3>
+                <p>Start: $300 (NI)</p>
+                <p>Adj: 0</p>
+                <hr>
+                <p><strong>CFO: $300</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 23: Example 2 -->
+    <div class="slide slide-full">
+        <h1>Example 2 (A/R)</h1>
+        <p>You made $1,000 sales, with $800 cash and $200 accounts receivable. You spent $700 cash.</p>
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:2vmin;">
+            <div class="card">
+                <h3>Income Statement</h3>
+                <p>Sales: $1,000</p>
+                <p>Exp: ($700)</p>
+                <hr>
+                <p><strong>NI: $300</strong></p>
+            </div>
+            <div class="card">
+                <h3>Cash Flow Calculation</h3>
+                <p>Cash Sales: $800</p>
+                <p>Cash Exp: ($700)</p>
+                <hr>
+                <p><strong>CFO: $100</strong></p>
+            </div>
+            <div class="card" style="border-color:var(--success);">
+                <h3>Reconciliation</h3>
+                <p>Start: $300 (NI)</p>
+                <div class="reveal-box" style="margin:0;" onclick="this.classList.toggle('open')">
+                    <div class="question">Plug?</div>
+                    <div class="hidden-content" style="color:var(--error)">- Sub: $200 (Inc A/R)</div>
+                </div>
+                <hr>
+                <p><strong>CFO: $100</strong></p>
+            </div>
+        </div>
+        <div style="margin-top:2vmin; font-size:1.5vmin; background:#f8fafc; padding:1vmin; border:1px solid #ccc;">
+            <strong>Reference: Working Capital Cheatsheet</strong>
+            <table class="cheatsheet-table" style="margin:0;">
+                <thead><tr><th>Balance Sheet Account</th><th>Increase</th><th>Decrease</th></tr></thead>
+                <tbody>
+                    <tr><td>Current Assets (A/R, Inv)</td><td style="color:var(--error)">Subtract (Outflow)</td><td style="color:var(--success)">Add (Inflow)</td></tr>
+                    <tr><td>Current Liabilities (A/P)</td><td style="color:var(--success)">Add (Inflow)</td><td style="color:var(--error)">Subtract (Outflow)</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Slide 24: Example 3 -->
+    <div class="slide slide-full">
+        <h1>Example 3 (A/P)</h1>
+        <p>Sales $1,000 cash. Expenses $700 ($500 cash, $200 promised to be paid in a week).</p>
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:2vmin;">
+            <div class="card">
+                <h3>Income Statement</h3>
+                <p>Sales: $1,000</p>
+                <p>Exp: ($700)</p>
+                <hr>
+                <p><strong>NI: $300</strong></p>
+            </div>
+            <div class="card">
+                <h3>Cash Flow Calculation</h3>
+                <p>Cash Sales: $1,000</p>
+                <p>Cash Exp: ($500)</p>
+                <hr>
+                <p><strong>CFO: $500</strong></p>
+            </div>
+            <div class="card" style="border-color:var(--success);">
+                <h3>Reconciliation</h3>
+                <p>Start: $300 (NI)</p>
+                <div class="reveal-box" style="margin:0;" onclick="this.classList.toggle('open')">
+                    <div class="question">Plug?</div>
+                    <div class="hidden-content" style="color:var(--success)">+ Add: $200 (Inc A/P)</div>
+                </div>
+                <hr>
+                <p><strong>CFO: $500</strong></p>
+            </div>
+        </div>
+        <div style="margin-top:2vmin; font-size:1.5vmin; background:#f8fafc; padding:1vmin; border:1px solid #ccc;">
+            <strong>Reference: Working Capital Cheatsheet</strong>
+            <table class="cheatsheet-table" style="margin:0;">
+                <thead><tr><th>Balance Sheet Account</th><th>Increase</th><th>Decrease</th></tr></thead>
+                <tbody>
+                    <tr><td>Current Assets (A/R, Inv)</td><td style="color:var(--error)">Subtract (Outflow)</td><td style="color:var(--success)">Add (Inflow)</td></tr>
+                    <tr><td>Current Liabilities (A/P)</td><td style="color:var(--success)">Add (Inflow)</td><td style="color:var(--error)">Subtract (Outflow)</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- JAVA HOUSE FINANCIAL DATA PANEL (Replicated in slides 25-33) -->
+    <!-- Slide 25: Java Intro -->
+    <div class="slide">
+        <div class="slide-grid">
+            <div class="data-panel">
+                <h3>Income Statement 2025</h3>
+                <table>
+                    <tr><td>Sales</td><td>$250,000</td></tr>
+                    <tr><td>Cost of Goods Sold</td><td>(148,000)</td></tr>
+                    <tr><td>Wages Expense</td><td>(50,000)</td></tr>
+                    <tr><td>Stock-Based Comp</td><td>(2,000)</td></tr>
+                    <tr><td>Insurance Expense</td><td>(5,000)</td></tr>
+                    <tr><td>Depreciation Expense</td><td>(10,000)</td></tr>
+                    <tr><td>Income Tax Expense</td><td>(11,000)</td></tr>
+                    <tr><td>Gain on Sale of Land</td><td>8,000</td></tr>
+                    <tr class="highlight-row"><td><strong>Net Income</strong></td><td><strong>$32,000</strong></td></tr>
+                </table>
+                <h3>Balance Sheet Changes</h3>
+                <table>
+                    <tr><th>Assets</th><th>2025</th><th>2024</th></tr>
+                    <tr><td>Cash</td><td>24,000</td><td>10,000</td></tr>
+                    <tr><td>A/R</td><td>39,000</td><td>34,000</td></tr>
+                    <tr><td>Inventory</td><td>54,000</td><td>60,000</td></tr>
+                    <tr><td>Prepaid Ins</td><td>17,000</td><td>4,000</td></tr>
+                    <tr><td>LT Investments</td><td>15,000</td><td>0</td></tr>
+                    <tr><td>PP&E</td><td>185,000</td><td>200,000</td></tr>
+                    <tr><td>Accum Dep</td><td>(50,000)</td><td>(40,000)</td></tr>
+                    <tr><td>Patent</td><td>60,000</td><td>0</td></tr>
+                    <tr><th>Liabilities</th><th>2025</th><th>2024</th></tr>
+                    <tr><td>Accounts Payable</td><td>10,000</td><td>19,000</td></tr>
+                    <tr><td>Income Tax Payable</td><td>5,000</td><td>3,000</td></tr>
+                    <tr><td>LT Debt</td><td>38,000</td><td>50,000</td></tr>
+                    <tr><td>Common Stock</td><td>216,000</td><td>140,000</td></tr>
+                    <tr><td>Retained Earnings</td><td>75,000</td><td>56,000</td></tr>
+                </table>
+                <h3>Additional Data</h3>
+                <ol>
+                    <li>Purchased LT investments for cash ($15,000).</li>
+                    <li>Purchased equipment for $5,000 cash.</li>
+                    <li>Sold land costing $20,000 for $28,000 cash.</li>
+                    <li>Acquired $60,000 patent by issuing stock.</li>
+                    <li>Repaid LT debt $12,000 cash.</li>
+                    <li>Issued common stock for $14,000 cash.</li>
+                    <li>Declared/Paid Dividends $13,000.</li>
+                    <li>Issued $2,000 stock for comp.</li>
+                </ol>
+            </div>
+            <div>
+                <h2>Case Study: Java House</h2>
+                <p>We will build the full SCF using the data on the left.</p>
+                <div class="card">
+                    <p>Refer to the Income Statement and Balance Sheet changes shown here for every step of the calculation.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 26: Java Op Steps 1/2 -->
+    <div class="slide">
+        <div class="slide-grid">
+            <div class="data-panel">
+                <!-- Copied Panel for persistence (Repeating full content as requested) -->
+                <h3>Income Statement 2025</h3>
+                <table>
+                    <tr><td>Sales</td><td>$250,000</td></tr>
+                    <tr><td>Cost of Goods Sold</td><td>(148,000)</td></tr>
+                    <tr><td>Wages Expense</td><td>(50,000)</td></tr>
+                    <tr><td>Stock-Based Comp</td><td>(2,000)</td></tr>
+                    <tr><td>Insurance Expense</td><td>(5,000)</td></tr>
+                    <tr><td>Depreciation Expense</td><td>(10,000)</td></tr>
+                    <tr><td>Income Tax Expense</td><td>(11,000)</td></tr>
+                    <tr><td>Gain on Sale of Land</td><td>8,000</td></tr>
+                    <tr class="highlight-row"><td><strong>Net Income</strong></td><td><strong>$32,000</strong></td></tr>
+                </table>
+                <h3>Balance Sheet Changes</h3>
+                <table>
+                    <tr><th>Assets</th><th>2025</th><th>2024</th></tr>
+                    <tr><td>Cash</td><td>24,000</td><td>10,000</td></tr>
+                    <tr><td>A/R</td><td>39,000</td><td>34,000</td></tr>
+                    <tr><td>Inventory</td><td>54,000</td><td>60,000</td></tr>
+                    <tr><td>Prepaid Ins</td><td>17,000</td><td>4,000</td></tr>
+                    <tr><td>LT Investments</td><td>15,000</td><td>0</td></tr>
+                    <tr><td>PP&E</td><td>185,000</td><td>200,000</td></tr>
+                    <tr><td>Accum Dep</td><td>(50,000)</td><td>(40,000)</td></tr>
+                    <tr><td>Patent</td><td>60,000</td><td>0</td></tr>
+                    <tr><th>Liabilities</th><th>2025</th><th>2024</th></tr>
+                    <tr><td>Accounts Payable</td><td>10,000</td><td>19,000</td></tr>
+                    <tr><td>Income Tax Payable</td><td>5,000</td><td>3,000</td></tr>
+                    <tr><td>LT Debt</td><td>38,000</td><td>50,000</td></tr>
+                    <tr><td>Common Stock</td><td>216,000</td><td>140,000</td></tr>
+                    <tr><td>Retained Earnings</td><td>75,000</td><td>56,000</td></tr>
+                </table>
+                <h3>Additional Data</h3>
+                <ol>
+                    <li>Purchased LT investments for cash ($15,000).</li>
+                    <li>Purchased equipment for $5,000 cash.</li>
+                    <li>Sold land costing $20,000 for $28,000 cash.</li>
+                    <li>Acquired $60,000 patent by issuing stock.</li>
+                    <li>Repaid LT debt $12,000 cash.</li>
+                    <li>Issued common stock for $14,000 cash.</li>
+                    <li>Declared/Paid Dividends $13,000.</li>
+                    <li>Issued $2,000 stock for comp.</li>
+                </ol>
+            </div>
+            <div>
+                <h2>Operating: NI & Non-Cash</h2>
+                <div class="card">
+                    <table>
+                        <tr><td>Net Income</td><td>$32,000</td></tr>
+                        <tr class="highlight-row"><td>+ Depreciation</td><td>10,000</td></tr>
+                        <tr class="highlight-row"><td>+ Stock Comp</td><td>2,000</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 27: Java Op Step 3 -->
+    <div class="slide">
+        <div class="slide-grid">
+            <div class="data-panel">
+                <!-- Copied Panel for persistence -->
+                <h3>Income Statement 2025</h3>
+                <table>
+                    <tr><td>Sales</td><td>$250,000</td></tr>
+                    <tr><td>Cost of Goods Sold</td><td>(148,000)</td></tr>
+                    <tr><td>Wages Expense</td><td>(50,000)</td></tr>
+                    <tr><td>Stock-Based Comp</td><td>(2,000)</td></tr>
+                    <tr><td>Insurance Expense</td><td>(5,000)</td></tr>
+                    <tr><td>Depreciation Expense</td><td>(10,000)</td></tr>
+                    <tr><td>Income Tax Expense</td><td>(11,000)</td></tr>
+                    <tr><td>Gain on Sale of Land</td><td>8,000</td></tr>
+                    <tr class="highlight-row"><td><strong>Net Income</strong></td><td><strong>$32,000</strong></td></tr>
+                </table>
+                <h3>Balance Sheet Changes</h3>
+                <table>
+                    <tr><th>Assets</th><th>2025</th><th>2024</th></tr>
+                    <tr><td>Cash</td><td>24,000</td><td>10,000</td></tr>
+                    <tr><td>A/R</td><td>39,000</td><td>34,000</td></tr>
+                    <tr><td>Inventory</td><td>54,000</td><td>60,000</td></tr>
+                    <tr><td>Prepaid Ins</td><td>17,000</td><td>4,000</td></tr>
+                    <tr><td>LT Investments</td><td>15,000</td><td>0</td></tr>
+                    <tr><td>PP&E</td><td>185,000</td><td>200,000</td></tr>
+                    <tr><td>Accum Dep</td><td>(50,000)</td><td>(40,000)</td></tr>
+                    <tr><td>Patent</td><td>60,000</td><td>0</td></tr>
+                    <tr><th>Liabilities</th><th>2025</th><th>2024</th></tr>
+                    <tr><td>Accounts Payable</td><td>10,000</td><td>19,000</td></tr>
+                    <tr><td>Income Tax Payable</td><td>5,000</td><td>3,000</td></tr>
+                    <tr><td>LT Debt</td><td>38,000</td><td>50,000</td></tr>
+                    <tr><td>Common Stock</td><td>216,000</td><td>140,000</td></tr>
+                    <tr><td>Retained Earnings</td><td>75,000</td><td>56,000</td></tr>
+                </table>
+                <h3>Additional Data</h3>
+                <ol>
+                    <li>Purchased LT investments for cash ($15,000).</li>
+                    <li>Purchased equipment for $5,000 cash.</li>
+                    <li>Sold land costing $20,000 for $28,000 cash.</li>
+                    <li>Acquired $60,000 patent by issuing stock.</li>
+                    <li>Repaid LT debt $12,000 cash.</li>
+                    <li>Issued common stock for $14,000 cash.</li>
+                    <li>Declared/Paid Dividends $13,000.</li>
+                    <li>Issued $2,000 stock for comp.</li>
+                </ol>
+            </div>
+            <div>
+                <h2>Operating: Step 3 (Gains)</h2>
+                <p>Remove the Gain on Sale of Land ($8,000).</p>
+                <p>The total cash receipt ($28,000) will be reported in Investing.</p>
+                <div class="card">
+                    <table>
+                        <tr><td>...previous...</td><td></td></tr>
+                        <tr class="highlight-row"><td>- Gain on Sale</td><td>(8,000)</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 28: Java Op Step 4 -->
+    <div class="slide">
+        <div class="slide-grid">
+            <div class="data-panel">
+                <!-- Copied Panel for persistence -->
+                <h3>Income Statement 2025</h3>
+                <table>
+                    <tr><td>Sales</td><td>$250,000</td></tr>
+                    <tr><td>Cost of Goods Sold</td><td>(148,000)</td></tr>
+                    <tr><td>Wages Expense</td><td>(50,000)</td></tr>
+                    <tr><td>Stock-Based Comp</td><td>(2,000)</td></tr>
+                    <tr><td>Insurance Expense</td><td>(5,000)</td></tr>
+                    <tr><td>Depreciation Expense</td><td>(10,000)</td></tr>
+                    <tr><td>Income Tax Expense</td><td>(11,000)</td></tr>
+                    <tr><td>Gain on Sale of Land</td><td>8,000</td></tr>
+                    <tr class="highlight-row"><td><strong>Net Income</strong></td><td><strong>$32,000</strong></td></tr>
+                </table>
+                <h3>Balance Sheet Changes</h3>
+                <table>
+                    <tr><th>Assets</th><th>2025</th><th>2024</th></tr>
+                    <tr><td>Cash</td><td>24,000</td><td>10,000</td></tr>
+                    <tr><td>A/R</td><td>39,000</td><td>34,000</td></tr>
+                    <tr><td>Inventory</td><td>54,000</td><td>60,000</td></tr>
+                    <tr><td>Prepaid Ins</td><td>17,000</td><td>4,000</td></tr>
+                    <tr><td>LT Investments</td><td>15,000</td><td>0</td></tr>
+                    <tr><td>PP&E</td><td>185,000</td><td>200,000</td></tr>
+                    <tr><td>Accum Dep</td><td>(50,000)</td><td>(40,000)</td></tr>
+                    <tr><td>Patent</td><td>60,000</td><td>0</td></tr>
+                    <tr><th>Liabilities</th><th>2025</th><th>2024</th></tr>
+                    <tr><td>Accounts Payable</td><td>10,000</td><td>19,000</td></tr>
+                    <tr><td>Income Tax Payable</td><td>5,000</td><td>3,000</td></tr>
+                    <tr><td>LT Debt</td><td>38,000</td><td>50,000</td></tr>
+                    <tr><td>Common Stock</td><td>216,000</td><td>140,000</td></tr>
+                    <tr><td>Retained Earnings</td><td>75,000</td><td>56,000</td></tr>
+                </table>
+                <h3>Additional Data</h3>
+                <ol>
+                    <li>Purchased LT investments for cash ($15,000).</li>
+                    <li>Purchased equipment for $5,000 cash.</li>
+                    <li>Sold land costing $20,000 for $28,000 cash.</li>
+                    <li>Acquired $60,000 patent by issuing stock.</li>
+                    <li>Repaid LT debt $12,000 cash.</li>
+                    <li>Issued common stock for $14,000 cash.</li>
+                    <li>Declared/Paid Dividends $13,000.</li>
+                    <li>Issued $2,000 stock for comp.</li>
+                </ol>
+            </div>
+            <div>
+                <h2>Operating: Working Capital</h2>
+                <ul>
+                    <li>A/R Inc ($5k) ➔ <span style="color:var(--error)">Subtract</span></li>
+                    <li>Inv Dec ($6k) ➔ <span style="color:var(--success)">Add</span></li>
+                    <li>Prep Inc ($13k) ➔ <span style="color:var(--error)">Subtract</span></li>
+                    <li>A/P Dec ($9k) ➔ <span style="color:var(--error)">Subtract</span></li>
+                    <li>Tax Inc ($2k) ➔ <span style="color:var(--success)">Add</span></li>
+                </ul>
+                <div class="card">
+                    <p style="font-weight:bold;">Net Working Capital Adj: $(19,000)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 29: Java Op Summary -->
+    <div class="slide slide-full">
+        <h1>Java House: Operating Summary</h1>
+        <table>
+            <tr><td>Net Income</td><td>32,000</td></tr>
+            <tr><td>+ Non-Cash (Dep/Stock)</td><td>12,000</td></tr>
+            <tr><td>- Gain</td><td>(8,000)</td></tr>
+            <tr><td>- Net Working Capital</td><td>(19,000)</td></tr>
+            <tr class="highlight-row"><td><strong>CFO</strong></td><td><strong>$17,000</strong></td></tr>
+        </table>
+    </div>
+
+    <!-- Slide 30: Java Investing -->
+    <div class="slide">
+        <div class="slide-grid">
+            <div class="data-panel">
+                <!-- Copied Panel for persistence -->
+                <h3>Income Statement 2025</h3>
+                <table>
+                    <tr><td>Sales</td><td>$250,000</td></tr>
+                    <tr><td>Cost of Goods Sold</td><td>(148,000)</td></tr>
+                    <tr><td>Wages Expense</td><td>(50,000)</td></tr>
+                    <tr><td>Stock-Based Comp</td><td>(2,000)</td></tr>
+                    <tr><td>Insurance Expense</td><td>(5,000)</td></tr>
+                    <tr><td>Depreciation Expense</td><td>(10,000)</td></tr>
+                    <tr><td>Income Tax Expense</td><td>(11,000)</td></tr>
+                    <tr><td>Gain on Sale of Land</td><td>8,000</td></tr>
+                    <tr class="highlight-row"><td><strong>Net Income</strong></td><td><strong>$32,000</strong></td></tr>
+                </table>
+                <h3>Balance Sheet Changes</h3>
+                <table>
+                    <tr><th>Assets</th><th>2025</th><th>2024</th></tr>
+                    <tr><td>Cash</td><td>24,000</td><td>10,000</td></tr>
+                    <tr><td>A/R</td><td>39,000</td><td>34,000</td></tr>
+                    <tr><td>Inventory</td><td>54,000</td><td>60,000</td></tr>
+                    <tr><td>Prepaid Ins</td><td>17,000</td><td>4,000</td></tr>
+                    <tr><td>LT Investments</td><td>15,000</td><td>0</td></tr>
+                    <tr><td>PP&E</td><td>185,000</td><td>200,000</td></tr>
+                    <tr><td>Accum Dep</td><td>(50,000)</td><td>(40,000)</td></tr>
+                    <tr><td>Patent</td><td>60,000</td><td>0</td></tr>
+                    <tr><th>Liabilities</th><th>2025</th><th>2024</th></tr>
+                    <tr><td>Accounts Payable</td><td>10,000</td><td>19,000</td></tr>
+                    <tr><td>Income Tax Payable</td><td>5,000</td><td>3,000</td></tr>
+                    <tr><td>LT Debt</td><td>38,000</td><td>50,000</td></tr>
+                    <tr><td>Common Stock</td><td>216,000</td><td>140,000</td></tr>
+                    <tr><td>Retained Earnings</td><td>75,000</td><td>56,000</td></tr>
+                </table>
+                <h3>Additional Data</h3>
+                <ol>
+                    <li>Purchased LT investments for cash ($15,000).</li>
+                    <li>Purchased equipment for $5,000 cash.</li>
+                    <li>Sold land costing $20,000 for $28,000 cash.</li>
+                    <li>Acquired $60,000 patent by issuing stock.</li>
+                    <li>Repaid LT debt $12,000 cash.</li>
+                    <li>Issued common stock for $14,000 cash.</li>
+                    <li>Declared/Paid Dividends $13,000.</li>
+                    <li>Issued $2,000 stock for comp.</li>
+                </ol>
+            </div>
+            <div>
+                <h2>Investing Activities</h2>
+                <div class="card">
+                    <div class="click-row" onclick="this.classList.add('revealed')">
+                        <p><strong>1. Purchase of Investments:</strong></p>
+                        <p class="details">Balance Sheet shows increase of $15,000. Additional data #1 confirms cash purchase. ➔ Outflow (15,000).</p>
+                    </div>
+                    <div class="click-row" onclick="this.classList.add('revealed')">
+                        <p><strong>2. Purchase of Equipment:</strong></p>
+                        <p class="details">Additional data #2 says $5,000 cash purchase. ➔ Outflow (5,000).</p>
+                    </div>
+                    <div class="click-row" onclick="this.classList.add('revealed')">
+                        <p><strong>3. Sale of Land:</strong></p>
+                        <p class="details">Additional data #3 says Land sold for $28,000 cash. ➔ Inflow 28,000.</p>
+                    </div>
+                    
+                    <table style="margin-top:2vmin;">
+                        <tr class="hidden-row" style="display:table-row;"><td>Purchase Investments (#1)</td><td>(15,000)</td></tr>
+                        <tr class="hidden-row" style="display:table-row;"><td>Purchase Equipment (#2)</td><td>(5,000)</td></tr>
+                        <tr class="hidden-row" style="display:table-row;"><td>Sale of Land (#3)</td><td>28,000</td></tr>
+                        <tr class="highlight-row"><td><strong>Net Investing</strong></td><td><strong>8,000</strong></td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 31: Java Financing -->
+    <div class="slide">
+        <div class="slide-grid">
+            <div class="data-panel">
+                <!-- Copied Panel for persistence -->
+                <h3>Income Statement 2025</h3>
+                <table>
+                    <tr><td>Sales</td><td>$250,000</td></tr>
+                    <tr><td>Cost of Goods Sold</td><td>(148,000)</td></tr>
+                    <tr><td>Wages Expense</td><td>(50,000)</td></tr>
+                    <tr><td>Stock-Based Comp</td><td>(2,000)</td></tr>
+                    <tr><td>Insurance Expense</td><td>(5,000)</td></tr>
+                    <tr><td>Depreciation Expense</td><td>(10,000)</td></tr>
+                    <tr><td>Income Tax Expense</td><td>(11,000)</td></tr>
+                    <tr><td>Gain on Sale of Land</td><td>8,000</td></tr>
+                    <tr class="highlight-row"><td><strong>Net Income</strong></td><td><strong>$32,000</strong></td></tr>
+                </table>
+                <h3>Balance Sheet Changes</h3>
+                <table>
+                    <tr><th>Assets</th><th>2025</th><th>2024</th></tr>
+                    <tr><td>Cash</td><td>24,000</td><td>10,000</td></tr>
+                    <tr><td>A/R</td><td>39,000</td><td>34,000</td></tr>
+                    <tr><td>Inventory</td><td>54,000</td><td>60,000</td></tr>
+                    <tr><td>Prepaid Ins</td><td>17,000</td><td>4,000</td></tr>
+                    <tr><td>LT Investments</td><td>15,000</td><td>0</td></tr>
+                    <tr><td>PP&E</td><td>185,000</td><td>200,000</td></tr>
+                    <tr><td>Accum Dep</td><td>(50,000)</td><td>(40,000)</td></tr>
+                    <tr><td>Patent</td><td>60,000</td><td>0</td></tr>
+                    <tr><th>Liabilities</th><th>2025</th><th>2024</th></tr>
+                    <tr><td>Accounts Payable</td><td>10,000</td><td>19,000</td></tr>
+                    <tr><td>Income Tax Payable</td><td>5,000</td><td>3,000</td></tr>
+                    <tr><td>LT Debt</td><td>38,000</td><td>50,000</td></tr>
+                    <tr><td>Common Stock</td><td>216,000</td><td>140,000</td></tr>
+                    <tr><td>Retained Earnings</td><td>75,000</td><td>56,000</td></tr>
+                </table>
+                <h3>Additional Data</h3>
+                <ol>
+                    <li>Purchased LT investments for cash ($15,000).</li>
+                    <li>Purchased equipment for $5,000 cash.</li>
+                    <li>Sold land costing $20,000 for $28,000 cash.</li>
+                    <li>Acquired $60,000 patent by issuing stock.</li>
+                    <li>Repaid LT debt $12,000 cash.</li>
+                    <li>Issued common stock for $14,000 cash.</li>
+                    <li>Declared/Paid Dividends $13,000.</li>
+                    <li>Issued $2,000 stock for comp.</li>
+                </ol>
+            </div>
+            <div>
+                <h2>Financing Activities</h2>
+                <div class="card">
+                    <div class="click-row" onclick="this.classList.add('revealed')">
+                        <p><strong>1. Debt Repayment:</strong></p>
+                        <p class="details">LT Debt decreased $12,000. Data #6 confirms repayment. ➔ Outflow (12,000).</p>
+                    </div>
+                    <div class="click-row" onclick="this.classList.add('revealed')">
+                        <p><strong>2. Stock Issuance:</strong></p>
+                        <p class="details">Common Stock increased $76,000. Data #7 says $14,000 was cash issuance. ➔ Inflow 14,000.</p>
+                    </div>
+                    <div class="click-row" onclick="this.classList.add('revealed')">
+                        <p><strong>3. Dividends:</strong></p>
+                        <p class="details">Beg RE (56k) + NI (32k) - End RE (75k) = Divs (13k). Data #8 confirms. ➔ Outflow (13,000).</p>
+                    </div>
+
+                    <table style="margin-top:2vmin;">
+                        <tr><td>Issue Common Stock (#7)</td><td>14,000</td></tr>
+                        <tr><td>Repay Long-term Debt (#6)</td><td>(12,000)</td></tr>
+                        <tr><td>Pay Cash Dividends (#8)</td><td>(13,000)</td></tr>
+                        <tr class="highlight-row"><td><strong>Net Financing</strong></td><td><strong>(11,000)</strong></td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 32: Java Final -->
+    <div class="slide slide-full">
+        <h1>Java House: Reconciliation</h1>
+        <div class="card" style="text-align:center; padding:5vmin; width:60%; margin:0 auto;">
+            <p>Operating: $17,000</p>
+            <p>Investing: $8,000</p>
+            <p>Financing: ($11,000)</p>
+            <hr style="width:50%; margin:2vmin auto;">
+            <p style="font-weight:bold; color:var(--accent);">Net Change: +$14,000</p>
+            <p>Beg Cash: $10,000</p>
+            <p style="font-weight:bold;">End Cash: $24,000</p>
+            <p style="color:var(--success)">MATCHES B/S!</p>
+        </div>
+    </div>
+
+    <!-- Slide 33: Non-Cash Disclosure -->
+    <div class="slide">
+        <div class="slide-grid">
+            <div class="data-panel">
+                <p><strong>#4:</strong> Acquired $60k patent by issuing stock.</p>
+            </div>
+            <div>
+                <h2>Non-Cash Disclosure</h2>
+                <p>Java House acquired a Patent ($60k) by issuing Stock.</p>
+                <p>This transaction does not touch cash, so it goes in a <strong>Footnote</strong> at the bottom.</p>
+                <div class="card">
+                    <p class="mono">Disclosure:</p>
+                    <p>"Non-cash investing/financing: Issued stock for patent $60,000"</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 34: OCF/CapEx -->
+    <div class="slide">
+        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
+            <div>
+                <h2>OCF / CapEx Ratio</h2>
+                <p>Measures ability to grow without borrowing.</p>
+                <p><strong>Microsoft (2023):</strong> $87B / $28B = 3.12</p>
+                
+                <table style="margin-top:2vmin; font-size:1.5vmin;">
+                    <tr><th>Item</th><th>Amount (B)</th></tr>
+                    <tr><td>Operating Cash Flow</td><td>$87.6</td></tr>
+                    <tr><td>Additions to PP&E</td><td>($28.1)</td></tr>
+                </table>
+            </div>
+            <div class="card">
+                <h3>Interpretations</h3>
+                <ul>
+                    <li><strong>Ratio > 1:</strong> Conservative/Healthy. Self-funding growth.</li>
+                    <li><strong>Ratio < 1:</strong> May rely on external debt/equity to grow. Earnings might be artificial if OCF is consistently low.</li>
+                    <li><strong>Ratio dropping rapidly:</strong> <strong style="color:var(--error)">Red Flag</strong> - Deteriorating efficiency or aggressive capitalization.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 35: EBITDA vs CFO (Tables) -->
+    <div class="slide slide-full">
+        <h1>The EBITDA Trap</h1>
+        <p>Two companies, identical EBITDA, very different cash realities.</p>
+        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="card">
+                <h3>Company A</h3>
+                <table>
+                    <tr class="highlight-row"><td>EBITDA</td><td>$120</td></tr>
+                    <tr><td>Interest/Tax</td><td>(25)</td></tr>
+                    <tr><td>Working Cap</td><td>0</td></tr>
+                    <tr style="color:var(--success); font-weight:bold;"><td>CFO</td><td>$95</td></tr>
+                </table>
+            </div>
+            <div class="card">
+                <h3>Company B</h3>
+                <table>
+                    <tr class="highlight-row"><td>EBITDA</td><td>$120</td></tr>
+                    <tr><td>Interest/Tax</td><td>(55)</td></tr>
+                    <tr><td>Working Cap</td><td>(50)</td></tr>
+                    <tr style="color:var(--error); font-weight:bold;"><td>CFO</td><td>$15</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 36: Free Cash Flow -->
+    <div class="slide slide-full">
+        <h1>Free Cash Flow (FCF)</h1>
+        <div class="card" style="font-size:3vmin; line-height:1.6;">
+            <p>Free cash flow is defined as <strong>Operating Cash Flow minus Capital Expenditures (CapEx)</strong>.</p>
+            <p>It is widely considered the "Golden Metric" in valuation because it represents the cash that a company is able to generate after laying out the money required to maintain or expand its asset base. This is the cash available for discretionary distribution to investors (both debt and equity holders) without jeopardizing the ongoing business operations.</p>
+        </div>
+    </div>
+
+    <!-- Slide 37: Prediction Power -->
+    <div class="slide">
+        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
+            <div>
+                <h2>Earnings vs Cash Flow</h2>
+                <p><strong>FASB Core Proposition (1978):</strong> Earnings predict future cash flows better than current cash flows.</p>
+                <p>Research by Ball & Nikolaev confirms that Operating Earnings (accrual-based) consistently outperform Cash Flow models in predicting future performance.</p>
+            </div>
+            <div class="card">
+                <div class="flip-container" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-inner">
+                        <div class="flip-front">
+                            <h3>Why?</h3>
+                            <p>(Click to reveal)</p>
+                        </div>
+                        <div class="flip-back">
+                            <p>Accruals smooth out "lumpy" timing mismatches (like buying inventory in Q1 for sales in Q2).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 38: Earnings Quality Ratio -->
+    <div class="slide">
+        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
+            <div>
+                <h2>Earnings Quality Ratio</h2>
+                <p class="mono">Net Income / CFO</p>
+                <ul>
+                    <li>Ratio > 1: Conservative.</li>
+                    <li>Ratio < 1: Earnings might be artificial.</li>
+                    <li>Ratio dropping rapidly: <strong>Red Flag.</strong></li>
+                </ul>
+            </div>
+            <div class="card">
+                <div style="font-size:8vmin; text-align:center; color:var(--accent);">1.0</div>
+                <div class="stat-caption">Target</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 39: Intel Case Intro -->
+    <div class="slide slide-full">
+        <h1>Intel Case Study</h1>
+        <p>Analyzing Earnings Quality Deterioration (2021-2023).</p>
+    </div>
+
+    <!-- Slide 40: Intel 2023 Income Sources -->
+    <div class="slide slide-full">
+        <h1>Intel 2023: Income Sources</h1>
+        <div class="hierarchy-container">
+            <div class="h-box neutral" style="width:50%;">
+                <h4>Net Income</h4><div class="val">$1,675 M</div>
+            </div>
+            
+            <div style="font-size:3vmin;">⬆</div>
+            
+            <div class="h-row">
+                <div class="h-box use"><h4>Operating Income</h4><div class="val">$93 M</div><div class="desc">Core Profitability</div></div>
+                <div class="h-box source"><h4>Non-Operating</h4><div class="val">$669 M</div><div class="desc">Investment Gains</div></div>
+                <div class="h-box source"><h4>Tax Benefit</h4><div class="val">$913 M</div><div class="desc">Tax Credit</div></div>
+            </div>
+            
+            <div style="font-size:3vmin;">⬆</div>
+            
+            <div class="h-row">
+                <div class="h-box neutral"><h4>Gross Margin</h4><div class="val">$21,711 M</div></div>
+                <div class="h-box use"><h4>Op Expenses</h4><div class="val">($21,618 M)</div></div>
+            </div>
+            
+            <div style="font-size:3vmin;">⬆</div>
+            
+            <div class="h-row">
+                <div class="h-box source"><h4>Sales Revenue</h4><div class="val">$54,228 M</div></div>
+                <div class="h-box use"><h4>Cost of Sales</h4><div class="val">($32,517 M)</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 41: Intel 2022-2023 Deterioration -->
+    <div class="slide slide-full">
+        <h1>Intel Deterioration: 2022 ➔ 2023</h1>
+        <div class="hierarchy-container">
+            <div class="h-box use" style="width:60%;">
+                <h4>Net Income Change</h4>
+                <div class="val">-6,342 (-79%)</div>
+            </div>
+            
+            <div class="h-row">
+                <div class="h-box use"><h4>Operating Income</h4><div class="val">-2,241 (-96%)</div></div>
+                <div class="h-box use"><h4>Non-Operating</h4><div class="val">-4,765 (-88%)</div></div>
+                <div class="h-box source"><h4>Tax Benefit</h4><div class="val">+664 (+267%)</div></div>
+            </div>
+            
+            <div class="h-row">
+                <div class="h-box use"><h4>Gross Margin</h4><div class="val">-5,155 (-19%)</div></div>
+                <div class="h-box use"><h4>Op Expenses</h4><div class="val">+2,914 (+12%)</div></div>
+            </div>
+            
+            <div class="h-row" style="margin-top:2vmin;">
+                <div class="h-box use"><h4>Sales</h4><div class="val">-8,826 (-14%)</div></div>
+                <div class="h-box use"><h4>Cost Sales</h4><div class="val">-3,671 (-10%)</div></div>
+            </div>
+            
+            <div class="flip-container" style="margin-top:2vmin;" onclick="this.classList.toggle('flipped')">
+                <div class="flip-inner">
+                    <div class="flip-front" style="background:var(--error); color:white; border:none;">Click for Bottom Line Analysis</div>
+                    <div class="flip-back" style="background:var(--text-main); font-size:1.8vmin;">
+                        Intel’s income deterioration was driven mainly by lower sales + higher operating expenses, plus a big drop in nonoperating income, while a larger tax benefit only partially cushioned the decline.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 42: Intel Trend -->
+    <div class="slide slide-full">
+        <h1>Intel: 3-Year Trend</h1>
+        <table style="text-align: center;">
+            <thead><tr><th style="text-align: center;">Year</th><th style="text-align: center;">Net Income</th><th style="text-align: center;">CFO</th><th style="text-align: center;">Ratio</th></tr></thead>
+            <tbody>
+                <tr><td>2021</td><td>$19,868</td><td>$29,991</td><td>0.66</td></tr>
+                <tr><td>2022</td><td>$8,017</td><td>$15,433</td><td>0.52</td></tr>
+                <tr class="highlight-row"><td>2023</td><td>$1,675</td><td>$11,471</td><td><strong>0.15</strong></td></tr>
+            </tbody>
+        </table>
+        <p style="color:var(--error);">Ratio of 0.15 indicates massive deterioration in earnings quality.</p>
+    </div>
+
+    <!-- Slide 43: Red Flags -->
+    <div class="slide">
+        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
+            <div>
+                <h2>Red Flags Summary</h2>
+                <ul>
+                    <li>Earnings grow, but Free Cash Flow shrinks.</li>
+                    <li>Receivables grow faster than Sales.</li>
+                    <li>Core Income is negative, but Net Income is positive (Tax/One-offs).</li>
+                    <li>CFO is positive only because they stopped paying suppliers (A/P Spike).</li>
+                </ul>
+            </div>
+            <div class="card"><div style="font-size:8vmin; text-align:center;">🚩</div></div>
+        </div>
+    </div>
+
+    <!-- Slide 44: Module Summary -->
+    <div class="slide slide-full">
+        <h1>Module Summary</h1>
+        <div class="card" style="font-size:2.5vmin; line-height:1.6;">
+            <div class="summary-item" onclick="this.classList.add('visible')">1. We began by establishing that cash is the lifeblood of a business, while profit is an accounting construct. The Statement of Cash Flows (SCF) bridges this gap by reconciling Net Income to Cash Flow through three key activities: Operating, Investing, and Financing. (Click next)</div>
+            <div class="summary-item" onclick="this.classList.add('visible')">2. Using the Indirect Method, we learned to adjust Net Income by adding back non-cash expenses like depreciation and reversing accounting gains/losses to avoid double counting. We applied specific rules to working capital: current asset increases consume cash, while liability increases provide cash.</div>
+            <div class="summary-item" onclick="this.classList.add('visible')">3. Finally, we assessed Earnings Quality. High-quality earnings are sustainable and backed by cash flow. Cases like Intel demonstrate that even profitable companies can have deteriorating quality if profits are driven by tax benefits rather than core operations.</div>
+        </div>
+    </div>
+
+    <!-- Slide 45: Quiz Prep -->
+    <div class="slide slide-full">
+        <h1>Final Assessment</h1>
+        <p>10 Questions to test your mastery.</p>
+        <button class="nav-btn" style="width:200px; margin-top:2vmin;" onclick="nextSlide()">Start Quiz</button>
+    </div>
+
+    <!-- Slide 46-51: Quiz (Single Slide Scrollable) -->
+    <div class="slide slide-full active" style="overflow-y:auto;">
+        <h1>Self-Check Quiz</h1>
+        <div id="quiz-container" style="text-align:left; max-width:1000px; margin:0 auto; padding-bottom:50px;">
+            <!-- Quiz JS injects here -->
+        </div>
+        <button class="nav-btn" onclick="checkQuiz()" style="margin-top:2vmin; width:100%;">Submit Answers</button>
+        <div id="score-display" style="font-size:4vmin; font-weight:bold; margin-top:2vmin; color:var(--accent); text-align:center;"></div>
+    </div>
+
+</div>
+
+<!-- Sticky Nav -->
+<div class="nav-bar">
+    <button class="nav-btn" onclick="prevSlide()">PREV</button>
+    <div class="progress"><span id="current">1</span> / 51</div>
+    <button class="nav-btn" onclick="nextSlide()">NEXT</button>
+</div>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = 51;
+    const currentEl = document.getElementById('current');
+
+    function updateSlide() {
+        slides.forEach(s => s.classList.remove('active'));
+        if (slides[currentSlide]) {
+            slides[currentSlide].classList.add('active');
+            currentEl.innerText = (currentSlide + 1) + " / " + totalSlides;
+        }
+        
+        // Trigger Polls
+        if (currentSlide === 14) showPoll(0); // After Step 2
+        if (currentSlide === 24) showPoll(1); // After Java Intro
+        if (currentSlide === 34) showPoll(2); // After EBITDA
+    }
+
+    function nextSlide() {
+        if (currentSlide < slides.length - 1) {
+            currentSlide++;
+            updateSlide();
+        }
+    }
+
+    function prevSlide() {
+        if (currentSlide > 0) {
+            currentSlide--;
+            updateSlide();
+        }
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') nextSlide();
+        if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    const polls = [
+        { q: "Indirect Method Step 2: What do we do with Depreciation?", o: ["Subtract", "Add Back", "Ignore"], c: 1 },
+        { q: "If Inventory decreases, what is the adjustment to Net Income?", o: ["Add (Inflow)", "Subtract (Outflow)", "No Effect"], c: 0 },
+        { q: "True or False: EBITDA allows for fair comparisons between companies in completely different industries?", o: ["True", "False"], c: 1 },
+        { q: "Issuing Stock is what type of activity?", o: ["Operating", "Investing", "Financing"], c: 2 },
+        { q: "What is a Red Flag regarding NI vs CFO?", o: ["NI is high but CFO is low/negative", "NI is lower than CFO", "Both are growing"], c: 0 }
+    ];
+
+    function showPoll(i) {
+        const p = polls[i];
+        const m = document.getElementById('poll-layer');
+        document.getElementById('poll-q').innerText = p.q;
+        const c = document.getElementById('poll-opts');
+        c.innerHTML = '';
+        p.o.forEach((opt, idx) => {
+            const b = document.createElement('div');
+            b.className = 'poll-option';
+            b.innerText = opt;
+            b.onclick = () => {
+                if (idx === p.c) { b.classList.add('correct'); b.innerText += " ✅"; }
+                else { b.classList.add('wrong'); }
+            };
+            c.appendChild(b);
+        });
+        m.style.display = 'flex';
+    }
+
+    function closePoll() { document.getElementById('poll-layer').style.display = 'none'; }
+
+    const quizData = [
+        { q: "1. Starting point for Indirect Method?", a: ["Sales", "Net Income", "End Cash"], c: 1 },
+        { q: "2. Depreciation Adjustment?", a: ["Add", "Subtract", "Ignore"], c: 0 },
+        { q: "3. Sell Equip for Cash?", a: ["Ops", "Inv", "Fin"], c: 1 },
+        { q: "4. A/P Increase?", a: ["Source (+)", "Use (-)"], c: 0 },
+        { q: "5. A/R Decrease?", a: ["Source (+)", "Use (-)"], c: 0 },
+        { q: "6. Interest Paid?", a: ["Ops", "Inv", "Fin"], c: 0 },
+        { q: "7. Dividends Paid?", a: ["Ops", "Inv", "Fin"], c: 2 },
+        { q: "8. Gain on Sale?", a: ["Add", "Subtract"], c: 1 },
+        { q: "9. High Quality Ratio?", a: ["< 0.5", "> 1.0"], c: 1 },
+        { q: "10. FCF Formula?", a: ["NI - Div", "OCF - CapEx"], c: 1 }
+    ];
+
+    const quizDiv = document.getElementById('quiz-container');
+    quizData.forEach((item, i) => {
+        let html = `<div class="quiz-question"><p style="font-weight:bold; font-size:3vmin;">${item.q}</p>`;
+        item.a.forEach((ans, j) => {
+            html += `<label class="quiz-opt"><input type="radio" name="q${i}" value="${j}"> ${ans}</label>`;
+        });
+        html += `</div>`;
+        quizDiv.innerHTML += html;
+    });
+
+    function checkQuiz() {
+        let score = 0;
+        quizData.forEach((item, i) => {
+            const s = document.querySelector(`input[name="q${i}"]:checked`);
+            if (s && parseInt(s.value) === item.c) score++;
+        });
+        document.getElementById('score-display').innerText = `Score: ${score} / 10`;
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+    }
+
+    updateSlide();
+</script>
+</body>
+</html>
