@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Detective Simulator: Microsoft 10-K (2024 Modified)</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Custom Print Styles -->
+    <style>
+        @media print {
+            html, body {
+                height: auto !important;
+                overflow: visible !important;
+                background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            #root {
+                display: block !important;
+                height: auto !important;
+                overflow: visible !important;
+            }
+            .print-modal-wrapper {
+                position: static !important;
+                display: block !important;
+                width: 100% !important;
+                height: auto !important;
+                background: white !important;
+                overflow: visible !important;
+                z-index: 9999;
+                inset: 0 !important;
+                padding: 0 !important;
+            }
+            .print-modal-content {
+                box-shadow: none !important;
+                border: none !important;
+                max-height: none !important;
+                height: auto !important;
+                overflow: visible !important;
+                width: 100% !important;
+                max-width: none !important;
+                margin: 0 !important;
+                border-radius: 0 !important;
+                transform: none !important;
+            }
+            ::-webkit-scrollbar {
+                display: none;
+            }
+            .page-break-item {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+        }
+        
+        .resizer {
+            width: 4px;
+            cursor: col-resize;
+            background-color: transparent;
+            transition: background-color 0.2s;
+        }
+        .resizer:hover, .resizing .resizer {
+            background-color: #6366f1;
+        }
+        .no-select {
+            user-select: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans no-select" oncontextmenu="return false">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useCallback } = React;
+
+        // --- ICONS (SVG Components) ---
+        const Icon = ({ name, className }) => {
+            const icons = {
+                Search: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>,
+                AlertCircle: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>,
+                CheckCircle2: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>,
+                Calculator: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>,
+                FileText: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>,
+                Flag: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>,
+                Trash2: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>,
+                Save: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>,
+                Printer: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>,
+                Key: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>,
+                Lock: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
+                Unlock: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>,
+                RotateCcw: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>,
+                Delete: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20 5H9l-7 7 7 7h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Z"/><line x1="18" x2="12" y1="9" y2="15"/><line x1="12" x2="18" y1="9" y2="15"/></svg>,
+                User: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+                Eye: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            };
+            return icons[name] || null;
+        };
+
+        // --- SECURITY & OBFUSCATION ---
+        const d = (s) => atob(s);
+        const e = (s) => btoa(s);
+
+        // ANSWER_KEYS renamed to _DATA_MATRIX with Base64 values
+        const _DATA_MATRIX = {
+            'cfo_salary-Label': { 
+                t: 'Y2xhc3NpZmljYXRpb24=', 
+                n: 'Q2xhc3NpZmljYXRpb24gRXJyb3I6IENGTyBzYWxhcnkgYmVsb25ncyBpbiBHZW5lcmFsICYgQWRtaW5pc3RyYXRpdmUgZXhwZW5zZXMsIG5vdCBDb3N0IG9mIFJldmVudWUu',
+                rl: 'Q0ZPIFNhbGFyeQ==', 
+                y: 'TGFiZWw=', 
+                tb: 'aW5jb21lX3N0YXRlbWVudA==' 
+            },
+            'rev_unearned-Label': { 
+                t: 'Y2xhc3NpZmljYXRpb24=', 
+                n: 'Q2xhc3NpZmljYXRpb24gRXJyb3I6IFVuZWFybmVkIFJldmVudWUgaXMgYSBMaWFiaWxpdHksIG5vdCBSZXZlbnVlLg==',
+                rl: 'U2hvcnQtdGVybSB1bmVhcm5lZCByZXZlbnVl', 
+                y: 'TGFiZWw=', 
+                tb: 'aW5jb21lX3N0YXRlbWVudA==' 
+            },
+            'rnd-Label': { 
+                t: 'bGFiZWw=', 
+                n: 'TGFiZWwgRXJyb3I6IFR5cG8gJ2RlcGxveW1lbnQnIGluc3RlYWQgb2YgJ2RldmVsb3BtZW50Jy4=',
+                rl: 'UmVzZWFyY2ggYW5kIGRlcGxveW1lbnQ=', 
+                y: 'TGFiZWw=', 
+                tb: 'aW5jb21lX3N0YXRlbWVudA==' 
+            },
+            'gross_margin-Label': { 
+                t: 'bGFiZWw=', 
+                n: 'SW5jb3JyZWN0IExhYmVsOiBTaG91bGQgYmUgJ0dyb3NzIE1hcmdpbicu',
+                rl: 'TmV0IEluY29tZSBiZWZvcmUgT3BlcmF0aW5nIEV4cGVuc2Vz', 
+                y: 'TGFiZWw=', 
+                tb: 'aW5jb21lX3N0YXRlbWVudA==' 
+            },
+            'div_exp-Label': { 
+                t: 'Y2xhc3NpZmljYXRpb24=', 
+                n: 'Q2xhc3NpZmljYXRpb24gRXJyb3I6IERpdmlkZW5kcyBhcmUgbm90IGFuIE9wZXJhdGluZyBFeHBlbnNlICh0eXBpY2FsbHkgRmluYW5jaW5nIG9yIHNlcGFyYXRlIHJlZHVjdGlvbiBvZiBSZXRhaW5lZCBFYXJuaW5ncyku',
+                rl: 'RGl2aWRlbmRzIHBhaWQ=', 
+                y: 'TGFiZWw=', 
+                tb: 'aW5jb21lX3N0YXRlbWVudA==' 
+            },
+            'lt_inv_error-Label': { 
+                t: 'Y2xhc3NpZmljYXRpb24=', 
+                n: 'Q2xhc3NpZmljYXRpb24gRXJyb3I6IExvbmctdGVybSBhc3NldHMgdW5kZXIgQ3VycmVudCBBc3NldHMu',
+                rl: 'TG9uZy10ZXJtIGludmVzdG1lbnRz', 
+                y: 'TGFiZWw=', 
+                tb: 'YmFsYW5jZV9zaGVldA==' 
+            },
+            'goodwill_error-Label': { 
+                t: 'Y2xhc3NpZmljYXRpb24=', 
+                n: 'Q2xhc3NpZmljYXRpb24gRXJyb3I6IEdvb2R3aWxsIGlzIGFuIGludGFuZ2libGUsIG5vbi1jdXJyZW50IGFzc2V0Lg==',
+                rl: 'R29vZHdpbGw=', 
+                y: 'TGFiZWw=', 
+                tb: 'YmFsYW5jZV9zaGVldA==' 
+            },
+            'ap_error-Label': { 
+                t: 'Y2xhc3NpZmljYXRpb24=', 
+                n: 'Q2xhc3NpZmljYXRpb24gRXJyb3I6IEFjY291bnRzIFBheWFibGUgaXMgYSBMaWFiaWxpdHksIGluY29ycmVjdGx5IGxpc3RlZCB1bmRlciBBc3NldHMu',
+                rl: 'QWNjb3VudHMgcGF5YWJsZQ==', 
+                y: 'TGFiZWw=', 
+                tb: 'YmFsYW5jZV9zaGVldA==' 
+            },
+            'profit_asset_error-Label': { 
+                t: 'Y2xhc3NpZmljYXRpb24=', 
+                n: 'Q2xhc3NpZmljYXRpb24gRXJyb3I6IEVxdWl0eSBpdGVtICgnUHJvZml0JykgZWFybmVkIGluY29ycmVjdGx5IGxpc3RlZCB1bmRlciBBc3NldHMu',
+                rl: 'UHJvZml0', 
+                y: 'TGFiZWw=', 
+                tb: 'YmFsYW5jZV9zaGVldA==' 
+            },
+            'ar_error-Label': { 
+                t: 'Y2xhc3NpZmljYXRpb24=', 
+                n: 'Q2xhc3NpZmljYXRpb24gRXJyb3I6IEFjY291bnRzIFJlY2VpdmFibGUgaXMgYW4gQXNzZXQsIGluY29ycmVjdGx5IGxpc3RlZCB1bmRlciBMaWFiaWxpdGllcy4=',
+                rl: 'QWNjb3VudHMgcmVjZWl2YWJsZSwgbmV0', 
+                y: 'TGFiZWw=', 
+                tb: 'YmFsYW5jZV9zaGVldA==' 
+            },
+            'st_inv_liab_error-Label': { 
+                t: 'Y2xhc3NpZmljYXRpb24=', 
+                n: 'Q2xhc3NpZmljYXRpb24gRXJyb3I6IFNob3J0LXRlcm0gaW52ZXN0bWVudHMgYXJlIEFzc2V0cywgbm90IExpYWJpbGl0aWVzLg==',
+                rl: 'U2hvcnQtdGVybSBpbnZlc3RtZW50cw==', 
+                y: 'TGFiZWw=', 
+                tb: 'YmFsYW5jZV9zaGVldA==' 
+            },
+            'retained_earnings-Label': { 
+                t: 'bGFiZWw=', 
+                n: 'TGFiZWwgRXJyb3I6ICdQcm9maXQnIHVzZWQgaW5zdGVhZCBvZiBSZXRhaW5lZCBFYXJuaW5ncy4=',
+                rl: 'UHJvZml0', 
+                y: 'TGFiZWw=', 
+                tb: 'YmFsYW5jZV9zaGVldA==' 
+            },
+            'total_liab_equity-2024': { 
+                t: 'bWF0aA==', 
+                n: 'QWNjb3VudGluZyBFcXVhdGlvbiBFcnJvcjogVG90YWwgTGlhYmlsaXRpZXMgJiBFcXVpdHkgKCQ1MjgsNjE0KSBkb2VzIG5vdCBlcXVhbCBUb3RhbCBBc3NldHMgKCQ2NTAsMzc5KS4gQWxzbyBtaXNtYXRjaGVzIEVxdWl0eSBTdGF0ZW1lbnQgdG90YWwu',
+                rl: 'VG90YWwgbGlhYmlsaXRpZXMgYW5kIHN0b2NraG9sZGVyc+KAmSBlcXVpdHk=', 
+                y: 'MjAyNA==', 
+                tb: 'YmFsYW5jZV9zaGVldA==' 
+            },
+            'total_assets-2024': { 
+                t: 'bWF0aA==', 
+                n: 'QWNjb3VudGluZyBFcXVhdGlvbiBFcnJvcjogVG90YWwgQXNzZXRzICgkNjUwLDM3OSkgZG9lcyBub3QgZXF1YWwgVG90YWwgTGlhYmlsaXRpZXMgJiBFcXVpdHkgKCQ1MjgsNjE0KS4=',
+                rl: 'VG90YWwgYXNzZXRz', 
+                y: 'MjAyNA==', 
+                tb: 'YmFsYW5jZV9zaGVldA==' 
+            },
+            'curr_lt_debt-Label': { 
+                t: 'Y2xhc3NpZmljYXRpb24=', 
+                n: 'Q2xhc3NpZmljYXRpb24gRXJyb3I6IEN1cnJlbnQgcG9ydGlvbiBvZiBsb25nLXRlcm0gZGVidCBpcyBhIEN1cnJlbnQgTGlhYmlsaXR5LCBub3QgTG9uZy1UZXJtLg==',
+                rl: 'Q3VycmVudCBwb3J0aW9uIG9mIGxvbmctdGVybSBkZWJ0', 
+                y: 'TGFiZWw=', 
+                tb: 'YmFsYW5jZV9zaGVldA==' 
+            },
+            'net_cash_ops-Label': { 
+                t: 'bGFiZWw=', 
+                n: 'TGFiZWwgRXJyb3I6ICdVc2VkIGZyb20nIGltcGxpZXMgbmVnYXRpdmUsIGJ1dCB2YWx1ZSBpcyBwb3NpdGl2ZS4=',
+                rl: 'TmV0IGNhc2ggdXNlZCBmcm9tIG9wZXJhdGlvbnM=', 
+                y: 'TGFiZWw=', 
+                tb: 'Y2FzaF9mbG93' 
+            },
+            'ppe_ops_error-Label': { 
+                t: 'Y2xhc3NpZmljYXRpb24=', 
+                n: 'Q2xhc3NpZmljYXRpb24gRXJyb3I6IENhcGl0YWwgRXhwZW5kaXR1cmVzIGJlbG9uZyBpbiBJbnZlc3RpbmcgQWN0aXZpdGllcywgbm90IE9wZXJhdGluZy4=',
+                rl: 'UHVyY2hhc2Ugb2YgcHJvcGVydHkgYW5kIGVxdWlwbWVudA==', 
+                y: 'TGFiZWw=', 
+                tb: 'Y2FzaF9mbG93' 
+            },
+            'net_cash_inv-Label': { 
+                t: 'bGFiZWw=', 
+                n: 'TGFiZWwgRXJyb3I6ICdQcm92aWRlZCBieScgaW1wbGllcyBwb3NpdGl2ZSwgYnV0IHZhbHVlIGlzIG5lZ2F0aXZlLg==',
+                rl: 'TmV0IGNhc2ggcHJvdmlkZWQgYnkgaW52ZXN0aW5n', 
+                y: 'TGFiZWw=', 
+                tb: 'Y2FzaF9mbG93' 
+            },
+            'beg_cash-2024': { 
+                t: 'bGlua2FnZQ==', 
+                n: 'UmVjb25jaWxpYXRpb24gRXJyb3I6IE1pc21hdGNoIHdpdGggcHJpb3IgeWVhciBlbmRpbmcgY2FzaC4=',
+                rl: 'Q2FzaCBhbmQgY2FzaCBlcXVpdmFsZW50cywgYmVnaW5uaW5n', 
+                y: 'MjAyNA==', 
+                tb: 'Y2FzaF9mbG93' 
+            },
+            'end_cash-2024': { 
+                t: 'bGlua2FnZQ==', 
+                n: 'UmVjb25jaWxpYXRpb24gRXJyb3I6IE1pc21hdGNoIHdpdGggQmFsYW5jZSBTaGVldCBjYXNoLg==',
+                rl: 'Q2FzaCBhbmQgY2FzaCBlcXVpdmFsZW50cywgZW5kIG9mIHBlcmlvZA==', 
+                y: 'MjAyNA==', 
+                tb: 'Y2FzaF9mbG93' 
+            },
+            'eq_net_income-2024': { 
+                t: 'bGlua2FnZQ==', 
+                n: 'TGlua2FnZSBFcnJvcjogTmV0IEluY29tZSAoJDg4LDEzNikgZG9lcyBub3QgbWF0Y2ggSW5jb21lIFN0YXRlbWVudCBOZXQgSW5jb21lICgkNjYsMzY1KS4=',
+                rl: 'TmV0IGluY29tZQ==', 
+                y: 'MjAyNA==', 
+                tb: 'ZXF1aXR5' 
+            },
+            'eq_re_rep_error-Label': { 
+                t: 'bGFiZWw=', 
+                n: 'TGFiZWwgRXJyb3I6IExhYmVsZWQgJ3NvbGQnIGJ1dCB2YWx1ZSBpcyBuZWdhdGl2ZSAocmVwdXJjaGFzZWQpLg==',
+                rl: 'Q29tbW9uIHN0b2NrIHNvbGQ=', 
+                y: 'TGFiZWw=', 
+                tb: 'ZXF1aXR5' 
+            }
+        };
+
+        const TAB_YEARS = {
+            income_statement: [2024],
+            balance_sheet: [2024, 2023],
+            cash_flow: [2024],
+            equity: [2024]
+        };
+
+        const p = (val) => {
+            if (val === undefined || val === null || val === '') return null;
+            if (typeof val === 'number') return val;
+            const clean = val.toString().replace(/,/g, '').replace(/\$/g, '').replace(/\s/g, '');
+            if (clean.startsWith('(') && clean.endsWith(')')) {
+                return -1 * parseFloat(clean.slice(1, -1));
+            }
+            return parseFloat(clean);
+        };
+
+        const FINANCIAL_DATA = {
+            income_statement: [
+                { type: 'header', label: 'Revenue' },
+                { id: 'rev_prod', label: 'Product', values: { 2024: "64,773", 2023: "64,699", 2022: "72,732" } },
+                { id: 'rev_serv', label: 'Service and other', values: { 2024: "150,349", 2023: "147,216", 2022: "125,538" } },
+                { id: 'rev_unearned', label: 'Short-term unearned revenue', values: { 2024: "30,000", 2023: "0", 2022: "0" } },
+                { type: 'total', id: 'rev_total', label: 'Total revenue', formula: ['rev_prod', 'rev_serv', 'rev_unearned'], values: { 2024: "245,122", 2023: "211,915", 2022: "198,270" } },
+                { type: 'spacer' },
+                { type: 'header', label: 'Cost of revenue' },
+                { id: 'cost_prod', label: 'Product', values: { 2024: "15,272", 2023: "17,804", 2022: "19,064" }, negative_implication: true },
+                { id: 'cost_serv', label: 'Service and other', values: { 2024: "58,842", 2023: "48,059", 2022: "43,586" }, negative_implication: true },
+                { id: 'cfo_salary', label: 'CFO Salary', values: { 2024: "5", 2023: "0", 2022: "0" }, negative_implication: true },
+                { type: 'total', id: 'cost_total', label: 'Total cost of revenue', formula: ['cost_prod', 'cost_serv', 'cfo_salary'], values: { 2024: "74,119", 2023: "65,863", 2022: "62,650" }, negative_implication: true },
+                { type: 'spacer' },
+                { type: 'total', id: 'gross_margin', label: 'Net Income before Operating Expenses', formula: ['rev_total', '-cost_total'], values: { 2024: "171,003", 2023: "146,052", 2022: "135,620" } },
+                { type: 'header', label: 'Operating Expenses' },
+                { id: 'rnd', label: 'Research and deployment', values: { 2024: "29,510", 2023: "27,195", 2022: "24,512" }, negative_implication: true },
+                { id: 'sales', label: 'Sales and marketing', values: { 2024: "24,456", 2023: "22,759", 2022: "21,825" }, negative_implication: true },
+                { id: 'admin', label: 'General and administrative', values: { 2024: "7,604", 2023: "7,575", 2022: "5,900" }, negative_implication: true },
+                { id: 'div_exp', label: 'Dividends paid', values: { 2024: "21,771", 2023: "0", 2022: "0" }, negative_implication: true },
+                { type: 'spacer' },
+                { type: 'total', id: 'op_income', label: 'Operating income', formula: ['gross_margin', '-rnd', '-sales', '-admin', '-div_exp'], values: { 2024: "87,662", 2023: "88,523", 2022: "83,383" } }, 
+                { id: 'other_income', label: 'Other income (expense), net', values: { 2024: "(1,646)", 2023: "788", 2022: "333" } },
+                { type: 'total', id: 'pretax_income', label: 'Income before income taxes', formula: ['op_income', 'other_income'], values: { 2024: "86,016", 2023: "89,311", 2022: "83,716" } },
+                { id: 'tax', label: 'Provision for income taxes', values: { 2024: "19,651", 2023: "16,950", 2022: "10,978" }, negative_implication: true },
+                { type: 'total', id: 'net_income', label: 'Net income', formula: ['pretax_income', '-tax'], values: { 2024: "66,365", 2023: "72,361", 2022: "72,738" }, highlight: true }
+            ],
+            balance_sheet: [
+                { type: 'header', label: 'Assets' },
+                { type: 'header', label: 'Current assets' },
+                { id: 'cash', label: 'Cash and cash equivalents', values: { 2024: "18,315", 2023: "34,704" } },
+                { id: 'lt_inv_error', label: 'Long-term investments', values: { 2024: "57,228", 2023: "76,558" } },
+                { id: 'goodwill_error', label: 'Goodwill', values: { 2024: "119,220", 2023: "67,886" } },
+                { id: 'ap_error', label: 'Accounts payable', values: { 2024: "21,996", 2023: "18,095" } },
+                { id: 'profit_asset_error', label: 'Profit', values: { 2024: "173,144", 2023: "118,848" } },
+                { id: 'inv', label: 'Inventories', values: { 2024: "1,246", 2023: "2,500" } },
+                { id: 'other_curr', label: 'Other current assets', values: { 2024: "26,021", 2023: "21,807" } },
+                { type: 'total', id: 'total_curr_assets', label: 'Total current assets', formula: ['cash', 'lt_inv_error', 'goodwill_error', 'ap_error', 'profit_asset_error', 'inv', 'other_curr'], values: { 2024: "417,170", 2023: "340,398" } },
+                { type: 'spacer' },
+                { id: 'ppe', label: 'Property and equipment, net', values: { 2024: "135,591", 2023: "95,641" } },
+                { id: 'lease_asset', label: 'Operating lease right-of-use assets', values: { 2024: "18,961", 2023: "14,346" } },
+                { id: 'equity_inv', label: 'Equity and other investments', values: { 2024: "14,600", 2023: "9,879" } },
+                { id: 'intangibles', label: 'Intangible assets, net', values: { 2024: "27,597", 2023: "9,366" } },
+                { id: 'other_long', label: 'Other long-term assets', values: { 2024: "36,460", 2023: "30,601" } },
+                { type: 'total', id: 'total_assets', label: 'Total assets', formula: ['total_curr_assets', 'ppe', 'lease_asset', 'equity_inv', 'intangibles', 'other_long'], values: { 2024: "650,379", 2023: "500,231" }, highlight: true },
+                { type: 'spacer' },
+                { type: 'header', label: 'Liabilities and stockholders’ equity' },
+                { type: 'header', label: 'Current liabilities' },
+                { id: 'ar_error', label: 'Accounts receivable, net', values: { 2024: "56,924", 2023: "48,688" } },
+                { id: 'st_inv_liab_error', label: 'Short-term investments', values: { 2024: "6,693", 2023: "0" } },
+                { id: 'acc_comp', label: 'Accrued compensation', values: { 2024: "12,564", 2023: "11,009" } },
+                { id: 'st_tax', label: 'Short-term income taxes', values: { 2024: "5,017", 2023: "4,152" } },
+                { id: 'st_unearned', label: 'Short-term unearned revenue', values: { 2024: "57,582", 2023: "50,901" } },
+                { id: 'other_curr_liab', label: 'Other current liabilities', values: { 2024: "19,185", 2023: "14,745" } },
+                { type: 'total', id: 'total_curr_liab', label: 'Total current liabilities', formula: ['ar_error', 'st_inv_liab_error', 'acc_comp', 'st_tax', 'st_unearned', 'other_curr_liab'], values: { 2024: "157,965", 2023: "129,495" } },
+                { type: 'header', label: 'Long-term liabilities' },
+                { id: 'lt_debt', label: 'Long-term debt', values: { 2024: "42,688", 2023: "41,990" } },
+                { id: 'curr_lt_debt', label: 'Current portion of long-term debt', values: { 2024: "2,249", 2023: "5,247" } },
+                { id: 'lt_tax', label: 'Long-term income taxes', values: { 2024: "27,931", 2023: "25,560" } },
+                { id: 'lt_unearned', label: 'Long-term unearned revenue', values: { 2024: "2,602", 2023: "2,912" } },
+                { id: 'deferred_tax', label: 'Deferred income taxes', values: { 2024: "2,618", 2023: "433" } },
+                { id: 'lease_liab', label: 'Operating lease liabilities', values: { 2024: "15,497", 2023: "12,728" } },
+                { id: 'other_lt_liab', label: 'Other long-term liabilities', values: { 2024: "27,064", 2023: "17,981" } },
+                { type: 'total', id: 'total_liab', label: 'Total liabilities', formula: ['total_curr_liab', 'lt_debt', 'curr_lt_debt', 'lt_tax', 'lt_unearned', 'deferred_tax', 'lease_liab', 'other_lt_liab'], values: { 2024: "278,614", 2023: "236,346" } },
+                { type: 'header', label: 'Stockholders’ equity' },
+                { id: 'common_stock', label: 'Common stock and paid-in capital', values: { 2024: "100,923", 2023: "93,718" } },
+                { id: 'retained_earnings', label: 'Profit', values: { 2024: "173,144", 2023: "118,848" } },
+                { id: 'aoci', label: 'Accumulated other comprehensive loss', values: { 2024: "(5,590)", 2023: "(6,343)" } },
+                { type: 'total', id: 'total_equity', label: 'Total stockholders’ equity', formula: ['common_stock', 'retained_earnings', 'aoci'], values: { 2024: "268,477", 2023: "206,223" } },
+                { type: 'total', id: 'total_liab_equity', label: 'Total liabilities and stockholders’ equity', formula: ['total_liab', 'total_equity'], values: { 2024: "528,614", 2023: "442,569" }, highlight: true },
+            ],
+            cash_flow: [
+                { type: 'header', label: 'Operations' },
+                { id: 'cf_net_income', label: 'Net income', values: { 2024: "66,365", 2023: "72,361", 2022: "72,738" } },
+                { id: 'depreciation', label: 'Depreciation, amortization, and other', values: { 2024: "22,287", 2023: "13,861", 2022: "14,460" } },
+                { id: 'sbc', label: 'Stock-based compensation expense', values: { 2024: "10,734", 2023: "9,611", 2022: "7,502" } },
+                { id: 'ppe_ops_error', label: 'Purchase of property and equipment', values: { 2024: "(44,477)", 2023: "0", 2022: "0" } },
+                { id: 'inv_gains', label: 'Net recognized losses (gains) on investments', values: { 2024: "305", 2023: "196", 2022: "(409)" } },
+                { id: 'cf_def_tax', label: 'Deferred income taxes', values: { 2024: "(4,738)", 2023: "(6,059)", 2022: "(5,702)" } },
+                { type: 'header', label: 'Changes in operating assets and liabilities' },
+                { id: 'chg_ar', label: 'Accounts receivable', values: { 2024: "(7,191)", 2023: "(4,087)", 2022: "(6,834)" } },
+                { id: 'chg_inv', label: 'Inventories', values: { 2024: "1,284", 2023: "1,242", 2022: "(1,123)" } },
+                { id: 'chg_other_curr', label: 'Other current assets', values: { 2024: "(1,648)", 2023: "(1,991)", 2022: "(709)" } },
+                { id: 'chg_other_long', label: 'Other long-term assets', values: { 2024: "(6,817)", 2023: "(2,833)", 2022: "(2,805)" } },
+                { id: 'chg_ap', label: 'Accounts payable', values: { 2024: "3,545", 2023: "(2,721)", 2022: "2,943" } },
+                { id: 'chg_unearned', label: 'Unearned revenue', values: { 2024: "5,348", 2023: "5,535", 2022: "5,109" } },
+                { id: 'chg_tax', label: 'Income taxes', values: { 2024: "1,687", 2023: "(358)", 2022: "696" } },
+                { id: 'chg_other_curr_liab', label: 'Other current liabilities', values: { 2024: "4,867", 2023: "2,272", 2022: "2,344" } },
+                { id: 'chg_other_long_liab', label: 'Other long-term liabilities', values: { 2024: "749", 2023: "553", 2022: "825" } },
+                { type: 'total', id: 'net_cash_ops', label: 'Net cash used from operations', formula: ['cf_net_income', 'depreciation', 'sbc', 'ppe_ops_error', 'inv_gains', 'cf_def_tax', 'chg_ar', 'chg_inv', 'chg_other_curr', 'chg_other_long', 'chg_ap', 'chg_unearned', 'chg_tax', 'chg_other_curr_liab', 'chg_other_long_liab'], values: { 2024: "52,300", 2023: "87,582", 2022: "89,035" }, highlight: true },
+                { type: 'spacer' },
+                { type: 'header', label: 'Financing' },
+                { id: 'debt_90', label: 'Proceeds from issuance of debt (short)', values: { 2024: "5,250", 2023: "0", 2022: "0" } },
+                { id: 'debt_issue', label: 'Proceeds from issuance of debt', values: { 2024: "24,395", 2023: "0", 2022: "0" } },
+                { id: 'debt_repay', label: 'Repayments of debt', values: { 2024: "(29,070)", 2023: "(2,750)", 2022: "(9,023)" } },
+                { id: 'stock_issue', label: 'Common stock issued', values: { 2024: "2,002", 2023: "1,866", 2022: "1,841" } },
+                { id: 'stock_rep', label: 'Common stock repurchased', values: { 2024: "(17,254)", 2023: "(22,245)", 2022: "(32,696)" } },
+                { id: 'divs', label: 'Common stock cash dividends paid', values: { 2024: "(21,771)", 2023: "(19,800)", 2022: "(18,135)" } },
+                { id: 'fin_other', label: 'Other, net', values: { 2024: "(1,309)", 2023: "(1,006)", 2022: "(863)" } },
+                { type: 'total', id: 'net_cash_fin', label: 'Net cash used in financing', formula: ['debt_90', 'debt_issue', 'debt_repay', 'stock_issue', 'stock_rep', 'divs', 'fin_other'], values: { 2024: "(37,757)", 2023: "(72,042)", 2022: "(82,762)" } }, 
+                { type: 'spacer' },
+                { type: 'header', label: 'Investing' },
+                { id: 'acquisitions', label: 'Acquisition of companies', values: { 2024: "(69,132)", 2023: "(1,670)", 2022: "(22,038)" } },
+                { id: 'inv_purch', label: 'Purchases of investments', values: { 2024: "(17,732)", 2023: "(37,651)", 2022: "(26,456)" } },
+                { id: 'inv_mat', label: 'Maturities of investments', values: { 2024: "24,775", 2023: "33,510", 2022: "16,451" } },
+                { id: 'inv_sale', label: 'Sales of investments', values: { 2024: "10,894", 2023: "14,354", 2022: "28,443" } },
+                { id: 'inv_other', label: 'Other, net', values: { 2024: "(1,298)", 2023: "(3,116)", 2022: "(2,825)" } },
+                { type: 'total', id: 'net_cash_inv', label: 'Net cash provided by investing', formula: ['acquisitions', 'inv_purch', 'inv_mat', 'inv_sale', 'inv_other'], values: { 2024: "(52,493)", 2023: "5,427", 2022: "(6,425)" } },
+                { type: 'spacer' },
+                { id: 'fx', label: 'Effect of foreign exchange rates', values: { 2024: "(210)", 2023: "(194)", 2022: "(141)" } },
+                { type: 'total', id: 'net_change_cash', label: 'Net change in cash and cash equivalents', formula: ['net_cash_ops', 'net_cash_fin', 'net_cash_inv', 'fx'], values: { 2024: "(38,160)", 2023: "20,773", 2022: "(293)" } },
+                { id: 'beg_cash', label: 'Cash and cash equivalents, beginning', values: { 2024: "44,704", 2023: "23,931", 2022: "24,224" } },
+                { type: 'total', id: 'end_cash', label: 'Cash and cash equivalents, end of period', formula: ['beg_cash', 'net_change_cash'], values: { 2024: "6,544", 2023: "44,704", 2022: "23,931" }, highlight: true }
+            ],
+            equity: [
+                { type: 'header', label: 'Common stock and paid-in capital' },
+                { id: 'eq_cs_beg', label: 'Balance, beginning of period', values: { 2024: "93,718" } },
+                { id: 'eq_cs_issued', label: 'Common stock issued', values: { 2024: "2,002" } },
+                { id: 'eq_cs_rep', label: 'Common stock repurchased', values: { 2024: "(5,712)" } },
+                { id: 'eq_sbc', label: 'Stock-based compensation expense', values: { 2024: "10,734" } },
+                { id: 'eq_other', label: 'Other, net', values: { 2024: "181" } },
+                { type: 'total', id: 'eq_cs_end', label: 'Balance, end of period', formula: ['eq_cs_beg', 'eq_cs_issued', 'eq_cs_rep', 'eq_sbc', 'eq_other'], values: { 2024: "100,923" } },
+                { type: 'spacer' },
+                { type: 'header', label: 'Retained earnings' },
+                { id: 'eq_re_beg', label: 'Balance, beginning of period', values: { 2024: "118,848" } },
+                { id: 'eq_net_income', label: 'Net income', values: { 2024: "88,136" } },
+                { id: 'eq_divs', label: 'Common stock cash dividends', values: { 2024: "(22,293)" } },
+                { id: 'eq_re_rep_error', label: 'Common stock sold', values: { 2024: "(11,547)" } },
+                { type: 'total', id: 'eq_re_end', label: 'Balance, end of period', formula: ['eq_re_beg', 'eq_net_income', 'eq_divs', 'eq_re_rep_error'], values: { 2024: "173,144" } },
+                { type: 'spacer' },
+                { type: 'header', label: 'Accumulated other comprehensive loss' },
+                { id: 'eq_aoci_beg', label: 'Balance, beginning of period', values: { 2024: "(6,343)" } },
+                { id: 'eq_oci', label: 'Other comprehensive income (loss)', values: { 2024: "753" } },
+                { type: 'total', id: 'eq_aoci_end', label: 'Balance, end of period', formula: ['eq_aoci_beg', 'eq_oci'], values: { 2024: "(5,590)" } },
+                { type: 'spacer' },
+                { type: 'total', id: 'eq_total', label: 'Total stockholders’ equity', formula: ['eq_cs_end', 'eq_re_end', 'eq_aoci_end'], values: { 2024: "268,477" }, highlight: true },
+                { type: 'spacer' },
+                { id: 'eq_div_share', label: 'Cash dividends declared per common share', values: { 2024: "$3.00" } }
+            ]
+        };
+
+        const safeCalculate = (expression) => {
+            try {
+                const cleanExpr = expression.replace(/,/g, '').replace(/\s/g, '');
+                const tokens = cleanExpr.match(/(\d+(\.\d+)?|[-+*/])/g);
+                if (!tokens) return '0';
+                
+                let ops = [...tokens];
+                for (let i = 0; i < ops.length; i++) {
+                    if (ops[i] === '*' || ops[i] === '/') {
+                        if (i === 0 || i === ops.length - 1) continue;
+                        const prev = parseFloat(ops[i-1]);
+                        const next = parseFloat(ops[i+1]);
+                        const res = ops[i] === '*' ? prev * next : prev / next;
+                        ops.splice(i-1, 3, res);
+                        i--;
+                    }
+                }
+                
+                let result = parseFloat(ops[0]);
+                for (let i = 1; i < ops.length; i += 2) {
+                    const operator = ops[i];
+                    const nextVal = parseFloat(ops[i+1]);
+                    if (isNaN(nextVal)) continue;
+                    if (operator === '+') result += nextVal;
+                    if (operator === '-') result -= nextVal;
+                }
+                return isFinite(result) ? String(result) : 'Error';
+            } catch (e) {
+                return 'Error';
+            }
+        };
+
+        function FinancialAuditSimulator() {
+            const [activeTab, setActiveTab] = useState('income_statement');
+            const [flags, setFlags] = useState({});
+            const [selectedCell, setSelectedCell] = useState(null);
+            const [savedState, setSavedState] = useState(null);
+            
+            const [calcMode, setCalcMode] = useState(false);
+            const [calcInput, setCalcInput] = useState('0');
+            const [calcHistory, setCalcHistory] = useState('');
+
+            const [noteText, setNoteText] = useState('');
+            const [errorType, setErrorType] = useState('math');
+            const [showReport, setShowReport] = useState(false);
+            const [adminMode, setAdminMode] = useState(false);
+            const [showAdminLogin, setShowAdminLogin] = useState(false);
+            const [passwordInput, setPasswordInput] = useState('');
+            
+            const [studentName, setStudentName] = useState('');
+            const [submissionStep, setSubmissionStep] = useState('input_name'); 
+            const [showSolution, setShowSolution] = useState(false);
+
+            // SIDEBAR RESIZING STATE
+            const [sidebarWidth, setSidebarWidth] = useState(320);
+            const [isResizing, setIsResizing] = useState(false);
+            const resizerRef = useRef(null);
+
+            const startResizing = useCallback(() => {
+                setIsResizing(true);
+            }, []);
+
+            const stopResizing = useCallback(() => {
+                setIsResizing(false);
+            }, []);
+
+            const resize = useCallback((mouseMoveEvent) => {
+                if (isResizing) {
+                    const newWidth = window.innerWidth - mouseMoveEvent.clientX;
+                    if (newWidth > 240 && newWidth < 600) {
+                        setSidebarWidth(newWidth);
+                    }
+                }
+            }, [isResizing]);
+
+            useEffect(() => {
+                window.addEventListener("mousemove", resize);
+                window.addEventListener("mouseup", stopResizing);
+                return () => {
+                    window.removeEventListener("mousemove", resize);
+                    window.removeEventListener("mouseup", stopResizing);
+                };
+            }, [resize, stopResizing]);
+
+            const handleCalcInput = (val) => {
+                if (val === 'C') {
+                    setCalcInput('0');
+                    setCalcHistory('');
+                } else if (['+', '-', '*', '/'].includes(val)) {
+                    setCalcHistory(calcInput + ' ' + val + ' ');
+                    setCalcInput('0');
+                } else if (val === '=') {
+                    const result = safeCalculate(calcHistory + calcInput);
+                    setCalcInput(result);
+                    setCalcHistory('');
+                } else if (val === 'Delete') {
+                    setCalcInput(prev => prev.length > 1 ? prev.slice(0, -1) : '0');
+                } else {
+                    setCalcInput(prev => prev === '0' ? String(val) : prev + val);
+                }
+            };
+
+            const sendToCalculator = (val) => {
+                if (!calcMode) return;
+                const cleanVal = p(val);
+                if (cleanVal !== null) {
+                    setCalcInput(String(Math.abs(cleanVal)));
+                }
+            };
+
+            const handleCellClick = (row, year) => {
+                if (calcMode && year !== 'Label') {
+                    sendToCalculator(row.values[year]);
+                    return;
+                }
+                setSelectedCell({ row, year, tab: activeTab });
+                const flagKey = `${row.id}-${year}`;
+                if (flags[flagKey]) {
+                    setNoteText(flags[flagKey].note);
+                    setErrorType(flags[flagKey].type);
+                } else {
+                    setNoteText('');
+                    setErrorType('math');
+                }
+            };
+
+            const saveFlag = () => {
+                if (!selectedCell) return;
+                const flagKey = `${selectedCell.row.id}-${selectedCell.year}`;
+                setFlags(prev => ({
+                    ...prev,
+                    [flagKey]: {
+                        note: noteText,
+                        type: errorType,
+                        rowLabel: selectedCell.row.label,
+                        year: selectedCell.year,
+                        tab: activeTab
+                    }
+                }));
+                setSelectedCell(null);
+            };
+
+            const removeFlag = () => {
+                if (!selectedCell) return;
+                const flagKey = `${selectedCell.row.id}-${selectedCell.year}`;
+                const newFlags = { ...flags };
+                delete newFlags[flagKey];
+                setFlags(newFlags);
+                setSelectedCell(null);
+            };
+
+            const handleAdminLogin = (e) => {
+                e.preventDefault();
+                // SECURITY: Changed password to "detective" (encoded: ZGV0ZWN0aXZl)
+                if (btoa(passwordInput) === 'ZGV0ZWN0aXZl') {
+                    setAdminMode(true);
+                    setShowAdminLogin(false);
+                    setPasswordInput('');
+                } else {
+                    alert('Invalid Access Token');
+                }
+            };
+
+            const fillSolution = () => {
+                // ✅ Protect the student's backup: only save ONCE
+                setSavedState(prevSaved => {
+                    if (prevSaved === null) {
+                        return { ...flags }; // snapshot student work BEFORE overwriting
+                    }
+                    return prevSaved; // do NOT overwrite backup if it already exists
+                });
+
+                const solutionFlags = {};
+                Object.keys(_DATA_MATRIX).forEach(key => {
+                    const item = _DATA_MATRIX[key];
+                    solutionFlags[key] = {
+                        type: d(item.t),
+                        note: d(item.n),
+                        rowLabel: d(item.rl),
+                        year: isNaN(d(item.y)) ? d(item.y) : parseInt(d(item.y)),
+                        tab: d(item.tb)
+                    };
+                });
+                setFlags(solutionFlags);
+                setSubmissionStep('report');
+                setShowReport(true);
+                setShowSolution(true);
+            };
+
+            const handleRefreshClick = () => {
+                // ✅ If we have a backup, we are in "Undo Solution" mode
+                if (savedState !== null) {
+                    if (window.confirm("Revert to student's previous work?")) {
+                        setFlags(savedState);
+                        setSavedState(null);     // clear backup after restore
+                        setShowReport(false);
+                        setShowSolution(false);
+                        setSelectedCell(null);
+                    }
+                    return;
+                }
+
+                // ✅ Otherwise, normal "Clear Progress" mode
+                if (window.confirm("Are you sure you want to clear all student progress?")) {
+                    setFlags({});
+                    setShowReport(false);
+                    setSubmissionStep('input_name');
+                    setStudentName('');
+                    setShowSolution(false);
+                    setSelectedCell(null);
+                }
+            };
+            
+            const handleSubmit = () => {
+                if(!studentName.trim()) {
+                    alert("Please enter your name.");
+                    return;
+                }
+                setSubmissionStep('report');
+            };
+
+            const renderTable = (data, tabName) => {
+                const yearsToShow = TAB_YEARS[tabName] || [2024, 2023, 2022];
+                return (
+                    <div className="overflow-x-auto bg-white rounded-lg shadow border border-slate-200">
+                        <table className="w-full text-sm text-left">
+                            <thead className="bg-slate-50 text-slate-700 font-bold uppercase text-xs border-b">
+                                <tr>
+                                    <th className="px-6 py-3 sticky left-0 bg-slate-50 z-10 w-1/3">Line Item</th>
+                                    {yearsToShow.map(year => (
+                                        <th key={year} className="px-6 py-3 text-right">{year}</th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100">
+                                {data.map((row, idx) => {
+                                    if (row.type === 'spacer') return <tr key={idx} className="h-4 bg-slate-50/50"></tr>;
+                                    if (row.type === 'header') return (
+                                        <tr key={idx} className="bg-slate-50">
+                                            <td colSpan={yearsToShow.length + 1} className="px-6 py-2 font-bold text-slate-600 uppercase text-xs tracking-wider">{row.label}</td>
+                                        </tr>
+                                    );
+                                    const labelFlagKey = `${row.id}-Label`;
+                                    const isLabelFlagged = flags[labelFlagKey];
+                                    const isLabelSelected = selectedCell?.row.id === row.id && selectedCell?.year === 'Label';
+                                    
+                                    return (
+                                        <tr key={row.id} className={`group transition-colors ${row.type === 'total' ? 'bg-slate-50 font-bold' : 'hover:bg-slate-50'}`}>
+                                            <td onClick={() => handleCellClick(row, 'Label')} className={`px-6 py-2 font-medium sticky left-0 group-hover:bg-slate-50 bg-white cursor-pointer border-l-4 ${isLabelSelected ? 'border-indigo-500 bg-indigo-50' : 'border-transparent'} ${isLabelFlagged && !isLabelSelected ? 'border-red-500 bg-red-50' : ''}`}>
+                                                <div className="flex items-center gap-2 relative">
+                                                    {row.label}
+                                                    {isLabelFlagged && <Icon name="Flag" className="w-3 h-3 ml-2 fill-red-500 text-red-600" />}
+                                                </div>
+                                            </td>
+                                            {yearsToShow.map(year => {
+                                                const cellKey = `${row.id}-${year}`;
+                                                const isFlagged = flags[cellKey];
+                                                const val = row.values[year];
+                                                return (
+                                                    <td key={year} onClick={() => val && handleCellClick(row, year)} className={`px-6 py-2 text-right cursor-pointer relative border-l border-transparent ${isFlagged ? 'bg-red-50 text-red-700' : ''} ${selectedCell?.row.id === row.id && selectedCell?.year === year ? 'ring-2 ring-indigo-500 inset-0' : ''} ${calcMode ? 'hover:bg-amber-100' : ''}`}>
+                                                        {isFlagged && <Icon name="Flag" className="w-3 h-3 absolute top-1 right-1 fill-red-500 text-red-600" />}
+                                                        {val || '-'}
+                                                    </td>
+                                                );
+                                            })}
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                );
+            };
+
+            return (
+                <div className={`min-h-screen bg-slate-100 font-sans text-slate-800 p-4 md:p-8 ${isResizing ? 'resizing' : ''}`}>
+                    {/* App Container */}
+                    <div className={showReport && submissionStep === 'report' ? "no-print" : ""}>
+                        <header className="max-w-7xl mx-auto mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div className="flex items-center gap-4">
+                                <Icon name="Search" className="w-8 h-8 text-indigo-600" />
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <h1 className="text-xl font-bold text-slate-900 leading-tight">Financial Detective Simulator</h1>
+                                        {/* VISIBLE INSTRUCTOR ACCESS next to title */}
+                                        {!adminMode && (
+                                            <div onClick={() => setShowAdminLogin(true)} className="cursor-pointer text-slate-400 hover:text-indigo-600 transition-colors flex items-center gap-1 bg-slate-50 hover:bg-white px-2 py-0.5 rounded border border-transparent hover:border-indigo-100" title="Solution">
+                                                <Icon name="Lock" className="w-3 h-3" />
+                                                <span className="text-[10px] font-bold uppercase tracking-wider">Solution</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <p className="text-slate-500 text-xs mt-0.5">Audit MSFT 2024 (Modified) • Locate Classification, Labeling, & Math Errors</p>
+                                </div>
+                            </div>
+                            
+                            <div className="flex gap-2 items-center">
+                                {adminMode && (
+                                    <div className="flex gap-1 mr-4 bg-yellow-50 p-1 rounded border border-yellow-200">
+                                        <button onClick={fillSolution} className="p-1.5 text-yellow-800 hover:bg-yellow-200 rounded" title="Fill Solutions"><Icon name="Unlock" className="w-4 h-4" /></button>
+                                        <button onClick={handleRefreshClick} className="p-1.5 text-red-800 hover:bg-red-200 rounded" title={savedState !== null ? "Undo Solution (Revert)" : "Clear Progress"}><Icon name="RotateCcw" className="w-4 h-4" /></button>
+                                        <button
+  onClick={() => {
+    setAdminMode(false);
+    setShowSolution(false);
+    setSavedState(null); // optional: clears undo buffer
+  }}
+  className="p-1.5 text-slate-500 hover:bg-slate-200 rounded"
+  title="Exit Solution Mode"
+>
+  <Icon name="Lock" className="w-4 h-4" />
+</button>
+
+                                    </div>
+                                )}
+                                <button onClick={() => { setCalcMode(!calcMode); setSelectedCell(null); }} className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${calcMode ? 'bg-amber-100 text-amber-800 border border-amber-200 ring-2 ring-amber-400' : 'bg-white border border-slate-300 text-slate-600 hover:bg-slate-50'}`}>
+                                    <Icon name="Calculator" className="w-4 h-4" />
+                                    {calcMode ? 'Hide' : 'Calc'}
+                                </button>
+                                <button onClick={() => { setShowReport(true); setSubmissionStep('input_name'); }} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 text-sm font-medium">
+                                    <Icon name="CheckCircle2" className="w-4 h-4" />
+                                    Submit ({Object.keys(flags).length})
+                                </button>
+                            </div>
+                        </header>
+
+                        <main className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-0">
+                            {/* MAIN TABLE AREA */}
+                            <div className="flex-1 space-y-6 lg:pr-6">
+                                <div className="flex border-b border-slate-200 space-x-6">
+                                    {['income_statement', 'balance_sheet', 'cash_flow', 'equity'].map(tab => (
+                                        <button 
+                                            key={tab}
+                                            onClick={() => setActiveTab(tab)} 
+                                            className={`pb-3 text-sm font-medium border-b-2 transition-colors capitalize ${activeTab === tab ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                                        >
+                                            {tab.replace('_', ' ')}
+                                        </button>
+                                    ))}
+                                </div>
+                                {renderTable(FINANCIAL_DATA[activeTab], activeTab)}
+                            </div>
+
+                            {/* DRAGGABLE RESIZER */}
+                            <div 
+                                ref={resizerRef}
+                                className="resizer hidden lg:block"
+                                onMouseDown={startResizing}
+                            ></div>
+
+                            {/* SIDEBAR AREA (Dynamic Width) */}
+                            <div 
+                                className="hidden lg:flex flex-col gap-6"
+                                style={{ width: `${sidebarWidth}px` }}
+                            >
+                                {calcMode && (
+                                    <div className="bg-slate-800 p-3 rounded-lg shadow-xl border border-slate-700 text-white animate-in slide-in-from-top-2">
+                                        <div className="text-right mb-1">
+                                            <div className="text-[10px] text-slate-400 h-3 overflow-hidden">{calcHistory}</div>
+                                            <div className="text-lg font-mono">{calcInput}</div>
+                                        </div>
+                                        <div className="grid grid-cols-4 gap-1">
+                                            {['C', '/', '*', 'Delete', '7', '8', '9', '-', '4', '5', '6', '+', '1', '2', '3', '=', '0', '.'].map((btn, i) => (
+                                                <button 
+                                                    key={btn}
+                                                    onClick={() => handleCalcInput(btn)}
+                                                    className={`p-1.5 rounded text-xs font-bold ${
+                                                        btn === '=' ? 'row-span-2 bg-indigo-600 hover:bg-indigo-500 flex items-center justify-center' : 
+                                                        btn === '0' ? 'col-span-2 bg-slate-700 hover:bg-slate-600' : 
+                                                        ['C', 'Delete'].includes(btn) ? 'bg-red-500/80 hover:bg-red-500' :
+                                                        ['/', '*', '-', '+'].includes(btn) ? 'bg-slate-600 hover:bg-slate-500' : 
+                                                        'bg-slate-700 hover:bg-slate-600'
+                                                    }`}
+                                                >
+                                                    {btn === 'Delete' ? <Icon name="Delete" className="w-3 h-3 mx-auto"/> : btn}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className="bg-white p-4 rounded-lg shadow border border-slate-200 flex-1 flex flex-col min-h-0">
+                                    <h2 className="font-bold text-slate-800 flex items-center gap-2 mb-4 shrink-0">
+                                        <Icon name="AlertCircle" className="w-4 h-4 text-slate-400" />
+                                        Inspector
+                                    </h2>
+
+                                    {selectedCell ? (
+                                        <div className="space-y-4 overflow-y-auto pr-1">
+                                            <div className="p-3 bg-slate-50 rounded border border-slate-100 text-sm">
+                                                <div className="text-slate-500 text-xs uppercase font-bold mb-1">Target</div>
+                                                <div className="font-medium text-slate-900 truncate">{selectedCell.row.label}</div>
+                                                <div className="flex justify-between mt-1">
+                                                    <span className="text-slate-500">Year: {selectedCell.year}</span>
+                                                    <span className="font-mono font-bold text-indigo-600">{selectedCell.year === 'Label' ? 'N/A' : selectedCell.row.values[selectedCell.year]}</span>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-bold text-slate-500 mb-1">Issue Type</label>
+                                                <select value={errorType} onChange={(e) => setErrorType(e.target.value)} className="w-full text-sm border-slate-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                                    <option value="math">Math Error (Calculation)</option>
+                                                    <option value="label">Labeling/Terminology</option>
+                                                    <option value="classification">Classification (Placement)</option>
+                                                    <option value="linkage">Linkage (Statement Mismatch)</option>
+                                                    <option value="value">Suspicious Figure</option>
+                                                </select>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-bold text-slate-500 mb-1">Evidence / Notes</label>
+                                                <textarea value={noteText} onChange={(e) => setNoteText(e.target.value)} placeholder="Explain the discrepancy..." className="w-full h-32 text-sm border-slate-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2" />
+                                            </div>
+
+                                            <div className="flex gap-2">
+                                                <button onClick={saveFlag} className="flex-1 bg-indigo-600 text-white py-2 rounded-md text-sm font-medium hover:bg-indigo-700 flex justify-center items-center gap-2"><Icon name="Save" className="w-4 h-4" /> Save Flag</button>
+                                                {flags[`${selectedCell.row.id}-${selectedCell.year}`] && <button onClick={removeFlag} className="px-3 bg-red-100 text-red-700 rounded-md hover:bg-red-200"><Icon name="Trash2" className="w-4 h-4" /></button>}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="text-sm text-slate-400 text-center py-12 italic">
+                                            {calcMode 
+                                                ? "Calculator Active. Numbers clicked in table will be imported." 
+                                                : "Click a line item or specific value to begin inspection."
+                                            }
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+
+                    {/* Admin Login Modal */}
+                    {showAdminLogin && (
+                        <div className="fixed inset-0 bg-black/40 z-[60] flex items-center justify-center backdrop-blur-md">
+                            <div className="bg-white p-6 rounded-lg shadow-2xl w-80">
+                                <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Icon name="Key" className="w-4 h-4" /> Answer Solution</h3>
+                                <form onSubmit={handleAdminLogin}>
+                                    <input type="password" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} placeholder="Master Key" className="w-full border border-slate-300 rounded p-2 mb-4 text-sm" autoFocus />
+                                    <div className="flex justify-end gap-2">
+                                        <button type="button" onClick={() => setShowAdminLogin(false)} className="text-slate-500 text-sm hover:text-slate-700">Cancel</button>
+                                        <button type="submit" className="bg-slate-900 text-white px-4 py-1.5 rounded text-sm hover:bg-black">Authorize</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Report Modal */}
+                    {showReport && (
+                        <div className={`fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 backdrop-blur-sm ${submissionStep === 'report' ? 'print-modal-wrapper' : ''}`}>
+                            <div className={`bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden ${submissionStep === 'report' ? 'print-modal-content' : ''}`}>
+                                
+                                {submissionStep === 'input_name' && (
+                                    <div className="p-8">
+                                        <div className="text-center mb-6">
+                                            <div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                <Icon name="User" className="w-8 h-8 text-indigo-600" />
+                                            </div>
+                                            <h2 className="text-2xl font-bold text-slate-900">Certify Findings</h2>
+                                            <p className="text-slate-500">Provide your name to finalize the audit report.</p>
+                                        </div>
+                                        <input type="text" value={studentName} onChange={(e) => setStudentName(e.target.value)} placeholder="Lead Auditor Name" className="w-full p-3 border border-slate-300 rounded-lg text-lg mb-6 outline-none focus:ring-2 focus:ring-indigo-500" autoFocus />
+                                        <div className="flex gap-3">
+                                            <button onClick={() => setShowReport(false)} className="flex-1 py-3 text-slate-600 hover:bg-slate-100 rounded-lg font-medium">Return</button>
+                                            <button onClick={handleSubmit} className="flex-1 py-3 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 shadow-lg">Finalize Report</button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {submissionStep === 'report' && (
+                                    <React.Fragment>
+                                        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50 no-print">
+                                            <div>
+                                                <h2 className="text-xl font-bold text-slate-900">Audit Summary: {studentName}</h2>
+                                                <p className="text-sm text-slate-500">{Object.keys(flags).length} Discrepancies Cataloged</p>
+                                            </div>
+                                            <button onClick={() => setShowReport(false)} className="text-slate-400 hover:text-slate-600 p-2"><Icon name="Delete" className="w-5 h-5"/></button>
+                                        </div>
+                                        
+                                        <div className="hidden print:block p-10 border-b-4 border-slate-900 mb-8">
+                                            <h1 className="text-4xl font-black text-slate-900 mb-2 uppercase tracking-tight">Independent Audit Report</h1>
+                                            <div className="flex justify-between items-end border-t-2 border-slate-100 pt-6 mt-6">
+                                                <div>
+                                                    <p className="text-slate-500 uppercase text-xs font-bold tracking-widest mb-1">Principal Auditor</p>
+                                                    <p className="text-2xl font-bold text-slate-900">{studentName}</p>
+                                                </div>
+                                                <div className="text-right">
+                                                    <p className="text-slate-500 uppercase text-xs font-bold tracking-widest mb-1">Control Summary</p>
+                                                    <p className="text-3xl font-black text-indigo-600">{Object.keys(flags).length} FLAGS</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className={`p-6 overflow-y-auto flex-1 ${submissionStep === 'report' ? 'print-modal-content' : ''}`}>
+                                            <div className="space-y-4 page-break-item">
+                                                {Object.keys(flags).length === 0 && (
+                                                    <p className="text-center text-slate-500 italic py-12 bg-slate-50 rounded-lg border-2 border-dashed">No material errors were cataloged during this session.</p>
+                                                )}
+                                                
+                                                {Object.values(flags).map((flag, i) => (
+                                                    <div key={i} className="flex gap-4 p-5 bg-white rounded-xl border border-slate-200 shadow-sm break-inside-avoid print:border-slate-300">
+                                                        <div className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 border-b-4 ${flag.type === 'math' ? 'bg-amber-50 border-amber-500 text-amber-600' : ''} ${flag.type === 'label' ? 'bg-blue-50 border-blue-500 text-blue-600' : ''} ${flag.type === 'classification' ? 'bg-orange-50 border-orange-500 text-orange-600' : ''} ${flag.type === 'linkage' ? 'bg-purple-50 border-purple-500 text-purple-600' : ''} ${flag.type === 'value' ? 'bg-red-50 border-red-500 text-red-600' : ''}`}>
+                                                            <Icon name="AlertCircle" className="w-6 h-6" />
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <div className="flex items-start justify-between mb-1">
+                                                                <div>
+                                                                    <span className="font-black text-slate-900 text-lg leading-tight block">{flag.rowLabel}</span>
+                                                                    <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest">{flag.tab.replace('_', ' ')} • Year: {flag.year}</span>
+                                                                </div>
+                                                                <span className="text-[10px] font-black px-2 py-1 rounded bg-slate-900 text-white uppercase ml-auto">{flag.type}</span>
+                                                            </div>
+                                                            <p className="text-slate-700 text-sm leading-relaxed mt-2 border-l-2 border-slate-100 pl-3 italic">"{flag.note}"</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            
+                                            {showSolution && (
+                                                <div className="mt-12 pt-8 border-t-4 border-double border-slate-200 no-print page-break-item">
+                                                    <h3 className="text-lg font-black text-green-900 mb-6 flex items-center gap-2 uppercase tracking-wide">
+                                                        <Icon name="CheckCircle2" className="w-5 h-5 text-green-600" /> 
+                                                        Solution Matrix (Decoded)
+                                                    </h3>
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                        {Object.keys(_DATA_MATRIX).map((key, i) => {
+                                                            const sol = _DATA_MATRIX[key];
+                                                            return (
+                                                                <div key={i} className="text-[11px] p-4 bg-green-50/50 border border-green-100 rounded-lg text-green-900 relative">
+                                                                    <span className="absolute -top-2 -left-2 w-5 h-5 bg-green-600 text-white rounded-full flex items-center justify-center text-[9px] font-bold">{i+1}</span>
+                                                                    <div className="font-bold mb-1 uppercase tracking-tighter text-green-700">{d(sol.rl)} ({d(sol.y)})</div>
+                                                                    <div className="opacity-80 leading-snug">{d(sol.n)}</div>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="p-6 bg-slate-900 border-t border-white/10 flex justify-between items-center no-print">
+                                            {adminMode && !showSolution && (
+  <button
+    onClick={() => setShowSolution(true)}
+    className="flex items-center gap-2 text-white/60 text-sm font-medium hover:text-white transition-colors"
+  >
+    <Icon name="Eye" className="w-4 h-4" /> Reveal Solutions
+  </button>
+)}
+
+                                            <button onClick={() => window.print()} className="px-6 py-2 bg-indigo-500 text-white rounded-lg text-sm font-bold hover:bg-indigo-400 flex items-center gap-2 transition-transform hover:scale-105 active:scale-95"><Icon name="Printer" className="w-4 h-4" /> Export PDF</button>
+                                        </div>
+                                    </React.Fragment>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<FinancialAuditSimulator />);
+    </script>
+</body>
+</html>
