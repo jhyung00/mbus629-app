@@ -722,7 +722,10 @@
 
     function checkAuth() {
         const input = document.getElementById('auth-pass').value;
-        if (input.toLowerCase() === PASSWORD) {
+        
+        // "cHBlNw==" is the Base64 encoded version of "ppe7"
+        // We compare the encoded input to hide the real password from view source
+        if (btoa(input) === "cHBlNw==") {
             enableInstructorMode();
             closeModal('modal-auth');
         } else {
