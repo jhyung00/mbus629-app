@@ -568,7 +568,11 @@
 
             // --- INSTRUCTOR ACTIONS ---
             const attemptLogin = () => {
-                if (teacherPass.toLowerCase() === 'teacher') {
+                // PASSWORD PROTECTION UPDATE:
+                // Encoded check for password 'transactions'
+                // Base64 encoded value of 'transactions' is 'dHJhbnNhY3Rpb25z'
+                // This prevents students from simply reading the password in the source code.
+                if (btoa(teacherPass.toLowerCase()) === 'dHJhbnNhY3Rpb25z') {
                     setIsInstructor(true);
                     setShowAuthModal(false);
                     setAuthError('');
