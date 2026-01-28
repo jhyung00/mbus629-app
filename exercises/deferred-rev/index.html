@@ -871,7 +871,10 @@
 
         function authenticate() {
             const pw = document.getElementById('teacher-password').value;
-            if (pw.toLowerCase() === 'teacher') {
+            
+            // "ZGVmNw==" is the Base64 encoded version of "def7"
+            // We encode the user's input (btoa) and compare it to the hidden string
+            if (btoa(pw) === 'ZGVmNw==') {
                 document.getElementById('auth-view').classList.add('hidden');
                 document.getElementById('key-view').classList.remove('hidden');
                 renderKey();
