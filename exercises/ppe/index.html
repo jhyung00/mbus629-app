@@ -158,21 +158,17 @@
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             border-top: 5px solid var(--neutral);
-            opacity: 0.6;
-            pointer-events: none;
-            filter: grayscale(100%);
+            /* Removed opacity/pointer-events restrictions to make everything visible immediately */
             transition: all 0.4s ease;
         }
-        .stage-card.active {
-            opacity: 1;
-            pointer-events: all;
-            filter: grayscale(0%);
+        .stage-card:hover {
             transform: translateY(-5px);
         }
-        .gonzaga-stage.active { border-top-color: var(--gonzaga-blue); }
-        .wsu-stage.active { border-top-color: var(--wsu-crimson); }
-        .forensic-stage.active { border-top-color: #8e44ad; }
-        .dashboard-stage.active { border-top-color: #2c3e50; }
+        /* Apply colors directly instead of relying on .active class */
+        .gonzaga-stage { border-top-color: var(--gonzaga-blue); }
+        .wsu-stage { border-top-color: var(--wsu-crimson); }
+        .forensic-stage { border-top-color: #8e44ad; }
+        .dashboard-stage { border-top-color: #2c3e50; }
 
         .stage-header {
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
@@ -224,13 +220,14 @@
         /* Instructor Key Display */
         .answer-key {
             display: none; /* Hidden by default */
-            margin-top: 5px;
+            margin-top: 8px;
             font-size: 0.85rem;
             color: var(--instructor-purple);
             font-weight: bold;
-            background: rgba(111, 66, 193, 0.1);
-            padding: 4px 8px;
+            background: #f3ebff;
+            padding: 6px 10px;
             border-radius: 4px;
+            border-left: 3px solid var(--instructor-purple);
             width: fit-content;
         }
 
@@ -239,14 +236,6 @@
         .range-table th { background: #eee; padding: 6px; border: 1px solid #ddd; }
         .range-table td { padding: 4px; border: 1px solid #ddd; text-align: center; }
         .range-table input { width: 85%; padding: 4px; text-align: right; }
-
-        /* Buttons */
-        .next-btn {
-            background: #333; color: white; border: none; padding: 10px 20px;
-            border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px;
-            width: 100%; display: none; /* Hidden until unlocked */
-        }
-        .next-btn:hover { opacity: 0.9; }
 
         /* Feedback Area (Summary) */
         .feedback-summary { margin-top: 10px; font-size: 0.9rem; font-weight: bold; min-height: 1.2em; }
@@ -284,21 +273,29 @@
         .btn-secondary { background: #ccc; color: #333; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
         .btn-danger { background: var(--error); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
 
-        /* Verification Panel (Inside Instructor Mode) */
-        .verification-panel {
-            background: #fff; color: #333; padding: 15px; margin-top: 10px;
-            border-radius: 6px; font-size: 0.85rem; display: none;
-        }
-        .verification-panel input, .verification-panel textarea {
-            width: 100%; border: 1px solid #ddd; padding: 5px; margin-bottom: 5px; box-sizing: border-box;
-        }
-
         /* Footer */
         .progress-footer {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: #222; color: white; padding: 10px 20px;
             display: flex; justify-content: space-between; align-items: center;
             font-size: 0.9rem; z-index: 100;
+        }
+
+        .download-btn-footer {
+            background-color: var(--success);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: none; /* Hidden initially */
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+            animation: popIn 0.5s ease;
+        }
+        .download-btn-footer:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
         }
 
     </style>
@@ -325,9 +322,6 @@
         <span style="font-size:0.8rem; opacity:0.8;">| Active</span>
     </div>
     <div class="toolbar-group">
-        <button class="toolbar-btn" onclick="toggleVerificationPanel()">
-            <i class="fa-solid fa-magnifying-glass-chart"></i> Verification Tools
-        </button>
         <button class="toolbar-btn" onclick="autoFillAll()">
             <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Fill All
         </button>
@@ -391,31 +385,13 @@
                 </table>
             </div>
         </div>
-        
-        <!-- INSTRUCTOR VERIFICATION PANEL (Toggled from toolbar) -->
-        <div id="verification-tools" class="verification-panel">
-            <h4 style="margin-top:0;">🔐 Verification Tools</h4>
-            
-            <label><strong>Decoder:</strong> Paste Student Hash</label>
-            <textarea id="hash-input" rows="2" placeholder="Paste Base64 code here..."></textarea>
-            <button class="btn-primary" onclick="verifyHash()" style="width:100%; margin-top:5px;">Verify</button>
-            <div id="verify-result" style="margin-top:5px; font-weight:bold; font-size:0.8rem;"></div>
-
-            <hr style="border-top:1px dashed #ccc; margin:10px 0;">
-
-            <label><strong>Generator:</strong> Manual Hash Create</label>
-            <input type="text" id="gen-name" placeholder="Student Name">
-            <input type="number" id="gen-score" placeholder="Rank/Score (e.g. 100)">
-            <button class="btn-secondary" onclick="generateHash()" style="width:100%; margin-top:5px;">Generate</button>
-            <div id="gen-result" style="word-break:break-all; font-family:monospace; font-size:0.7rem; margin-top:5px;"></div>
-        </div>
     </div>
 
     <!-- RIGHT: WORKSPACE -->
     <div class="workspace">
         
         <!-- STAGE 1: GONZAGA -->
-        <div id="stage-gonzaga" class="stage-card gonzaga-stage active">
+        <div id="stage-gonzaga" class="stage-card gonzaga-stage">
             <div class="stage-header">
                 <div class="stage-title">Step 1: Gonzaga Analysis</div>
                 <i class="fa-solid fa-calculator" style="color:var(--gonzaga-blue); font-size:1.5rem;"></i>
@@ -430,7 +406,7 @@
                         <i class="fa-solid fa-check status-icon"></i>
                         <i class="fa-solid fa-times status-icon"></i>
                     </div>
-                    <div class="answer-key">Key: $$31.42$$</div>
+                    <div class="answer-key">Key: 31.42</div>
                 </div>
                 <div class="task-box">
                     <span class="task-label">Q2. Percent Used Up</span>
@@ -440,7 +416,7 @@
                         <i class="fa-solid fa-check status-icon"></i>
                         <i class="fa-solid fa-times status-icon"></i>
                     </div>
-                    <div class="answer-key">Key: $$37.8\%$$</div>
+                    <div class="answer-key">Key: 37.8%</div>
                 </div>
             </div>
 
@@ -452,7 +428,7 @@
                     <i class="fa-solid fa-check status-icon"></i>
                     <i class="fa-solid fa-times status-icon"></i>
                 </div>
-                <div class="answer-key">Key: $$19.5$$</div>
+                <div class="answer-key">Key: 19.5</div>
             </div>
 
             <div class="full-width-task">
@@ -463,30 +439,26 @@
                         <td>Land Imp (20-40)</td>
                         <td>
                             <input class="smart-input" data-correct="227.6" data-is-pct="false">
-                            <div class="answer-key">$$228$$</div>
+                            <div class="answer-key">Key: 228</div>
                         </td>
                         <td>
                             <input class="smart-input" data-correct="455.2" data-is-pct="false">
-                            <div class="answer-key">$$455$$</div>
+                            <div class="answer-key">Key: 455</div>
                         </td>
                     </tr>
                     <tr>
                         <td>Buildings (20-50)</td>
                         <td>
                             <input class="smart-input" data-correct="10671.6" data-is-pct="false">
-                            <div class="answer-key">$$10,672$$</div>
+                            <div class="answer-key">Key: 10,672</div>
                         </td>
                         <td>
                             <input class="smart-input" data-correct="26679.1" data-is-pct="false">
-                            <div class="answer-key">$$26,679$$</div>
+                            <div class="answer-key">Key: 26,679</div>
                         </td>
                     </tr>
                 </table>
             </div>
-
-            <button class="next-btn" id="btn-gonzaga-next" onclick="unlockStage('stage-forensic')">
-                Proceed to Forensic <i class="fa-solid fa-arrow-right"></i>
-            </button>
         </div>
 
         <!-- STAGE 2: FORENSIC -->
@@ -506,12 +478,8 @@
                     <i class="fa-solid fa-check status-icon"></i>
                     <i class="fa-solid fa-times status-icon"></i>
                 </div>
-                <div class="answer-key">Key: $$31,578$$</div>
+                <div class="answer-key">Key: 31,578</div>
             </div>
-
-            <button class="next-btn" id="btn-forensic-next" onclick="unlockStage('stage-wsu')">
-                Proceed to WSU <i class="fa-solid fa-arrow-right"></i>
-            </button>
         </div>
 
         <!-- STAGE 3: WSU -->
@@ -529,7 +497,7 @@
                         <i class="fa-solid fa-check status-icon"></i>
                         <i class="fa-solid fa-times status-icon"></i>
                     </div>
-                    <div class="answer-key">Key: $$34.8$$</div>
+                    <div class="answer-key">Key: 34.8</div>
                 </div>
                 <div class="task-box">
                     <span class="task-label">Q2. Percent Used Up</span>
@@ -538,13 +506,9 @@
                         <i class="fa-solid fa-check status-icon"></i>
                         <i class="fa-solid fa-times status-icon"></i>
                     </div>
-                    <div class="answer-key">Key: $$57.8\%$$</div>
+                    <div class="answer-key">Key: 57.8%</div>
                 </div>
             </div>
-
-            <button class="next-btn" id="btn-wsu-next" onclick="unlockStage('stage-dashboard'); initCharts();">
-                View Executive Dashboard <i class="fa-solid fa-chart-pie"></i>
-            </button>
         </div>
 
         <!-- STAGE 4: DASHBOARD -->
@@ -556,6 +520,18 @@
             <div class="dashboard-grid">
                 <div class="chart-card"><canvas id="chart-life"></canvas></div>
                 <div class="chart-card"><canvas id="chart-used"></canvas></div>
+            </div>
+
+            <!-- ANALYST INSIGHT BOX -->
+            <div class="info-box" style="background: #e8f4fd; border-left: 4px solid #0076C0; padding: 15px; margin-top: 20px; border-radius: 4px;">
+                <h4 style="margin-top: 0; color: #041E42; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-circle-info"></i> Analyst Insight: The "Capital Cliff"
+                </h4>
+                <p style="font-size: 0.9rem; line-height: 1.5; color: #333; margin-bottom: 0;">
+                    In financial analysis, a <strong>Capital Cliff</strong> refers to a scenario where a significant portion of an entity's fixed assets (PPE) are nearing the end of their useful lives simultaneously.
+                    <br><br>
+                    High <em>"% Used Up"</em> metrics (typically >50%) serve as a warning sign. While deferring replacement saves cash in the short term, it creates an accumulated liability. The organization will soon face a steep increase in required capital expenditures (CapEx) to replace aging infrastructure, which can severely strain future liquidity and debt capacity.
+                </p>
             </div>
 
             <div class="judgment-box">
@@ -571,8 +547,11 @@
 </div>
 
 <div class="progress-footer">
-    <div id="status-bar">Waiting for analysis...</div>
-    <div>Simulation v2.1</div>
+    <div id="status-bar">Analyst Mode Active (Full Access)</div>
+    <button id="btn-download-report" class="download-btn-footer" onclick="generateReport()">
+        <i class="fa-solid fa-file-arrow-down"></i> Download Final Report
+    </button>
+    <div>Simulation v2.2</div>
 </div>
 
 <!-- INSTRUCTOR AUTH MODAL -->
@@ -604,26 +583,23 @@
     // --- STATE MANAGEMENT ---
     let instructorMode = false;
     const TOLERANCE = 0.02; // 2% margin
-    const PASSWORD = "teacher";
 
     // --- 1. SMART INPUT LOGIC ---
     document.addEventListener('DOMContentLoaded', () => {
+        // Init Inputs
         const inputs = document.querySelectorAll('.smart-input');
-        
         inputs.forEach(input => {
-            // Validate on Blur
-            input.addEventListener('blur', function() {
-                validateSingleInput(this);
-            });
-
-            // Validate on Enter
+            input.addEventListener('blur', function() { validateSingleInput(this); });
             input.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
                     validateSingleInput(this);
-                    this.blur(); // Remove focus
+                    this.blur();
                 }
             });
         });
+
+        // Init Charts Immediately
+        initCharts();
     });
 
     function validateSingleInput(input) {
@@ -634,9 +610,7 @@
         // 2. Math Expression Evaluation
         let numericVal;
         try {
-            // Safe evaluation for basic math (numbers, /, *, +, -, ., parens)
             if (/^[\d\.\+\-\*\/\(\)\s]+$/.test(valStr)) {
-                // Use Function constructor for safer eval than eval()
                 numericVal = new Function('return ' + valStr)();
             } else {
                 numericVal = parseFloat(valStr);
@@ -650,10 +624,6 @@
         // 3. Logic: Percentage Handling
         const isPct = input.getAttribute('data-is-pct') === 'true';
         let checkVal = numericVal;
-        
-        // Smart Percentage Logic:
-        // If user enters a small decimal (e.g., 0.578) into a % field, convert to 57.8
-        // If user enters a large number (e.g., 57.8) into a % field, assume they meant 57.8%
         if (isPct) {
             if (Math.abs(numericVal) < 1.0 && numericVal !== 0) {
                  checkVal = numericVal * 100;
@@ -676,37 +646,13 @@
         }
 
         // 6. UPDATE DISPLAY (Smart Replace)
-        // Replaces the formula with the result, and formats percentages
-        let displayVal = Math.round(checkVal * 100) / 100; // Round to 2 decimals
+        let displayVal = Math.round(checkVal * 100) / 100;
         
         if (isPct) {
             input.value = displayVal + '%';
         } else {
             input.value = displayVal;
         }
-        
-        // Check stage completion to enable next button
-        checkStageCompletion(input.closest('.stage-card'));
-    }
-
-    function checkStageCompletion(stage) {
-        if(!stage) return;
-        const stageInputs = stage.querySelectorAll('.smart-input');
-        const allCorrect = Array.from(stageInputs).every(inp => inp.classList.contains('correct'));
-        const nextBtn = stage.querySelector('.next-btn');
-        
-        if (nextBtn && allCorrect) {
-            nextBtn.style.display = 'block';
-            nextBtn.classList.add('animate__animated', 'animate__fadeIn');
-        }
-    }
-
-    // --- 2. NAVIGATION LOGIC ---
-    function unlockStage(stageId) {
-        const stage = document.getElementById(stageId);
-        stage.classList.add('active');
-        stage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        document.getElementById('status-bar').innerText = "Current Focus: " + stage.querySelector('.stage-title').innerText;
     }
 
     // --- 3. INSTRUCTOR MODE ---
@@ -724,7 +670,6 @@
         const input = document.getElementById('auth-pass').value;
         
         // "cHBlNw==" is the Base64 encoded version of "ppe7"
-        // We compare the encoded input to hide the real password from view source
         if (btoa(input) === "cHBlNw==") {
             enableInstructorMode();
             closeModal('modal-auth');
@@ -735,12 +680,9 @@
 
     function enableInstructorMode() {
         instructorMode = true;
-        // Show Toolbar
         document.getElementById('instructor-toolbar').style.display = 'flex';
-        // Reveal Answer Keys
         document.querySelectorAll('.answer-key').forEach(el => el.style.display = 'block');
-        // Add padding to body so toolbar doesn't overlay content
-        document.body.style.paddingTop = '60px'; // Approx toolbar height
+        document.body.style.paddingTop = '60px'; 
     }
 
     function autoFillAll() {
@@ -750,17 +692,13 @@
             const correct = input.getAttribute('data-correct');
             const isPct = input.getAttribute('data-is-pct') === 'true';
             
-            // Format nicely
             if (isPct) input.value = correct + '%';
             else input.value = correct;
             
-            // Trigger visual validation
             validateSingleInput(input);
         });
         
-        // Unlock all stages
-        document.querySelectorAll('.stage-card').forEach(s => s.classList.add('active'));
-        document.querySelectorAll('.next-btn').forEach(b => b.style.display = 'block');
+        // Refresh charts in case data binding changes later (currently static)
         initCharts();
     }
 
@@ -769,81 +707,21 @@
     }
 
     function performClear() {
-        // Clear Values and Classes
         document.querySelectorAll('.smart-input').forEach(input => {
             input.value = '';
             input.classList.remove('correct', 'incorrect');
         });
 
-        // Hide Keys and Toolbar (Exit Instructor Mode)
         instructorMode = false;
         document.getElementById('instructor-toolbar').style.display = 'none';
         document.querySelectorAll('.answer-key').forEach(el => el.style.display = 'none');
         document.body.style.paddingTop = '0';
-
-        // Reset Stages
-        document.querySelectorAll('.stage-card').forEach(s => s.classList.remove('active'));
-        document.getElementById('stage-gonzaga').classList.add('active'); // Keep first active
-        document.querySelectorAll('.next-btn').forEach(b => b.style.display = 'none');
         
-        // Close Modal
         closeModal('modal-confirm');
         
-        // Reset Charts/Verdict
         document.getElementById('final-msg').innerHTML = '';
         document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
-    }
-
-    // --- 4. VERIFICATION TOOLS ---
-    function toggleVerificationPanel() {
-        const p = document.getElementById('verification-tools');
-        p.style.display = p.style.display === 'none' || p.style.display === '' ? 'block' : 'none';
-    }
-
-    function generateHash() {
-        const name = document.getElementById('gen-name').value || "Unknown";
-        const score = document.getElementById('gen-score').value || "0";
-        const data = { n: name, s: score, t: Date.now() };
-        
-        try {
-            const json = JSON.stringify(data);
-            const b64 = btoa(json);
-            document.getElementById('gen-result').innerHTML = `<strong>Hash:</strong><br>${b64}`;
-        } catch (e) {
-            document.getElementById('gen-result').innerText = "Error generating hash.";
-        }
-    }
-
-    function verifyHash() {
-        const input = document.getElementById('hash-input').value.trim();
-        const resBox = document.getElementById('verify-result');
-        
-        if(!input) {
-            resBox.innerHTML = "<span style='color:red'>Empty input</span>";
-            return;
-        }
-
-        try {
-            const json = atob(input);
-            const data = JSON.parse(json);
-            
-            const date = new Date(data.t).toLocaleString();
-            resBox.innerHTML = `
-                <div style="background:#eaffea; padding:5px; border:1px solid #28a745; border-radius:4px; margin-top:5px;">
-                    ✅ <strong>Verified</strong><br>
-                    Student: ${data.n}<br>
-                    Score/Rank: ${data.s}<br>
-                    Time: ${date}
-                </div>
-            `;
-        } catch (e) {
-            resBox.innerHTML = `
-                <div style="background:#fff5f5; padding:5px; border:1px solid red; border-radius:4px; margin-top:5px;">
-                    ❌ <strong>Invalid Hash</strong><br>
-                    Tampering detected or bad format.
-                </div>
-            `;
-        }
+        document.getElementById('btn-download-report').style.display = 'none';
     }
 
     // --- 5. DASHBOARD & CHARTS ---
@@ -851,7 +729,6 @@
     function initCharts() {
         if(chartsCreated) return;
         
-        // Data derived from keys
         const gLife = 31.4, wLife = 34.8;
         const gUsed = 37.8, wUsed = 57.8;
 
@@ -900,23 +777,14 @@
         btn.classList.add('selected');
         
         const resDiv = document.getElementById('final-msg');
+        const dlBtn = document.getElementById('btn-download-report');
         
         if (choice === 'WSU') {
             resDiv.innerHTML = `<span style="color:green">✅ Correct! WSU is facing the "Capital Cliff" with nearly 60% of assets used.</span>`;
-            
-            // Create Download Button
-            const dlBtn = document.createElement('button');
-            dlBtn.className = 'next-btn';
-            dlBtn.style.backgroundColor = '#28a745';
-            dlBtn.style.display = 'inline-block';
-            dlBtn.style.marginTop = '15px';
-            dlBtn.innerHTML = '<i class="fa-solid fa-file-export"></i> Download Official Report';
-            dlBtn.onclick = generateReport;
-            resDiv.appendChild(document.createElement('br'));
-            resDiv.appendChild(dlBtn);
-            
+            dlBtn.style.display = 'block'; 
         } else {
             resDiv.innerHTML = `<span style="color:red">❌ Incorrect. Look at the "% Used Up" chart. Who has older assets?</span>`;
+            dlBtn.style.display = 'none';
         }
     }
 
@@ -924,10 +792,15 @@
         const name = prompt("Enter Student Name for Certification:", "Student");
         if(!name) return;
 
+        const gLife = document.getElementById('g-life').value || "N/A";
+        const gUsed = document.getElementById('g-used').value || "N/A";
+        const forensicVal = document.getElementById('forensic-val').value || "N/A";
+        const wLife = document.getElementById('w-life').value || "N/A";
+        const wUsed = document.getElementById('w-used').value || "N/A";
+
         const score = "CFO (High Distinction)";
         const timestamp = Date.now();
         
-        // Create Verification Hash
         const hashObj = { n: name, s: score, t: timestamp };
         const hash = btoa(JSON.stringify(hashObj));
 
@@ -940,21 +813,19 @@ Rank: ${score}
 
 PERFORMANCE SUMMARY:
 --------------------
-1. Gonzaga Analysis: COMPLETED
-   - Life: 31.4 Years
-   - Used: 37.8%
+1. Gonzaga Analysis:
+   - Life: ${gLife} Years
+   - Used: ${gUsed}
 
-2. Forensic Investigation: COMPLETED
-   - Case Solved: Yes ($31,578)
+2. Forensic Investigation:
+   - Case Solved: ($${forensicVal})
 
-3. WSU Analysis: COMPLETED
-   - Life: 34.8 Years
-   - Used: 57.8% (Capital Cliff Identified)
+3. WSU Analysis:
+   - Life: ${wLife} Years
+   - Used: ${wUsed} (Capital Cliff Identified)
 
 OFFICIAL VERIFICATION HASH:
 ${hash}
-
-(Instructors: Use the 'Verification Tools' in Instructor Mode to validate this file.)
 `;
 
         const blob = new Blob([content], { type: 'text/plain' });
