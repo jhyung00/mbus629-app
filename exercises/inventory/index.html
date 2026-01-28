@@ -464,7 +464,10 @@
 
             const attemptUnlock = (e) => {
                 e.preventDefault();
-                if (authPass.toLowerCase() === 'teacher') {
+                
+                // "aW52Ng==" is the hidden code for "inv6"
+                // We check the encoded version so the real password isn't visible
+                if (btoa(authPass) === 'aW52Ng==') {
                     setInstructorUnlocked(true);
                     setShowAuthModal(false);
                     setAuthPass('');
