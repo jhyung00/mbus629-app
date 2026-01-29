@@ -74,6 +74,75 @@
             flex-direction: column;
         }
 
+        /* TOC Menu Button */
+        .toc-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 200;
+            background: var(--bg-card);
+            border: var(--border-style);
+            padding: 8px 15px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--secondary);
+            font-weight: 600;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .toc-btn:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        /* TOC Modal */
+        #toc-modal {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 150;
+            overflow-y: auto;
+            padding: 3rem;
+            box-sizing: border-box;
+            backdrop-filter: blur(5px);
+        }
+        
+        #toc-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            list-style: none;
+            padding: 0;
+            margin-top: 2rem;
+        }
+
+        .toc-item {
+            background: white;
+            border: var(--border-style);
+            padding: 1rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .toc-item:hover {
+            border-color: var(--secondary);
+            color: var(--secondary);
+            transform: translateX(5px);
+        }
+
+        .toc-item span {
+            font-weight: bold;
+            color: var(--text-muted);
+            margin-right: 10px;
+        }
+
         /* Slides */
         .slide {
             display: none;
@@ -581,6 +650,20 @@
 
 <div id="presentation-container">
     <canvas id="confetti-canvas"></canvas>
+    
+    <!-- TOC Button -->
+    <button class="toc-btn" onclick="toggleTOC()">MENU</button>
+
+    <!-- TOC Modal -->
+    <div id="toc-modal">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2>Table of Contents</h2>
+            <button class="btn" onclick="toggleTOC()" style="background:var(--danger);">Close</button>
+        </div>
+        <ul id="toc-list">
+            <!-- Items injected by JS -->
+        </ul>
+    </div>
 
     <!-- Slide 1: Intro -->
     <div class="slide active">
@@ -1682,7 +1765,37 @@
         </div>
     </div>
 
-    <!-- Slide 41: Summary (Renamed & Reveal) -->
+    <!-- Slide 41: NEW META STORY -->
+    <div class="slide">
+        <h2>Case Study: Meta's $90 Billion Bet</h2>
+        
+        <div style="display: flex; gap: 2rem; align-items: start;">
+            <div style="flex: 1;">
+                <p>Less than five years after Mark Zuckerberg laid out his vision for the metaverse, that idea is officially dead. Meta has begun laying off people in Reality Labs to refocus on <strong>AI-powered smartglasses</strong>.</p>
+                
+                <div class="hook-box" style="padding: 1rem; border-color: var(--danger);">
+                    <h3 style="color:var(--danger); margin:0;">The Cost of Ambition</h3>
+                    <p style="margin-bottom:0;">In 2025, Reality Labs lost <strong>$19.2 billion</strong>. Total operating losses over the past 7 years approach <strong>$90 billion</strong>.</p>
+                </div>
+
+                <p style="font-size: 0.95rem;">Zuckerberg compares the shift to AI glasses (partnered with Ray-Ban/Oakley) to the rise of smartphones. "It's hard to imagine a world in several years where most glasses that people wear aren't AI glasses," he said.</p>
+                
+                <p style="font-size: 0.95rem; font-style: italic; color: var(--text-muted);">Implication: These glasses "see what you see," providing Meta massive data for ad targeting.</p>
+            </div>
+            
+            <div style="flex: 1; border: var(--border-style); background: white; padding: 10px;">
+                 <a href="https://www.statista.com/chart/29236/operating-loss-of-metas-reality-labs-division/" title="Infographic: Meta's Reality Labs Lose $19B as VR Ambitions Falter | Statista"><img src="https://cdn.statcdn.com/Infographic/images/normal/29236.jpeg" alt="Infographic: Meta's Reality Labs Lose $19B as VR Ambitions Falter | Statista" width="100%" height="auto" style="width: 100%; height: auto !important; max-width:960px;-ms-interpolation-mode: bicubic;"/></a>
+            </div>
+        </div>
+
+        <div class="equation-box" style="text-align: left; margin-top: 1rem;">
+            <h3 style="margin-top:0; color: var(--secondary);">Analyst Question:</h3>
+            <p style="font-size: 1.2rem;">Given the "death" of the original Metaverse vision, do you think Meta's <strong>Goodwill impairment</strong> is coming soon?</p>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">(Think about their acquisition of Oculus for $2B. Is that asset still worth $2B on the books?)</p>
+        </div>
+    </div>
+
+    <!-- Slide 42: Summary (Renamed & Reveal) -->
     <div class="slide">
         <h2>Summary</h2>
         <p>We have learned to separate Signal from Noise.</p>
@@ -1698,7 +1811,7 @@
         <p style="text-align:center; margin-top:2rem;">Ready to prove your skills?</p>
     </div>
 
-    <!-- Slide 42: Quiz Intro -->
+    <!-- Slide 43: Quiz Intro -->
     <div class="slide">
         <div style="text-align:center; margin-top:15%;">
             <h1>Final Exam</h1>
@@ -1707,7 +1820,7 @@
         </div>
     </div>
 
-    <!-- Slide 43: Quiz -->
+    <!-- Slide 44: Quiz -->
     <div class="slide">
         <div id="quiz-container" style="max-width: 800px; margin: 0 auto;">
             <!-- Quiz Generated by JS -->
@@ -1721,7 +1834,7 @@
 
     <!-- Controls -->
     <div class="controls">
-        <div class="nav-info">Slide <span id="slide-number">1</span> of <span id="total-slides">43</span></div>
+        <div class="nav-info">Slide <span id="slide-number">1</span> of <span id="total-slides">44</span></div>
         <button class="btn" id="prevBtn" onclick="prevSlide()">Previous</button>
         <div class="progress-container">
             <div class="progress-bar" id="progressBar"></div>
@@ -1781,6 +1894,34 @@
         if (currentSlide > 0) {
             currentSlide--;
             updateSlide();
+        }
+    }
+    
+    // TOC Logic
+    function toggleTOC() {
+        const modal = document.getElementById('toc-modal');
+        const list = document.getElementById('toc-list');
+        
+        if(modal.style.display === 'block') {
+            modal.style.display = 'none';
+        } else {
+            // Generate list dynamically
+            list.innerHTML = '';
+            slides.forEach((slide, index) => {
+                const titleEl = slide.querySelector('h2') || slide.querySelector('h1');
+                const title = titleEl ? titleEl.innerText : `Slide ${index + 1}`;
+                
+                const li = document.createElement('li');
+                li.className = 'toc-item';
+                li.innerHTML = `<span>${index + 1}</span> ${title}`;
+                li.onclick = () => {
+                    currentSlide = index;
+                    updateSlide();
+                    modal.style.display = 'none';
+                };
+                list.appendChild(li);
+            });
+            modal.style.display = 'block';
         }
     }
 
