@@ -22,15 +22,6 @@
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
-        
-        /* Toggle Switch */
-        .toggle-checkbox:checked {
-            right: 0;
-            border-color: #68D391;
-        }
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #68D391;
-        }
     </style>
 </head>
 <body class="h-screen flex overflow-hidden">
@@ -113,10 +104,10 @@
                         <span>Sustainability</span>
                     </div>
                 </li>
-                <li class="nav-item px-6 py-3 bg-gray-800" onclick="loadModule('summary', this)" data-id="summary">
+                <li class="nav-item px-6 py-3 bg-gray-800 border-t border-gray-700 mt-2" onclick="loadModule('summary', this)" data-id="summary">
                     <div class="flex items-center space-x-3">
-                        <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                        <span class="text-white font-bold">Executive Summary</span>
+                        <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                        <span class="font-bold text-white">Executive Summary</span>
                     </div>
                 </li>
             </ul>
@@ -147,10 +138,7 @@
     </main>
 
     <script>
-        // --- Data Source ---
-        // Aligned Periods: Index 0 is Oldest (2019/20), Index 4 is Newest (2023/24)
         const commonYears = ["2019/20", "2020/21", "2021/22", "2022/23", "2023/24"];
-        // Adjusted years for Efficiency charts (limited to last 2 periods)
         const efficiencyYears = ["2022/23", "2023/24"];
         
         const reportData = {
@@ -180,7 +168,6 @@
                     ]
                 },
                 efficiency: {
-                    // Split into two groups for better charting
                     turnoverMetrics: [
                         { name: "Inventory Turnover", data: [2.99, 3.18], comment: "Slight improvement in 2024 (3.18) vs 2023 (2.99), faster turnover." },
                         { name: "Receivables Turnover", data: [6.36, 8.81], comment: "Increased (8.81) in 2024, quicker collection." },
@@ -268,7 +255,6 @@
                     ]
                 },
                 efficiency: {
-                    // Data restricted to last 2 comparable periods
                     turnoverMetrics: [
                         { name: "Inventory Turnover", data: [3.01, 2.67], comment: "Decreased (2.67) in 2023, selling less frequently." },
                         { name: "Receivables Turnover", data: [9.28, 14.39], comment: "Increased (14.39) in 2023, faster collection." },
@@ -332,26 +318,21 @@
             }
         };
 
-        let currentMode = 'nvidia'; // nvidia, intel, compare
+        let currentMode = 'nvidia';
         let currentModule = 'profitability';
-
-        // --- Core Logic ---
 
         function setMode(mode) {
             currentMode = mode;
             
-            // Update UI Buttons
             document.getElementById('btn-nvidia').className = `flex-1 py-1 rounded shadow ${mode === 'nvidia' ? 'bg-green-600 text-white' : 'bg-gray-700 hover:bg-gray-600'}`;
             document.getElementById('btn-compare').className = `flex-1 py-1 rounded shadow ${mode === 'compare' ? 'bg-purple-600 text-white' : 'bg-gray-700 hover:bg-gray-600'}`;
             document.getElementById('btn-intel').className = `flex-1 py-1 rounded shadow ${mode === 'intel' ? 'bg-blue-600 text-white' : 'bg-gray-700 hover:bg-gray-600'}`;
 
-            // Update Logo
             const logo = document.getElementById('logo-box');
             if (mode === 'nvidia') { logo.innerText = 'N'; logo.className = "w-8 h-8 bg-green-500 rounded flex items-center justify-center text-white font-bold transition-colors duration-300"; }
             else if (mode === 'intel') { logo.innerText = 'I'; logo.className = "w-8 h-8 bg-blue-500 rounded flex items-center justify-center text-white font-bold transition-colors duration-300"; }
             else { logo.innerText = 'VS'; logo.className = "w-8 h-8 bg-purple-500 rounded flex items-center justify-center text-white font-bold transition-colors duration-300"; }
 
-            // Sidebar Highlight Color
             document.querySelectorAll('.nav-item').forEach(el => {
                 if (mode === 'intel') { el.classList.remove('active'); if(el.dataset.id === currentModule) el.classList.add('active-intel'); }
                 else { el.classList.remove('active-intel'); if(el.dataset.id === currentModule) el.classList.add('active'); }
@@ -359,8 +340,6 @@
 
             loadModule(currentModule);
         }
-
-        // --- Render Helpers ---
 
         function createMetricCard(metricName, nData, iData, isShort=false) {
             const showNvidia = currentMode === 'nvidia' || currentMode === 'compare';
@@ -398,7 +377,6 @@
             const ctx = document.getElementById(canvasId).getContext('2d');
             if(window[canvasId] instanceof Chart) window[canvasId].destroy();
 
-            // Filter datasets based on mode
             let activeDatasets = [];
             if (currentMode === 'nvidia' || currentMode === 'compare') {
                 activeDatasets.push(...datasets.nvidia);
@@ -429,20 +407,11 @@
             });
         }
 
-        function getMetricData(companyData, category, index) {
-            const m = companyData[category].metrics[index];
-            const latestVal = m.data[4]; // 5th element is latest
-            return { val: latestVal.toLocaleString(), comment: m.comment };
-        }
-
-        // --- Module Renderers ---
-
         function renderStandardModule(moduleId, chartId) {
             const container = document.getElementById('dashboard-content');
             const nv = reportData.nvidia[moduleId];
             const intc = reportData.intel[moduleId];
 
-            // 1. Commentary Block
             let commentHtml = '';
             if (currentMode !== 'compare') {
                 const data = currentMode === 'nvidia' ? nv : intc;
@@ -452,8 +421,6 @@
                 }
             }
 
-            // 2. Chart
-            // Prepare datasets
             const nvDatasets = nv.metrics.map((m, i) => ({
                 label: `NVDA ${m.name}`,
                 data: m.data,
@@ -472,13 +439,11 @@
                 tension: 0.3
             }));
 
-            // 3. Cards
             const cardCount = Math.max(nv.metrics.length, intc.metrics.length);
             let cardsHtml = '';
             for(let i=0; i<cardCount; i++) {
                 const nValRaw = nv.metrics[i]?.data[4];
                 const iValRaw = intc.metrics[i]?.data[4];
-                // Formatter
                 const formatVal = (v) => typeof v === 'number' ? v.toFixed(2) : (v || '-');
 
                 const nData = { val: formatVal(nValRaw), comment: nv.metrics[i]?.comment || '' };
@@ -504,15 +469,10 @@
             const nv = reportData.nvidia.efficiency;
             const intc = reportData.intel.efficiency;
 
-            // Generate datasets helper for efficiency specific structure
             const createDatasets = (metricGroup) => {
                 const nvD = nv[metricGroup].map((m, i) => ({
                     label: `NVDA ${m.name}`,
                     data: m.data,
-                    borderColor: '#10b981', 
-                    // Use varied greens or just one color with different styles if many lines, 
-                    // but for clarity let's use colors from palette if needed or keep simple.
-                    // Let's use different shades for different metrics to distinguish them
                     borderColor: ['#10b981', '#059669', '#34d399', '#064e3b'][i%4],
                     backgroundColor: 'rgba(0,0,0,0)',
                     borderWidth: 2,
@@ -530,12 +490,10 @@
                 return { nvidia: nvD, intel: intcD };
             };
 
-            // Cards generator
             const generateCards = (metricGroup) => {
                 const count = Math.max(nv[metricGroup].length, intc[metricGroup].length);
                 let html = '';
                 for(let i=0; i<count; i++) {
-                    // Latest value is at index 1 (since data array has 2 elements: [prev, latest])
                     const nValRaw = nv[metricGroup][i]?.data[1];
                     const iValRaw = intc[metricGroup][i]?.data[1];
                     const formatVal = (v) => typeof v === 'number' ? v.toFixed(2) : (v || '-');
@@ -547,7 +505,6 @@
             };
 
             container.innerHTML = `
-                <!-- Turnover Ratios Section -->
                 <h3 class="text-xl font-bold text-gray-700 mb-4 border-b pb-2">Turnover Ratios</h3>
                 <div class="bg-white p-6 rounded-lg shadow-md mb-6 h-72">
                     <canvas id="turnoverChart"></canvas>
@@ -556,7 +513,6 @@
                     ${generateCards('turnoverMetrics')}
                 </div>
 
-                <!-- Days Outstanding Section -->
                 <h3 class="text-xl font-bold text-gray-700 mb-4 border-b pb-2">Days Outstanding & Cycle</h3>
                 <div class="bg-white p-6 rounded-lg shadow-md mb-6 h-72">
                     <canvas id="daysChart"></canvas>
@@ -614,7 +570,6 @@
             const nv = reportData.nvidia.dupont;
             const intc = reportData.intel.dupont;
 
-            // 1. Chart
             const nvDatasets = nv.metrics.map((m, i) => ({
                 label: `NVDA ${m.name.split(' ')[0]}`,
                 data: m.data,
@@ -635,7 +590,6 @@
                 spanGaps: true
             }));
 
-            // 2. Cards
             let cardsHtml = '';
             for(let i=0; i<3; i++) {
                 const nValRaw = nv.metrics[i].data[4];
@@ -668,7 +622,6 @@
             const nv = reportData.nvidia.cashFlows;
             const intc = reportData.intel.cashFlows;
             
-            // Build datasets for trend chart
             const datasets = {
                 nvidia: [
                     {
@@ -706,22 +659,18 @@
                 ]
             };
 
-            // Combine based on mode
             let activeDatasets = [];
             if (currentMode === 'nvidia' || currentMode === 'compare') activeDatasets.push(...datasets.nvidia);
             if (currentMode === 'intel' || currentMode === 'compare') activeDatasets.push(...datasets.intel);
 
-            // Render Layout
             let cardsHtml = '';
             if (currentMode === 'compare') {
                  cardsHtml = `
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- NVDA Col -->
                         <div class="space-y-4">
                             <h3 class="font-bold text-green-700 border-b border-green-200 pb-2">NVIDIA</h3>
                             ${nv.cards.map(c => `<div class="bg-white p-4 rounded shadow-sm border-l-4 border-green-500"><h4 class="font-bold text-sm">${c.title}</h4><p class="text-xs mt-1 text-gray-600">${c.text}</p></div>`).join('')}
                         </div>
-                        <!-- INTC Col -->
                         <div class="space-y-4">
                             <h3 class="font-bold text-blue-700 border-b border-blue-200 pb-2">INTEL</h3>
                             ${intc.cards.map(c => `<div class="bg-white p-4 rounded shadow-sm border-l-4 border-blue-500"><h4 class="font-bold text-sm">${c.title}</h4><p class="text-xs mt-1 text-gray-600">${c.text}</p></div>`).join('')}
@@ -756,7 +705,6 @@
                 ${cardsHtml}
             `;
 
-            // Init Chart with dual axis
             const ctx = document.getElementById('cfoChart').getContext('2d');
             if(window['cfoChart'] instanceof Chart) window['cfoChart'].destroy();
             
@@ -848,68 +796,75 @@
             const container = document.getElementById('dashboard-content');
             
             container.innerHTML = `
-                <div class="bg-gray-900 text-white rounded-xl shadow-2xl p-8 mb-8">
-                    <h2 class="text-3xl font-bold mb-6 text-yellow-400">Investment Recommendation: NVIDIA</h2>
+                <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8 mb-8">
+                    <h2 class="text-3xl font-bold mb-6 text-gray-800 border-b pb-4">Investment Recommendation: <span class="text-green-600">NVIDIA</span></h2>
                     
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <div>
-                            <h3 class="text-xl font-bold mb-4 text-green-400">Why NVIDIA? (Strong Buy)</h3>
-                            <ul class="space-y-3">
+                            <h3 class="text-xl font-bold mb-4 text-green-700 flex items-center">
+                                <span class="bg-green-100 p-1 rounded mr-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                </span>
+                                Why NVIDIA? (Strong Buy)
+                            </h3>
+                            <ul class="space-y-4">
                                 <li class="flex items-start">
-                                    <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                    <div><span class="font-bold text-green-300">Explosive Growth:</span> 126% revenue surge and ~8x operating income growth in 2024 driven by AI demand.</div>
+                                    <div class="mt-1 mr-3 min-w-[20px]"><div class="w-2 h-2 bg-green-500 rounded-full"></div></div>
+                                    <div class="text-gray-700"><span class="font-bold text-gray-900">Explosive Growth:</span> 126% revenue surge and ~8x operating income growth in 2024 driven by AI demand.</div>
                                 </li>
                                 <li class="flex items-start">
-                                    <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                    <div><span class="font-bold text-green-300">Operational Excellence:</span> Exceptional RNOA (119.8%) and gross margins (72.7%) demonstrate massive pricing power and efficiency.</div>
+                                    <div class="mt-1 mr-3 min-w-[20px]"><div class="w-2 h-2 bg-green-500 rounded-full"></div></div>
+                                    <div class="text-gray-700"><span class="font-bold text-gray-900">Operational Excellence:</span> Exceptional RNOA (119.8%) and gross margins (72.7%) demonstrate massive pricing power and efficiency.</div>
                                 </li>
                                 <li class="flex items-start">
-                                    <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                    <div><span class="font-bold text-green-300">High Earnings Quality:</span> NI/CFO ratio > 1.0 indicates profits are fully backed by strong operating cash flows ($28B).</div>
+                                    <div class="mt-1 mr-3 min-w-[20px]"><div class="w-2 h-2 bg-green-500 rounded-full"></div></div>
+                                    <div class="text-gray-700"><span class="font-bold text-gray-900">High Earnings Quality:</span> NI/CFO ratio > 1.0 indicates profits are fully backed by strong operating cash flows ($28B).</div>
                                 </li>
                                 <li class="flex items-start">
-                                    <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                    <div><span class="font-bold text-green-300">Efficient Capital Use:</span> Increasing PPE turnover (15.8x) and Cash Conversion Cycle reduction show superior asset utilization.</div>
+                                    <div class="mt-1 mr-3 min-w-[20px]"><div class="w-2 h-2 bg-green-500 rounded-full"></div></div>
+                                    <div class="text-gray-700"><span class="font-bold text-gray-900">Efficient Capital Use:</span> Increasing PPE turnover (15.8x) and Cash Conversion Cycle reduction show superior asset utilization.</div>
                                 </li>
                             </ul>
                         </div>
                         
                         <div>
-                            <h3 class="text-xl font-bold mb-4 text-red-400">Why Avoid Intel? (Hold/Sell)</h3>
-                            <ul class="space-y-3">
+                            <h3 class="text-xl font-bold mb-4 text-red-700 flex items-center">
+                                <span class="bg-red-100 p-1 rounded mr-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                </span>
+                                Why Avoid Intel? (Hold/Sell)
+                            </h3>
+                            <ul class="space-y-4">
                                 <li class="flex items-start">
-                                    <svg class="w-6 h-6 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                    <div><span class="font-bold text-red-300">Margin Compression:</span> Gross margins collapsed to 40% and operating margin to near-zero (0.2%) in 2023.</div>
+                                    <div class="mt-1 mr-3 min-w-[20px]"><div class="w-2 h-2 bg-red-500 rounded-full"></div></div>
+                                    <div class="text-gray-700"><span class="font-bold text-gray-900">Margin Compression:</span> Gross margins collapsed to 40% and operating margin to near-zero (0.2%) in 2023.</div>
                                 </li>
                                 <li class="flex items-start">
-                                    <svg class="w-6 h-6 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                    <div><span class="font-bold text-red-300">Cash Flow Strain:</span> Declining CFO ($11.5B) is insufficient to cover CapEx + Dividends, leading to negative free cash flow.</div>
+                                    <div class="mt-1 mr-3 min-w-[20px]"><div class="w-2 h-2 bg-red-500 rounded-full"></div></div>
+                                    <div class="text-gray-700"><span class="font-bold text-gray-900">Cash Flow Strain:</span> Declining CFO ($11.5B) is insufficient to cover CapEx + Dividends, leading to negative free cash flow.</div>
                                 </li>
                                 <li class="flex items-start">
-                                    <svg class="w-6 h-6 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                    <div><span class="font-bold text-red-300">Operational Inefficiency:</span> RNOA plummeted to 1.2%, signaling poor returns on core operations. Rising days inventory (137 days).</div>
+                                    <div class="mt-1 mr-3 min-w-[20px]"><div class="w-2 h-2 bg-red-500 rounded-full"></div></div>
+                                    <div class="text-gray-700"><span class="font-bold text-gray-900">Operational Inefficiency:</span> RNOA plummeted to 1.2%, signaling poor returns on core operations. Rising days inventory (137 days).</div>
                                 </li>
                                 <li class="flex items-start">
-                                    <svg class="w-6 h-6 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                    <div><span class="font-bold text-red-300">Weak Earnings Quality:</span> NI/CFO ratio dropped to 0.15, suggesting reported earnings are not translating to cash.</div>
+                                    <div class="mt-1 mr-3 min-w-[20px]"><div class="w-2 h-2 bg-red-500 rounded-full"></div></div>
+                                    <div class="text-gray-700"><span class="font-bold text-gray-900">Weak Earnings Quality:</span> NI/CFO ratio dropped to 0.15, suggesting reported earnings are not translating to cash.</div>
                                 </li>
                             </ul>
                         </div>
                     </div>
                     
-                    <div class="mt-8 pt-6 border-t border-gray-700 text-center text-sm text-gray-400">
-                        <p>Conclusion: NVIDIA demonstrates a vastly superior financial profile characterized by high growth, efficiency, and cash generation. Intel faces significant structural challenges affecting profitability and liquidity.</p>
+                    <div class="mt-8 pt-6 border-t border-gray-200 text-center text-sm text-gray-500 bg-gray-50 -mx-8 -mb-8 p-6 rounded-b-xl">
+                        <p class="font-medium">Conclusion: NVIDIA demonstrates a vastly superior financial profile characterized by high growth, efficiency, and cash generation. Intel faces significant structural challenges affecting profitability and liquidity.</p>
                     </div>
                 </div>
             `;
         }
 
-
-        // --- Router ---
         function loadModule(moduleId, element) {
             currentModule = moduleId;
 
-            // Titles
             const titles = {
                 profitability: "Profitability Analysis",
                 earningsQuality: "Earnings Quality",
@@ -940,15 +895,12 @@
             document.getElementById('section-title').innerText = titles[moduleId];
             document.getElementById('section-subtitle').innerText = descs[moduleId];
 
-            // Nav active state
             if (element) {
                 document.querySelectorAll('.nav-item').forEach(el => {
                     el.classList.remove('active', 'active-intel');
-                    // re-add tag for current mode logic in setMode
                 });
-                // setMode handles the actual coloring based on currentMode
             }
-            // Ensure nav highlighting respects mode
+            
             document.querySelectorAll('.nav-item').forEach(el => {
                 if(el.dataset.id === moduleId) {
                     if(currentMode === 'intel') el.classList.add('active-intel');
@@ -967,10 +919,7 @@
             else renderStandardModule(moduleId, 'mainChart');
         }
 
-        // Init
         document.addEventListener('DOMContentLoaded', () => {
-            // Ensure nav items have data-id for styling logic
-            // No manual assignment needed since data-id is in HTML
             loadModule('profitability');
         });
 
