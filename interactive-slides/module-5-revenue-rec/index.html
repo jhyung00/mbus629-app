@@ -11,14 +11,15 @@
     
     <style>
         :root {
-            --bg-color: #0f172a; /* Deep Navy */
-            --card-bg: #1e293b; /* Slate */
-            --primary: #38bdf8; /* Electric Blue */
-            --accent: #fb923c; /* Vibrant Orange */
-            --text-main: #f1f5f9; /* Off-white */
+            /* Ultra-Light Theme Palette */
+            --bg-color: #ffffff; /* White Slide Background */
+            --card-bg: #f8fafc; /* Very Light Slate for cards */
+            --primary: #0284c7; /* Sky Blue */
+            --accent: #f97316; /* Bright Orange */
+            --text-main: #334155; /* Slate 700 for text */
             --text-muted: #94a3b8;
-            --success: #4ade80; /* Green */
-            --error: #f87171; /* Red */
+            --success: #16a34a; /* Green */
+            --error: #dc2626; /* Red */
         }
 
         * {
@@ -29,7 +30,7 @@
 
         body {
             font-family: 'Montserrat', sans-serif;
-            background-color: #000;
+            background-color: #e6e9ef; /* Lighter outer background */
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -45,8 +46,8 @@
             background-color: var(--bg-color);
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 50px rgba(56, 189, 248, 0.2);
-            border: 1px solid #334155;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #cbd5e1;
         }
 
         /* Slide Structure */
@@ -60,7 +61,7 @@
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.4s ease, transform 0.4s ease;
-            transform: scale(0.95);
+            transform: scale(0.98);
             display: flex;
             flex-direction: column;
         }
@@ -74,10 +75,10 @@
 
         /* Background Variants */
         .blueprint-bg {
-            background-color: #1e293b;
+            background-color: #f0f9ff;
             background-image: 
-                linear-gradient(rgba(56, 189, 248, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(56, 189, 248, 0.1) 1px, transparent 1px);
+                linear-gradient(rgba(2, 132, 199, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(2, 132, 199, 0.05) 1px, transparent 1px);
             background-size: 40px 40px;
         }
 
@@ -90,9 +91,7 @@
 
         h1 { 
             font-size: 3.8rem; 
-            background: linear-gradient(to right, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--primary);
         }
         
         h2 { 
@@ -107,7 +106,7 @@
         
         p, li { 
             font-size: 1.2rem; 
-            line-height: 1.5; 
+            line-height: 1.6; 
             margin-bottom: 12px; 
             color: var(--text-main);
         }
@@ -129,41 +128,43 @@
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
         }
 
         /* Newspaper Style */
         .newspaper {
-            background-color: #f1f5f9;
+            background-color: #ffffff;
             color: #0f172a;
             padding: 30px;
             column-count: 2;
             column-gap: 40px;
             border-radius: 4px;
             font-family: 'Merriweather', serif;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             position: relative;
+            border: 1px solid #e2e8f0;
         }
         .newspaper h3 {
             column-span: all;
             text-align: center;
             font-family: 'Merriweather', serif;
             font-weight: 900;
-            color: #000;
-            border-bottom: 2px solid #000;
+            color: #0f172a;
+            border-bottom: 2px solid #0f172a;
             margin-bottom: 20px;
             font-size: 2rem;
             text-transform: uppercase;
         }
         .newspaper p {
-            color: #333;
+            color: #334155;
             font-size: 1rem;
             text-align: justify;
             margin-bottom: 10px;
         }
         .headline-stat {
             font-size: 3rem;
-            color: #c0392b;
+            color: var(--error);
             font-weight: bold;
             display: block;
             text-align: center;
@@ -205,12 +206,12 @@
             align-items: center;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
         }
 
         .flip-card-front {
-            background: linear-gradient(135deg, var(--card-bg), #0f172a);
+            background: linear-gradient(135deg, #ffffff, #f0f9ff);
         }
 
         .flip-card-front i {
@@ -221,12 +222,12 @@
 
         .flip-card-back {
             background-color: var(--primary);
-            color: #0f172a;
+            color: #ffffff;
             transform: rotateY(180deg);
         }
         
-        .flip-card-back h3 { color: #000; font-size: 1.4rem; margin-bottom: 10px; }
-        .flip-card-back p { color: #1e293b; font-weight: 600; font-size: 1.1rem; }
+        .flip-card-back h3 { color: #ffffff; font-size: 1.4rem; margin-bottom: 10px; }
+        .flip-card-back p { color: #e0f2fe; font-weight: 600; font-size: 1.1rem; }
 
         /* Progressive Reveal Elements */
         .reveal-item {
@@ -245,7 +246,7 @@
             background: var(--card-bg);
             padding: 20px;
             border-radius: 8px;
-            border: 1px solid #334155;
+            border: 1px solid #cbd5e1;
             margin-bottom: 15px;
         }
 
@@ -258,17 +259,18 @@
             background: var(--card-bg);
             border-radius: 8px;
             overflow: hidden;
+            border: 1px solid #cbd5e1;
         }
         
         .real-table th, .real-table td {
             padding: 12px;
             text-align: right;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid #e2e8f0;
             color: var(--text-main);
         }
         
         .real-table th {
-            background-color: #0f172a;
+            background-color: #f1f5f9;
             color: var(--primary);
             text-align: center;
             font-weight: bold;
@@ -278,6 +280,7 @@
         .real-table td:first-child {
             text-align: left;
             color: var(--accent);
+            font-weight: bold;
         }
 
         .fset-table {
@@ -285,21 +288,22 @@
             border-collapse: collapse;
             font-family: 'Fira Code', monospace;
             font-size: 0.85rem;
-            background: #1e293b;
-            color: white;
+            background: #ffffff;
+            color: var(--text-main);
             margin-top: 20px;
+            border: 1px solid #cbd5e1;
         }
         .fset-table th, .fset-table td {
-            border: 1px solid #475569;
+            border: 1px solid #cbd5e1;
             padding: 10px;
             text-align: center;
         }
         .fset-table th {
-            background-color: #0f172a;
+            background-color: #f8fafc;
             color: var(--primary);
         }
         .fset-header-group {
-            background-color: #334155;
+            background-color: #e2e8f0;
             font-weight: bold;
             color: var(--accent);
         }
@@ -322,85 +326,7 @@
             padding: 15px;
             border-radius: 4px;
             font-size: 0.9rem;
-        }
-
-        /* T-Account Style */
-        .t-account-container {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 30px;
-        }
-        .t-account {
-            width: 45%;
-        }
-        .t-header {
-            text-align: center;
-            font-weight: bold;
-            border-bottom: 4px solid var(--accent);
-            padding-bottom: 5px;
-            margin-bottom: 5px;
-            font-size: 1.2rem;
-        }
-        .t-body {
-            display: flex;
-        }
-        .t-left, .t-right {
-            width: 50%;
-            padding: 5px;
-        }
-        .t-left {
-            border-right: 4px solid var(--accent);
-            text-align: right;
-        }
-        .t-right {
-            text-align: left;
-        }
-        .t-val {
-            font-family: 'Fira Code', monospace;
-            font-size: 1rem;
-            margin: 5px 0;
-        }
-        .t-total {
-            border-top: 2px solid var(--text-muted);
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        /* Sim Tool */
-        .sim-container {
-            background: #2d3748;
-            padding: 20px;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .sim-input {
-            background: #0f172a;
-            border: 1px solid var(--primary);
-            color: white;
-            padding: 10px;
-            font-family: 'Fira Code', monospace;
-            width: 100%;
-        }
-        textarea.sim-input {
-            resize: vertical;
-        }
-        .sim-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        .sim-result {
-            margin-top: 10px;
-            padding: 10px;
-            background: #0f172a;
-            border-left: 4px solid var(--success);
-            display: none;
+            border: 1px solid #e2e8f0;
         }
 
         /* Navigation */
@@ -414,7 +340,7 @@
         }
 
         .nav-btn {
-            background: transparent;
+            background: rgba(255,255,255,0.8);
             color: var(--primary);
             border: 2px solid var(--primary);
             width: 50px;
@@ -430,8 +356,8 @@
 
         .nav-btn:hover {
             background: var(--primary);
-            color: #0f172a;
-            box-shadow: 0 0 15px var(--primary);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
         }
 
         .progress-bar {
@@ -442,7 +368,6 @@
             background: linear-gradient(to right, var(--primary), var(--accent));
             width: 0%;
             transition: width 0.3s;
-            box-shadow: 0 0 10px var(--primary);
         }
 
         .slide-counter {
@@ -460,10 +385,10 @@
             margin: 0 auto;
         }
         .quiz-option {
-            background: var(--card-bg);
+            background: #ffffff;
             padding: 15px;
             margin-bottom: 10px;
-            border: 1px solid #334155;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
@@ -471,16 +396,16 @@
         }
         .quiz-option:hover {
             border-color: var(--primary);
-            background: #2d3748;
+            background: #f0f9ff;
             transform: translateX(10px);
         }
         .quiz-option.correct {
-            background-color: rgba(74, 222, 128, 0.2);
+            background-color: #dcfce7;
             border-color: var(--success);
             color: var(--success);
         }
         .quiz-option.incorrect {
-            background-color: rgba(248, 113, 113, 0.2);
+            background-color: #fee2e2;
             border-color: var(--error);
             color: var(--error);
         }
@@ -494,11 +419,86 @@
         .calc-step {
             font-family: 'Fira Code', monospace;
             color: var(--primary);
-            background: rgba(56, 189, 248, 0.1);
+            background: #e0f2fe;
             padding: 5px 10px;
             border-radius: 4px;
             margin: 5px 0;
             display: inline-block;
+            border: 1px solid #bae6fd;
+        }
+
+        /* TOC Styles */
+        .toc-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 200;
+            background: rgba(255,255,255,0.95);
+            border: 1px solid var(--primary);
+            padding: 8px 15px;
+            cursor: pointer;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 600;
+            border-radius: 4px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .toc-btn:hover {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        #toc-modal {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            z-index: 150;
+            overflow-y: auto;
+            padding: 3rem;
+            box-sizing: border-box;
+            backdrop-filter: blur(5px);
+        }
+        
+        #toc-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            list-style: none;
+            padding: 0;
+            margin-top: 2rem;
+        }
+
+        .toc-item {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            color: var(--text-main);
+            font-family: 'Montserrat', sans-serif;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .toc-item:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateX(5px);
+            background: #f0f9ff;
+        }
+
+        .toc-item span {
+            font-weight: bold;
+            color: var(--accent);
+            margin-right: 10px;
+            font-family: 'Fira Code', monospace;
         }
 
     </style>
@@ -507,10 +507,24 @@
 
 <div id="slide-deck">
 
+    <!-- TOC Button -->
+    <button class="toc-btn" onclick="toggleTOC()">MENU</button>
+
+    <!-- TOC Modal -->
+    <div id="toc-modal">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 style="border:none; margin:0; color: var(--primary);">Table of Contents</h2>
+            <button class="toc-btn" style="position:static; border-color:var(--error); color:var(--error);" onclick="toggleTOC()">Close</button>
+        </div>
+        <ul id="toc-list">
+            <!-- Items injected by JS -->
+        </ul>
+    </div>
+
     <!-- SLIDE 1: Title -->
     <div class="slide active">
         <div style="text-align: center; margin-top: 100px;">
-            <i class="fas fa-chart-line" style="font-size: 6rem; color: var(--accent); margin-bottom: 30px; text-shadow: 0 0 20px var(--accent);"></i>
+            <i class="fas fa-chart-line" style="font-size: 6rem; color: var(--accent); margin-bottom: 30px; text-shadow: 0 5px 15px rgba(249, 115, 22, 0.2);"></i>
             <h1>Revenues, Receivables<br>& Operating Expenses</h1>
             <h3 style="margin-top: 30px;">Revenue Recognition and Accounts Receivable analysis</h3>
         </div>
@@ -579,10 +593,10 @@
         <h2>Reading the Footnotes (Keurig)</h2>
         <div class="problem-box">
             <p style="font-size: 1rem;"><strong>10-K 2007 (Before):</strong></p>
-            <p style="background: rgba(255,255,255,0.1); padding: 10px; font-style: italic;">"...sales is recognized upon <span style="text-decoration: underline; color: var(--success);">product delivery</span>... incentives are <span style="text-decoration: underline; color: var(--success);">netted against sales</span>."</p>
+            <p style="background: rgba(2, 132, 199, 0.05); padding: 10px; font-style: italic;">"...sales is recognized upon <span style="text-decoration: underline; color: var(--success);">product delivery</span>... incentives are <span style="text-decoration: underline; color: var(--success);">netted against sales</span>."</p>
             
             <p style="font-size: 1rem; margin-top: 20px;"><strong>10-K 2008 (After):</strong></p>
-            <p style="background: rgba(255,255,255,0.1); padding: 10px; font-style: italic;">"...sales is recognized upon product delivery, and <span style="background: var(--accent); color: #000; font-weight: bold;">in some cases upon product shipment</span>... incentives... are netted against sales <span style="background: var(--accent); color: #000; font-weight: bold;">or recorded in operating and selling expenses</span>."</p>
+            <p style="background: rgba(249, 115, 22, 0.1); padding: 10px; font-style: italic;">"...sales is recognized upon product delivery, and <span style="background: var(--accent); color: #fff; font-weight: bold; padding: 0 4px;">in some cases upon product shipment</span>... incentives... are netted against sales <span style="background: var(--accent); color: #fff; font-weight: bold; padding: 0 4px;">or recorded in operating and selling expenses</span>."</p>
         </div>
         <p style="text-align: center; color: var(--error);"><strong>Impact:</strong> Inflated Top-Line Revenue by moving costs to OpEx and accelerating timing.</p>
     </div>
@@ -608,7 +622,7 @@
                     <div class="flip-card-back">
                         <h3>The Lie</h3>
                         <p>They attributed growth to "brand strength" rather than disclosing pull-forwards.</p>
-                        <hr style="width: 50%; border-color: #000; margin: 15px auto;">
+                        <hr style="width: 50%; border-color: #fff; margin: 15px auto;">
                         <p>Result: Created significant uncertainty about future revenue capacity.</p>
                     </div>
                 </div>
@@ -616,7 +630,569 @@
         </div>
     </div>
 
-    <!-- SLIDE 7: Core Principle -->
+    <!-- NEW SLIDE 7: AI Economy Diagram -->
+    <div class="slide" style="padding: 0; overflow: hidden;">
+        <!-- Hidden title for TOC -->
+        <h2 style="display:none;">Visualizing the AI Economy</h2>
+        <iframe srcdoc='<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 AI Circular Financing Model</title>
+<style>
+    :root {
+        --nvidia-green: #15803d; /* Darker green for light bg */
+        --startup-color: #9333ea;
+        --cloud-color: #0369a1;
+        --bg-color: #f8fafc;
+        --card-bg: #ffffff;
+        --text-color: #1e293b;
+    }
+
+    body {
+        font-family: "Inter", "Segoe UI", sans-serif;
+        background-color: var(--bg-color);
+        background-image: radial-gradient(circle at 50% 0%, #e2e8f0 0%, #f8fafc 70%);
+        color: var(--text-color);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        overflow: hidden;
+    }
+
+    h2 {
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        color: #0369a1;
+        font-family: sans-serif;
+        font-size: 2rem;
+    }
+
+    .sub-header {
+        font-size: 0.9rem;
+        color: #64748b;
+        margin-bottom: 60px;
+        max-width: 600px;
+        text-align: center;
+        line-height: 1.5;
+        font-family: sans-serif;
+    }
+
+    /* Diagram Container */
+    .diagram-container {
+        position: relative;
+        width: 500px;
+        height: 450px;
+    }
+
+    /* Node Styling */
+    .node {
+        position: absolute;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        background: var(--card-bg);
+        border: 1px solid #cbd5e1;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        z-index: 2;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+        font-family: sans-serif;
+    }
+
+    .node:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        border-color: #94a3b8;
+    }
+
+    .node strong { font-size: 1.1rem; display: block; margin-bottom: 4px; }
+    .node span { font-size: 0.8rem; opacity: 0.7; }
+
+    /* Specific Node Branding */
+    #nvidia { top: 0; left: 50%; transform: translateX(-50%); border-top: 3px solid var(--nvidia-green); }
+    #nvidia:hover { box-shadow: 0 0 30px rgba(21, 128, 61, 0.2); }
+
+    #startup { bottom: 0; left: 0; border-top: 3px solid var(--startup-color); }
+    #startup:hover { box-shadow: 0 0 30px rgba(147, 51, 234, 0.2); }
+
+    #cloud { bottom: 0; right: 0; border-top: 3px solid var(--cloud-color); }
+    #cloud:hover { box-shadow: 0 0 30px rgba(3, 105, 161, 0.2); }
+
+    /* SVG Overlay for Arrows */
+    svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none; /* Let clicks pass through to nodes */
+    }
+
+    /* Flow Lines */
+    .flow-line {
+        fill: none;
+        stroke: #cbd5e1;
+        stroke-width: 2;
+    }
+
+    .flow-active {
+        fill: none;
+        stroke: url(#gradient);
+        stroke-width: 3;
+        stroke-dasharray: 10, 10;
+        animation: dash 2s linear infinite;
+        opacity: 0.8;
+    }
+
+    /* Arrow Heads */
+    .arrow-head { fill: #94a3b8; }
+
+    /* Labels on lines */
+    .label-container {
+        position: absolute;
+        background: rgba(255,255,255,0.9);
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+        white-space: nowrap;
+        font-family: sans-serif;
+    }
+
+    /* Positioning Labels using simple approx percentages based on layout */
+    #lbl-invest { top: 40%; left: 20%; transform: rotate(-35deg); }
+    #lbl-rent { bottom: 10px; left: 50%; transform: translateX(-50%); }
+    #lbl-revenue { top: 40%; right: 20%; transform: rotate(35deg); }
+
+    @keyframes dash {
+        to { stroke-dashoffset: -20; }
+    }
+
+</style>
+</head>
+<body>
+
+    <h2>The AI Circular Economy</h2>
+    <p class="sub-header">
+        In 2026, tech giants invest in startups, who then use that capital to rent cloud compute,<br>
+        returning revenue to the investor via hardware purchases.
+    </p>
+    
+    <div class="diagram-container">
+        
+        <svg viewBox="0 0 500 450">
+            <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#15803d;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#0369a1;stop-opacity:1" />
+                </linearGradient>
+                <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L0,6 L9,3 z" class="arrow-head" />
+                </marker>
+            </defs>
+
+            <path d="M220,100 L100,310" class="flow-line" />
+            <path d="M220,100 L100,310" class="flow-active" marker-end="url(#arrow)" />
+
+            <path d="M140,380 L360,380" class="flow-line" />
+            <path d="M140,380 L360,380" class="flow-active" marker-end="url(#arrow)" />
+
+            <path d="M400,310 L280,100" class="flow-line" />
+            <path d="M400,310 L280,100" class="flow-active" marker-end="url(#arrow)" />
+        </svg>
+
+        <div class="node" id="nvidia">
+            <strong>Nvidia</strong>
+            <span>(Investor)</span>
+        </div>
+        
+        <div class="node" id="startup">
+            <strong>AI Startup</strong>
+            <span>(e.g. OpenAI)</span>
+        </div>
+        
+        <div class="node" id="cloud">
+            <strong>Cloud Provider</strong>
+            <span>(e.g. CoreWeave)</span>
+        </div>
+
+        <div class="label-container" id="lbl-invest">$$$ Investment</div>
+        <div class="label-container" id="lbl-rent">Cloud Rental Fees</div>
+        <div class="label-container" id="lbl-revenue">Chip Purchase (Revenue)</div>
+
+    </div>
+
+</body>
+</html>' style="width:100%; height:100%; border:none;"></iframe>
+    </div>
+
+    <!-- NEW SLIDE 8: Interactive Simulation -->
+    <div class="slide" style="padding: 0; overflow: hidden;">
+        <!-- Hidden title for TOC -->
+        <h2 style="display:none;">Interactive Simulation</h2>
+        <iframe srcdoc='<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 AI Circular Financing Engine</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+    :root {
+        --bg-color: #f1f5f9;
+        --card-bg: #ffffff;
+        --nvidia-green: #16a34a;
+        --azure-blue: #0284c7;
+        --openai-purple: #9333ea;
+        --text-color: #1e293b;
+        --accent: #ea580c;
+    }
+
+    body {
+        font-family: "Inter", system-ui, -apple-system, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        overflow-x: hidden;
+    }
+
+    /* Glassmorphism */
+    .glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Diagram Nodes */
+    .node {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .node:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Pulse Animation */
+    @keyframes pulse-green {
+        0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
+        70% { box-shadow: 0 0 0 15px rgba(22, 163, 74, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+    }
+
+    .pulse-active {
+        animation: pulse-green 2s infinite;
+    }
+
+    /* Flow Lines (SVG) */
+    .flow-path {
+        fill: none;
+        stroke: #cbd5e1;
+        stroke-width: 2;
+    }
+
+    .flow-particle {
+        fill: var(--nvidia-green);
+        filter: drop-shadow(0 0 5px var(--nvidia-green));
+        opacity: 0;
+    }
+
+    /* Risk Meter Gradient */
+    .risk-meter-bg {
+        background: linear-gradient(90deg, #22c55e 0%, #eab308 50%, #ef4444 100%);
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-color); }
+    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+</style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <header class="border-b border-slate-200 bg-white/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight text-slate-800">AI Circular Financing Engine</h1>
+                <p class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Market Cycle 2026 Analysis</p>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="toggleInfo(&#39;overview&#39;)" class="text-sm font-medium hover:text-sky-600 text-slate-600 transition">Overview</button>
+                <button onclick="toggleInfo(&#39;risks&#39;)" class="text-sm font-medium hover:text-sky-600 text-slate-600 transition">Risks & Telecom Parallel</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col lg:flex-row gap-6 p-6 max-w-7xl mx-auto w-full">
+        
+        <!-- Left: Simulation Visualizer -->
+        <div class="flex-grow relative glass rounded-2xl p-6 flex flex-col items-center justify-center min-h-[500px] bg-white">
+            
+            <svg class="absolute inset-0 w-full h-full pointer-events-none z-0" id="connection-layer">
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#64748b" />
+                    </marker>
+                </defs>
+                <path id="path-inv-startup" class="flow-path" marker-end="url(#arrowhead)"></path>
+                <path id="path-startup-cloud" class="flow-path" marker-end="url(#arrowhead)"></path>
+                <path id="path-cloud-inv" class="flow-path" marker-end="url(#arrowhead)"></path>
+                <circle id="particle" r="6" class="flow-particle"></circle>
+            </svg>
+
+            <!-- Node 1 -->
+            <div id="node-investor" class="node absolute top-10 left-1/2 -translate-x-1/2 w-48 p-4 rounded-xl bg-slate-50 border-t-4 border-green-600 z-10 text-center border-l border-r border-b border-slate-200">
+                <div class="text-green-700 font-bold text-lg mb-1">Nvidia / Microsoft</div>
+                <div class="text-xs text-slate-500">Supplier & Investor</div>
+                <div class="mt-2 text-xs bg-slate-100 py-1 rounded text-green-700 font-mono font-bold" id="inv-rev">$0 Rev</div>
+            </div>
+
+            <!-- Node 2 -->
+            <div id="node-startup" class="node absolute bottom-10 left-10 w-48 p-4 rounded-xl bg-slate-50 border-t-4 border-purple-600 z-10 text-center border-l border-r border-b border-slate-200">
+                <div class="text-purple-700 font-bold text-lg mb-1">AI Startup</div>
+                <div class="text-xs text-slate-500">OpenAI / Anthropic</div>
+                <div class="mt-2 text-xs bg-slate-100 py-1 rounded text-slate-700 font-mono font-bold" id="startup-cap">$0 Cap</div>
+            </div>
+
+            <!-- Node 3 -->
+            <div id="node-cloud" class="node absolute bottom-10 right-10 w-48 p-4 rounded-xl bg-slate-50 border-t-4 border-sky-600 z-10 text-center border-l border-r border-b border-slate-200">
+                <div class="text-sky-700 font-bold text-lg mb-1">Cloud / Infra</div>
+                <div class="text-xs text-slate-500">CoreWeave / Azure</div>
+                <div class="mt-2 text-xs bg-slate-100 py-1 rounded text-slate-700 font-mono font-bold" id="cloud-contract">$0 Contract</div>
+            </div>
+
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
+                <div class="text-4xl font-bold text-slate-200 opacity-50">THE LOOP</div>
+            </div>
+            
+            <div class="absolute top-[35%] left-[25%] text-xs text-slate-500 bg-white/80 border border-slate-200 px-2 py-1 rounded">Equity / Credit</div>
+            <div class="absolute bottom-[20%] left-1/2 -translate-x-1/2 text-xs text-slate-500 bg-white/80 border border-slate-200 px-2 py-1 rounded">Compute Rental (10yr)</div>
+            <div class="absolute top-[35%] right-[25%] text-xs text-slate-500 bg-white/80 border border-slate-200 px-2 py-1 rounded">Hardware Purchase</div>
+
+        </div>
+
+        <!-- Right: Control & Dashboard -->
+        <div class="w-full lg:w-[400px] flex flex-col gap-6">
+            
+            <div class="glass p-6 rounded-2xl">
+                <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-green-500 rounded-full"></span> Live Simulation
+                </h3>
+                <p class="text-sm text-slate-500 mb-6">
+                    Inject capital to see how "round-tripping" inflates revenue figures without external demand.
+                </p>
+                <button onclick="injectCapital()" id="btn-inject" class="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg transform transition active:scale-95 flex justify-center items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Sign $10B Deal
+                </button>
+                <div class="mt-4 flex justify-between text-xs text-slate-500">
+                    <span>Transaction time: <span id="trans-time">0</span>ms</span>
+                    <button onclick="resetSim()" class="text-red-500 hover:text-red-400 font-medium">Reset</button>
+                </div>
+            </div>
+
+            <div class="glass p-6 rounded-2xl">
+                <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-4">Market Metrics</h3>
+                
+                <div class="mb-5">
+                    <div class="flex justify-between mb-1">
+                        <span class="text-sm font-medium text-slate-600">Round-Tripped Revenue</span>
+                        <span class="text-sm font-bold text-green-600" id="metric-revenue">$0B</span>
+                    </div>
+                    <div class="w-full bg-slate-200 rounded-full h-2">
+                        <div id="bar-revenue" class="bg-green-500 h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="mb-5">
+                    <div class="flex justify-between mb-1">
+                        <span class="text-sm font-medium text-slate-600">Infra Commitments</span>
+                        <span class="text-sm font-bold text-blue-600" id="metric-commit">$0B</span>
+                    </div>
+                    <div class="w-full bg-slate-200 rounded-full h-2">
+                        <div id="bar-commit" class="bg-blue-500 h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="mt-8 border-t border-slate-200 pt-6">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm font-bold text-slate-800">Systemic Risk Level</span>
+                        <span id="risk-text" class="text-sm font-bold text-emerald-600">Stable</span>
+                    </div>
+                    <div class="w-full bg-slate-200 rounded-full h-4 overflow-hidden relative">
+                        <div class="absolute inset-0 risk-meter-bg opacity-30"></div>
+                        <div id="bar-risk" class="h-full risk-meter-bg transition-all duration-500 w-[5%] relative">
+                            <div class="absolute right-0 top-0 bottom-0 w-1 bg-white shadow-[0_0_10px_white]"></div>
+                        </div>
+                    </div>
+                    <p id="risk-desc" class="text-xs text-slate-500 mt-2">
+                        Healthy ecosystem. Revenue is driven by organic demand.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <section class="max-w-7xl mx-auto px-6 pb-12 w-full grid md:grid-cols-2 gap-8">
+        <div id="info-overview" class="glass p-6 rounded-2xl">
+            <h3 class="text-xl font-bold text-slate-800 mb-3">How the Engine Works</h3>
+            <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                In the 2026 cycle, leading chip and cloud companies (Suppliers) provide capital—via equity or credit—to AI startups. These startups immediately use that capital to sign long-term contracts for cloud capacity. The cloud providers, in turn, use that guaranteed revenue to buy more chips from the original Supplier.
+            </p>
+            <ul class="space-y-2 text-sm text-slate-500">
+                <li class="flex items-start gap-2"><span class="text-green-600 font-bold">1.</span> Supplier invests in Startup.</li>
+                <li class="flex items-start gap-2"><span class="text-blue-600 font-bold">2.</span> Startup commits to 10-year cloud contract.</li>
+                <li class="flex items-start gap-2"><span class="text-purple-600 font-bold">3.</span> Cloud Provider buys hardware from Supplier.</li>
+            </ul>
+        </div>
+
+        <div id="info-risks" class="glass p-6 rounded-2xl border-l-4 border-red-500 bg-red-50">
+            <h3 class="text-xl font-bold text-slate-800 mb-3">The Telecom Bubble Parallel</h3>
+            <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                This mirrors the late 1990s, where companies like <strong>Cisco and Lucent</strong> financed carriers to buy their own equipment. It created "artificial demand" and inflated revenues.
+            </p>
+            <div class="bg-white p-3 rounded-lg border border-red-100">
+                <h4 class="text-xs font-bold text-red-600 uppercase mb-2">The Danger Signal</h4>
+                <p class="text-xs text-slate-600">
+                    If end-user demand (actual AI adoption) doesn&#39;t grow as fast as the infrastructure debt, the cycle breaks. 
+                    <br><br>
+                    <em class="text-slate-800">"Limitless AI compute" becomes the new "Infinite Bandwidth."</em>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let state = { invested: 0, committed: 0, revenue: 0, risk: 5 };
+        const btnInject = document.getElementById("btn-inject");
+        const nodeInv = document.getElementById("node-investor");
+        const nodeStart = document.getElementById("node-startup");
+        const nodeCloud = document.getElementById("node-cloud");
+        const pathInvStart = document.getElementById("path-inv-startup");
+        const pathStartCloud = document.getElementById("path-startup-cloud");
+        const pathCloudInv = document.getElementById("path-cloud-inv");
+        const particle = document.getElementById("particle");
+
+        function updatePaths() {
+            const getPos = (el) => {
+                const rect = el.getBoundingClientRect();
+                const container = el.parentElement.getBoundingClientRect();
+                return { x: rect.left + rect.width/2 - container.left, y: rect.top + rect.height/2 - container.top };
+            };
+            const p1 = getPos(nodeInv);
+            const p2 = getPos(nodeStart);
+            const p3 = getPos(nodeCloud);
+            drawCurve(pathInvStart, p1.x, p1.y + 60, p2.x + 40, p2.y - 60);
+            drawCurve(pathStartCloud, p2.x + 80, p2.y, p3.x - 80, p3.y);
+            drawCurve(pathCloudInv, p3.x - 40, p3.y - 60, p1.x, p1.y + 60);
+        }
+
+        function drawCurve(pathEl, x1, y1, x2, y2) {
+            const d = `M ${x1} ${y1} Q ${(x1+x2)/2} ${(y1+y2)/2 + (y1 > y2 ? -20 : 20)} ${x2} ${y2}`;
+            pathEl.setAttribute("d", d);
+        }
+
+        window.addEventListener("resize", updatePaths);
+        setTimeout(updatePaths, 100);
+
+        function updateMetrics() {
+            document.getElementById("metric-revenue").innerText = `$${state.revenue}B`;
+            document.getElementById("metric-commit").innerText = `$${state.committed}B`;
+            document.getElementById("bar-revenue").style.width = Math.min(state.revenue, 100) + "%";
+            document.getElementById("bar-commit").style.width = Math.min(state.committed, 100) + "%";
+            document.getElementById("inv-rev").innerText = `$${state.revenue}B Rev`;
+            document.getElementById("startup-cap").innerText = `$${state.invested}B Cap`;
+            document.getElementById("cloud-contract").innerText = `$${state.committed}B Contract`;
+            state.risk = 5 + (state.revenue * 0.8);
+            const riskBar = document.getElementById("bar-risk");
+            const riskText = document.getElementById("risk-text");
+            const riskDesc = document.getElementById("risk-desc");
+            riskBar.style.width = Math.min(state.risk, 100) + "%";
+            if(state.risk < 30) {
+                riskText.innerText = "Stable"; riskText.className = "text-sm font-bold text-emerald-600";
+                riskDesc.innerText = "Healthy ecosystem. Revenue matches external demand.";
+            } else if (state.risk < 70) {
+                riskText.innerText = "Inflated"; riskText.className = "text-sm font-bold text-yellow-600";
+                riskDesc.innerText = "Warning: Vendor financing driving >50% of growth metrics.";
+            } else {
+                riskText.innerText = "BUBBLE RISK"; riskText.className = "text-sm font-bold text-red-600 animate-pulse";
+                riskDesc.innerText = "CRITICAL: &#39;Round-tripped&#39; revenue dominates. Debt servicing capability at risk. Telecom crash parallel imminent.";
+            }
+        }
+
+        function injectCapital() {
+            if(btnInject.disabled) return;
+            btnInject.disabled = true;
+            btnInject.classList.add("opacity-50", "cursor-not-allowed");
+            nodeInv.classList.add("pulse-active");
+            particle.style.opacity = "1";
+            animateParticle(pathInvStart, 1000, () => {
+                nodeInv.classList.remove("pulse-active");
+                state.invested += 10;
+                nodeStart.classList.add("pulse-active");
+                updateMetrics();
+                setTimeout(() => {
+                    animateParticle(pathStartCloud, 1000, () => {
+                        nodeStart.classList.remove("pulse-active");
+                        state.committed += 10;
+                        nodeCloud.classList.add("pulse-active");
+                        updateMetrics();
+                        setTimeout(() => {
+                            animateParticle(pathCloudInv, 1000, () => {
+                                nodeCloud.classList.remove("pulse-active");
+                                state.revenue += 10;
+                                updateMetrics();
+                                particle.style.opacity = "0";
+                                btnInject.disabled = false;
+                                btnInject.classList.remove("opacity-50", "cursor-not-allowed");
+                            });
+                        }, 200);
+                    });
+                }, 200);
+            });
+        }
+
+        function animateParticle(pathEl, duration, callback) {
+            const length = pathEl.getTotalLength();
+            const start = performance.now();
+            function step(timestamp) {
+                const elapsed = timestamp - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const point = pathEl.getPointAtLength(progress * length);
+                particle.setAttribute("cx", point.x);
+                particle.setAttribute("cy", point.y);
+                if (progress < 1) { window.requestAnimationFrame(step); } else { if (callback) callback(); }
+            }
+            window.requestAnimationFrame(step);
+        }
+
+        function resetSim() { state = { invested: 0, committed: 0, revenue: 0, risk: 5 }; updateMetrics(); }
+        function toggleInfo(id) { document.getElementById(`info-${id}`).scrollIntoView({behavior: "smooth"}); }
+    </script>
+</body>
+</html>' style="width:100%; height:100%; border:none;"></iframe>
+    </div>
+
+    <!-- SLIDE 9: Core Principle (Shifted) -->
     <div class="slide">
         <h2>Revenue Recognition Principle</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -632,7 +1208,7 @@
                     <br>
                     <h3 style="font-size: 2.5rem;">2. Realized</h3>
                     <p>Payment received or promise of payment (AR) is reasonably assured.</p>
-                    <div style="margin-top: 20px; background: #000; color: #fff; padding: 10px; border-radius: 4px;">
+                    <div style="margin-top: 20px; background: rgba(255,255,255,0.2); color: #fff; padding: 10px; border-radius: 4px;">
                         Amount = Cash Equivalent Sales Price
                     </div>
                 </div>
@@ -640,7 +1216,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 8: Exercise - Courtesy Chevrolet -->
+    <!-- SLIDE 10: Exercise - Courtesy Chevrolet -->
     <div class="slide">
         <h2>Exercise: Amount to Recognize</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -658,7 +1234,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 9: Exercise - Guess (Order) -->
+    <!-- SLIDE 11: Exercise - Guess (Order) -->
     <div class="slide">
         <h2>Exercise: The Sales Cycle (1/3)</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -676,7 +1252,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 10: Exercise - Guess (Production) -->
+    <!-- SLIDE 12: Exercise - Guess (Production) -->
     <div class="slide">
         <h2>Exercise: The Sales Cycle (2/3)</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -694,7 +1270,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 11: Exercise - Guess (Delivery) -->
+    <!-- SLIDE 13: Exercise - Guess (Delivery) -->
     <div class="slide">
         <h2>Exercise: The Sales Cycle (3/3)</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -713,7 +1289,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 12: Exercise - United Airlines -->
+    <!-- SLIDE 14: Exercise - United Airlines -->
     <div class="slide">
         <h2>Exercise: Airline Tickets</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -732,7 +1308,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 13: Expense Recognition -->
+    <!-- SLIDE 15: Expense Recognition -->
     <div class="slide">
         <h2>Expense Recognition</h2>
         <div class="cols-2">
@@ -750,7 +1326,7 @@
                     <div class="flip-card-back">
                         <h3>Product Costs</h3>
                         <p>Matched directly with revenue (e.g., COGS).</p>
-                        <hr style="width: 80%; border-color: #000; margin: 15px auto;">
+                        <hr style="width: 80%; border-color: #fff; margin: 15px auto;">
                         <h3>Period Costs</h3>
                         <p>Expensed as time passes (e.g., Rent, Utilities).</p>
                     </div>
@@ -759,7 +1335,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 14: Exercise - Period vs Product -->
+    <!-- SLIDE 16: Exercise - Period vs Product -->
     <div class="slide">
         <h2>Exercise: Expense Timing</h2>
         <div class="cols-2">
@@ -792,7 +1368,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 15: Exercise - Capitalization -->
+    <!-- SLIDE 17: Exercise - Capitalization -->
     <div class="slide">
         <h2>Exercise: Capital Expenditure</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -811,7 +1387,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 16: Exercise - Dividends -->
+    <!-- SLIDE 18: Exercise - Dividends -->
     <div class="slide">
         <h2>Exercise: Dividends</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -830,7 +1406,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 17: Pfizer Case -->
+    <!-- SLIDE 19: Pfizer Case -->
     <div class="slide">
         <h2>Pfizer: Transfer of Control</h2>
         <div class="problem-box">
@@ -851,7 +1427,7 @@
         <p>These are estimated and recorded in the <strong>same period</strong> as the revenue.</p>
     </div>
 
-    <!-- SLIDE 18: ASC 606 Intro -->
+    <!-- SLIDE 20: ASC 606 Intro -->
     <div class="slide">
         <h2>ASC 606: The 5-Step Model</h2>
         <div class="cols-2">
@@ -868,7 +1444,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 19: Step 1 (NEW) -->
+    <!-- SLIDE 21: Step 1 (NEW) -->
     <div class="slide">
         <h2>Step 1: Identify the Contract</h2>
         <div class="problem-box">
@@ -885,7 +1461,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 20: Step 2: Identify POs (UPDATED) -->
+    <!-- SLIDE 22: Step 2: Identify POs (UPDATED) -->
     <div class="slide">
         <h2>Step 2: Identify Performance Obligations</h2>
         <div class="cols-2">
@@ -903,16 +1479,16 @@
                         <h3 style="color: var(--primary); margin-top: 60px;">Question:<br>Are there 1 or 2 performance obligations?</h3>
                     </div>
                     <div class="flip-card-back">
-                        <h3 style="color: #000;">It Depends</h3>
-                        <p style="color: #000;">If setup is distinct (provides benefit on its own) → <strong>2 Obligations</strong>.</p>
-                        <p style="color: #000;">If setup is just administrative → <strong>1 Obligation</strong>.</p>
+                        <h3 style="color: #fff;">It Depends</h3>
+                        <p style="color: #fff;">If setup is distinct (provides benefit on its own) → <strong>2 Obligations</strong>.</p>
+                        <p style="color: #fff;">If setup is just administrative → <strong>1 Obligation</strong>.</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- SLIDE 21: Step 3: Transaction Price -->
+    <!-- SLIDE 23: Step 3: Transaction Price -->
     <div class="slide">
         <h2>Step 3: Determine Transaction Price</h2>
         <div class="problem-box">
@@ -928,7 +1504,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 22: Step 4: Allocate Scenario 1 -->
+    <!-- SLIDE 24: Step 4: Allocate Scenario 1 -->
     <div class="slide">
         <h2>Step 4: Allocate (Scenario 1)</h2>
         <p><strong>If Setup is NOT distinct:</strong></p>
@@ -939,7 +1515,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 23: Step 4: Allocate Scenario 2 (UPDATED: Flip Cards) -->
+    <!-- SLIDE 25: Step 4: Allocate Scenario 2 (UPDATED: Flip Cards) -->
     <div class="slide">
         <h2>Step 4: Allocate (Scenario 2)</h2>
         <p><strong>If Setup IS distinct (Two POs):</strong></p>
@@ -958,8 +1534,8 @@
                             <h3 style="color: var(--primary); margin-top: 30px;">Reveal Allocation</h3>
                         </div>
                         <div class="flip-card-back">
-                            <p style="color:#000; font-size: 0.9rem;">Sub: (1,200 / 1,500) × 1,300 = <strong>$1,040</strong></p>
-                            <p style="color:#000; font-size: 0.9rem;">Setup: (300 / 1,500) × 1,300 = <strong>$260</strong></p>
+                            <p style="color:#fff; font-size: 0.9rem;">Sub: (1,200 / 1,500) × 1,300 = <strong>$1,040</strong></p>
+                            <p style="color:#fff; font-size: 0.9rem;">Setup: (300 / 1,500) × 1,300 = <strong>$260</strong></p>
                         </div>
                     </div>
                 </div>
@@ -970,8 +1546,8 @@
                             <h3 style="color: var(--primary); margin-top: 30px;">Reveal Recognition</h3>
                         </div>
                         <div class="flip-card-back">
-                            <p style="color:#000; font-size: 0.9rem;">Setup ($260) → Recognize at completion.</p>
-                            <p style="color:#000; font-size: 0.9rem;">Sub ($1,040) → Evenly over 12 mos.</p>
+                            <p style="color:#fff; font-size: 0.9rem;">Setup ($260) → Recognize at completion.</p>
+                            <p style="color:#fff; font-size: 0.9rem;">Sub ($1,040) → Evenly over 12 mos.</p>
                         </div>
                     </div>
                 </div>
@@ -979,7 +1555,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 24: Step 5 Recognition -->
+    <!-- SLIDE 26: Step 5 Recognition -->
     <div class="slide">
         <h2>Step 5: Recognize Revenue</h2>
         <div class="cols-2">
@@ -1000,7 +1576,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 25: Construction Ex 1 (Blueprint BG) -->
+    <!-- SLIDE 27: Construction Ex 1 (Blueprint BG) -->
     <div class="slide blueprint-bg">
         <h2>Construction: Customer's Land</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -1020,7 +1596,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 26: Construction Ex 2 (Blueprint BG) -->
+    <!-- SLIDE 28: Construction Ex 2 (Blueprint BG) -->
     <div class="slide blueprint-bg">
         <h2>Construction: Spec Home</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -1040,7 +1616,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 27: Construction Ex 3 (Blueprint BG) -->
+    <!-- SLIDE 29: Construction Ex 3 (Blueprint BG) -->
     <div class="slide blueprint-bg">
         <h2>Construction: Unique Floorplan</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -1061,7 +1637,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 28: Apple Case Intro -->
+    <!-- SLIDE 30: Apple Case Intro -->
     <div class="slide">
         <h2>Revenue Recognition at Apple</h2>
         <div class="cols-2">
@@ -1075,12 +1651,12 @@
                 </ul>
             </div>
             <div style="text-align: center;">
-                <i class="fab fa-apple" style="font-size: 15rem; color: #fff;"></i>
+                <i class="fab fa-apple" style="font-size: 15rem; color: #1e293b;"></i>
             </div>
         </div>
     </div>
 
-    <!-- SLIDE 29: Apple Data & 96% Calculation -->
+    <!-- SLIDE 31: Apple Data & 96% Calculation -->
     <div class="slide">
         <h2>Apple Data & Allocation Logic</h2>
         <div class="financial-data">
@@ -1099,7 +1675,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 30: Apple Allocation Table -->
+    <!-- SLIDE 32: Apple Allocation Table -->
     <div class="slide">
         <h2>Apple: Allocation & Recognition</h2>
         <div class="real-table">
@@ -1131,9 +1707,9 @@
                         <td><strong>$96</strong></td>
                         <td>Over 24 Months ($4/mo)</td>
                     </tr>
-                    <tr class="reveal-item" style="background: #0f172a; font-weight: bold;">
-                        <td style="color: #fff;">Total</td>
-                        <td style="color: #fff;">$1,250</td>
+                    <tr class="reveal-item" style="background: #e2e8f0; font-weight: bold;">
+                        <td style="color: #1e293b;">Total</td>
+                        <td style="color: #1e293b;">$1,250</td>
                         <td style="color: var(--primary);">$1,200</td>
                         <td></td>
                     </tr>
@@ -1142,7 +1718,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 31: Right of Return -->
+    <!-- SLIDE 33: Right of Return -->
     <div class="slide">
         <h2>Right of Return</h2>
         <div class="problem-box">
@@ -1158,7 +1734,7 @@
         </p>
     </div>
 
-    <!-- SLIDE 32: Gift Cards (Interactive Flip Card) -->
+    <!-- SLIDE 34: Gift Cards (Interactive Flip Card) -->
     <div class="slide">
         <h2>Gift Cards (Target Case)</h2>
         <div class="cols-2">
@@ -1190,7 +1766,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 33: Construction Contracts (Flip Card) -->
+    <!-- SLIDE 35: Construction Contracts (Flip Card) -->
     <div class="slide">
         <h2>Construction Contracts</h2>
         <div class="problem-box">
@@ -1205,14 +1781,14 @@
                     <h3 style="color: var(--primary); margin-top: 60px;">Reveal Method</h3>
                 </div>
                 <div class="flip-card-back">
-                    <h3 style="color: #000; font-size: 2rem;">Cost-to-Cost Method</h3>
-                    <p style="color: #000; font-size: 1.1rem;">Recognize based on <strong>% of costs incurred</strong>, not just when milestone payments are received.</p>
+                    <h3 style="color: #fff; font-size: 2rem;">Cost-to-Cost Method</h3>
+                    <p style="color: #fff; font-size: 1.1rem;">Recognize based on <strong>% of costs incurred</strong>, not just when milestone payments are received.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- SLIDE 34: Cost-to-Cost Example (Year 1) -->
+    <!-- SLIDE 36: Cost-to-Cost Example (Year 1) -->
     <div class="slide">
         <h2>Cost-to-Cost Method (Raytheon)</h2>
         <div class="financial-data">
@@ -1228,7 +1804,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 35: Cost-to-Cost Year 2 -->
+    <!-- SLIDE 37: Cost-to-Cost Year 2 -->
     <div class="slide">
         <h2>Raytheon: Year 2 Completion</h2>
         <div class="financial-data">
@@ -1247,7 +1823,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 36: Raytheon Balance Sheet (STATIC) -->
+    <!-- SLIDE 38: Raytheon Balance Sheet (STATIC) -->
     <div class="slide">
         <h2>Balance Sheet Presentation</h2>
         <p>Difference between Revenue Recognized and Amount Billed.</p>
@@ -1264,12 +1840,12 @@
                     <tr>
                         <td style="color: var(--text-main);">Recognized > Billed</td>
                         <td>Rev ($6M) > Bill ($5M)</td>
-                        <td style="color: var(--success); font-weight: bold;">Contract Asset<br><span style="font-size:0.8rem; color: #aaa;">(Unbilled Receivable)</span></td>
+                        <td style="color: var(--success); font-weight: bold;">Contract Asset<br><span style="font-size:0.8rem; color: #64748b;">(Unbilled Receivable)</span></td>
                     </tr>
                     <tr>
                         <td style="color: var(--text-main);">Billed > Recognized</td>
                         <td>Bill ($7M) > Rev ($6M)</td>
-                        <td style="color: var(--error); font-weight: bold;">Contract Liability<br><span style="font-size:0.8rem; color: #aaa;">(Deferred Revenue)</span></td>
+                        <td style="color: var(--error); font-weight: bold;">Contract Liability<br><span style="font-size:0.8rem; color: #64748b;">(Deferred Revenue)</span></td>
                     </tr>
                 </tbody>
             </table>
@@ -1281,21 +1857,21 @@
         </div>
     </div>
 
-    <!-- SLIDE 37: Uber Delta Partnership -->
+    <!-- SLIDE 39: Uber Delta Partnership -->
     <div class="slide">
         <h2>Uber-Delta Partnership</h2>
         <div class="cols-2">
             <!-- Updated Logo Lockup -->
-            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; border: 4px solid #fff; padding: 40px; border-radius: 20px;">
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; border: 4px solid #cbd5e1; background: #fff; padding: 40px; border-radius: 20px;">
                 <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
-                    <i class="fab fa-uber" style="font-size: 6rem; color: #fff;"></i>
+                    <i class="fab fa-uber" style="font-size: 6rem; color: #1e293b;"></i>
                     <span style="font-size: 4rem; font-weight: 300; color: #aaa;">|</span>
                     <div style="text-align: center;">
-                        <i class="fas fa-plane-up" style="font-size: 5rem; color: #fff;"></i>
-                        <h3 style="color: white; margin: 0; font-size: 1.5rem;">DELTA</h3>
+                        <i class="fas fa-plane-up" style="font-size: 5rem; color: #1e293b;"></i>
+                        <h3 style="color: #1e293b; margin: 0; font-size: 1.5rem;">DELTA</h3>
                     </div>
                 </div>
-                <h3 style="background: var(--accent); color: #000; padding: 5px 20px; border-radius: 4px;">OFFICIAL PARTNER</h3>
+                <h3 style="background: var(--accent); color: #fff; padding: 5px 20px; border-radius: 4px;">OFFICIAL PARTNER</h3>
             </div>
             
             <div>
@@ -1316,7 +1892,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 38: Delta Balance Sheet -->
+    <!-- SLIDE 40: Delta Balance Sheet -->
     <div class="slide">
         <h2>Delta's Balance Sheet Effects</h2>
         <div class="real-table">
@@ -1358,7 +1934,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 39: Sales Allowances (Levi Strauss) -->
+    <!-- SLIDE 41: Sales Allowances (Levi Strauss) -->
     <div class="slide">
         <h2>Sales Allowances (Levi Strauss)</h2>
         <p>Sells jeans for $130. Cost $80. Expects 3% returns.</p>
@@ -1374,19 +1950,19 @@
         </div>
     </div>
 
-    <!-- SLIDE 40: Detailed FSET (UPDATED TABLE) -->
+    <!-- SLIDE 42: Detailed FSET (UPDATED TABLE) -->
     <div class="slide">
         <h2>Sales Allowances: FSET Analysis</h2>
         
         <table class="fset-table">
             <thead>
                 <tr class="fset-header-group">
-                    <th rowspan="2" style="background: #2d3748; color: white;">Transaction</th>
+                    <th rowspan="2" style="background: #e2e8f0; color: #1e293b;">Transaction</th>
                     <th colspan="2">Assets</th>
                     <th rowspan="2">=</th>
                     <th>Liabilities</th>
                     <th colspan="2">Equity</th>
-                    <th rowspan="2" style="border-left: 2px solid #fb923c;">Rev - Exp = NI</th>
+                    <th rowspan="2" style="border-left: 2px solid #ea580c;">Rev - Exp = NI</th>
                 </tr>
                 <tr>
                     <th>Cash</th>
@@ -1405,7 +1981,7 @@
                     <td>-</td>
                     <td>-</td>
                     <td style="color: var(--error);">-3.9<br><span style="font-size:0.7rem;">(Retained Earnings)</span></td>
-                    <td style="border-left: 2px solid #fb923c; color: var(--error);">-3.9 (Returns) - 0 = -3.9</td>
+                    <td style="border-left: 2px solid #ea580c; color: var(--error);">-3.9 (Returns) - 0 = -3.9</td>
                 </tr>
                 <tr class="reveal-item">
                     <td>Adjust COGS<br><span style="font-size:0.7rem;">([80/130] x 3.9)</span></td>
@@ -1415,7 +1991,7 @@
                     <td>-</td>
                     <td>-</td>
                     <td style="color: var(--success);">+2.4<br><span style="font-size:0.7rem;">(Retained Earnings)</span></td>
-                    <td style="border-left: 2px solid #fb923c; color: var(--success);">0 - (-2.4 COGS) = +2.4</td>
+                    <td style="border-left: 2px solid #ea580c; color: var(--success);">0 - (-2.4 COGS) = +2.4</td>
                 </tr>
             </tbody>
         </table>
@@ -1425,7 +2001,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 41: Accounts Receivable Intro -->
+    <!-- SLIDE 43: Accounts Receivable Intro -->
     <div class="slide">
         <h2>Accounts Receivable (AR)</h2>
         <p>GAAP requires reporting at <strong>Net Realizable Value</strong>.</p>
@@ -1435,7 +2011,7 @@
         <p>We must estimate the "bad debt" (amounts we won't collect) to avoid overstating assets.</p>
     </div>
 
-    <!-- SLIDE 42: Aging Analysis -->
+    <!-- SLIDE 44: Aging Analysis -->
     <div class="slide">
         <h2>Aging Analysis</h2>
         <div class="cols-2">
@@ -1464,7 +2040,7 @@
                             <td>$5,000</td>
                             <td>8%</td>
                         </tr>
-                        <tr style="font-weight: bold; border-top: 2px solid #fff;">
+                        <tr style="font-weight: bold; border-top: 2px solid #cbd5e1;">
                             <td>Total</td>
                             <td>$85,000</td>
                             <td></td>
@@ -1488,7 +2064,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 43: FSET - Establishing Allowance -->
+    <!-- SLIDE 45: FSET - Establishing Allowance -->
     <div class="slide">
         <h2>Effects of Establishing Allowance</h2>
         <p>Recording the estimate of $2,300 bad debt.</p>
@@ -1515,7 +2091,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 44: Write Off Analysis (UPDATED: Corrected Numbers & Questions) -->
+    <!-- SLIDE 46: Write Off Analysis (UPDATED: Corrected Numbers & Questions) -->
     <div class="slide">
         <h2>The Write-Off: Financial Effects</h2>
         <p>Scenario: Customer goes bankrupt. Write off $500 balance.</p>
@@ -1563,7 +2139,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 45: BASE Formula -->
+    <!-- SLIDE 47: BASE Formula -->
     <div class="slide">
         <h2>The "BASE" Formula for AR</h2>
         <div class="cols-2">
@@ -1587,7 +2163,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 46: Microsoft Case -->
+    <!-- SLIDE 48: Microsoft Case -->
     <div class="slide">
         <h2>Microsoft 2024: The Financials</h2>
         
@@ -1608,7 +2184,7 @@
                         <td style="text-align: right; font-weight: bold;">$56,870</td>
                     </tr>
                 </table>
-                <p style="margin-top: 20px; color: #aaa;">Previous Year (Beg):</p>
+                <p style="margin-top: 20px; color: #64748b;">Previous Year (Beg):</p>
                 <p>Gross AR: $49,338 | Allowance: $716</p>
             </div>
             
@@ -1627,7 +2203,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 47: Microsoft Case Questions (UPDATED: With Embedded Data) -->
+    <!-- SLIDE 49: Microsoft Case Questions (UPDATED: With Embedded Data) -->
     <div class="slide">
         <h2>Microsoft: Analysis</h2>
         <div class="cols-2">
@@ -1654,8 +2230,8 @@
                             <h3 style="color: var(--primary); margin-top: 40px;">Reveal Write-Offs</h3>
                         </div>
                         <div class="flip-card-back">
-                            <p style="font-size: 1rem;">Beg Allow ($716) + Exp ($386) - Write-off (?) = End Allow ($884)</p>
-                            <h3 style="color: #000; margin-top: 10px;">$218</h3>
+                            <p style="font-size: 1rem; color: #fff;">Beg Allow ($716) + Exp ($386) - Write-off (?) = End Allow ($884)</p>
+                            <h3 style="color: #fff; margin-top: 10px;">$218</h3>
                         </div>
                     </div>
                 </div>
@@ -1667,8 +2243,8 @@
                             <h3 style="color: var(--primary); margin-top: 40px;">Reveal Cash Collections</h3>
                         </div>
                         <div class="flip-card-back">
-                            <p style="font-size: 0.9rem;">Beg Gross ($49,338) + Credit Sales ($147,073) - Cash (?) - Write-off ($218) = End Gross ($57,754)</p>
-                            <h3 style="color: #000; margin-top: 5px;">$138,439</h3>
+                            <p style="font-size: 0.9rem; color: #fff;">Beg Gross ($49,338) + Credit Sales ($147,073) - Cash (?) - Write-off ($218) = End Gross ($57,754)</p>
+                            <h3 style="color: #fff; margin-top: 5px;">$138,439</h3>
                         </div>
                     </div>
                 </div>
@@ -1676,7 +2252,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 48: Quiz Intro -->
+    <!-- SLIDE 50: Quiz Intro -->
     <div class="slide">
         <div style="text-align: center; margin-top: 100px;">
             <i class="fas fa-brain" style="font-size: 8rem; color: var(--accent); margin-bottom: 30px;"></i>
@@ -1865,12 +2441,49 @@
     }
 
     function updateSlide() {
+        // Hide all slides
+        slides.forEach(s => s.classList.remove('active'));
+        
+        // Show current
         slides[currentSlide].classList.add('active');
+        
+        // Update Counter
         currentSlideNum.textContent = currentSlide + 1;
         
         // Progress Bar
         const progress = ((currentSlide + 1) / totalSlides) * 100;
         progressBar.style.width = `${progress}%`;
+    }
+
+    // TOC Functions
+    function toggleTOC() {
+        const modal = document.getElementById('toc-modal');
+        const list = document.getElementById('toc-list');
+        
+        if(modal.style.display === 'block') {
+            modal.style.display = 'none';
+        } else {
+            // Generate list dynamically
+            list.innerHTML = '';
+            slides.forEach((slide, index) => {
+                const titleEl = slide.querySelector('h2') || slide.querySelector('h1');
+                // FIX: Use textContent instead of innerText
+                // innerText returns empty string if the element is hidden (display:none)
+                // Since inactive slides are hidden, innerText failed to capture titles.
+                const title = titleEl ? titleEl.textContent.trim() : `Slide ${index + 1}`;
+                
+                const li = document.createElement('li');
+                li.className = 'toc-item';
+                li.innerHTML = `<span>${index + 1}</span> ${title}`;
+                li.onclick = () => {
+                    currentSlide = index;
+                    updateSlide();
+                    modal.style.display = 'none';
+                };
+                list.appendChild(li);
+            });
+            modal.style.display = 'block';
+        }
     }
 
     // Keyboard support
