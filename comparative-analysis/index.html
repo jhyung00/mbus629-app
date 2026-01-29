@@ -59,6 +59,12 @@
                         <span>Profitability</span>
                     </div>
                 </li>
+                <li class="nav-item px-6 py-3" onclick="loadModule('earningsQuality', this)" data-id="earningsQuality">
+                    <div class="flex items-center space-x-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <span>Earnings Quality</span>
+                    </div>
+                </li>
                 <li class="nav-item px-6 py-3" onclick="loadModule('productivity', this)" data-id="productivity">
                     <div class="flex items-center space-x-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
@@ -95,12 +101,6 @@
                         <span>DuPont Analysis</span>
                     </div>
                 </li>
-                <li class="nav-item px-6 py-3" onclick="loadModule('earningsQuality', this)" data-id="earningsQuality">
-                    <div class="flex items-center space-x-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        <span>Earnings Quality</span>
-                    </div>
-                </li>
                 <li class="nav-item px-6 py-3" onclick="loadModule('cashFlows', this)" data-id="cashFlows">
                     <div class="flex items-center space-x-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
@@ -111,6 +111,12 @@
                     <div class="flex items-center space-x-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <span>Sustainability</span>
+                    </div>
+                </li>
+                <li class="nav-item px-6 py-3 bg-gray-800" onclick="loadModule('summary', this)" data-id="summary">
+                    <div class="flex items-center space-x-3">
+                        <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        <span class="text-white font-bold">Executive Summary</span>
                     </div>
                 </li>
             </ul>
@@ -838,6 +844,66 @@
             container.innerHTML = html;
         }
 
+        function renderSummary() {
+            const container = document.getElementById('dashboard-content');
+            
+            container.innerHTML = `
+                <div class="bg-gray-900 text-white rounded-xl shadow-2xl p-8 mb-8">
+                    <h2 class="text-3xl font-bold mb-6 text-yellow-400">Investment Recommendation: NVIDIA</h2>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-bold mb-4 text-green-400">Why NVIDIA? (Strong Buy)</h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    <div><span class="font-bold text-green-300">Explosive Growth:</span> 126% revenue surge and ~8x operating income growth in 2024 driven by AI demand.</div>
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    <div><span class="font-bold text-green-300">Operational Excellence:</span> Exceptional RNOA (119.8%) and gross margins (72.7%) demonstrate massive pricing power and efficiency.</div>
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    <div><span class="font-bold text-green-300">High Earnings Quality:</span> NI/CFO ratio > 1.0 indicates profits are fully backed by strong operating cash flows ($28B).</div>
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    <div><span class="font-bold text-green-300">Efficient Capital Use:</span> Increasing PPE turnover (15.8x) and Cash Conversion Cycle reduction show superior asset utilization.</div>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-xl font-bold mb-4 text-red-400">Why Avoid Intel? (Hold/Sell)</h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <svg class="w-6 h-6 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    <div><span class="font-bold text-red-300">Margin Compression:</span> Gross margins collapsed to 40% and operating margin to near-zero (0.2%) in 2023.</div>
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-6 h-6 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    <div><span class="font-bold text-red-300">Cash Flow Strain:</span> Declining CFO ($11.5B) is insufficient to cover CapEx + Dividends, leading to negative free cash flow.</div>
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-6 h-6 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    <div><span class="font-bold text-red-300">Operational Inefficiency:</span> RNOA plummeted to 1.2%, signaling poor returns on core operations. Rising days inventory (137 days).</div>
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-6 h-6 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    <div><span class="font-bold text-red-300">Weak Earnings Quality:</span> NI/CFO ratio dropped to 0.15, suggesting reported earnings are not translating to cash.</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 pt-6 border-t border-gray-700 text-center text-sm text-gray-400">
+                        <p>Conclusion: NVIDIA demonstrates a vastly superior financial profile characterized by high growth, efficiency, and cash generation. Intel faces significant structural challenges affecting profitability and liquidity.</p>
+                    </div>
+                </div>
+            `;
+        }
+
 
         // --- Router ---
         function loadModule(moduleId, element) {
@@ -854,7 +920,8 @@
                 valueCreation: "Value Creation (ROE)",
                 dupont: "Advanced DuPont Analysis",
                 cashFlows: "Cash Flow Analysis",
-                sustainability: "Sustainability (ESG) Profile"
+                sustainability: "Sustainability (ESG) Profile",
+                summary: "Executive Summary & Recommendation"
             };
             const descs = {
                 profitability: "Comparing margins and operational efficiency.",
@@ -866,7 +933,8 @@
                 valueCreation: "DuPont analysis and return on equity.",
                 dupont: "Breakdown of RNOA, ROA, and ROE to identify performance drivers.",
                 cashFlows: "Operating, investing, and financing cash movements.",
-                sustainability: "Environmental, Social, and Governance ratings and key events."
+                sustainability: "Environmental, Social, and Governance ratings and key events.",
+                summary: "Final investment verdict based on comprehensive financial data."
             };
 
             document.getElementById('section-title').innerText = titles[moduleId];
@@ -895,6 +963,7 @@
             else if(moduleId === 'cashFlows') renderCashFlows();
             else if(moduleId === 'sustainability') renderSustainability();
             else if(moduleId === 'efficiency') renderEfficiency();
+            else if(moduleId === 'summary') renderSummary();
             else renderStandardModule(moduleId, 'mainChart');
         }
 
