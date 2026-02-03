@@ -23,10 +23,11 @@
         --fin-chart: #f59e0b;
         
         /* Presentation Scale */
-        --h1-size: 3.5vmin;
-        --h2-size: 2.8vmin;
-        --p-size: 2.2vmin;
-        --mono-size: 1.8vmin;
+        --h1-size: 5.5vmin;
+        --h2-size: 4.2vmin;
+        --p-size: 3.0vmin; 
+        --mono-size: 2.2vmin;
+        --table-size: 2.0vmin;
     }
 
     * { box-sizing: border-box; }
@@ -44,16 +45,23 @@
             linear-gradient(to right, rgba(38, 92, 255, 0.05) 1px, transparent 1px),
             linear-gradient(to bottom, rgba(38, 92, 255, 0.05) 1px, transparent 1px);
         background-size: 40px 40px;
-    }
-
-    #deck-container {
-        width: 100%;
-        height: 100%;
-        position: relative;
+        
+        /* UPDATED: Flex layout to ensure navbar is visible */
         display: flex;
         flex-direction: column;
     }
 
+    #deck-container {
+        width: 100%;
+        /* height: 100%; Removed to allow flex to manage height */
+        flex: 1; /* Takes remaining vertical space */
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; /* Contain slides */
+    }
+
+    /* Layout Logic */
     .slide {
         flex: 1;
         display: none;
@@ -61,6 +69,13 @@
         overflow-y: auto;
         animation: fadeEnter 0.3s ease-out;
         flex-direction: column;
+        
+        /* Center Alignment Logic */
+        justify-content: center; 
+        align-items: center;     
+        gap: 2vmin;              
+        text-align: center;      
+        height: 100%;            
     }
 
     .slide.active { display: flex; }
@@ -68,10 +83,14 @@
     /* Layout Variations */
     .slide-grid {
         display: grid;
-        grid-template-columns: 45% 55%; /* Fixed split for Financials */
-        gap: 3vmin;
+        grid-template-columns: 45% 55%; 
+        gap: 4vmin;
         height: 100%;
-        align-content: start;
+        align-content: center; 
+        align-items: center;   
+        text-align: left;      
+        width: 100%;
+        max-width: 1600px;
     }
     
     .slide-full {
@@ -85,34 +104,42 @@
         to { opacity: 1; transform: translateY(0); }
     }
 
-    h1 { font-size: var(--h1-size); font-weight: 800; margin-bottom: 1.5vmin; color: var(--text-main); }
-    h2 { font-size: var(--h2-size); color: var(--accent); margin-bottom: 1vmin; font-weight: 600; }
-    p, li { font-size: var(--p-size); line-height: 1.4; margin-bottom: 1vmin; }
-    .mono { font-family: 'JetBrains Mono', monospace; font-size: var(--mono-size); color: var(--accent); text-transform: uppercase; display: block; margin-bottom: 0.5vmin; }
+    h1 { font-size: var(--h1-size); font-weight: 800; margin: 0 0 1.5vmin 0; color: var(--text-main); line-height: 1.1; }
+    h2 { font-size: var(--h2-size); color: var(--accent); margin: 0 0 1.5vmin 0; font-weight: 600; line-height: 1.2; }
+    h3 { font-size: calc(var(--h2-size) * 0.8); margin: 1vmin 0; }
+    p, li { font-size: var(--p-size); line-height: 1.5; margin-bottom: 1.5vmin; text-align: left; }
+    
+    ul, ol { text-align: left; display: inline-block; }
+    .slide > ul, .slide > ol { display: table; margin: 0 auto; }
+
+    .mono { font-family: 'JetBrains Mono', monospace; font-size: var(--mono-size); color: var(--accent); text-transform: uppercase; display: block; margin-bottom: 1vmin; letter-spacing: 0.05em;}
 
     .card {
         background: var(--card-bg);
         border: 2px solid var(--border);
-        padding: 2vmin;
-        border-radius: 8px;
+        padding: 3vmin;
+        border-radius: 12px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         height: fit-content;
+        width: 100%;
+        text-align: left;
     }
 
-    /* Scrollable Data Box (Persistent Left Panel) */
+    /* Scrollable Data Box */
     .data-panel {
-        height: 80vh;
+        height: 85vh; 
         overflow-y: auto;
         border: 2px solid var(--text-main);
         padding: 2vmin;
         background: #fff;
-        font-size: 1.6vmin;
+        font-size: var(--table-size); 
         box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+        text-align: left;
     }
 
     /* Tables */
-    table { width: 100%; border-collapse: collapse; font-size: 1.8vmin; background: white; font-family: 'JetBrains Mono', monospace; margin-bottom: 1vmin; border: 1px solid var(--border); }
-    th, td { padding: 0.8vmin; border-bottom: 1px solid #eee; text-align: right; }
+    table { width: 100%; border-collapse: collapse; font-size: var(--table-size); background: white; font-family: 'JetBrains Mono', monospace; margin-bottom: 1.5vmin; border: 1px solid var(--border); }
+    th, td { padding: 1vmin; border-bottom: 1px solid #eee; text-align: right; }
     th { background: var(--accent-dim); color: var(--accent); font-weight: 600; text-align: center; position: sticky; top: 0; z-index: 5;}
     td:first-child { text-align: left; font-weight: 600; color: var(--text-main); }
     .highlight-row { background: #f0f9ff; font-weight: 700; color: var(--accent); }
@@ -123,46 +150,85 @@
     .cheatsheet-table th { background: #e0e7ff; color: var(--text-main); }
     .cheatsheet-table td { font-weight: bold; text-align: center; }
 
-    /* Nav Bar */
+    /* Nav Bar - UPDATED to prevent shrinking */
     .nav-bar {
-        height: 60px;
+        height: 70px;
         background: white;
         border-top: 2px solid var(--border);
         display: flex;
-        justify-content: center;
+        justify-content: space-between; 
         align-items: center;
         padding: 0 4vmin;
         z-index: 100;
         width: 100%;
         position: relative;
+        flex-shrink: 0; /* Ensures navbar stays 70px height */
     }
+    
+    .nav-btn {
+        background: var(--text-main);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-family: 'JetBrains Mono';
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 1.8vmin;
+        transition: background 0.2s;
+    }
+    .nav-btn:hover { background: var(--accent); }
     
     .progress { font-family: 'JetBrains Mono'; font-size: 2.5vmin; color: var(--accent); font-weight:bold; }
 
     /* Floating Arrow Buttons */
     .arrow-btn {
         position: fixed; top: 50%; transform: translateY(-50%);
-        width: 60px; height: 60px;
+        width: 70px; height: 70px;
         background: white; border: 2px solid var(--border); border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
         cursor: pointer; z-index: 150;
         box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.2s;
-        font-size: 30px; color: var(--accent); opacity: 0.7;
+        font-size: 35px; color: var(--accent); opacity: 0.3; 
     }
     .arrow-btn:hover { background: var(--accent); color: white; border-color: var(--accent); opacity: 1; }
     .arrow-prev { left: 20px; }
     .arrow-next { right: 20px; }
 
-    /* Intel Boxes (Hierarchy) */
+    /* TOC Overlay */
+    .toc-overlay {
+        position: fixed; top: 0; left: 0; height: 100%; width: 100%;
+        background: rgba(0,0,0,0.5); z-index: 2000;
+        display: none; opacity: 0; transition: opacity 0.3s;
+    }
+    .toc-sidebar {
+        position: absolute; top: 0; left: 0; height: 100%; width: 350px;
+        background: white; box-shadow: 5px 0 20px rgba(0,0,0,0.2);
+        padding: 2rem; overflow-y: auto;
+        transform: translateX(-100%); transition: transform 0.3s;
+        display: flex; flex-direction: column;
+    }
+    .toc-open .toc-overlay { display: block; opacity: 1; }
+    .toc-open .toc-sidebar { transform: translateX(0); }
+    
+    .toc-item {
+        padding: 12px; border-bottom: 1px solid #eee;
+        cursor: pointer; font-family: 'Inter', sans-serif; font-size: 1.8vmin;
+        color: #555;
+    }
+    .toc-item:hover { background: var(--accent-dim); color: var(--accent); font-weight: bold;}
+    .toc-item.active { border-left: 4px solid var(--accent); background: #f8fafc; color: var(--text-main); font-weight: bold;}
+
+    /* Intel Boxes */
     .hierarchy-container { display: flex; flex-direction: column; align-items: center; gap: 2vmin; margin-top: 1vmin; width: 100%; }
     .h-box { 
-        border: 3px solid #ccc; padding: 1.5vmin; background: white; text-align: center; border-radius: 8px; min-width: 18vmin; flex: 1;
+        border: 3px solid #ccc; padding: 2vmin; background: white; text-align: center; border-radius: 8px; min-width: 22vmin; flex: 1;
         display: flex; flex-direction: column; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
-    .h-box h4 { margin: 0; font-size: 1.8vmin; text-transform: uppercase; color: #666; }
-    .h-box .val { font-size: 3vmin; font-weight: 800; margin: 0.5vmin 0; }
-    .h-box .desc { font-size: 1.5vmin; opacity: 0.8; }
-    .h-row { display: flex; gap: 2vmin; justify-content: center; width: 80%; }
+    .h-box h4 { margin: 0; font-size: 2vmin; text-transform: uppercase; color: #666; }
+    .h-box .val { font-size: 3.5vmin; font-weight: 800; margin: 0.5vmin 0; }
+    .h-box .desc { font-size: 1.8vmin; opacity: 0.8; }
+    .h-row { display: flex; gap: 2vmin; justify-content: center; width: 90%; }
     
     .use { border-color: var(--error); background: #fef2f2; }
     .source { border-color: var(--success); background: #f0fdf4; }
@@ -170,11 +236,12 @@
 
     /* Interactive Reveal */
     .reveal-box {
-        background: white; border: 2px dashed var(--accent); padding: 1.5vmin;
-        cursor: pointer; text-align: center; border-radius: 6px; margin-bottom: 1.5vmin;
+        background: white; border: 2px dashed var(--accent); padding: 2vmin;
+        cursor: pointer; text-align: center; border-radius: 6px; margin-bottom: 2vmin;
+        font-size: var(--p-size);
     }
     .reveal-box:hover { background: var(--accent-dim); }
-    .reveal-box .hidden-content { display: none; font-weight: bold; color: var(--success); margin-top: 0.5vmin; font-size: 2.5vmin; }
+    .reveal-box .hidden-content { display: none; font-weight: bold; color: var(--success); margin-top: 1vmin; font-size: 3vmin; }
     .reveal-box.open { border-style: solid; border-color: var(--success); }
     .reveal-box.open .hidden-content { display: block; }
     
@@ -183,13 +250,13 @@
         cursor: pointer;
         background: white;
         border: 1px solid var(--border);
-        padding: 1.5vmin;
-        margin-bottom: 1vmin;
+        padding: 2vmin;
+        margin-bottom: 1.5vmin;
         transition: all 0.3s;
-        border-left: 4px solid #ccc;
+        border-left: 6px solid #ccc;
     }
     .click-row:hover { background-color: #f8fafc; border-left-color: var(--accent); }
-    .click-row .details { display: none; margin-top: 1vmin; color: #555; font-size: 1.8vmin; border-top: 1px dashed #eee; padding-top: 1vmin;}
+    .click-row .details { display: none; margin-top: 1.5vmin; color: #555; font-size: 2.2vmin; border-top: 1px dashed #eee; padding-top: 1vmin;}
     .click-row.revealed { border-left-color: var(--success); }
     .click-row.revealed .details { display: block; }
     
@@ -199,8 +266,8 @@
 
     /* Summary Reveal Items */
     .summary-item { 
-        opacity: 0.3; transform: translateX(0); transition: all 0.3s ease; margin-bottom: 2vmin;
-        background: white; padding: 2vmin; border-left: 4px solid #ccc; color: #999; cursor: pointer;
+        opacity: 0.3; transform: translateX(0); transition: all 0.3s ease; margin-bottom: 3vmin;
+        background: white; padding: 3vmin; border-left: 6px solid #ccc; color: #999; cursor: pointer; text-align: left;
     }
     .summary-item.visible { opacity: 1; border-left-color: var(--accent); color: var(--text-main); font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
@@ -215,31 +282,44 @@
     }
     .poll-box {
         background: white; padding: 4vmin; border: 4px solid var(--accent);
-        box-shadow: 0 20px 60px rgba(0,0,0,0.2); width: 60%; text-align: center;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2); width: 70%; text-align: center; border-radius: 12px;
     }
     .poll-option {
-        padding: 2vmin; margin: 1vmin 0; border: 2px solid #ddd; background: white; cursor: pointer; font-size: 2.5vmin; width: 100%; display: block;
+        padding: 3vmin; margin: 1.5vmin 0; border: 2px solid #ddd; background: white; cursor: pointer; font-size: 3vmin; width: 100%; display: block; border-radius: 8px;
     }
     .poll-option:hover { border-color: var(--accent); }
     .poll-option.correct { background: var(--success); color: white; border-color: var(--success); }
     .poll-option.wrong { background: var(--error); color: white; border-color: var(--error); }
 
     /* Flip Card */
-    .flip-container { perspective: 1000px; width: 100%; height: 200px; cursor: pointer; margin: 0 auto; }
+    .flip-container { perspective: 1000px; width: 100%; height: 250px; cursor: pointer; margin: 0 auto; }
     .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
     .flip-container.flipped .flip-inner { transform: rotateY(180deg); }
-    .flip-front, .flip-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border: 2px solid var(--accent); border-radius: 8px; padding: 20px; text-align: center; font-size: 2.5vmin; background: white; }
+    .flip-front, .flip-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border: 2px solid var(--accent); border-radius: 8px; padding: 20px; text-align: center; font-size: 3vmin; background: white; flex-direction: column; }
     .flip-back { background: var(--accent); color: white; transform: rotateY(180deg); }
 
     /* Quiz */
-    .quiz-question { margin-bottom: 4vmin; background: white; padding: 3vmin; border-radius: 8px; border: 1px solid var(--border); }
-    .quiz-opt { display: block; margin: 1vmin 0; font-size: 2.5vmin; cursor: pointer; padding: 1vmin; }
+    .quiz-question { margin-bottom: 4vmin; background: white; padding: 3vmin; border-radius: 8px; border: 1px solid var(--border); text-align: left; }
+    .quiz-opt { display: block; margin: 1.5vmin 0; font-size: 3vmin; cursor: pointer; padding: 1vmin; }
     .quiz-opt:hover { background: var(--accent-dim); }
     .quiz-opt input { margin-right: 15px; transform: scale(1.5); }
 
 </style>
 </head>
 <body>
+
+<!-- TOC Menu (Hidden by default) -->
+<div id="toc-container" class="toc-overlay">
+    <div class="toc-sidebar">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 style="margin:0; font-size:24px;">Content</h2>
+            <button onclick="toggleTOC()" class="nav-btn">X</button>
+        </div>
+        <div id="toc-list">
+            <!-- Items injected via JS -->
+        </div>
+    </div>
+</div>
 
 <div id="deck-container">
 
@@ -248,7 +328,7 @@
         <div class="poll-box">
             <h2 id="poll-q">Question</h2>
             <div id="poll-opts"></div>
-            <button class="nav-btn" style="margin-top:20px; padding:15px; font-size:2vmin; background:var(--text-main); color:white; border:none; cursor:pointer;" onclick="closePoll()">Continue</button>
+            <button class="nav-btn" style="margin-top:20px; font-size:3vmin; padding: 2vmin 4vmin;" onclick="closePoll()">Continue</button>
         </div>
     </div>
 
@@ -258,14 +338,12 @@
 
     <!-- Slide 1: Title -->
     <div class="slide active">
-        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
-            <span class="mono">Class 8 / Financial Analysis</span>
-            <h1 style="font-size:6vmin;">Statement of Cash Flows & Earnings Quality</h1>
-            <p style="font-size:3vmin;">Focus: Indirect Method Mechanics & Analysis</p>
-            <div class="card" style="text-align:center; padding:5vmin; margin-top:4vmin;">
-                <div style="font-size:12vmin; font-weight:800; color:var(--accent);">SCF</div>
-                <p style="font-size:3vmin;">"Profit is Opinion.<br>Cash is Fact."</p>
-            </div>
+        <span class="mono">Class 8 / Financial Analysis</span>
+        <h1>Statement of Cash Flows & Earnings Quality</h1>
+        <p style="font-size:3.5vmin; text-align:center;">Focus: Indirect Method Mechanics & Analysis</p>
+        <div class="card" style="text-align:center; padding:5vmin; margin-top:4vmin; width: 80%;">
+            <div style="font-size:12vmin; font-weight:800; color:var(--accent); line-height: 1;">SCF</div>
+            <p style="font-size:3.5vmin; text-align:center; margin-top: 2vmin;">"Profit is Opinion.<br>Cash is Fact."</p>
         </div>
     </div>
 
@@ -282,9 +360,9 @@
                     <li><strong>Analysis:</strong> Earnings Quality (Intel) & Life Cycle.</li>
                 </ul>
             </div>
-            <div class="card">
+            <div class="card" style="text-align:center;">
                 <h3>Interactive Check</h3>
-                <p>Click the box below to test interactivity:</p>
+                <p style="text-align:center;">Click the box below to test interactivity:</p>
                 <div class="reveal-box" onclick="this.classList.toggle('open')">
                     <div class="question">Click Me</div>
                     <div class="hidden-content">Good to go!</div>
@@ -319,9 +397,9 @@
     </div>
 
     <!-- Slide 4: Equation -->
-    <div class="slide slide-full" style="text-align:center;">
+    <div class="slide slide-full">
         <h1>The Fundamental Equation</h1>
-        <div class="card" style="display:inline-block; text-align:left; padding:5vmin; margin-top:2vmin; width:80%;">
+        <div class="card" style="text-align:center; padding:5vmin; margin-top:2vmin; width:90%; display:inline-block;">
             <p class="mono" style="font-size:3vmin;">Beginning Cash Balance (Prior Year BS)</p>
             <p style="font-size:5vmin; font-weight:bold; color:var(--accent);">+ Net Change in Cash (The SCF)</p>
             <hr style="border:1px solid #ccc; margin:2vmin 0;">
@@ -332,8 +410,8 @@
     <!-- Slide 5: Microsoft BS -->
     <div class="slide slide-full">
         <span class="mono">Real World Data</span>
-        <h1>Microsoft: Comparative Balance Sheet</h1>
-        <p><strong>Goal:</strong> Explain the $16.4 Billion decrease in cash.</p>
+        <h1>Microsoft: Balance Sheet</h1>
+        <p style="text-align:center;"><strong>Goal:</strong> Explain the $16.4 Billion decrease in cash.</p>
         <table>
             <thead>
                 <tr>
@@ -397,8 +475,8 @@
     <!-- Slide 7: Classification Drill -->
     <div class="slide slide-full">
         <h1>Drill: Classify These Activities</h1>
-        <p>Click to check your understanding.</p>
-        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:2vmin;">
+        <p style="text-align:center;">Click to check your understanding.</p>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:4vmin; width: 100%;">
             <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Pay Dividends</div><div class="hidden-content" style="color:var(--fin-chart)">Financing</div></div>
             <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Pay Interest</div><div class="hidden-content" style="color:var(--success)">Operating*</div></div>
             <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Sell Equipment</div><div class="hidden-content" style="color:var(--accent)">Investing</div></div>
@@ -406,7 +484,7 @@
             <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Buy Inventory</div><div class="hidden-content" style="color:var(--success)">Operating</div></div>
             <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Collect Loan Principal</div><div class="hidden-content" style="color:var(--accent)">Investing</div></div>
         </div>
-        <p style="font-size:1.5vmin; margin-top:2vmin; text-align:center;">*Note: Interest Paid is Operating under US GAAP.</p>
+        <p style="font-size:2vmin; margin-top:2vmin; text-align:center;">*Note: Interest Paid is Operating under US GAAP.</p>
     </div>
 
     <!-- Slide 8: Life Cycle Table -->
@@ -481,7 +559,7 @@
     <!-- Slide 10: Coca Cola Chart -->
     <div class="slide slide-full">
         <h1>Real World Example: Coca-Cola</h1>
-        <p><strong>CFO (Green):</strong> Consistent "Cash Machine". <strong>CFI (Red):</strong> Reinvesting (except 2018 sale). <strong>CFF (Blue):</strong> Paying Shareholders.</p>
+        <p style="text-align:center;"><strong>CFO (Green):</strong> Consistent "Cash Machine". <strong>CFI (Red):</strong> Reinvesting. <strong>CFF (Blue):</strong> Paying Shareholders.</p>
         
         <div style="height:55vh; width:90%; margin:2vmin auto; position:relative; background:white; border:2px solid #333;">
             <div style="position:absolute; top:10px; right:10px; background:white; padding:5px 10px; border:1px solid #ccc; font-size:1.5vmin; font-family:'JetBrains Mono'; z-index:10; display:flex; flex-direction:column;">
@@ -662,7 +740,7 @@
                 <p>If Inventory goes UP, you spent cash to buy it.</p>
                 <p>If A/R goes UP, you recorded revenue but didn't get cash.</p>
             </div>
-            <div class="card"><div style="font-size:10vmin; text-align:center; color:var(--accent);">↔</div><div class="stat-caption">Opposite Direction</div></div>
+            <div class="card"><div style="font-size:10vmin; text-align:center; color:var(--accent);">↔</div><div class="stat-caption" style="text-align: center;">Opposite Direction</div></div>
         </div>
     </div>
 
@@ -674,7 +752,7 @@
                 <p><strong>Liability Increase = Cash Inflow</strong></p>
                 <p>If A/P goes UP, you bought something but <em>kept</em> your cash. It's like an interest-free loan (Source).</p>
             </div>
-            <div class="card"><div style="font-size:10vmin; text-align:center; color:var(--accent);">=</div><div class="stat-caption">Same Direction</div></div>
+            <div class="card"><div style="font-size:10vmin; text-align:center; color:var(--accent);">=</div><div class="stat-caption" style="text-align: center;">Same Direction</div></div>
         </div>
     </div>
 
@@ -693,7 +771,7 @@
     <!-- Slide 21: Drill -->
     <div class="slide slide-full">
         <h1>Drill: Adjustments</h1>
-        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:2vmin;">
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:4vmin; width: 100%;">
             <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Inventory Increase</div><div class="hidden-content" style="color:var(--error)">Subtract</div></div>
             <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">A/P Decrease</div><div class="hidden-content" style="color:var(--error)">Subtract</div></div>
             <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Prepaid Rent Decrease</div><div class="hidden-content" style="color:var(--success)">Add</div></div>
@@ -707,7 +785,7 @@
     <div class="slide slide-full">
         <h1>Example 1</h1>
         <p>You operate a lemonade stand. You made $1,000 sales all in cash. You spent $700 cash during the period to generate this sales.</p>
-        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:2vmin;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:4vmin; width: 100%;">
             <div class="card">
                 <h3>Income Statement</h3>
                 <p>Sales: $1,000</p>
@@ -736,7 +814,7 @@
     <div class="slide slide-full">
         <h1>Example 2 (A/R)</h1>
         <p>You made $1,000 sales, with $800 cash and $200 accounts receivable. You spent $700 cash.</p>
-        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:2vmin;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:4vmin; width: 100%;">
             <div class="card">
                 <h3>Income Statement</h3>
                 <p>Sales: $1,000</p>
@@ -778,7 +856,7 @@
     <div class="slide slide-full">
         <h1>Example 3 (A/P)</h1>
         <p>Sales $1,000 cash. Expenses $700 ($500 cash, $200 promised to be paid in a week).</p>
-        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:2vmin;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:4vmin; width: 100%;">
             <div class="card">
                 <h3>Income Statement</h3>
                 <p>Sales: $1,000</p>
@@ -1348,7 +1426,7 @@
             </div>
             <div class="card">
                 <div style="font-size:8vmin; text-align:center; color:var(--accent);">1.0</div>
-                <div class="stat-caption">Target</div>
+                <div class="stat-caption" style="text-align:center;">Target</div>
             </div>
         </div>
     </div>
@@ -1419,7 +1497,7 @@
             <div class="flip-container" style="margin-top:2vmin;" onclick="this.classList.toggle('flipped')">
                 <div class="flip-inner">
                     <div class="flip-front" style="background:var(--error); color:white; border:none;">Click for Bottom Line Analysis</div>
-                    <div class="flip-back" style="background:var(--text-main); font-size:1.8vmin;">
+                    <div class="flip-back" style="background:var(--text-main); font-size:2vmin;">
                         Intel’s income deterioration was driven mainly by lower sales + higher operating expenses, plus a big drop in nonoperating income, while a larger tax benefit only partially cushioned the decline.
                     </div>
                 </div>
@@ -1475,7 +1553,8 @@
     </div>
 
     <!-- Slide 46-51: Quiz (Single Slide Scrollable) -->
-    <div class="slide slide-full active" style="overflow-y:auto;">
+    <!-- UPDATED: Fixed clipping issue with justify-content: flex-start -->
+    <div class="slide slide-full" style="overflow-y:auto; justify-content: flex-start;">
         <h1>Self-Check Quiz</h1>
         <div id="quiz-container" style="text-align:left; max-width:1000px; margin:0 auto; padding-bottom:50px;">
             <!-- Quiz JS injects here -->
@@ -1489,14 +1568,17 @@
 <!-- Sticky Nav -->
 <div class="nav-bar">
     <button class="nav-btn" onclick="prevSlide()">PREV</button>
-    <div class="progress"><span id="current">1</span> / 51</div>
+    <div style="display:flex; align-items:center; gap:20px;">
+        <button class="nav-btn" onclick="toggleTOC()">MENU</button>
+        <div class="progress"><span id="current">1</span> / 51</div>
+    </div>
     <button class="nav-btn" onclick="nextSlide()">NEXT</button>
 </div>
 
 <script>
     let currentSlide = 0;
     const slides = document.querySelectorAll('.slide');
-    const totalSlides = 51;
+    const totalSlides = slides.length;
     const currentEl = document.getElementById('current');
 
     function updateSlide() {
@@ -1510,6 +1592,25 @@
         if (currentSlide === 14) showPoll(0); // After Step 2
         if (currentSlide === 24) showPoll(1); // After Java Intro
         if (currentSlide === 34) showPoll(2); // After EBITDA
+        
+        // Update TOC Active State dynamically
+        updateTOCActive();
+
+        // Close TOC if open (UX choice: close drawer on navigation)
+        document.body.classList.remove('toc-open');
+    }
+
+    function updateTOCActive() {
+        const tocItems = document.querySelectorAll('.toc-item');
+        tocItems.forEach((item, idx) => {
+            if (idx === currentSlide) {
+                item.classList.add('active');
+                // Keep active item in view within the sidebar
+                item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                item.classList.remove('active');
+            }
+        });
     }
 
     function nextSlide() {
@@ -1524,6 +1625,41 @@
             currentSlide--;
             updateSlide();
         }
+    }
+    
+    // Jump to specific slide (for TOC)
+    function jumpToSlide(index) {
+        currentSlide = index;
+        updateSlide();
+    }
+
+    // TOC Toggle
+    function toggleTOC() {
+        document.body.classList.toggle('toc-open');
+    }
+
+    // Generate TOC
+    function generateTOC() {
+        const tocList = document.getElementById('toc-list');
+        if (!tocList) return; // Safety check
+        
+        tocList.innerHTML = ''; // Clear to prevent duplicates
+        slides.forEach((slide, index) => {
+            // Find a Title
+            let title = "Slide " + (index + 1);
+            const h1 = slide.querySelector('h1');
+            const h2 = slide.querySelector('h2');
+            
+            if (h1) title = h1.innerText;
+            else if (h2) title = h2.innerText;
+            
+            const item = document.createElement('div');
+            item.className = 'toc-item';
+            // Initial active check handled by updateTOCActive
+            item.innerText = (index + 1) + ". " + title;
+            item.onclick = () => jumpToSlide(index);
+            tocList.appendChild(item);
+        });
     }
 
     document.addEventListener('keydown', (e) => {
@@ -1542,23 +1678,33 @@
     function showPoll(i) {
         const p = polls[i];
         const m = document.getElementById('poll-layer');
-        document.getElementById('poll-q').innerText = p.q;
+        if (!m) return;
+        
+        const qEl = document.getElementById('poll-q');
         const c = document.getElementById('poll-opts');
-        c.innerHTML = '';
-        p.o.forEach((opt, idx) => {
-            const b = document.createElement('div');
-            b.className = 'poll-option';
-            b.innerText = opt;
-            b.onclick = () => {
-                if (idx === p.c) { b.classList.add('correct'); b.innerText += " ✅"; }
-                else { b.classList.add('wrong'); }
-            };
-            c.appendChild(b);
-        });
+        
+        if (qEl) qEl.innerText = p.q;
+        
+        if (c) {
+            c.innerHTML = '';
+            p.o.forEach((opt, idx) => {
+                const b = document.createElement('div');
+                b.className = 'poll-option';
+                b.innerText = opt;
+                b.onclick = () => {
+                    if (idx === p.c) { b.classList.add('correct'); b.innerText += " ✅"; }
+                    else { b.classList.add('wrong'); }
+                };
+                c.appendChild(b);
+            });
+        }
         m.style.display = 'flex';
     }
 
-    function closePoll() { document.getElementById('poll-layer').style.display = 'none'; }
+    function closePoll() { 
+        const layer = document.getElementById('poll-layer');
+        if (layer) layer.style.display = 'none'; 
+    }
 
     const quizData = [
         { q: "1. Starting point for Indirect Method?", a: ["Sales", "Net Income", "End Cash"], c: 1 },
@@ -1573,15 +1719,20 @@
         { q: "10. FCF Formula?", a: ["NI - Div", "OCF - CapEx"], c: 1 }
     ];
 
+    // Initialize Quiz - Added Safety Check
     const quizDiv = document.getElementById('quiz-container');
-    quizData.forEach((item, i) => {
-        let html = `<div class="quiz-question"><p style="font-weight:bold; font-size:3vmin;">${item.q}</p>`;
-        item.a.forEach((ans, j) => {
-            html += `<label class="quiz-opt"><input type="radio" name="q${i}" value="${j}"> ${ans}</label>`;
+    if (quizDiv) {
+        let quizHTML = ''; // Build string first to minimize DOM interactions
+        quizData.forEach((item, i) => {
+            let html = `<div class="quiz-question"><p style="font-weight:bold; font-size:3vmin;">${item.q}</p>`;
+            item.a.forEach((ans, j) => {
+                html += `<label class="quiz-opt"><input type="radio" name="q${i}" value="${j}"> ${ans}</label>`;
+            });
+            html += `</div>`;
+            quizHTML += html;
         });
-        html += `</div>`;
-        quizDiv.innerHTML += html;
-    });
+        quizDiv.innerHTML = quizHTML;
+    }
 
     function checkQuiz() {
         let score = 0;
@@ -1589,10 +1740,15 @@
             const s = document.querySelector(`input[name="q${i}"]:checked`);
             if (s && parseInt(s.value) === item.c) score++;
         });
-        document.getElementById('score-display').innerText = `Score: ${score} / 10`;
-        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        const scoreDisplay = document.getElementById('score-display');
+        if (scoreDisplay) scoreDisplay.innerText = `Score: ${score} / 10`;
+        
+        if (typeof confetti === 'function') {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        }
     }
 
+    generateTOC();
     updateSlide();
 </script>
 </body>
