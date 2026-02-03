@@ -36,8 +36,7 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .sticky-toolbar {
-            position: sticky;
-            top: 0;
+            position: relative; 
             z-index: 50;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
@@ -105,6 +104,31 @@
             outline: 2px solid #3b82f6;
             outline-offset: -1px;
         }
+
+        /* Sticky Table Headers Logic */
+        .sticky-header-row-1 {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            height: 40px; /* Enforce height */
+            box-shadow: 0 1px 0px rgba(226, 232, 240, 1); /* Border simulation */
+        }
+        .sticky-header-row-2 {
+            position: sticky;
+            top: 40px; /* Matches row 1 height */
+            z-index: 30;
+            height: 36px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        /* Corner cell needs highest z-index to stay above both scrolling columns and rows */
+        .sticky-corner {
+            position: sticky;
+            left: 0;
+            top: 0;
+            z-index: 40 !important;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+        }
+        
     </style>
 </head>
 <body>
@@ -133,8 +157,6 @@
         ];
 
         // Correct Answers Config
-        // Instructor Key Updated: Transaction 1 CC Account -> Common Stock
-        // Earned Capital (ec) filled out for all transactions affecting Net Income.
         const TRANSACTIONS_CONFIG = [
             { 
                 id: 1, 
@@ -363,7 +385,6 @@
                             <Icon name="check" size={14} />
                         </div>
                     )}
-                    {/* Updated: Hide Key: 0 labels in Instructor Mode */}
                     {instructorMode && correctValue !== 0 && (
                         <div className="mt-1 text-xs font-bold text-center bg-purple-100 text-purple-700 border border-purple-200 rounded py-0.5 fade-in">
                             Key: {correctValue}
@@ -737,12 +758,12 @@ ${hash}
             return (
                 <div className="min-h-screen pb-20 relative font-sans">
                     {/* Header */}
-                    <div className="bg-white border-b border-slate-200 p-4 shadow-sm sticky top-0 z-40">
+                    <div className="bg-white border-b border-slate-200 p-4 shadow-sm z-40 relative">
                         <div className="max-w-7xl mx-auto flex justify-between items-center">
                             <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
                                 <Icon name="calculator" className="text-blue-600" />
                                 Accounting Simulator 
-                                <span className="text-slate-400 text-sm font-normal bg-slate-100 px-2 py-0.5 rounded-full">v3.1</span>
+                                <span className="text-slate-400 text-sm font-normal bg-slate-100 px-2 py-0.5 rounded-full">v3.2</span>
                             </h1>
                             <button 
                                 onClick={() => setShowAuthModal(true)}
@@ -809,31 +830,31 @@ ${hash}
                         </div>
 
                         {activeTab === 'transactions' && (
-                            <div className="overflow-x-auto bg-white rounded-xl shadow-lg border border-slate-200 p-1 animate-fade-in">
+                            <div className="overflow-auto bg-white rounded-xl shadow-lg border border-slate-200 p-1 animate-fade-in max-h-[75vh]">
                                 <table className="w-full border-collapse min-w-[1200px]">
                                     <thead>
-                                        <tr className="bg-slate-50 text-slate-700 text-sm border-b border-slate-200">
-                                            <th className="p-3 text-left border-r border-slate-200 sticky left-0 z-10 bg-slate-50 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]" rowSpan="2">Transaction</th>
-                                            <th className="border-r border-slate-200 text-center py-2 bg-blue-50/50" colSpan="2">ASSETS</th>
-                                            <th className="w-8 text-center font-bold text-slate-400">=</th>
-                                            <th className="border-r border-slate-200 text-center py-2 bg-orange-50/50">LIABILITIES</th>
-                                            <th className="w-8 text-center font-bold text-slate-400">+</th>
-                                            <th className="border-r border-slate-200 text-center py-2 bg-green-50/50" colSpan="2">EQUITY</th>
-                                            <th className="w-1 bg-slate-200 p-0"></th>
-                                            <th className="border-r border-slate-200 text-center py-2 bg-purple-50/50" colSpan="3">INCOME STATEMENT</th>
+                                        <tr className="bg-slate-50 text-slate-700 text-sm border-b border-slate-200 h-[40px]">
+                                            <th className="p-3 text-left border-r border-slate-200 sticky-corner bg-slate-50" rowSpan="2">Transaction</th>
+                                            <th className="sticky-header-row-1 border-r border-slate-200 text-center py-2 bg-blue-50" colSpan="2">ASSETS</th>
+                                            <th className="sticky-header-row-1 w-8 text-center font-bold text-slate-400 bg-slate-50">=</th>
+                                            <th className="sticky-header-row-1 border-r border-slate-200 text-center py-2 bg-orange-50" colSpan="1">LIABILITIES</th>
+                                            <th className="sticky-header-row-1 w-8 text-center font-bold text-slate-400 bg-slate-50">+</th>
+                                            <th className="sticky-header-row-1 border-r border-slate-200 text-center py-2 bg-green-50" colSpan="2">EQUITY</th>
+                                            <th className="sticky-header-row-1 w-1 bg-slate-200 p-0"></th>
+                                            <th className="sticky-header-row-1 border-r border-slate-200 text-center py-2 bg-purple-50" colSpan="3">INCOME STATEMENT</th>
                                         </tr>
-                                        <tr className="bg-slate-100 text-xs text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200">
-                                            <th className="p-2 border-r border-slate-200 w-32">Cash</th>
-                                            <th className="p-2 border-r border-slate-200 w-32">Non-Cash</th>
-                                            <th></th>
-                                            <th className="p-2 border-r border-slate-200 w-32">Claims/Liab</th>
-                                            <th></th>
-                                            <th className="p-2 border-r border-slate-200 w-32">Cont. Cap</th>
-                                            <th className="p-2 border-r border-slate-200 w-32">Earn. Cap</th>
-                                            <th className="w-1 bg-slate-200 p-0"></th>
-                                            <th className="p-2 border-r border-slate-200 w-36">Revenue</th>
-                                            <th className="p-2 border-r border-slate-200 w-36">Expense</th>
-                                            <th className="p-2 border-r border-slate-200 w-24">Net Inc</th>
+                                        <tr className="bg-slate-100 text-xs text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200 h-[36px]">
+                                            <th className="sticky-header-row-2 p-2 border-r border-slate-200 w-32 bg-slate-100">Cash</th>
+                                            <th className="sticky-header-row-2 p-2 border-r border-slate-200 w-32 bg-slate-100">Non-Cash</th>
+                                            <th className="sticky-header-row-2 bg-slate-100"></th>
+                                            <th className="sticky-header-row-2 p-2 border-r border-slate-200 w-32 bg-slate-100">Liabilities</th>
+                                            <th className="sticky-header-row-2 bg-slate-100"></th>
+                                            <th className="sticky-header-row-2 p-2 border-r border-slate-200 w-32 bg-slate-100">Cont. Cap.</th>
+                                            <th className="sticky-header-row-2 p-2 border-r border-slate-200 w-32 bg-slate-100">Earned Cap.</th>
+                                            <th className="sticky-header-row-2 w-1 bg-slate-200 p-0"></th>
+                                            <th className="sticky-header-row-2 p-2 border-r border-slate-200 w-36 bg-slate-100">Revenue</th>
+                                            <th className="sticky-header-row-2 p-2 border-r border-slate-200 w-36 bg-slate-100">Expense</th>
+                                            <th className="sticky-header-row-2 p-2 border-r border-slate-200 w-24 bg-slate-100">Net Inc</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -1062,6 +1083,62 @@ ${hash}
                                                 <span>{formatCurrency(totals.liab + totals.cc + totals.ni)}</span>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+
+                                {/* CASH FLOW STATEMENT */}
+                                <div className="statement-paper">
+                                    <div className="statement-header">
+                                        <h2>{COMPANY_NAME}</h2>
+                                        <h3>Statement of Cash Flows</h3>
+                                        <p>For the Month Ended April 30</p>
+                                    </div>
+
+                                    <div className="statement-sub-header">Cash Flows from Operating Activities</div>
+                                    <div className="statement-row">
+                                        <span>Cash received from customers</span>
+                                        <span>{formatCurrency(cashFlowDetails.operating.receipts)}</span>
+                                    </div>
+                                    <div className="statement-row">
+                                        <span>Cash paid for expenses</span>
+                                        <span>{formatCurrency(cashFlowDetails.operating.payments)}</span>
+                                    </div>
+                                    <div className="statement-row subtotal">
+                                        <span>Net cash provided by operating activities</span>
+                                        <span>{formatCurrency(cashFlowDetails.operating.total)}</span>
+                                    </div>
+
+                                    <div className="statement-sub-header mt-6">Cash Flows from Investing Activities</div>
+                                    <div className="statement-row">
+                                        <span>Purchase of equipment and assets</span>
+                                        <span>{formatCurrency(cashFlowDetails.investing.total)}</span>
+                                    </div>
+                                    <div className="statement-row subtotal">
+                                        <span>Net cash used in investing activities</span>
+                                        <span>{formatCurrency(cashFlowDetails.investing.total)}</span>
+                                    </div>
+
+                                    <div className="statement-sub-header mt-6">Cash Flows from Financing Activities</div>
+                                    <div className="statement-row">
+                                        <span>Issuance of common stock</span>
+                                        <span>{formatCurrency(cashFlowDetails.financing.total)}</span>
+                                    </div>
+                                    <div className="statement-row subtotal">
+                                        <span>Net cash provided by financing activities</span>
+                                        <span>{formatCurrency(cashFlowDetails.financing.total)}</span>
+                                    </div>
+
+                                    <div className="statement-row total mt-8">
+                                        <span>Net Increase in Cash</span>
+                                        <span>{formatCurrency(totals.cash)}</span>
+                                    </div>
+                                    <div className="statement-row">
+                                        <span>Cash Balance, April 1</span>
+                                        <span>$0.00</span>
+                                    </div>
+                                    <div className="statement-row font-bold">
+                                        <span>Cash Balance, April 30</span>
+                                        <span>{formatCurrency(totals.cash)}</span>
                                     </div>
                                 </div>
                             </div>
