@@ -163,11 +163,20 @@
         .def-table .name { font-weight: 600; color: white; width: 220px; }
         .def-table .formula { font-family: 'Fira Code', monospace; color: #e2e8f0; font-size: 0.95rem; }
 
-        .scenario-footer { margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.2); display: flex; justify-content: space-around; position: relative; }
-        .scenario-footer::after { content: ''; position: absolute; left: 50%; top: 10%; bottom: 10%; width: 1px; background: rgba(255,255,255,0.2); }
-        .scenario-footer div { text-align: center; width: 45%; }
+        .scenario-footer { margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.2); display: flex; flex-direction: column; justify-content: center; position: relative; }
+        .scenario-footer div { text-align: center; width: 100%; margin-bottom: 10px; }
         .scenario-footer p { font-size: 0.8rem; margin-bottom: 5px; font-family: 'Fira Code', monospace; color: #a5b4fc; }
         .scenario-footer h5 { font-size: 1rem; color: white; font-family: 'Fira Code', monospace; }
+        
+        .formula-highlight {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--success);
+            color: #064e3b; 
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: 0.95rem;
+        }
 
         .quadrant-grid {
             display: grid;
@@ -310,6 +319,21 @@
             transition: height 0.6s, background 0.6s;
             z-index: 10;
         }
+        
+        .tax-overlay-dashed-compare {
+            position: absolute;
+            top: 0;
+            width: 110%;
+            left: -5%;
+            height: 0; /* Dynamic */
+            border: 3px dotted #1e293b; /* Dark Dotted Line for Tax on Op Inc */
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            z-index: 11;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s, height 0.6s, top 0.6s;
+        }
 
         /* Bridge Arrow - FIXED WIDTH */
         .bridge-connector {
@@ -406,6 +430,7 @@
 
 <div id="app-container">
 
+    <!-- Curriculum Overlay -->
     <div id="curriculum-overlay">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
             <h2>Masterclass Curriculum</h2>
@@ -414,11 +439,13 @@
         <div id="toc-grid" class="toc-grid"></div>
     </div>
 
+    <!-- Slide 1: Hook Story -->
     <div class="slide active" style="padding: 1.5rem;">
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
             <div class="card-dark" style="padding: 2rem; text-align: center; max-width: 1100px; border-radius: 30px; animation: pulse-soft 3s infinite ease-in-out;">
                 <h1 class="text-white" style="margin-bottom: 1rem; font-size: 3rem;">Drivers of Return on Equity</h1>
                 <div class="grid-2 mt-4" style="gap: 1rem;">
+                    <!-- The Software Sage (Operations) -->
                     <div class="flip-container" onclick="this.classList.toggle('flipped')" style="height: 250px;">
                         <div class="flip-inner" style="height:100%">
                             <div class="flip-front" style="background: rgba(255,255,255,0.1); border: 2px solid var(--success); padding: 1.5rem;">
@@ -432,6 +459,7 @@
                             </div>
                         </div>
                     </div>
+                    <!-- The Debt Dealer (Leverage) -->
                     <div class="flip-container" onclick="this.classList.toggle('flipped')" style="height: 250px;">
                         <div class="flip-inner" style="height:100%">
                             <div class="flip-front" style="background: rgba(255,255,255,0.1); border: 2px solid var(--accent); padding: 1.5rem;">
@@ -454,6 +482,7 @@
         </div>
     </div>
 
+    <!-- Slide 2: Core Problem -->
     <div class="slide">
         <h2>The Conflation Problem</h2>
         <div class="grid-2">
@@ -481,6 +510,7 @@
         </div>
     </div>
 
+    <!-- Slide 3: Concept: NOA -->
     <div class="slide">
         <h2>Concept: Net Operating Assets (NOA)</h2>
         <p>Before looking at financing, we must isolate the <strong>Operating Engine's</strong> capital base.</p>
@@ -512,6 +542,7 @@
         </div>
     </div>
 
+    <!-- Slide 4: Concept: NNO -->
     <div class="slide">
         <h2>Concept: Net Nonoperating Obligations (NNO)</h2>
         <p>In Advanced DuPont, we look at our <strong>Net Financing Position</strong> by netting cash against debt.</p>
@@ -542,6 +573,7 @@
         </div>
     </div>
 
+    <!-- Slide 5: Activity: Filter the Core -->
     <div class="slide">
         <h2>Activity: Filter the Core</h2>
         <p>Select items that belong to the <strong>Core Operating Engine</strong>. Leave NNO (Financing) items unselected.</p>
@@ -568,10 +600,12 @@
         </div>
     </div>
 
+    <!-- Slide 6: Visualizing the Split -->
     <div class="slide">
         <h2>Visualizing the Split: Reclassified Statements</h2>
         <p>Explore the four quadrants to see how we reorganize the balance sheet.</p>
         <div class="grid-2">
+            <!-- Balance Sheet -->
             <div class="card">
                 <h3 class="text-center text-primary mb-3">Balance Sheet (Reclassified)</h3>
                 <p style="text-align:center; font-size:0.8rem; margin-bottom:10px; color:var(--text-light);">(Click quadrants to populate)</p>
@@ -636,6 +670,7 @@
                 </div>
             </div>
 
+            <!-- Income Statement -->
             <div class="card">
                 <h3 class="text-center text-secondary mb-3">Income Statement (Reclassified)</h3>
                 <div class="is-flow-container">
@@ -664,26 +699,7 @@
         </div>
     </div>
 
-    <div class="slide">
-        <h2>Checkpoint 1: Classification</h2>
-        <div class="card" style="max-width: 800px; margin: 0 auto;">
-            <p style="font-size: 1.3rem; margin-bottom: 2rem;">A company has $100M in a savings account earning 2% interest. How is this classified?</p>
-            <div class="quiz-option" onclick="checkInterQuiz(this, false)">
-                <div class="quiz-circle">A</div>
-                <div>Operating Asset (It's an asset owned by the company)</div>
-            </div>
-            <div class="quiz-option" onclick="checkInterQuiz(this, true)">
-                <div class="quiz-circle">B</div>
-                <div>Non-Operating Asset (It earns passive interest, not from customers)</div>
-            </div>
-            <div class="quiz-option" onclick="checkInterQuiz(this, false)">
-                <div class="quiz-circle">C</div>
-                <div>Operating Liability (It is owed to the bank)</div>
-            </div>
-            <p class="inter-quiz-fb font-bold mt-4"></p>
-        </div>
-    </div>
-
+    <!-- Slide 7: Pfizer NOA Case Study -->
     <div class="slide">
         <h2>Case Study: Pfizer's NOA (2022)</h2>
         <div class="grid-2">
@@ -705,6 +721,7 @@
         </div>
     </div>
 
+    <!-- Slide 8: The Tax Bridge Visualizer (Refined) -->
     <div class="slide">
         <h2>The NOPAT Tax Logic</h2>
         <p style="margin-bottom: 1.5rem;">
@@ -712,74 +729,66 @@
         </p>
         
         <div class="card" style="padding: 2rem; background: #f8fafc; border: 1px solid #e2e8f0;">
+            <!-- Controls -->
             <div style="display:flex; justify-content:center; gap: 15px; margin-bottom: 30px;">
                 <button class="btn btn-outline" id="btn-debt" onclick="updateTaxViz('debt')" style="width: 200px;">
-                    <i class="fas fa-arrow-down mr-2"></i> High Debt Scenario
+                    <i class="fas fa-arrow-down mr-2"></i> High Debt Scenario<br><span style="font-size:0.7rem;">(positive NNO)</span>
                 </button>
                 <button class="btn btn-outline" id="btn-cash" onclick="updateTaxViz('cash')" style="width: 200px;">
-                    <i class="fas fa-arrow-up mr-2"></i> Excess Cash Scenario
+                    <i class="fas fa-arrow-up mr-2"></i> Excess Cash Scenario<br><span style="font-size:0.7rem;">(Negative NNO)</span>
                 </button>
             </div>
 
+            <!-- Main Visualization Stage -->
             <div class="bridge-container" style="display: flex; align-items: flex-end; justify-content: center; height: 320px; gap: 40px; position: relative; padding-bottom: 20px;">
                 
+                <!-- 1. Operating Income Bar -->
                 <div class="bridge-col">
                     <div class="viz-label">Operating Income</div>
                     <div class="viz-bar-group">
                         <div class="bridge-bar base-bar" style="height: 200px;">
                             <span class="bar-val">$100</span>
                         </div>
+                        <!-- Theoretical Tax Overlay -->
                         <div class="tax-overlay-theoretical" style="height: 40px;">
                             <span>Tax on Op Inc ($20)</span>
                         </div>
                     </div>
                 </div>
 
+                <!-- 2. The Bridge (Adjustment) -->
                 <div class="bridge-connector">
                     <div id="bridge-arrow" class="bridge-arrow arrow-down">
                         <span id="bridge-val"></span>
                     </div>
                 </div>
 
+                <!-- 3. Income Before Tax Bar -->
                 <div class="bridge-col">
                     <div class="viz-label">Income Before Tax</div>
                     <div class="viz-bar-group">
                         <div id="taxable-bar" class="bridge-bar result-bar" style="height: 160px;">
                             <span id="taxable-val" class="bar-val">$80</span>
                         </div>
+                        <!-- Solid Red Overlay: Now represents ACTUAL Tax -->
                         <div id="actual-tax-overlay" class="tax-overlay-actual" style="height: 32px;">
                             <span id="actual-tax-label">Actual Tax ($16)</span>
                         </div>
+                        <!-- Dotted Box: Now represents Tax on Op Inc -->
+                        <div id="tax-overlay-dashed-compare" class="tax-overlay-dashed-compare"></div>
                     </div>
                 </div>
 
             </div>
 
+            <!-- Analysis Box -->
             <div id="bridge-analysis" class="analysis-box">
-                </div>
+                <!-- JS Populates this -->
+            </div>
         </div>
     </div>
 
-    <div class="slide">
-        <h2>Checkpoint 2: Tax Logic</h2>
-        <div class="card" style="max-width: 800px; margin: 0 auto;">
-            <p style="font-size: 1.3rem; margin-bottom: 2rem;">If a company has high Interest Expense, their Taxable Income is LOWER than their Operating Income. This means their Reported Tax is _________ than the tax owed on operating income.</p>
-            <div class="quiz-option" onclick="checkInterQuiz(this, true)">
-                <div class="quiz-circle">A</div>
-                <div>Lower (Positive Tax Shield)</div>
-            </div>
-            <div class="quiz-option" onclick="checkInterQuiz(this, false)">
-                <div class="quiz-circle">B</div>
-                <div>Higher (Negative Tax Shield)</div>
-            </div>
-            <div class="quiz-option" onclick="checkInterQuiz(this, false)">
-                <div class="quiz-circle">C</div>
-                <div>The same</div>
-            </div>
-            <p class="inter-quiz-fb font-bold mt-4"></p>
-        </div>
-    </div>
-
+    <!-- Slide 9: Method 1: Top Down -->
     <div class="slide">
         <h2>Method 1: Top Down NOPAT</h2>
         <p>Start from the operating profit before tax and apply the true operating tax.</p>
@@ -826,6 +835,7 @@
         </div>
     </div>
 
+    <!-- Slide 10: Method 2: Bottom Up -->
     <div class="slide">
         <h2>Method 2: Bottom Up NOPAT</h2>
         <p>Start from Net Income and "add back" the financing impact net of tax.</p>
@@ -846,6 +856,7 @@
         </div>
     </div>
 
+    <!-- Slide 11: Scenario 1 -->
     <div class="slide">
         <h2>Scenario 1: Net Non-Op Expense Case (positive NNO) </h2>
         <div class="grid-2">
@@ -869,6 +880,7 @@
                     <p class="text-white" style="opacity: 0.8;">Both methodologies converge here:</p>
                 </div>
 
+                <!-- Added Formula Block -->
                 <div style="margin-bottom: 15px; font-size: 0.9rem; color: #a5b4fc; font-family: 'Fira Code', monospace; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
                     <div>Top Down: NOPAT = NOPBT - Taxes on Operating Income</div>
                     <div style="margin-top: 5px;">Bottom Up: NOPAT = Net Income + NNE</div>
@@ -878,7 +890,11 @@
                 <div class="scenario-footer">
                     <div>
                         <p>Top Down Calculation</p>
-                        <h5 class="reveal-blur" onclick="this.classList.add('revealed')">$1,000 - ($180 + $20 Tax Shield)</h5>
+                        <!-- Updated Summary Text with Darker Color -->
+                         <div class="formula-highlight reveal-blur" onclick="this.classList.add('revealed')" style="color: #064e3b; font-weight: bold; background: white;">
+                            Tax on Op Inc = Actual Tax + Tax Shield<br>
+                            $200 = $180 + $20 (Positive Shield)
+                         </div>
                     </div>
                     <div>
                         <p>Bottom Up Calculation</p>
@@ -889,6 +905,7 @@
         </div>
     </div>
 
+    <!-- Slide 12: Scenario 2 -->
     <div class="slide">
         <h2>Scenario 2: Net Non-Op Income Case (negative NNO) </h2>
         <div class="grid-2">
@@ -912,6 +929,7 @@
                     <p class="text-white" style="opacity: 0.8;">Non-op income is successfully removed:</p>
                 </div>
 
+                <!-- Added Formula Block -->
                 <div style="margin-bottom: 15px; font-size: 0.9rem; color: #a5b4fc; font-family: 'Fira Code', monospace; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
                     <div>Top Down: NOPAT = NOPBT - Taxes on Operating Income</div>
                     <div style="margin-top: 5px;">Bottom Up: NOPAT = Net Income + NNE</div>
@@ -921,7 +939,11 @@
                 <div class="scenario-footer">
                     <div>
                         <p>Top Down Calculation</p>
-                        <h5 class="reveal-blur" onclick="this.classList.add('revealed')">$1,000 - ($220 - $20 Negative Tax Shield)</h5>
+                        <!-- Updated Summary Text with Darker Color -->
+                         <div class="formula-highlight reveal-blur" onclick="this.classList.add('revealed')" style="border-color: var(--error); color: #7f1d1d; font-weight: bold; background: white;">
+                            Tax on Op Inc = Actual Tax + Tax Shield<br>
+                            $200 = $220 + (-$20) (Negative Shield)
+                         </div>
                     </div>
                     <div>
                         <p>Bottom Up Calculation</p>
@@ -932,6 +954,7 @@
         </div>
     </div>
 
+    <!-- Slide 13: Pfizer NOPAT Study -->
     <div class="slide">
         <h2>Case Study: Pfizer's NOPAT (2022)</h2>
         <div class="card">
@@ -950,6 +973,7 @@
         </div>
     </div>
 
+    <!-- Slide 14: RNOA Reveal -->
     <div class="slide">
         <h2>The Result: RNOA</h2>
         <p>Combining NOPAT and NOA gives us the "Truth Teller" of performance.</p>
@@ -980,6 +1004,7 @@
         </div>
     </div>
 
+    <!-- Slide 15: Drivers (NOPM & NOAT) -->
     <div class="slide">
         <h2>Decomposing RNOA</h2>
         <div class="grid-2" style="margin-bottom: 20px;">
@@ -995,13 +1020,22 @@
             </div>
         </div>
         
+        <!-- SVG Strategy Chart -->
         <div class="strategy-chart">
             <svg width="100%" height="100%" viewBox="0 0 800 400" preserveAspectRatio="none">
-                <line x1="50" y1="350" x2="750" y2="350" stroke="#334155" stroke-width="2" /> <line x1="50" y1="350" x2="50" y2="50" stroke="#334155" stroke-width="2" /> <text x="400" y="390" text-anchor="middle" font-weight="bold" fill="#334155">Net Operating Profit Margin</text>
+                <!-- Axes -->
+                <line x1="50" y1="350" x2="750" y2="350" stroke="#334155" stroke-width="2" /> <!-- X -->
+                <line x1="50" y1="350" x2="50" y2="50" stroke="#334155" stroke-width="2" /> <!-- Y -->
+                
+                <!-- Labels -->
+                <text x="400" y="390" text-anchor="middle" font-weight="bold" fill="#334155">Net Operating Profit Margin</text>
                 <text x="20" y="200" transform="rotate(-90 20,200)" text-anchor="middle" font-weight="bold" fill="#334155">Net Operating Asset Turnover</text>
 
+                <!-- Iso-RNOA Curve (approximate hyperbola) -->
                 <path d="M 120 50 Q 150 250 750 330" fill="none" stroke="#f97316" stroke-width="4" />
                 
+                <!-- Points -->
+                <!-- Consumer Staples: High Turn (Top), Low Margin (Left) -->
                 <g class="chart-point" style="cursor: pointer;">
                     <circle cx="120" cy="50" r="8" fill="#3b82f6" stroke="white" stroke-width="2">
                         <animate attributeName="r" values="8;10;8" dur="2s" repeatCount="indefinite" />
@@ -1009,16 +1043,20 @@
                     <text x="135" y="55" font-size="12" font-weight="bold" fill="#334155">Consumer Staples</text>
                 </g>
 
+                <!-- Semiconductors: Low Turn (Bottom), High Margin (Right) -->
                 <g class="chart-point" style="cursor: pointer;">
                     <circle cx="700" cy="310" r="8" fill="#3b82f6" stroke="white" stroke-width="2" />
                     <text x="680" y="315" font-size="12" font-weight="bold" fill="#334155" text-anchor="end">Semiconductors</text>
                 </g>
 
+                <!-- Pfizer: Low Turn (Bottom), High Margin (Right) -->
+                <!-- 31% Margin, 0.89 Turn (moved higher to avoid X axis overlap) -->
                 <g class="chart-point" style="cursor: pointer;">
                     <circle cx="740" cy="300" r="8" fill="#6366f1" stroke="white" stroke-width="3" />
                     <text x="740" y="290" font-size="12" font-weight="bold" fill="#6366f1" text-anchor="middle">Pfizer (31%, 0.89)</text>
                 </g>
                 
+                <!-- Other Dots to simulate scatter -->
                 <circle cx="200" cy="200" r="6" fill="#64748b" opacity="0.6" />
                 <circle cx="300" cy="280" r="6" fill="#64748b" opacity="0.6" />
                 <circle cx="450" cy="310" r="6" fill="#64748b" opacity="0.6" />
@@ -1027,26 +1065,7 @@
         </div>
     </div>
 
-    <div class="slide">
-        <h2>Checkpoint 3: Drivers</h2>
-        <div class="card" style="max-width: 800px; margin: 0 auto;">
-            <p style="font-size: 1.3rem; margin-bottom: 2rem;">If a company wants to increase RNOA without changing its product margins (NOPM), what must it do?</p>
-            <div class="quiz-option" onclick="checkInterQuiz(this, true)">
-                <div class="quiz-circle">A</div>
-                <div>Increase Asset Turnover (Generate more sales per dollar of assets)</div>
-            </div>
-            <div class="quiz-option" onclick="checkInterQuiz(this, false)">
-                <div class="quiz-circle">B</div>
-                <div>Increase Leverage (Borrow more money)</div>
-            </div>
-            <div class="quiz-option" onclick="checkInterQuiz(this, false)">
-                <div class="quiz-circle">C</div>
-                <div>Decrease Tax Rate</div>
-            </div>
-            <p class="inter-quiz-fb font-bold mt-4"></p>
-        </div>
-    </div>
-
+    <!-- Slide 16: ANALYSIS DECISION -->
     <div class="slide">
         <h2>ANALYSIS DECISION: You Are the CEO</h2>
         <div class="card card-highlight">
@@ -1070,105 +1089,92 @@
         </div>
     </div>
 
+    <!-- Slide 17: Conceptual Decomposition (Simplified) -->
     <div class="slide">
-        <h2>Conceptualizing Leverage</h2>
-        <p>Instead of memorizing complex formulas, think of ROE as having two engines.</p>
+        <h2>The Conceptual Framework</h2>
+        <p>ROE is simply the sum of two return engines.</p>
+        <div class="card-dark text-center" style="margin-bottom: 30px; padding: 4rem 2rem; height: auto; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+            <h1 class="text-white" style="font-size: 3rem; line-height: 1.4;">ROE = <span class="text-success">Operating Return</span> + <span class="text-accent">Non-Operating Return</span></h1>
+        </div>
         
-        <div class="card-dark" style="text-align: center; margin-bottom: 2rem;">
-            <h3 class="text-white" style="font-size: 2.2rem;">ROE = Operating Return + Leverage Bonus</h3>
-            <p class="text-white" style="font-size: 1.2rem; opacity: 0.9; margin-top: 15px;">
-                Your shareholders get the return from the business (RNOA), plus a "Bonus" if you borrow money at a rate lower than you earn.
-            </p>
-        </div>
-
-        <div class="grid-2 mt-4">
-            <div class="flip-container" onclick="this.classList.toggle('flipped')">
-                <div class="flip-inner" style="height:100%">
-                    <div class="flip-front" style="background: var(--primary-gradient);">
-                        <h4 class="text-white">Strategy 1: Borrow More</h4>
-                        <p class="text-white" style="font-size: 1rem; opacity: 0.8;">Increasing the "Multiplier"</p>
-                        <p style="margin-top:10px; font-size:0.8rem; color:white;">(Click to Flip)</p>
-                    </div>
-                    <div class="flip-back">
-                        <p>If your business earns 10% and debt costs 4%, every extra dollar you borrow adds 6% pure profit to shareholders. Borrowing more multiplies this bonus.</p>
-                    </div>
+        <div class="grid-2">
+            <div class="card card-highlight" style="border-left-color: var(--success);">
+                <h3 class="text-success">1. Operating Return (RNOA)</h3>
+                <p>This is the return generated by your core business assets (Inventory, Factories, IP).</p>
+                <div style="background: #f0fdf4; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                    <strong>The Driver:</strong> Pure business efficiency. How well you sell products and manage costs.
                 </div>
             </div>
-            <div class="flip-container" onclick="this.classList.toggle('flipped')">
-                <div class="flip-inner" style="height:100%">
-                    <div class="flip-front" style="background: var(--accent-gradient);">
-                        <h4 class="text-white">Strategy 2: Borrow Cheaper</h4>
-                        <p class="text-white" style="font-size: 1rem; opacity: 0.8;">Increasing the "Spread"</p>
-                        <p style="margin-top:10px; font-size:0.8rem; color:white;">(Click to Flip)</p>
-                    </div>
-                    <div class="flip-back">
-                        <p>The "Spread" is the gap between what you earn (RNOA) and what you pay in interest. Negotiating lower interest rates widens this gap, creating more value for shareholders.</p>
-                    </div>
+            
+            <div class="card card-highlight" style="border-left-color: var(--accent);">
+                <h3 class="text-accent">2. Non-Operating Return</h3>
+                <p>This is the extra return (or loss) generated by how you finance the business (Debt vs. Equity).</p>
+                <div style="background: #fff1f2; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                    <strong>The Driver:</strong> Financial Engineering. Borrowing cheap money to boost shareholder returns.
                 </div>
             </div>
-        </div>
-
-        <div style="margin-top: 2rem; padding: 1.5rem; border-radius: 12px; background: #eff6ff; border: 1px solid #dbeafe;">
-            <p style="font-size: 1.1rem; margin: 0; color: #1e40af; text-align: center;">
-                <strong>The Golden Rule:</strong> Leverage only works if RNOA > Interest Rate. If your operations struggle, debt acts as a multiplier in reverse (destroying value).
-            </p>
         </div>
     </div>
 
+    <!-- Slide 18: Leverage Simulator (Simplified) -->
     <div class="slide">
-        <h2>Leverage Simulator (Pfizer Case Study)</h2>
-        <p>Visualize how borrowing (Leverage) acts as a booster shot to your Operating Return.</p>
+        <h2>The Leverage Effect</h2>
+        <p>See how borrowing cheap money acts as a lever to boost shareholder returns.</p>
         
         <div class="card" style="margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem;">
             <div class="grid-3">
                 <div class="text-center">
-                    <p style="font-size: 1rem; color: var(--text-light); margin-bottom: 5px;">RNOA (Base)</p>
+                    <p style="font-size: 1rem; color: var(--text-light); margin-bottom: 5px;">Return on Assets (RNOA)</p>
                     <h3 class="text-primary" style="margin: 0; font-size: 1.8rem;">32.1%</h3>
                 </div>
                 <div class="text-center" style="border-left: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0;">
-                     <p style="font-size: 1rem; color: var(--text-light); margin-bottom: 5px;">Interest Cost</p>
+                     <p style="font-size: 1rem; color: var(--text-light); margin-bottom: 5px;">Cost of Debt (after tax)</p>
                     <h3 style="margin: 0; font-size: 1.8rem;">~0%</h3>
                 </div>
                 <div class="text-center">
-                     <p style="font-size: 1rem; color: var(--text-light); margin-bottom: 5px;">Spread</p>
+                     <p style="font-size: 1rem; color: var(--text-light); margin-bottom: 5px;">The "Spread" (Gain)</p>
                     <h3 class="text-success" style="margin: 0; font-size: 1.8rem;">~32%</h3>
                 </div>
             </div>
+            <p style="text-align: center; margin-top: 15px; font-size: 0.9rem; color: #64748b;">
+                <em>Since the business earns 32% but borrowing is free (0%), every dollar borrowed adds pure profit.</em>
+            </p>
         </div>
 
         <div class="card">
             <div style="display:flex; align-items:center; gap:25px; margin-bottom: 20px;">
-                <label class="font-bold" style="font-size: 1.1rem;">Leverage Level (Debt vs Equity):</label>
+                <label class="font-bold" style="font-size: 1.1rem;">Adjust Debt Level (Leverage):</label>
                 <input type="range" id="flev-slider" min="0" max="1.5" step="0.05" value="0.13" oninput="updateSim()" style="flex:1;">
-                <span id="flev-val" class="font-bold text-primary" style="font-size: 1.2rem;">0.13</span>
+                <span id="flev-val" class="font-bold text-primary" style="font-size: 1.2rem;">Low Debt</span>
             </div>
             <div class="lever-viz">
                 <div style="text-align:center;">
                     <div class="lever-bar" style="height: 120px; background: var(--primary-gradient); width: 80px;">
                         <span style="position:absolute; top:-30px; left:0; width:100%; color: var(--primary); font-weight:bold; font-size:1rem;">32.1%</span>
                     </div>
-                    <p style="margin-top:10px; font-weight:bold; font-size:1rem;">RNOA</p>
+                    <p style="margin-top:10px; font-weight:bold; font-size:1rem;">Operating Return</p>
                 </div>
                 <div style="font-size: 2rem; padding-bottom: 40px;">+</div>
                 <div style="text-align:center;">
                     <div id="sim-boost-bar" class="lever-bar" style="height: 20px; background: var(--accent-gradient); width: 80px;">
                         <span id="sim-boost-text" style="position:absolute; top:-35px; left:0; width:100%; color: var(--accent); font-weight:bold; font-size:1rem;">4.2%</span>
                     </div>
-                    <p style="margin-top:10px; font-weight:bold; font-size:1rem;">Bonus</p>
+                    <p style="margin-top:10px; font-weight:bold; font-size:1rem;">Benefit from Borrowing</p>
                 </div>
                 <div style="font-size: 2rem; padding-bottom: 40px;">=</div>
                 <div style="text-align:center;">
                     <div id="sim-roe-bar" class="lever-bar" style="height: 140px; background: var(--success-gradient); width: 100px;">
                         <span id="sim-roe-text" style="position:absolute; top:-35px; left:0; width:100%; color: var(--success); font-size:1.4rem; font-weight:bold;">36.3%</span>
                     </div>
-                    <p style="margin-top:10px; font-weight:bold; font-size:1rem;">ROE</p>
+                    <p style="margin-top:10px; font-weight:bold; font-size:1rem;">Total ROE</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Slide 19: Apple Case Study (Simplified) -->
     <div class="slide">
-        <h2>Case Study: Apple (Cash Drag)</h2>
+        <h2>Case Study: Apple (The "Cash Drag")</h2>
         <div class="flex-center" style="height: 450px; display:flex; justify-content:center; align-items:center;">
             <div class="flip-container" onclick="this.classList.toggle('flipped')" style="width: 700px; height: 350px;">
                 <div class="flip-inner" style="height:100%">
@@ -1178,52 +1184,51 @@
                         <div class="grid-2 mt-4" style="width: 100%;">
                             <div style="text-align:center;">
                                 <h1 class="text-white" style="font-size: 4rem;">865%</h1>
-                                <p class="text-white" style="font-size: 1rem;">RNOA (Operating)</p>
+                                <p class="text-white" style="font-size: 1rem;">Operating Return (RNOA)</p>
                             </div>
                             <div style="text-align:center;">
                                 <h1 class="text-white" style="font-size: 4rem;">176%</h1>
-                                <p class="text-white" style="font-size: 1rem;">ROE (Total)</p>
+                                <p class="text-white" style="font-size: 1rem;">Total ROE</p>
                             </div>
                         </div>
                         <p class="mt-4 text-white" style="opacity: 0.8;">(Click to see why ROE is lower than RNOA)</p>
                     </div>
                     <div class="flip-back" style="padding: 2.5rem; display:flex; flex-direction:column; justify-content:center;">
-                        <h3 class="text-error">The "Cash Drag" Effect</h3>
-                        <p style="font-size: 1.1rem; margin: 15px 0;">
-                            Apple's core business is incredibly efficient (865% Return). However, Apple holds a massive mountain of cash (over $100B).
-                        </p>
-                        <p style="font-size: 1.1rem;">
-                            This cash sits in the bank earning very low interest.
-                        </p>
-                        <div style="background: #fef2f2; border-left: 5px solid var(--error); padding: 15px; border-radius: 8px; margin-top: 15px;">
-                            <p style="margin:0; color: #991b1b; font-weight: bold;">
-                                Result: The "lazy" cash dilutes the stellar operating returns, dragging the final ROE down to 176%.
+                        <h3 class="text-error">The Cash Drag</h3>
+                        <div style="width: 100%; box-sizing: border-box; background: rgba(239, 68, 68, 0.1); padding: 15px; border-radius: 12px; margin: 15px 0;">
+                            <p style="font-size: 1.1rem; color: var(--error);">
+                                ROE = Operating Return (865%) - Cash Drag
                             </p>
                         </div>
+                        <p style="font-size: 1rem; margin-bottom: 10px;">
+                            <strong>What happened?</strong> Apple's core business is a rocket ship (865% return). But they hold hundreds of billions in cash that earns very little interest (e.g., 2%).
+                        </p>
+                        <p style="font-size: 1rem;">Mixing this "boring" cash with the high-performance business dilutes the overall return to shareholders.</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Slide 20: Strategic Summary (Simplified) -->
     <div class="slide">
         <h2>Strategic Management Summary</h2>
         <div class="card-dark" style="min-height: 600px;">
             <ul style="padding: 0;">
                 <li class="bullet-point text-white">
-                    <strong>The Operational Truth:</strong> Disaggregation forces you to check if high returns are driven by raw performance (RNOA) or just a low-cost debt multiplier.
+                    <strong>The Operational Truth:</strong> Always check if high returns are driven by raw business performance (RNOA) or just financial engineering (Debt).
                 </li>
                 <li class="bullet-point text-white">
-                    <strong>Efficiency vs. Engineering:</strong> Superior managers generate ROE through NOPM and NOAT, rather than relying on financial engineering.
+                    <strong>Efficiency vs. Leverage:</strong> Superior managers generate ROE by improving margins and speed, rather than just borrowing more money.
                 </li>
                 <li class="bullet-point text-white">
-                    <strong>The Golden Rule of Debt:</strong> Borrowing only creates value when your Operating Return (RNOA) is higher than the Interest Rate on debt.
+                    <strong>The Debt Rule:</strong> Borrowing is good ONLY if your business earns more (RNOA) than the cost of the debt. If your business slumps, debt destroys value.
                 </li>
                 <li class="bullet-point text-white">
-                    <strong>Safety's Opportunity Cost:</strong> Cash Drag (ROE < RNOA) reveals the hidden cost of liquidity. Managers must choose between the safety of cash and the high returns of reinvestment.
+                    <strong>The Cash Cost:</strong> Holding too much cash is safe, but it drags down your overall returns. It's the opportunity cost of safety.
                 </li>
                 <li class="bullet-point text-white">
-                    <strong>Diagnostic Benchmarking:</strong> Use RNOA disaggregation to find specifically where competitors are beating you—is it pricing power (NOPM) or speed of sales (NOAT)?
+                    <strong>Diagnostic Benchmarking:</strong> Use this analysis to find where competitors are beating you—is it pricing power, speed, or just riskier financing?
                 </li>
             </ul>
         </div>
@@ -1232,6 +1237,7 @@
         </div>
     </div>
 
+    <!-- NEW FINAL EXAM SLIDE -->
     <div class="slide">
         <h2>Final Knowledge Check</h2>
         <div class="final-quiz-container">
@@ -1240,6 +1246,7 @@
         </div>
     </div>
 
+    <!-- Final Completion Slide -->
     <div class="slide">
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
             <div class="card-dark text-center" style="padding: 6rem; border-radius: 40px;">
@@ -1251,6 +1258,7 @@
         </div>
     </div>
 
+    <!-- Nav Bar -->
     <div id="nav-bar">
         <div style="display: flex; align-items: center; gap: 10px;">
             <div style="font-weight: 800; color: var(--primary); font-size: 1rem;">ADVANCED ROE</div>
@@ -1315,7 +1323,12 @@
 
     function updateSim() {
         const flev = parseFloat(document.getElementById('flev-slider').value);
-        document.getElementById('flev-val').innerText = flev.toFixed(2);
+        let label = "Low Debt";
+        if(flev > 0.5) label = "Medium Debt";
+        if(flev > 1.0) label = "High Debt";
+        
+        document.getElementById('flev-val').innerText = label;
+        
         const rnoa = 32.1, spread = 32.2;
         const impact = flev * spread;
         const roe = rnoa + impact;
@@ -1394,6 +1407,8 @@
         const actualTaxOverlay = document.getElementById('actual-tax-overlay');
         const actualTaxLabel = document.getElementById('actual-tax-label');
         
+        const dashedOverlay = document.getElementById('tax-overlay-dashed-compare');
+        
         const analysisBox = document.getElementById('bridge-analysis');
 
         // Logic
@@ -1413,10 +1428,16 @@
             arrow.className = 'bridge-arrow arrow-down';
             bridgeVal.innerText = '- $20 Int. Exp';
             
-            // Actual Tax ($80 * 20% = $16)
-            actualTaxOverlay.style.height = '32px'; // $16 * 2
-            actualTaxOverlay.style.background = '#f43f5e'; // Red implies tax paid
+            // Solid Red Bar = Actual Tax ($16 -> 32px)
+            actualTaxOverlay.style.height = '32px'; 
+            actualTaxOverlay.style.background = '#f43f5e'; 
             actualTaxLabel.innerText = 'Actual Tax ($16)';
+            
+            // Dotted Box = Tax on Op Inc ($20 -> 40px)
+            // Since 40px (dotted) > 32px (solid), the dotted box is taller.
+            dashedOverlay.style.opacity = '1';
+            dashedOverlay.style.height = '40px'; 
+            dashedOverlay.style.top = '0px'; 
 
             // Analysis Content
             analysisBox.style.borderLeftColor = 'var(--success)';
@@ -1429,13 +1450,12 @@
                     <div class="math-row" style="color: var(--accent);"><span>(Less) Tax Expense (20%)</span> <span>($16.00)</span></div>
                     <div class="math-row" style="font-weight:800; border-top: 3px double #333; font-size: 1.1rem;"><span>= Net Income</span> <span>$64.00</span></div>
                 </div>
-                <p>
-                    <strong>The Result:</strong> Tax on Operating Income ($20 = $100 × 20%) is <strong>higher</strong> than Actual Tax ($16). <br>
-                    <strong>$20 (Tax on Operating Income) = $16 (Actual) + $4 (Tax Shield)</strong><br>
-                    <span style="font-size:0.9rem; opacity:0.9; display:block; margin-top:10px; color:#1e1b4b; background:#f1f5f9; padding:10px; border-radius:8px;">The tax shield is added back because calculating Tax on Operating Income effectively removes the tax benefit provided by the non-operating interest expense that was used to calculate Net Income.</span>
-                </p>
-                <div style="margin-top: 10px; background: #d1fae5; color: #065f46; padding: 10px; border-radius: 6px; text-align: center; font-weight: bold;">
-                    Tax Shield = +$4.00 (Positive)
+                <div class="formula-highlight">
+                    <strong>Tax on Op Income = Actual Tax + Tax Shield</strong><br>
+                    $20 (Tax on Op Inc) = $16 (Actual) + $4 (Shield)
+                </div>
+                <div style="margin-top: 10px; font-size: 0.85rem; color: #64748b;">
+                    The dashed outline ($20 Tax on Op Inc) is taller than the solid red bar ($16 Actual Tax). The gap is your tax savings (Tax Shield).
                 </div>
             `;
 
@@ -1454,10 +1474,16 @@
             arrow.className = 'bridge-arrow arrow-up';
             bridgeVal.innerText = '+ $20 Int. Inc';
 
-            // Actual Tax ($120 * 20% = $24)
-            actualTaxOverlay.style.height = '48px'; // $24 * 2
+            // Solid Red Bar = Actual Tax ($24 -> 48px)
+            actualTaxOverlay.style.height = '48px'; 
             actualTaxOverlay.style.background = '#f43f5e';
             actualTaxLabel.innerText = 'Actual Tax ($24)';
+            
+            // Dotted Box = Tax on Op Inc ($20 -> 40px)
+            // Since 48px (solid) > 40px (dotted), the solid bar is taller.
+            dashedOverlay.style.opacity = '1';
+            dashedOverlay.style.height = '40px';
+            dashedOverlay.style.top = '0px';
 
             // Analysis Content
             analysisBox.style.borderLeftColor = 'var(--error)';
@@ -1470,27 +1496,29 @@
                     <div class="math-row" style="color: var(--accent);"><span>(Less) Tax Expense (20%)</span> <span>($24.00)</span></div>
                     <div class="math-row" style="font-weight:800; border-top: 3px double #333; font-size: 1.1rem;"><span>= Net Income</span> <span>$96.00</span></div>
                 </div>
-                <p>
-                    <strong>The Result:</strong> Tax on Operating Income ($20 = $100 × 20%) is <strong>lower</strong> than Actual Tax ($24). <br>
-                    <strong>$20 (Tax on Operating Income) = $24 (Actual) - $4 (Negative Tax Shield)</strong><br>
-                    <span style="font-size:0.85rem; opacity:0.8;">We subtract the negative tax shield to remove the extra tax burden caused by the non-operating interest income.</span>
-                </p>
-                <div style="margin-top: 10px; background: #fee2e2; color: #991b1b; padding: 10px; border-radius: 6px; text-align: center; font-weight: bold;">
-                    Negative Tax Shield = ($4.00)
+                <div class="formula-highlight" style="border-color: var(--error); color: #7f1d1d; background: rgba(239, 68, 68, 0.1);">
+                    <strong>Tax on Op Income = Actual Tax + Tax Shield</strong><br>
+                    $20 (Tax on Op Inc) = $24 (Actual) + (-$4) (Negative Shield)
+                </div>
+                <div style="margin-top: 10px; font-size: 0.85rem; color: #64748b;">
+                    The solid red bar ($24 Actual Tax) is taller than the dashed outline ($20 Tax on Op Inc). You paid extra tax on the interest income.
                 </div>
             `;
         }
     }
 
-    // --- FINAL QUIZ LOGIC (Reduced to 7 Qs, No Complex Math) ---
+    // --- FINAL QUIZ LOGIC ---
     const quizData = [
         { q: "Which item is a Non-operating Asset?", options: ["Inventory", "Accounts Receivable", "Marketable Securities", "Goodwill"], a: 2 },
         { q: "How is Accounts Payable classified?", options: ["Operating Liability", "Non-operating Liability", "Operating Asset", "Equity"], a: 0 },
-        { q: "Which ratio measures the 'Pricing Power' of the core business?", options: ["NOAT (Turnover)", "FLEV (Leverage)", "NOPM (Margin)", "Current Ratio"], a: 2 },
-        { q: "Which is the 'Truth Teller' of pure operational performance?", options: ["ROE", "EPS", "RNOA", "Dividend Yield"], a: 2 },
+        { q: "If RNOA > Interest Rate, increasing leverage (debt) will:", options: ["Decrease ROE", "Increase ROE", "Have no impact", "Decrease NOPAT"], a: 1 },
         { q: "Why is Tax Shield added back in NOPAT calculation?", options: ["To account for depreciation", "To reverse interest tax benefits included in Net Income", "To increase reported earnings", "To adjust for foreign taxes"], a: 1 },
+        { q: "What is Cash Drag?", options: ["Losing money on sales", "Holding excess cash that earns less than the business core", "Paying too much for inventory", "High fees on bank transfers"], a: 1 },
+        { q: "Which ratio measures the 'Pricing Power' of the core business?", options: ["NOAT (Turnover)", "Leverage", "NOPM (Margin)", "Current Ratio"], a: 2 },
+        { q: "If ROE is much lower than RNOA, it usually means:", options: ["The company is bankrupt", "The company has significant 'Cash Drag'", "The company has high debt", "The company has negative income"], a: 1 },
+        { q: "When is borrowing money (Debt) 'Good' for ROE?", options: ["When RNOA is higher than the Cost of Debt", "Always", "Never", "When RNOA is lower than the Cost of Debt"], a: 0 },
         { q: "To calculate NOPAT starting from Net Income, you must:", options: ["Subtract Depreciation", "Add back After-tax Interest Expense", "Add back Dividends", "Subtract Cash"], a: 1 },
-        { q: "The 'Golden Rule' of Leverage says debt is good only if:", options: ["Interest Rate > 10%", "RNOA > Interest Rate", "ROE is positive", "You have zero cash"], a: 1 }
+        { q: "Which is the 'Truth Teller' of pure operational performance?", options: ["ROE", "EPS", "RNOA", "Dividend Yield"], a: 2 }
     ];
 
     let currentQ = 0;
@@ -1511,7 +1539,7 @@
         const q = quizData[currentQ];
         content.innerHTML = `
             <div class="question-box">
-                <h3 style="margin-bottom: 20px;">Question ${currentQ + 1} of 7</h3>
+                <h3 style="margin-bottom: 20px;">Question ${currentQ + 1} of 10</h3>
                 <p style="font-size: 1.2rem; margin-bottom: 20px; font-weight: bold;">${q.q}</p>
                 <div id="q-options">
                     ${q.options.map((opt, i) => `
