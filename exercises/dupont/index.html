@@ -214,6 +214,11 @@
             font-weight: 600;
             font-size: 14px;
         }
+        
+        /* Negative ROE styling */
+        .roe-badge.negative {
+            background: var(--color-danger);
+        }
 
         .metrics {
             display: grid;
@@ -240,6 +245,10 @@
             font-weight: 600;
             color: var(--color-text);
             font-size: 16px;
+        }
+        
+        .metric-value.negative {
+            color: var(--color-danger);
         }
 
         .clues {
@@ -699,7 +708,7 @@
         </div>
 
         <div class="footer">
-            <p>Based on real financials from: Best Buy, Coca‑Cola, Costco, Nike, ConocoPhillips, and JPMorgan Chase</p>
+            <p>Based on real financials from: Intel, Coca‑Cola, Costco, Meta, ConocoPhillips, and JPMorgan Chase</p>
         </div>
     </div>
 
@@ -754,19 +763,19 @@
                 {
                     id: "A",
                     name: "Mystery Company A",
-                    pm: 3.7,
-                    at: 3.1,
-                    fl: 3.5,
-                    roe: 40.0,
+                    pm: -0.5,
+                    at: 0.26,
+                    fl: 2.85,
+                    roe: -0.37,
                     clues: [
-                        "Dupont Profile: High Turnover / Low Margin.",
-                        "Achieves high ROE by turning inventory rapidly, despite retaining very little profit per dollar of sales.",
-                        "Leverage helps boost the return, but the engine is efficiency."
+                        "Dupont Profile: Capital Intensive / Distressed.",
+                        "Lowest Asset Turnover in the group (0.26x). Massive fixed assets (factories) weighing down efficiency.",
+                        "Currently showing negative ROE as it undergoes a massive strategic pivot and restructuring."
                     ],
-                    hint: "Started as 'Sound of Music'. Now the largest consumer electronics retailer in the US, known for its 'Geek Squad'.",
-                    risk: "medium",
-                    real: "Best Buy Co.",
-                    why: "Achieves ~40% ROE through high asset turnover and moderate leverage; margins are low but volume is strong."
+                    hint: "Once the dominant leader in CPUs. Famous for the 'bong' sound in its commercials. Currently building foundries in Arizona and Ohio.",
+                    risk: "high",
+                    real: "Intel Corporation",
+                    why: "Negative ROE driven by negative margins (-0.5%) and extremely low asset turnover (0.26x) due to heavy Fab investments."
                 },
                 {
                     id: "B",
@@ -805,19 +814,19 @@
                 {
                     id: "D",
                     name: "Mystery Company D",
-                    pm: 11.0,
-                    at: 1.25,
-                    fl: 1.7,
-                    roe: 24.0,
+                    pm: 30.08,
+                    at: 0.63,
+                    fl: 1.61,
+                    roe: 30.24,
                     clues: [
-                        "Dupont Profile: Balanced.",
-                        "The most 'average' distribution: Moderate margins, moderate turnover.",
-                        "Notable for having the lowest Financial Leverage, relying on equity rather than debt."
+                        "Dupont Profile: High Margin / Low Leverage.",
+                        "Generates massive ROE (~30%) primarily through pure Profit Margin, not leverage or turnover.",
+                        "Asset Turnover is low (<1.0) due to large intangible assets/infrastructure, but margins are elite."
                     ],
-                    hint: "Founded by Phil Knight and Bill Bowerman. Named after the Greek goddess of victory.",
-                    risk: "low",
-                    real: "Nike Inc.",
-                    why: "Produces a solid ROE via balanced operations and low leverage; less vulnerable to leverage shocks."
+                    hint: "Founded in a dorm room. Formerly known as Facebook. Now investing heavily in the Metaverse and AI.",
+                    risk: "medium",
+                    real: "Meta Platforms Inc.",
+                    why: "A classic Tech/Software profile: Massive margins (30%+) drive the returns, with very low financial leverage."
                 },
                 {
                     id: "E",
@@ -856,10 +865,10 @@
             ],
             tasks: [
                 {
-                    // Target: Company A (Best Buy)
-                    question: "Which company achieves 40% ROE by selling higher-value durable goods at low margins, relying on efficient inventory management (3.1x Turnover) rather than pure volume scale?",
-                    hint: "Think high-ticket electronics versus bulk groceries.",
-                    answer: "Company A (Best Buy). While similar to Company C in margin/turnover profile, it manages high-value inventory in a competitive showroom/online model."
+                    // Target: Company A (Intel)
+                    question: "Which company is suffering from a 'Capital Intensity Trap'? Massive assets (Fab plants) resulting in very low turnover (0.26x), combined with negative margins?",
+                    hint: "Think Semiconductors and heavy manufacturing investment.",
+                    answer: "Company A (Intel). The 0.26x turnover reflects massive investments in factories (Foundries) that aren't yet generating sufficient sales, dragging ROE negative."
                 },
                 {
                     // Target: Company B (Coke)
@@ -874,10 +883,10 @@
                     answer: "Company C (Costco). With ~3% margins and 3.8x turnover, the model relies entirely on rapid sales velocity."
                 },
                 {
-                    // Target: Company D (Nike)
-                    question: "Which company’s ROE looks most sustainable across a full business cycle due to its balanced profile and lower financial leverage?",
-                    hint: "Think about leverage and dependence on a single driver.",
-                    answer: "Company D (Nike). It combines moderate margins and turnover with low leverage (1.7x), making its ROE less fragile."
+                    // Target: Company D (Meta)
+                    question: "Which company generates ~30% ROE purely through massive profit margins (30%) despite having asset turnover < 1.0, typical of a software/ad-tech business?",
+                    hint: "Think digital ads and social networks.",
+                    answer: "Company D (Meta). Unlike retailers (high turnover) or banks (high leverage), Meta relies on elite 30% margins to drive its returns."
                 },
                 {
                     // Target: Company E (ConocoPhillips/Energy)
@@ -895,19 +904,19 @@
         };
 
         const realCompanies = [
-            "Best Buy Co.",
+            "Intel Corporation",
             "The Coca-Cola Company",
             "Costco Wholesale",
-            "Nike Inc.",
+            "Meta Platforms Inc.",
             "ConocoPhillips",
             "JPMorgan Chase"
         ];
         
         // Human-readable names for buttons
-        const buttonLabels = ["Best Buy", "Coca-Cola", "Costco", "Nike", "ConocoPhillips", "JPMorgan"];
+        const buttonLabels = ["Intel", "Coca-Cola", "Costco", "Meta", "ConocoPhillips", "JPMorgan"];
         
         // Tickers for logic mapping (must match order of realCompanies)
-        const tickers = ["BBY", "KO", "COST", "NKE", "COP", "JPM"];
+        const tickers = ["INTC", "KO", "COST", "META", "COP", "JPM"];
 
         let userGuesses = {};
         let answersSubmitted = false;
@@ -948,12 +957,12 @@
                 <div class="company-card" id="card-${company.id}">
                     <div class="card-header">
                         <div class="card-title">${company.name}</div>
-                        <div class="roe-badge">${company.roe.toFixed(0)}% ROE</div>
+                        <div class="roe-badge ${company.roe < 0 ? 'negative' : ''}">${company.roe.toFixed(2)}% ROE</div>
                     </div>
                     <div class="metrics">
                         <div class="metric">
                             <span class="metric-label">Profit Margin:</span>
-                            <span class="metric-value">${company.pm.toFixed(1)}%</span>
+                            <span class="metric-value ${company.pm < 0 ? 'negative' : ''}">${company.pm.toFixed(2)}%</span>
                         </div>
                         <div class="metric">
                             <span class="metric-label">Asset Turnover:</span>
@@ -1108,18 +1117,15 @@
             document.getElementById('teacherModal').style.display = 'none';
         }
 
-        // NEW CODE (Paste this in)
-function checkTeacherPass() {
-    const pass = document.getElementById('teacherPass').value;
-    
-    // "ZHVwb250NA==" is the hidden code for "dupont4"
-    // We encode the input (btoa) so we never write the real password in the file
-    if(btoa(pass) === 'ZHVwb250NA==') { 
-        activateInstructorMode();
-    } else {
-        document.getElementById('authError').style.display = 'block';
-    }
-}
+        function checkTeacherPass() {
+            const pass = document.getElementById('teacherPass').value;
+            // "ZHVwb250NA==" is the hidden code for "dupont4"
+            if(btoa(pass) === 'ZHVwb250NA==') { 
+                activateInstructorMode();
+            } else {
+                document.getElementById('authError').style.display = 'block';
+            }
+        }
 
         function activateInstructorMode() {
             instructorMode = true;
