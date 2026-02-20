@@ -190,7 +190,7 @@
         }
 
         .cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; height: 100%; }
-        
+
         .nav-bar {
             height: 60px;
             background-color: var(--primary);
@@ -213,6 +213,23 @@
         }
         .nav-controls button:hover { background: rgba(255,255,255,0.1); }
         .page-num { font-family: 'Courier New', monospace; }
+
+        /* Navigation Table of Contents Style */
+        #toc {
+            margin-left: 15px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            background: var(--accent-dark);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+            max-width: 350px;
+            font-family: inherit;
+        }
+        #toc option {
+            background: var(--primary);
+            color: white;
+        }
 
         .summary-item {
             opacity: 0;
@@ -256,7 +273,7 @@
             transform: translateY(0);
             visibility: visible;
         }
-        
+
         /* Bar Chart Styles */
         .bar-chart-container {
             display: flex;
@@ -294,7 +311,6 @@
 
 <div id="slide-deck">
 
-    <!-- SLIDE 1: Title -->
     <div class="slide active">
         <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; text-align: center;">
             <p style="text-transform: uppercase; letter-spacing: 2px; color: var(--accent);">Module 1</p>
@@ -303,7 +319,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 2: Polling Q1 -->
     <div class="slide">
         <h2>Discussion Starter</h2>
         <div class="poll-container">
@@ -317,7 +332,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 3: History Ancient -->
     <div class="slide">
         <h2>A Condensed History: Ancient Origins</h2>
         <div class="cols-2">
@@ -336,7 +350,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 4: History Renaissance -->
     <div class="slide">
         <h2>The Father of Accounting</h2>
         <div class="cols-2">
@@ -352,7 +365,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 5: History Modern -->
     <div class="slide">
         <h2>Industrial to Digital</h2>
         <div class="card-container" style="grid-template-columns: 1fr 1fr;">
@@ -377,7 +389,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 6: Demand for Info (Visual Cards) -->
     <div class="slide">
         <h2>Demand for Financial Info</h2>
         <p>Who benefits most? <strong>Click below to reveal categories.</strong></p>
@@ -417,7 +428,6 @@
         <button class="btn-reveal" onclick="revealNextStep(this)" style="margin-top: 20px;">Reveal Next</button>
     </div>
 
-    <!-- SLIDE 7: Regulatory Environment -->
     <div class="slide">
         <h2>Financial Accounting Environment</h2>
         <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
@@ -440,7 +450,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 8: IFRS -->
     <div class="slide">
         <h2>International Standards (IFRS)</h2>
         <ul>
@@ -451,7 +460,6 @@
         </ul>
     </div>
 
-    <!-- SLIDE 9 (Swapped): Polling Q2 -->
     <div class="slide">
         <h2>Quick Check</h2>
         <div class="poll-container">
@@ -467,7 +475,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 10 (Swapped): Intro to Statements -->
     <div class="slide">
         <h2>The Four Primary Statements</h2>
         <p>We will introduce the four key documents every public company must file.</p>
@@ -479,7 +486,6 @@
         </ol>
     </div>
 
-    <!-- SLIDE 11: Statement Links -->
     <div class="slide">
         <h2>Links Across Time</h2>
         <p>How the statements connect:</p>
@@ -500,7 +506,6 @@
         <p><strong>Point in Time (End)</strong><br>Balance Sheet (Dec 31)</p>
     </div>
 
-    <!-- SLIDE 12: Balance Sheet (Visual Cards) -->
     <div class="slide">
         <h2>The Balance Sheet</h2>
         <p>Reports financial position at a <strong>point in time</strong>.</p>
@@ -531,7 +536,6 @@
         <button class="btn-reveal" onclick="revealNextStep(this)" style="margin-top: 20px;">Reveal Next Definition</button>
     </div>
 
-    <!-- SLIDE 13: Apple Balance Sheet Data -->
     <div class="slide">
         <h2>Apple Inc. Balance Sheet (2022)</h2>
         <table class="real-table">
@@ -557,7 +561,6 @@
         </table>
     </div>
 
-    <!-- SLIDE 14: Analyzing Assets (Flip Discussion) -->
     <div class="slide">
         <h2>Short-Term vs. Long-Term Assets</h2>
         <p>Assets are listed in order of <strong>Liquidity</strong> (nearness to cash).</p>
@@ -582,50 +585,42 @@
         </div>
     </div>
 
-    <!-- SLIDE 15: Financing Mix (Interactive Chart + Flip Question) -->
     <div class="slide">
         <h2>Financing: Owners vs. Non-Owners</h2>
         <p>Visualizing Capital Structure: <strong>Relative Proportion of Liabilities vs. Equity</strong></p>
         
-        <!-- CSS Stacked Bar Chart Recreating PDF Page 17 Data -->
         <div class="bar-chart-container" style="height: 350px; align-items: flex-end; padding-bottom: 20px; justify-content: space-between; gap: 10px;">
             
-            <!-- AMEX -->
             <div class="bar-group" style="width: 14%; height: 100%; justify-content: flex-end; display: flex; flex-direction: column;">
                 <div style="height: 90%; background: var(--error); width: 100%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; border-radius: 4px 4px 0 0;">Liab</div>
                 <div style="height: 10%; background: var(--success); width: 100%; border-radius: 0 0 4px 4px;"></div>
                 <p style="text-align: center; margin-top: 10px; font-size: 0.8rem; font-weight: bold;">AMEX</p>
             </div>
 
-            <!-- AT&T -->
             <div class="bar-group" style="width: 14%; height: 100%; justify-content: flex-end; display: flex; flex-direction: column;">
                 <div style="height: 75%; background: var(--error); width: 100%; border-radius: 4px 4px 0 0;"></div>
                 <div style="height: 25%; background: var(--success); width: 100%; border-radius: 0 0 4px 4px;"></div>
                 <p style="text-align: center; margin-top: 10px; font-size: 0.8rem; font-weight: bold;">AT&T</p>
             </div>
 
-            <!-- Target -->
             <div class="bar-group" style="width: 14%; height: 100%; justify-content: flex-end; display: flex; flex-direction: column;">
                 <div style="height: 65%; background: var(--error); width: 100%; border-radius: 4px 4px 0 0;"></div>
                 <div style="height: 35%; background: var(--success); width: 100%; border-radius: 0 0 4px 4px;"></div>
                 <p style="text-align: center; margin-top: 10px; font-size: 0.8rem; font-weight: bold;">Target</p>
             </div>
 
-             <!-- Amazon -->
             <div class="bar-group" style="width: 14%; height: 100%; justify-content: flex-end; display: flex; flex-direction: column;">
                 <div style="height: 60%; background: var(--error); width: 100%; border-radius: 4px 4px 0 0;"></div>
                 <div style="height: 40%; background: var(--success); width: 100%; border-radius: 0 0 4px 4px;"></div>
                 <p style="text-align: center; margin-top: 10px; font-size: 0.8rem; font-weight: bold;">Amazon</p>
             </div>
 
-            <!-- Microsoft -->
             <div class="bar-group" style="width: 14%; height: 100%; justify-content: flex-end; display: flex; flex-direction: column;">
                 <div style="height: 45%; background: var(--error); width: 100%; border-radius: 4px 4px 0 0;"></div>
                 <div style="height: 55%; background: var(--success); width: 100%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; border-radius: 0 0 4px 4px;">Equity</div>
                 <p style="text-align: center; margin-top: 10px; font-size: 0.8rem; font-weight: bold;">Microsoft</p>
             </div>
 
-             <!-- AMD -->
             <div class="bar-group" style="width: 14%; height: 100%; justify-content: flex-end; display: flex; flex-direction: column;">
                 <div style="height: 30%; background: var(--error); width: 100%; border-radius: 4px 4px 0 0;"></div>
                 <div style="height: 70%; background: var(--success); width: 100%; border-radius: 0 0 4px 4px;"></div>
@@ -649,7 +644,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 16: Common Size BS (Click to Reveal Column) -->
     <div class="slide">
         <h2>Common Sized Balance Sheet</h2>
         <p>Expressing everything as a % of Total Assets allows comparison.</p>
@@ -670,7 +664,6 @@
         </table>
     </div>
 
-    <!-- SLIDE 17: Income Statement -->
     <div class="slide">
         <h2>The Income Statement</h2>
         <p>Reports performance over a <strong>period of time</strong>.</p>
@@ -686,7 +679,6 @@
         </ul>
     </div>
 
-    <!-- SLIDE 18: Apple IS Data (Click to Reveal Rows) -->
     <div class="slide">
         <h2>Apple Inc. Income Statement (2022)</h2>
         <button class="btn-reveal-sm" onclick="revealNextStep(this.nextElementSibling)">Next Line</button>
@@ -708,7 +700,6 @@
         </table>
     </div>
 
-    <!-- SLIDE 19: Disaggregated Sales -->
     <div class="slide">
         <h2>Sales Breakdown (2024 vs 2023 vs 2022)</h2>
         <p>Apple breaks down sales by Product and Region.</p>
@@ -727,7 +718,6 @@
         </table>
     </div>
 
-    <!-- SLIDE 20: Gross Margin Analysis (Discussion) -->
     <div class="slide">
         <h2>Gross Margin Analysis</h2>
         <p>Comparing Products vs. Services (2024 Data)</p>
@@ -759,7 +749,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 21: Operating Expenses -->
     <div class="slide">
         <h2>Operating Expenses (2024)</h2>
         <p>What does it cost to run Apple?</p>
@@ -775,7 +764,6 @@
         </table>
     </div>
 
-    <!-- SLIDE 22: Common Sized IS (Reveal Column) -->
     <div class="slide">
         <h2>Common Sized Income Statement</h2>
         <p>Everything as a % of Net Revenues.</p>
@@ -795,7 +783,6 @@
         </table>
     </div>
 
-    <!-- SLIDE 23: Operating Income Margins (Visual + Flip) -->
     <div class="slide">
         <h2>Operating Income Margins</h2>
         <p><strong>Discussion:</strong> High Margin = Better Company?</p>
@@ -807,8 +794,6 @@
             </div>
             <div class="bar-group" style="width: 40%;">
                 <p>Amazon</p>
-                <!-- 5% of 250px is 12.5px, which is too small. We will scale up for visibility but keep proportion logic. -->
-                <!-- Let's scale by 6x for visual. 42*6=252px. 5*6=30px. -->
                 <div class="bar margin" style="height: 30px; background: #95a5a6; color: black; padding-top: 0; align-items: center;">5%</div>
             </div>
         </div>
@@ -826,7 +811,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 24: Stockholders' Equity -->
     <div class="slide">
         <h2>Statement of Stockholders' Equity</h2>
         <p>Reports changes in equity accounts over a period.</p>
@@ -846,7 +830,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 25: Apple Equity Data -->
     <div class="slide">
         <h2>Apple Equity Activity (2022)</h2>
         <table class="real-table">
@@ -865,7 +848,6 @@
         <p style="margin-top:10px;"><em>Note: Apple returned over $100B to shareholders in 2022!</em></p>
     </div>
 
-    <!-- SLIDE 26: Retained Earnings Formula -->
     <div class="slide">
         <h2>Retained Earnings Formula</h2>
         <div class="problem-box" style="text-align: center; font-size: 1.2rem;">
@@ -878,7 +860,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 27: Cash Flows Intro -->
     <div class="slide">
         <h2>Statement of Cash Flows</h2>
         <p>Reports cash inflows and outflows from three activities:</p>
@@ -904,7 +885,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 28: Apple Cash Flow Data -->
     <div class="slide">
         <h2>Apple Cash Flows (2022)</h2>
         <table class="real-table">
@@ -931,7 +911,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 29: Income vs Cash -->
     <div class="slide">
         <h2>Income ≠ Cash Flow</h2>
         <p>Why do they differ?</p>
@@ -948,7 +927,6 @@
         <p>We need the Cash Flow statement to reconcile Net Income to actual Cash.</p>
     </div>
 
-    <!-- SLIDE 30: Accrual Intro (Discussion Flip) -->
     <div class="slide">
         <h2>Accrual Accounting</h2>
         <p>Matches revenues and expenses to the period in which they occur, <strong>not</strong> when cash is exchanged.</p>
@@ -966,7 +944,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 31: Startup Scenario (Hidden Numbers) -->
     <div class="slide">
         <h2>Scenario: Tech Startup</h2>
         <div class="problem-box">
@@ -996,7 +973,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 32: Example 1 - Advertising (Merged) -->
     <div class="slide">
         <h2>Example 1: Advertising Expense</h2>
         <div class="problem-box">
@@ -1018,7 +994,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 33: Example 2 Setup & Sales -->
     <div class="slide">
         <h2>Example 2: Sales Complexities</h2>
         <div class="problem-box" style="background:#e8f4f8; border-color:#2980b9;">
@@ -1043,7 +1018,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 34: Example 2 Cost Timing -->
     <div class="slide">
         <h2>Example 2: Cost Timing</h2>
         <div class="problem-box" style="background:#e8f4f8; border-color:#2980b9; opacity: 0.8; transform: scale(0.95);">
@@ -1063,7 +1037,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 35: Example 2 Total Expense -->
     <div class="slide">
         <h2>Example 2: Total Expense</h2>
          <div class="problem-box" style="background:#e8f4f8; border-color:#2980b9; opacity: 0.8; transform: scale(0.95);">
@@ -1081,7 +1054,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 36: Example 3 - Rent (Merged) -->
     <div class="slide">
         <h2>Example 3: Prepaid Rent</h2>
         <div class="problem-box">
@@ -1108,7 +1080,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 37: Accrual Summary (Bullets Reveal) -->
     <div class="slide">
         <h2>Key Points on Accrual</h2>
         <button class="btn-reveal-sm" onclick="revealNextStep(this.nextElementSibling)">Next Point</button>
@@ -1120,7 +1091,6 @@
         </ul>
     </div>
 
-    <!-- SLIDE 38: SEC Filings Intro -->
     <div class="slide">
         <h2>SEC Filings Overview</h2>
         <p><strong>EDGAR:</strong> Electronic Data Gathering, Analysis, and Retrieval.</p>
@@ -1133,7 +1103,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 39: Filing Types (Expanded) -->
     <div class="slide">
         <h2>Types of Filings</h2>
         <div class="card-container" style="grid-template-columns: repeat(3, 1fr);">
@@ -1164,7 +1133,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 40: Anatomy of 10-K (Detailed) -->
     <div class="slide">
         <h2>Anatomy of a 10-K</h2>
         <p>The Annual Report is divided into 4 Parts. Here are the essentials:</p>
@@ -1181,7 +1149,6 @@
             </tbody>
         </table>
         
-        <!-- NEW: Check Your Understanding -->
         <div class="problem-box" style="margin-top: 20px;">
             <h4>Check Your Understanding</h4>
             <p>If you wanted to know about pending lawsuits or threats to the supply chain, which Item would you check?</p>
@@ -1192,13 +1159,11 @@
         </div>
     </div>
 
-    <!-- SLIDE 41: XBRL (Expanded with Visual) -->
     <div class="slide">
         <h2>XBRL: The Language of Data</h2>
         <div class="cols-2">
             <div>
                 <p><strong>eXtensible Business Reporting Language.</strong></p>
-                <!-- UPDATED: Robust SVG illustration of XBRL tags instead of broken image -->
                 <div style="width: 100%; height: 250px; background: #2c3e50; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #ecf0f1; font-family: monospace; padding: 20px; box-sizing: border-box;">
                     <div style="text-align: left;">
                         <span style="color: #e67e22;">&lt;us-gaap:Cash&gt;</span><br>
@@ -1237,13 +1202,11 @@
         </div>
     </div>
 
-    <!-- NEW SLIDE: The Need for Assurance -->
     <div class="slide">
         <h2>Why Do We Need Auditors?</h2>
         <p>The <strong>Agency Problem</strong>: Managers (Agents) run the company, while Investors (Principals) own it.</p>
         
         <div class="card-container" style="grid-template-columns: repeat(3, 1fr); margin-top: 40px;">
-            <!-- Card 1: Incentive -->
             <div class="flip-card" onclick="this.classList.toggle('flipped')">
                 <div class="flip-card-inner">
                     <div class="flip-card-front" style="background: var(--error);">
@@ -1257,7 +1220,6 @@
                 </div>
             </div>
 
-            <!-- Card 2: Problem -->
             <div class="flip-card" onclick="this.classList.toggle('flipped')">
                 <div class="flip-card-inner">
                     <div class="flip-card-front" style="background: var(--accent-dark);">
@@ -1271,7 +1233,6 @@
                 </div>
             </div>
 
-            <!-- Card 3: Solution -->
             <div class="flip-card" onclick="this.classList.toggle('flipped')">
                 <div class="flip-card-inner">
                     <div class="flip-card-front" style="background: var(--success);">
@@ -1287,14 +1248,12 @@
         </div>
     </div>
 
-    <!-- SLIDE 42: Auditor Report -->
     <div class="slide">
         <h2>The Auditor Report</h2>
         <p>Public statements must be audited by an independent firm (e.g., Deloitte, EY, PwC, KPMG).</p>
         <p>They express an <strong>Opinion</strong> on whether the statements follow GAAP.</p>
     </div>
 
-    <!-- SLIDE 43: Opinion Types -->
     <div class="slide">
         <h2>Types of Opinions</h2>
         <div class="card-container" style="grid-template-columns: 1fr 1fr;">
@@ -1325,7 +1284,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 44: GM Example (Expanded with Definition) -->
     <div class="slide">
         <h2>Example: General Motors (2008)</h2>
         
@@ -1355,7 +1313,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 45: Summary (Comprehensive) -->
     <div class="slide">
         <h2>Module 1 Comprehensive Summary</h2>
         <button class="btn-reveal-sm" onclick="revealNextStep(this.nextElementSibling)">Next Summary Item</button>
@@ -1393,7 +1350,6 @@
         </div>
     </div>
 
-    <!-- SLIDE 46: Quiz -->
     <div class="slide">
         <h2>Final Quiz</h2>
         <div class="poll-container" id="quiz-container">
@@ -1405,9 +1361,12 @@
         </div>
     </div>
 
-    <!-- Controls -->
     <div class="nav-bar">
-        <span class="page-num" id="page-num">Slide 1 / 46</span>
+        <div style="display: flex; align-items: center;">
+            <span class="page-num" id="page-num">Slide 1 / 46</span>
+            <select id="toc" onchange="jumpToSlide(this.value)">
+                </select>
+        </div>
         <div class="nav-controls">
             <button onclick="changeSlide(-1)">Previous</button>
             <button onclick="changeSlide(1)">Next</button>
@@ -1421,6 +1380,23 @@
     const slides = document.querySelectorAll('.slide');
     const pageNum = document.getElementById('page-num');
 
+    function populateToC() {
+        const toc = document.getElementById('toc');
+        slides.forEach((slide, index) => {
+            const titleEl = slide.querySelector('h1, h2');
+            const titleText = titleEl ? titleEl.innerText : `Slide ${index + 1}`;
+            const option = document.createElement('option');
+            option.value = index;
+            option.innerText = `${index + 1}: ${titleText}`;
+            toc.appendChild(option);
+        });
+    }
+
+    function jumpToSlide(index) {
+        currentSlide = parseInt(index);
+        updateSlide();
+    }
+
     function updateSlide() {
         slides.forEach((slide, index) => {
             slide.classList.remove('active');
@@ -1429,6 +1405,7 @@
             }
         });
         pageNum.innerText = `Slide ${currentSlide + 1} / ${slides.length}`;
+        document.getElementById('toc').value = currentSlide; // Keeps dropdown synced with current page
     }
 
     function changeSlide(direction) {
@@ -1539,6 +1516,8 @@
         }
     }
 
+    // Initialize ToC before the first slide loads
+    populateToC();
     updateSlide();
     loadQuiz();
 
