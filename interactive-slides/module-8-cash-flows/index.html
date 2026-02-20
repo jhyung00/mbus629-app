@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-<!-- Confetti Library -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
@@ -22,12 +21,12 @@
         --error: #dc2626;
         --fin-chart: #f59e0b;
         
-        /* Presentation Scale */
-        --h1-size: 5.5vmin;
-        --h2-size: 4.2vmin;
-        --p-size: 3.0vmin; 
-        --mono-size: 2.2vmin;
-        --table-size: 2.0vmin;
+        /* Presentation Scale - ADJUSTED SMALLER */
+        --h1-size: 4.8vmin;
+        --h2-size: 3.6vmin;
+        --p-size: 2.5vmin; 
+        --mono-size: 1.8vmin;
+        --table-size: 1.7vmin;
     }
 
     * { box-sizing: border-box; }
@@ -46,19 +45,17 @@
             linear-gradient(to bottom, rgba(38, 92, 255, 0.05) 1px, transparent 1px);
         background-size: 40px 40px;
         
-        /* UPDATED: Flex layout to ensure navbar is visible */
         display: flex;
         flex-direction: column;
     }
 
     #deck-container {
         width: 100%;
-        /* height: 100%; Removed to allow flex to manage height */
-        flex: 1; /* Takes remaining vertical space */
+        flex: 1; 
         position: relative;
         display: flex;
         flex-direction: column;
-        overflow: hidden; /* Contain slides */
+        overflow: hidden; 
     }
 
     /* Layout Logic */
@@ -150,7 +147,7 @@
     .cheatsheet-table th { background: #e0e7ff; color: var(--text-main); }
     .cheatsheet-table td { font-weight: bold; text-align: center; }
 
-    /* Nav Bar - UPDATED to prevent shrinking */
+    /* Nav Bar */
     .nav-bar {
         height: 70px;
         background: white;
@@ -162,7 +159,7 @@
         z-index: 100;
         width: 100%;
         position: relative;
-        flex-shrink: 0; /* Ensures navbar stays 70px height */
+        flex-shrink: 0; 
     }
     
     .nav-btn {
@@ -308,7 +305,6 @@
 </head>
 <body>
 
-<!-- TOC Menu (Hidden by default) -->
 <div id="toc-container" class="toc-overlay">
     <div class="toc-sidebar">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -316,14 +312,12 @@
             <button onclick="toggleTOC()" class="nav-btn">X</button>
         </div>
         <div id="toc-list">
-            <!-- Items injected via JS -->
-        </div>
+            </div>
     </div>
 </div>
 
 <div id="deck-container">
 
-    <!-- Poll Overlay -->
     <div id="poll-layer" class="poll-overlay">
         <div class="poll-box">
             <h2 id="poll-q">Question</h2>
@@ -332,11 +326,9 @@
         </div>
     </div>
 
-    <!-- Floating Navigation -->
     <div class="arrow-btn arrow-prev" onclick="prevSlide()">&#8592;</div>
     <div class="arrow-btn arrow-next" onclick="nextSlide()">&#8594;</div>
 
-    <!-- Slide 1: Title -->
     <div class="slide active">
         <span class="mono">Class 8 / Financial Analysis</span>
         <h1>Statement of Cash Flows & Earnings Quality</h1>
@@ -347,7 +339,37 @@
         </div>
     </div>
 
-    <!-- Slide 2: Objectives -->
+    <div class="slide slide-full">
+        <span class="mono">Navigation</span>
+        <h1>Table of Contents</h1>
+        <div class="slide-grid" style="grid-template-columns: 1fr 1fr; align-items: stretch;">
+            <div class="card click-row" style="text-align: center;" onclick="jumpToSlide(2)">
+                <h3 style="margin:0;">1. Intro & Framework</h3>
+                <p style="font-size: 1.8vmin; color: #555; margin-top:1vmin;">Objectives, Why SCF Matters, Equation</p>
+            </div>
+            <div class="card click-row" style="text-align: center;" onclick="jumpToSlide(6)">
+                <h3 style="margin:0;">2. The 3 Activities</h3>
+                <p style="font-size: 1.8vmin; color: #555; margin-top:1vmin;">Operating, Investing, Financing & Life Cycles</p>
+            </div>
+            <div class="card click-row" style="text-align: center;" onclick="jumpToSlide(14)">
+                <h3 style="margin:0;">3. Indirect Method</h3>
+                <p style="font-size: 1.8vmin; color: #555; margin-top:1vmin;">The 4 Steps, Non-Cash & Working Capital</p>
+            </div>
+            <div class="card click-row" style="text-align: center;" onclick="jumpToSlide(25)">
+                <h3 style="margin:0;">4. Java House Case</h3>
+                <p style="font-size: 1.8vmin; color: #555; margin-top:1vmin;">Full SCF Build, Activity Reconciliation</p>
+            </div>
+            <div class="card click-row" style="text-align: center;" onclick="jumpToSlide(34)">
+                <h3 style="margin:0;">5. Earnings Quality</h3>
+                <p style="font-size: 1.8vmin; color: #555; margin-top:1vmin;">OCF/CapEx, FCF, The EBITDA Trap, Intel</p>
+            </div>
+            <div class="card click-row" style="text-align: center;" onclick="jumpToSlide(45)">
+                <h3 style="margin:0;">6. Final Assessment</h3>
+                <p style="font-size: 1.8vmin; color: #555; margin-top:1vmin;">10-Question Self-Check Quiz</p>
+            </div>
+        </div>
+    </div>
+
     <div class="slide">
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
             <div>
@@ -371,7 +393,6 @@
         </div>
     </div>
 
-    <!-- Slide 3: Insights -->
     <div class="slide slide-full">
         <h2>Why SCF Matters</h2>
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
@@ -396,7 +417,6 @@
         </div>
     </div>
 
-    <!-- Slide 4: Equation -->
     <div class="slide slide-full">
         <h1>The Fundamental Equation</h1>
         <div class="card" style="text-align:center; padding:5vmin; margin-top:2vmin; width:90%; display:inline-block;">
@@ -407,7 +427,6 @@
         </div>
     </div>
 
-    <!-- Slide 5: Microsoft BS -->
     <div class="slide slide-full">
         <span class="mono">Real World Data</span>
         <h1>Microsoft: Balance Sheet</h1>
@@ -444,7 +463,6 @@
         </table>
     </div>
 
-    <!-- Slide 6: Classification Rules -->
     <div class="slide">
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
             <div>
@@ -472,7 +490,6 @@
         </div>
     </div>
 
-    <!-- Slide 7: Classification Drill -->
     <div class="slide slide-full">
         <h1>Drill: Classify These Activities</h1>
         <p style="text-align:center;">Click to check your understanding.</p>
@@ -487,7 +504,6 @@
         <p style="font-size:2vmin; margin-top:2vmin; text-align:center;">*Note: Interest Paid is Operating under US GAAP.</p>
     </div>
 
-    <!-- Slide 8: Life Cycle Table -->
     <div class="slide slide-full">
         <h1>Life Cycle Patterns</h1>
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
@@ -510,7 +526,6 @@
         </div>
     </div>
 
-    <!-- Slide 9: General Life Cycle Chart -->
     <div class="slide slide-full">
         <h1>General Life Cycle Patterns</h1>
         
@@ -524,7 +539,6 @@
             </div>
 
             <svg viewBox="0 0 100 60" style="width:100%; height:100%; overflow:visible;">
-                <!-- Stages -->
                 <line x1="25" y1="0" x2="25" y2="60" stroke="#eee" stroke-width="0.5" stroke-dasharray="2"/>
                 <line x1="50" y1="0" x2="50" y2="60" stroke="#eee" stroke-width="0.5" stroke-dasharray="2"/>
                 <line x1="75" y1="0" x2="75" y2="60" stroke="#eee" stroke-width="0.5" stroke-dasharray="2"/>
@@ -534,29 +548,22 @@
                 <text x="62" y="58" font-size="2" text-anchor="middle">Maturity</text>
                 <text x="87" y="58" font-size="2" text-anchor="middle">Decline</text>
                 
-                <!-- Zero Line -->
                 <line x1="0" y1="30" x2="100" y2="30" stroke="#333" stroke-width="1"/>
                 <text x="-3" y="30" font-size="2">0</text>
 
-                <!-- Revenue (Orange) -->
                 <path d="M0,45 Q25,25 50,10 T100,20" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
 
-                <!-- Net Income (Blue) -->
                 <path d="M0,40 Q25,35 50,20 T100,35" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
 
-                <!-- OCF (Green) -->
                 <path d="M0,38 Q25,32 50,15 T100,32" fill="none" stroke="var(--success)" stroke-width="1.5" stroke-dasharray="2"/>
 
-                <!-- Investing (Red) -->
                 <path d="M0,42 Q25,48 50,45 T100,25" fill="none" stroke="var(--error)" stroke-width="1.5" stroke-dasharray="2"/>
 
-                <!-- Financing (Purple) -->
                 <path d="M0,20 Q25,25 50,40 T100,35" fill="none" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="2"/>
             </svg>
         </div>
     </div>
 
-    <!-- Slide 10: Coca Cola Chart -->
     <div class="slide slide-full">
         <h1>Real World Example: Coca-Cola</h1>
         <p style="text-align:center;"><strong>CFO (Green):</strong> Consistent "Cash Machine". <strong>CFI (Red):</strong> Reinvesting. <strong>CFF (Blue):</strong> Paying Shareholders.</p>
@@ -569,33 +576,26 @@
             </div>
 
             <svg viewBox="0 0 100 60" style="width:100%; height:100%; overflow:visible;">
-                <!-- Grid -->
                 <line x1="0" y1="10" x2="100" y2="10" stroke="#eee" stroke-width="0.5"/>
                 <line x1="0" y1="20" x2="100" y2="20" stroke="#eee" stroke-width="0.5"/>
-                <line x1="0" y1="30" x2="100" y2="30" stroke="#333" stroke-width="1"/> <!-- Zero Line -->
-                <line x1="0" y1="40" x2="100" y2="40" stroke="#eee" stroke-width="0.5"/>
+                <line x1="0" y1="30" x2="100" y2="30" stroke="#333" stroke-width="1"/> <line x1="0" y1="40" x2="100" y2="40" stroke="#eee" stroke-width="0.5"/>
                 <line x1="0" y1="50" x2="100" y2="50" stroke="#eee" stroke-width="0.5"/>
 
-                <!-- Y-Axis Labels -->
                 <text x="-5" y="10" font-size="1.5">$10B</text>
                 <text x="-5" y="20" font-size="1.5">$5B</text>
                 <text x="-5" y="30" font-size="1.5">0</text>
                 <text x="-5" y="40" font-size="1.5">-$5B</text>
                 <text x="-5" y="50" font-size="1.5">-$10B</text>
 
-                <!-- Operating (Green) -->
                 <polyline points="0,15 10,12 20,14 30,18 40,16 50,14 60,12 70,11 80,9 90,10 100,11" 
                           fill="none" stroke="var(--success)" stroke-width="1.5"/>
 
-                <!-- Investing (Red) - Spike in middle (2018 is approx 50%) -->
                 <polyline points="0,32 10,34 20,35 30,36 40,33 50,20 60,32 70,35 80,31 90,34 100,33" 
                           fill="none" stroke="var(--error)" stroke-width="1.5"/>
 
-                <!-- Financing (Blue) -->
                 <polyline points="0,35 10,38 20,37 30,42 40,40 50,45 60,42 70,44 80,48 90,46 100,49" 
                           fill="none" stroke="var(--accent)" stroke-width="1.5"/>
                 
-                <!-- Years -->
                 <text x="0" y="63" font-size="1.5">2013</text>
                 <text x="50" y="63" font-size="1.5">2018</text>
                 <text x="100" y="63" font-size="1.5">2022</text>
@@ -603,7 +603,6 @@
         </div>
     </div>
 
-    <!-- Slide 11: Presentation Methods -->
     <div class="slide slide-full">
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
             <div>
@@ -617,7 +616,6 @@
         </div>
     </div>
 
-    <!-- Slide 12: Microsoft Indirect (Moved) -->
     <div class="slide slide-full">
         <h1>Microsoft: Indirect Method (2023)</h1>
         <table>
@@ -634,7 +632,6 @@
         </table>
     </div>
 
-    <!-- Slide 13: CVS Direct -->
     <div class="slide slide-full">
         <span class="mono">Rare Example</span>
         <h1>CVS Health: Direct Method (2023)</h1>
@@ -651,7 +648,6 @@
         </table>
     </div>
 
-    <!-- Slide 14: Indirect Mechanics -->
     <div class="slide slide-full">
         <h1>Indirect Method: The 4 Steps</h1>
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
@@ -681,7 +677,6 @@
         </div>
     </div>
 
-    <!-- Slide 15: Step 2 Detail -->
     <div class="slide">
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
             <div>
@@ -696,7 +691,6 @@
         </div>
     </div>
 
-    <!-- Slide 16: Step 3 Detail -->
     <div class="slide">
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
             <div>
@@ -712,7 +706,6 @@
         </div>
     </div>
 
-    <!-- Slide 17: Step 4 Cheatsheet -->
     <div class="slide slide-full">
         <h1>Step 4: Working Capital Adjustments</h1>
         <div class="slide-grid">
@@ -731,7 +724,6 @@
         </div>
     </div>
 
-    <!-- Slide 18: Logic Assets -->
     <div class="slide">
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
             <div>
@@ -744,7 +736,6 @@
         </div>
     </div>
 
-    <!-- Slide 19: Logic Liabilities -->
     <div class="slide">
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
             <div>
@@ -756,7 +747,6 @@
         </div>
     </div>
 
-    <!-- Slide 20: Working Capital Cheatsheet -->
     <div class="slide slide-full">
         <h1>Reference: Working Capital Cheatsheet</h1>
         <table>
@@ -768,7 +758,6 @@
         </table>
     </div>
 
-    <!-- Slide 21: Drill -->
     <div class="slide slide-full">
         <h1>Drill: Adjustments</h1>
         <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:4vmin; width: 100%;">
@@ -781,7 +770,6 @@
         </div>
     </div>
 
-    <!-- Slide 22: Example 1 -->
     <div class="slide slide-full">
         <h1>Example 1</h1>
         <p>You operate a lemonade stand. You made $1,000 sales all in cash. You spent $700 cash during the period to generate this sales.</p>
@@ -810,7 +798,6 @@
         </div>
     </div>
 
-    <!-- Slide 23: Example 2 -->
     <div class="slide slide-full">
         <h1>Example 2 (A/R)</h1>
         <p>You made $1,000 sales, with $800 cash and $200 accounts receivable. You spent $700 cash.</p>
@@ -852,7 +839,6 @@
         </div>
     </div>
 
-    <!-- Slide 24: Example 3 -->
     <div class="slide slide-full">
         <h1>Example 3 (A/P)</h1>
         <p>Sales $1,000 cash. Expenses $700 ($500 cash, $200 promised to be paid in a week).</p>
@@ -894,8 +880,6 @@
         </div>
     </div>
 
-    <!-- JAVA HOUSE FINANCIAL DATA PANEL (Replicated in slides 25-33) -->
-    <!-- Slide 25: Java Intro -->
     <div class="slide">
         <div class="slide-grid">
             <div class="data-panel">
@@ -951,11 +935,9 @@
         </div>
     </div>
 
-    <!-- Slide 26: Java Op Steps 1/2 -->
     <div class="slide">
         <div class="slide-grid">
             <div class="data-panel">
-                <!-- Copied Panel for persistence (Repeating full content as requested) -->
                 <h3>Income Statement 2025</h3>
                 <table>
                     <tr><td>Sales</td><td>$250,000</td></tr>
@@ -1011,11 +993,9 @@
         </div>
     </div>
 
-    <!-- Slide 27: Java Op Step 3 -->
     <div class="slide">
         <div class="slide-grid">
             <div class="data-panel">
-                <!-- Copied Panel for persistence -->
                 <h3>Income Statement 2025</h3>
                 <table>
                     <tr><td>Sales</td><td>$250,000</td></tr>
@@ -1072,11 +1052,9 @@
         </div>
     </div>
 
-    <!-- Slide 28: Java Op Step 4 -->
     <div class="slide">
         <div class="slide-grid">
             <div class="data-panel">
-                <!-- Copied Panel for persistence -->
                 <h3>Income Statement 2025</h3>
                 <table>
                     <tr><td>Sales</td><td>$250,000</td></tr>
@@ -1135,7 +1113,6 @@
         </div>
     </div>
 
-    <!-- Slide 29: Java Op Summary -->
     <div class="slide slide-full">
         <h1>Java House: Operating Summary</h1>
         <table>
@@ -1147,11 +1124,9 @@
         </table>
     </div>
 
-    <!-- Slide 30: Java Investing -->
     <div class="slide">
         <div class="slide-grid">
             <div class="data-panel">
-                <!-- Copied Panel for persistence -->
                 <h3>Income Statement 2025</h3>
                 <table>
                     <tr><td>Sales</td><td>$250,000</td></tr>
@@ -1221,11 +1196,9 @@
         </div>
     </div>
 
-    <!-- Slide 31: Java Financing -->
     <div class="slide">
         <div class="slide-grid">
             <div class="data-panel">
-                <!-- Copied Panel for persistence -->
                 <h3>Income Statement 2025</h3>
                 <table>
                     <tr><td>Sales</td><td>$250,000</td></tr>
@@ -1295,7 +1268,6 @@
         </div>
     </div>
 
-    <!-- Slide 32: Java Final -->
     <div class="slide slide-full">
         <h1>Java House: Reconciliation</h1>
         <div class="card" style="text-align:center; padding:5vmin; width:60%; margin:0 auto;">
@@ -1310,7 +1282,6 @@
         </div>
     </div>
 
-    <!-- Slide 33: Non-Cash Disclosure -->
     <div class="slide">
         <div class="slide-grid">
             <div class="data-panel">
@@ -1328,7 +1299,6 @@
         </div>
     </div>
 
-    <!-- Slide 34: OCF/CapEx -->
     <div class="slide">
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
             <div>
@@ -1353,7 +1323,6 @@
         </div>
     </div>
 
-    <!-- Slide 35: EBITDA vs CFO (Tables) -->
     <div class="slide slide-full">
         <h1>The EBITDA Trap</h1>
         <p>Two companies, identical EBITDA, very different cash realities.</p>
@@ -1379,7 +1348,6 @@
         </div>
     </div>
 
-    <!-- Slide 36: Free Cash Flow -->
     <div class="slide slide-full">
         <h1>Free Cash Flow (FCF)</h1>
         <div class="card" style="font-size:3vmin; line-height:1.6;">
@@ -1388,7 +1356,6 @@
         </div>
     </div>
 
-    <!-- Slide 37: Prediction Power -->
     <div class="slide">
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
             <div>
@@ -1412,7 +1379,6 @@
         </div>
     </div>
 
-    <!-- Slide 38: Earnings Quality Ratio -->
     <div class="slide">
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
             <div>
@@ -1431,13 +1397,11 @@
         </div>
     </div>
 
-    <!-- Slide 39: Intel Case Intro -->
     <div class="slide slide-full">
         <h1>Intel Case Study</h1>
         <p>Analyzing Earnings Quality Deterioration (2021-2023).</p>
     </div>
 
-    <!-- Slide 40: Intel 2023 Income Sources -->
     <div class="slide slide-full">
         <h1>Intel 2023: Income Sources</h1>
         <div class="hierarchy-container">
@@ -1469,7 +1433,6 @@
         </div>
     </div>
 
-    <!-- Slide 41: Intel 2022-2023 Deterioration -->
     <div class="slide slide-full">
         <h1>Intel Deterioration: 2022 ➔ 2023</h1>
         <div class="hierarchy-container">
@@ -1505,7 +1468,6 @@
         </div>
     </div>
 
-    <!-- Slide 42: Intel Trend -->
     <div class="slide slide-full">
         <h1>Intel: 3-Year Trend</h1>
         <table style="text-align: center;">
@@ -1519,7 +1481,6 @@
         <p style="color:var(--error);">Ratio of 0.15 indicates massive deterioration in earnings quality.</p>
     </div>
 
-    <!-- Slide 43: Red Flags -->
     <div class="slide">
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
             <div>
@@ -1535,7 +1496,6 @@
         </div>
     </div>
 
-    <!-- Slide 44: Module Summary -->
     <div class="slide slide-full">
         <h1>Module Summary</h1>
         <div class="card" style="font-size:2.5vmin; line-height:1.6;">
@@ -1545,32 +1505,27 @@
         </div>
     </div>
 
-    <!-- Slide 45: Quiz Prep -->
     <div class="slide slide-full">
         <h1>Final Assessment</h1>
         <p>10 Questions to test your mastery.</p>
         <button class="nav-btn" style="width:200px; margin-top:2vmin;" onclick="nextSlide()">Start Quiz</button>
     </div>
 
-    <!-- Slide 46-51: Quiz (Single Slide Scrollable) -->
-    <!-- UPDATED: Fixed clipping issue with justify-content: flex-start -->
     <div class="slide slide-full" style="overflow-y:auto; justify-content: flex-start;">
         <h1>Self-Check Quiz</h1>
         <div id="quiz-container" style="text-align:left; max-width:1000px; margin:0 auto; padding-bottom:50px;">
-            <!-- Quiz JS injects here -->
-        </div>
+            </div>
         <button class="nav-btn" onclick="checkQuiz()" style="margin-top:2vmin; width:100%;">Submit Answers</button>
         <div id="score-display" style="font-size:4vmin; font-weight:bold; margin-top:2vmin; color:var(--accent); text-align:center;"></div>
     </div>
 
 </div>
 
-<!-- Sticky Nav -->
 <div class="nav-bar">
     <button class="nav-btn" onclick="prevSlide()">PREV</button>
     <div style="display:flex; align-items:center; gap:20px;">
         <button class="nav-btn" onclick="toggleTOC()">MENU</button>
-        <div class="progress"><span id="current">1</span> / 51</div>
+        <div class="progress"><span id="current">1</span> / 52</div>
     </div>
     <button class="nav-btn" onclick="nextSlide()">NEXT</button>
 </div>
@@ -1588,10 +1543,10 @@
             currentEl.innerText = (currentSlide + 1) + " / " + totalSlides;
         }
         
-        // Trigger Polls
-        if (currentSlide === 14) showPoll(0); // After Step 2
-        if (currentSlide === 24) showPoll(1); // After Java Intro
-        if (currentSlide === 34) showPoll(2); // After EBITDA
+        // Trigger Polls (Indices updated to account for new TOC slide)
+        if (currentSlide === 15) showPoll(0); // After Step 2
+        if (currentSlide === 25) showPoll(1); // After Java Intro
+        if (currentSlide === 35) showPoll(2); // After EBITDA
         
         // Update TOC Active State dynamically
         updateTOCActive();
