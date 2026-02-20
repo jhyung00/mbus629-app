@@ -198,6 +198,23 @@
         .nav-controls button:hover { background: rgba(255,255,255,0.1); }
         .page-num { font-family: 'Courier New', monospace; }
 
+        /* Navigation Table of Contents Style */
+        #toc {
+            margin-left: 15px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            background: var(--accent-dark);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+            max-width: 350px;
+            font-family: inherit;
+        }
+        #toc option {
+            background: var(--primary);
+            color: white;
+        }
+
         /* Reveal Steps */
         .reveal-step {
             opacity: 0;
@@ -1056,7 +1073,10 @@
 
     <!-- Navigation -->
     <div class="nav-bar">
-        <span id="page-num">Slide 1 / 49</span>
+        <div style="display: flex; align-items: center;">
+            <span id="page-num">Slide 1 / 49</span>
+            <select id="toc" onchange="jumpToSlide(this.value)"></select>
+        </div>
         <div class="nav-controls">
             <button onclick="changeSlide(-1)">Previous</button>
             <button onclick="changeSlide(1)">Next</button>
@@ -1070,6 +1090,23 @@
     const slides = document.querySelectorAll('.slide');
     const pageNum = document.getElementById('page-num');
 
+    function populateToC() {
+        const toc = document.getElementById('toc');
+        slides.forEach((slide, index) => {
+            const titleEl = slide.querySelector('h1, h2');
+            const titleText = titleEl ? titleEl.innerText : `Slide ${index + 1}`;
+            const option = document.createElement('option');
+            option.value = index;
+            option.innerText = `${index + 1}: ${titleText}`;
+            toc.appendChild(option);
+        });
+    }
+
+    function jumpToSlide(index) {
+        currentSlide = parseInt(index);
+        updateSlide();
+    }
+
     function updateSlide() {
         slides.forEach((slide, index) => {
             slide.classList.remove('active');
@@ -1078,6 +1115,9 @@
             }
         });
         pageNum.innerText = `Slide ${currentSlide + 1} / ${slides.length}`;
+        if (document.getElementById('toc')) {
+            document.getElementById('toc').value = currentSlide;
+        }
     }
 
     function changeSlide(direction) {
@@ -1151,6 +1191,7 @@
         if (e.key === 'ArrowLeft') changeSlide(-1);
     });
 
+    populateToC();
     updateSlide();
 </script>
 
