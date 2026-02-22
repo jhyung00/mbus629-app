@@ -155,6 +155,9 @@
       </div>
 
       <div class="flex items-center gap-3">
+        <button id="btnInstructor" class="btn p-2 rounded-lg bg-white text-[#8c8982] hover:text-[#3f3e3a] border border-[#eae6df] shadow-sm hover:bg-[#fcfbf9]" title="Instructor Override">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+        </button>
         <button id="btnHow" class="btn px-4 py-2 rounded-lg bg-white text-[#5c5a55] text-sm font-semibold border border-[#eae6df] shadow-sm hover:bg-[#fcfbf9] flex items-center gap-2">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
           Briefing
@@ -765,6 +768,7 @@
     const btnLock = el("btnLock");
     const btnReset = el("btnReset");
     const btnHow = el("btnHow");
+    const btnInstructor = el("btnInstructor");
     
     const gameBoard = el("gameBoard");
     const gameOverArea = el("gameOverArea");
@@ -1103,6 +1107,52 @@
         }
       }
     }
+    
+    function revealInstructorAnswers() {
+      const c = currentCase();
+      if (!c) return;
+
+      // Disable inputs and lock button to prevent confusing state
+      answerArea.classList.add("pointer-events-none");
+      btnLock.disabled = true;
+      btnLock.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg> Locked by Instructor`;
+      
+      // Show Feedback
+      feedbackArea.classList.remove("hidden");
+      feedbackText.innerHTML = `<strong>Instructor Override Reveal:</strong> ${c.feedbackText}`;
+
+      // Highlight correct answer
+      const answerLabels = answerChoices.children;
+      for (let label of answerLabels) {
+        const key = label.dataset.key;
+        label.className = "flex items-start gap-3 p-4 rounded-xl border transition-all"; 
+        
+        if (key === c.correctAnswerKey) {
+          label.classList.add('answer-correct');
+          if(!label.innerHTML.includes("CORRECT")) {
+            label.innerHTML += `<div class="absolute right-4 top-1/2 -translate-y-1/2 text-[#059669] font-bold tracking-widest text-[10px]">CORRECT</div>`;
+          }
+        } else {
+          label.classList.add('opacity-40', 'bg-[#f4f1eb]', 'border-[#eae6df]');
+        }
+      }
+
+      // Highlight correct tags
+      const correctTagSet = new Set(c.correctTags);
+      const tags = tagChoices.children;
+      for (let btn of tags) {
+        const key = btn.dataset.key;
+        const isCorrect = correctTagSet.has(key);
+
+        btn.className = "px-3 py-1.5 rounded-lg border text-[11px] font-bold text-left transition-all"; 
+
+        if (isCorrect) {
+          btn.classList.add('tag-correct');
+        } else {
+          btn.classList.add('opacity-30', 'bg-[#faf9f7]', 'border-[#eae6df]', 'text-[#8c8982]');
+        }
+      }
+    }
 
     function showScoreAnimation(teamId, points) {
       const row = document.getElementById(`team-row-${teamId}`);
@@ -1159,6 +1209,19 @@
     btnHow.onclick = () => { el("modal").classList.remove("hidden"); el("modal").classList.add("flex"); };
     el("btnClose").onclick = () => { el("modal").classList.add("hidden"); el("modal").classList.remove("flex"); };
     el("modal").onclick = (e) => { if (e.target === el("modal")) { el("modal").classList.add("hidden"); el("modal").classList.remove("flex"); } };
+
+    btnInstructor.onclick = () => {
+      if (state.roundIndex < 0) {
+        alert("Please initialize a case file first.");
+        return;
+      }
+      const pwd = prompt("Instructor Override: Enter Password");
+      if (pwd === "rr") {
+        revealInstructorAnswers();
+      } else if (pwd !== null) {
+        alert("Incorrect password.");
+      }
+    };
 
     btnAddTeam.onclick = () => {
       const name = (teamNameInput.value || "").trim();
