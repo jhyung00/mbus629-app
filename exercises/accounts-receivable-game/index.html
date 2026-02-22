@@ -1211,7 +1211,9 @@
       }
     });
 
-    // Mock Submit Handler
+    // Google Sheets Submission Handler
+    const googleScriptUrl = "https://script.google.com/macros/s/AKfycbxNX7FoRk0gUz9mJkPIlB4cIEqQP2xZ_6MK9BTUHt__5gtpx2dCWk6AUXVh0-XWM3zo/exec";
+
     el("btnSubmitScores").onclick = () => {
       const btn = el("btnSubmitScores");
       const status = el("submitStatus");
@@ -1220,12 +1222,29 @@
       btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-[#3d5a49]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Transmitting...`;
       status.textContent = "Connecting to submission server...";
 
-      setTimeout(() => {
+      const payload = {
+        roundIndex: state.roundIndex,
+        teams: state.teams
+      };
+
+      fetch(googleScriptUrl, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      })
+      .then(() => {
         btn.classList.remove("bg-[#d5e0d9]", "hover:bg-[#c6d4cc]", "text-[#3d5a49]");
         btn.classList.add("bg-[#e3e6f0]", "text-[#4a5578]");
         btn.innerHTML = `✓ Official Results Submitted`;
         status.innerHTML = "<span class='text-[#4b8a6b]'>Success. Data safely stored for official review.</span>";
-      }, 1500);
+      })
+      .catch((err) => {
+        console.error(err);
+        btn.disabled = false;
+        btn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> Submit for Competition`;
+        status.innerHTML = "<span class='text-[#a65d6c]'>Error transmitting data. Please try again.</span>";
+      });
     };
 
     /***********************
