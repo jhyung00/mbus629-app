@@ -6,320 +6,401 @@
   <title>The Receivables Room — Revenue Under Interrogation</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
     :root { color-scheme: light; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-    .card { box-shadow: 0 10px 30px rgba(2,6,23,.08); transition: transform 0.2s ease, box-shadow 0.2s ease; }
-    .card:hover { transform: translateY(-2px); box-shadow: 0 15px 35px rgba(2,6,23,.12); }
-    .btn { transition: all 0.1s ease; }
-    .btn:active { transform: scale(0.95); }
+    body { 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+      background-color: #f7f5f2; /* Soft pastel beige */
+      color: #3f3e3a; 
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    
+    /* Clean Card Styling */
+    .soft-card {
+      background: #ffffff;
+      border: 1px solid #eae6df;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02), 0 2px 8px rgba(0, 0, 0, 0.01);
+    }
+    
+    .btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+    .btn:active { transform: scale(0.97); }
     canvas { width: 100% !important; height: 240px !important; }
 
-    /* Animation for Score Pop */
+    /* Animations */
     @keyframes floatUp {
       0% { opacity: 1; transform: translateY(0) scale(1); }
-      100% { opacity: 0; transform: translateY(-40px) scale(1.2); }
+      100% { opacity: 0; transform: translateY(-40px) scale(1.1); }
     }
     .score-pop {
       position: absolute;
-      font-weight: 900;
-      color: #059669;
+      font-weight: 800;
+      color: #4b8a6b; /* Soft emerald */
       pointer-events: none;
-      animation: floatUp 1.5s ease-out forwards;
+      animation: floatUp 1.2s cubic-bezier(0, 0, 0.2, 1) forwards;
       z-index: 100;
-      text-shadow: 0 2px 4px rgba(255,255,255,0.8);
-      white-space: nowrap;
     }
     
-    /* Selection States */
-    .btn-selected {
-      background-color: #4f46e5 !important;
-      color: white !important;
-      border-color: #4f46e5 !important;
+    @keyframes slideInUp {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .btn-risk-selected {
-      background-color: #0f172a !important;
-      color: white !important;
-      border-color: #0f172a !important;
+    .animate-in { animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    
+    @keyframes stampIn {
+      0% { opacity: 0; transform: scale(2) rotate(-10deg); }
+      50% { opacity: 1; transform: scale(0.95) rotate(-10deg); }
+      100% { opacity: 1; transform: scale(1) rotate(-10deg); }
+    }
+    .stamp {
+      position: absolute;
+      top: 15%;
+      right: 5%;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #d18a8a; /* Soft rose */
+      border: 3px solid #d18a8a;
+      padding: 0.5rem 1.5rem;
+      border-radius: 0.5rem;
+      text-transform: uppercase;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 50;
+    }
+    .stamp.show { animation: stampIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+    /* Selection States */
+    .answer-selected {
+      background-color: #eef2ff !important; /* Soft indigo-50 */
+      border-color: #a5b4fc !important; /* Indigo-300 */
+    }
+    .tag-selected {
+      background-color: #e0e7ff !important; /* Indigo-100 */
+      color: #3730a3 !important; /* Indigo-800 */
+      border-color: #a5b4fc !important;
     }
 
-    /* Feedback States (Applied after locking) */
+    /* Feedback States */
     .answer-correct {
-      background-color: #ecfdf5 !important; /* emerald-50 */
-      border-color: #10b981 !important;     /* emerald-500 */
-      color: #064e3b !important;            /* emerald-900 */
+      background-color: #ecfdf5 !important; /* Emerald-50 */
+      border-color: #6ee7b7 !important; /* Emerald-300 */
     }
     .answer-wrong {
-      background-color: #fff1f2 !important; /* rose-50 */
-      border-color: #f43f5e !important;     /* rose-500 */
-      color: #881337 !important;            /* rose-900 */
+      background-color: #fff1f2 !important; /* Rose-50 */
+      border-color: #fda4af !important; /* Rose-300 */
       opacity: 0.7;
     }
     .tag-correct {
-      background-color: #10b981 !important; /* emerald-500 */
-      color: white !important;
-      border-color: #059669 !important;
-      box-shadow: 0 0 0 2px #d1fae5;
+      background-color: #d1fae5 !important; /* Emerald-100 */
+      color: #065f46 !important; /* Emerald-800 */
+      border-color: #6ee7b7 !important;
     }
     .tag-missed {
       border-style: dashed !important;
-      border-color: #10b981 !important;
+      border-color: #6ee7b7 !important;
       color: #059669 !important;
-      background-color: #ecfdf5 !important;
+      background-color: #f0fdf4 !important;
     }
+    .tag-wrong {
+      background-color: #ffe4e6 !important; /* Rose-100 */
+      color: #9f1239 !important; /* Rose-800 */
+      border-color: #fda4af !important;
+      text-decoration: line-through;
+    }
+
+    /* Data Table styling */
+    th { background-color: #fcfcfb; }
+    tr:nth-child(even) { background-color: #fbfaf8; }
     
-    /* Reveal Animation */
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .feedback-reveal {
-      animation: slideIn 0.4s ease-out forwards;
-    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #dcd7ce; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #b0aba3; }
+
+    /* Podium */
+    .podium-1 { height: 140px; background-color: #e8e6fb; border: 1px solid #c7c4f0;} /* Soft lavender */
+    .podium-2 { height: 100px; background-color: #f1f0ee; border: 1px solid #e1deda;}
+    .podium-3 { height: 70px; background-color: #f1f0ee; border: 1px solid #e1deda;}
   </style>
 </head>
 
-<body class="bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100">
+<body class="selection:bg-indigo-100">
   <!-- Header -->
-  <header class="sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-slate-200">
-    <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <div class="h-10 w-10 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-700 text-white grid place-items-center font-black shadow-lg text-lg">RR</div>
+  <header class="sticky top-0 z-30 bg-[#f7f5f2]/90 backdrop-blur-md border-b border-[#eae6df]">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-4">
+        <div class="h-10 w-10 rounded-lg bg-[#d5e0d9] text-[#4b6a57] border border-[#bdccc3] flex items-center justify-center font-bold text-lg">
+          RR
+        </div>
         <div>
-          <div class="font-extrabold leading-tight text-slate-800">The Receivables Room</div>
-          <div class="text-xs text-slate-500 font-medium -mt-0.5">Analyst Toolkit Game</div>
+          <div class="font-bold text-lg tracking-tight text-[#3f3e3a] flex items-center gap-2">
+            The Receivables Room
+          </div>
+          <div class="text-[11px] text-[#787670] font-semibold tracking-widest uppercase">Revenue Under Interrogation</div>
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <button id="btnReset" class="btn px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-sm font-bold text-slate-600">Reset</button>
-        <button id="btnHow" class="btn px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-sm font-bold shadow-md">How to Play</button>
+      <div class="flex items-center gap-3">
+        <button id="btnHow" class="btn px-4 py-2 rounded-lg bg-white text-[#5c5a55] text-sm font-semibold border border-[#eae6df] shadow-sm hover:bg-[#fcfbf9] flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Briefing
+        </button>
+        <button id="btnReset" class="btn p-2 rounded-lg bg-white text-[#8c8982] hover:text-[#3f3e3a] border border-[#eae6df] shadow-sm hover:bg-[#fcfbf9]" title="Reset Game">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+        </button>
       </div>
     </div>
   </header>
 
-  <main class="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
+  <main class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-6 relative overflow-hidden">
     <!-- LEFT: Setup + Leaderboard -->
-    <section class="lg:col-span-4 space-y-6">
-      <div class="card rounded-3xl bg-white border border-slate-200 p-5 relative overflow-hidden">
-        <div class="flex items-start justify-between gap-3 relative z-10">
-          <div>
-            <h2 class="font-extrabold text-lg flex items-center gap-2">🕵️‍♀️ Teams</h2>
-            <p class="text-sm text-slate-600">Who is investigating?</p>
-          </div>
-          <span class="text-xs px-2 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100 mono font-bold" id="gameMeta">Round 0 / 6</span>
+    <section class="lg:col-span-3 flex flex-col gap-5">
+      
+      <!-- Teams Panel -->
+      <div class="soft-card rounded-2xl p-5 relative overflow-hidden">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-bold text-[11px] uppercase tracking-widest text-[#8c8982] flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            Investigators
+          </h2>
+          <span class="text-[10px] px-2 py-1 rounded-md bg-[#f0f2f5] text-[#5b6471] mono font-bold border border-[#e4e7eb]" id="gameMeta">Rnd 0/0</span>
         </div>
 
-        <div class="mt-4 grid grid-cols-1 gap-2 relative z-10">
-          <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">New Team</label>
+        <div class="space-y-4">
           <div class="flex gap-2">
-            <input id="teamName" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g., The Allowance Avengers" />
-            <button id="btnAddTeam" class="btn px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold shadow-md shadow-emerald-200">Add</button>
+            <input id="teamName" class="w-full rounded-lg bg-[#faf9f7] border border-[#eae6df] px-3 py-2 text-sm text-[#3f3e3a] focus:outline-none focus:border-[#a5b4fc] focus:ring-1 focus:ring-[#a5b4fc] placeholder-[#b0aba3] transition-colors" placeholder="Team name..." autocomplete="off"/>
+            <button id="btnAddTeam" class="btn px-3 py-2 rounded-lg bg-[#e3e6f0] hover:bg-[#d5daeb] text-[#4a5578] font-bold border border-[#d1d7e8]">+</button>
           </div>
 
-          <div class="flex gap-2 mt-4">
-            <button id="btnStart" class="btn w-full px-3 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-extrabold shadow-lg shadow-indigo-200 transition-all disabled:opacity-50 disabled:shadow-none">Start Game</button>
-            <button id="btnNext" class="btn w-full px-3 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-sm font-extrabold shadow-lg shadow-slate-200 transition-all disabled:opacity-50 disabled:shadow-none" disabled>Next Case ➡️</button>
+          <div id="leaderboard" class="space-y-2 min-h-[120px] max-h-[300px] overflow-y-auto pr-1"></div>
+
+          <div class="pt-4 border-t border-[#eae6df]">
+            <button id="btnStart" class="btn w-full py-3 rounded-lg bg-[#d5e0d9] hover:bg-[#c6d4cc] text-[#3d5a49] text-sm font-bold border border-[#bdccc3] transition-all disabled:opacity-50 disabled:cursor-not-allowed">Initialize Case Files</button>
           </div>
         </div>
       </div>
 
-      <div class="card rounded-3xl bg-white border border-slate-200 p-5 relative">
-        <div class="flex items-start justify-between items-center">
-          <div>
-            <h2 class="font-extrabold text-lg flex items-center gap-2">🏆 Leaderboard</h2>
+      <!-- Scoring Rules -->
+      <div class="soft-card rounded-2xl p-5">
+        <h3 class="font-bold text-[11px] uppercase tracking-widest text-[#8c8982] mb-3">Scoring Protocol</h3>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between items-center p-2 rounded bg-[#faf9f7] border border-[#eae6df]">
+            <span class="text-[#5c5a55]">Correct Call</span>
+            <span class="mono font-bold text-[#4b8a6b]">+100</span>
           </div>
-          <button id="btnExport" class="btn px-3 py-2 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-sm font-bold transition-colors">Save</button>
-        </div>
-
-        <div id="leaderboard" class="mt-4 space-y-2 min-h-[100px]"></div>
-
-        <div class="mt-4 p-3 rounded-2xl bg-slate-50 border border-slate-100 text-xs text-slate-600">
-          <div class="font-bold text-slate-800 mb-1">Scoring Rules</div>
-          <div class="grid grid-cols-2 gap-x-2 gap-y-1">
-            <span>✅ Answer:</span> <span class="mono font-bold text-indigo-600">+100</span>
-            <span>🧠 Reason:</span> <span class="mono font-bold text-indigo-600">+10</span>
-            <span>⚠️ Risk:</span> <span class="mono font-bold text-indigo-600">0–40</span>
+          <div class="flex justify-between items-center p-2 rounded bg-[#faf9f7] border border-[#eae6df]">
+            <span class="text-[#5c5a55]">Valid Tag</span>
+            <span class="mono font-bold text-[#5c699c]">+20/ea</span>
+          </div>
+          <div class="flex justify-between items-center p-2 rounded bg-[#faf9f7] border border-[#eae6df]">
+            <span class="text-[#5c5a55]">Invalid Tag</span>
+            <span class="mono font-bold text-[#a65d6c]">-10/ea</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- RIGHT: Case Board -->
-    <section class="lg:col-span-8 space-y-6">
-      <div class="card rounded-3xl bg-white border border-slate-200 p-6 relative">
-        <!-- Decoration -->
-        <div class="absolute -top-6 -right-6 w-32 h-32 bg-yellow-400/10 rounded-full blur-2xl pointer-events-none"></div>
-
-        <div class="flex items-start justify-between gap-4 relative">
-          <div>
-            <div class="text-xs font-bold text-indigo-500 tracking-widest uppercase mb-1">CONFIDENTIAL CASE FILE</div>
-            <h1 id="caseTitle" class="font-extrabold text-3xl text-slate-900 leading-tight">Add a team to begin.</h1>
-            <p id="casePrompt" class="text-base text-slate-600 mt-2 font-medium">Get ready to analyze the data.</p>
-          </div>
-          <div class="text-right shrink-0">
-            <div class="text-xs text-slate-400 font-bold uppercase tracking-wider">Difficulty</div>
-            <div id="caseDifficulty" class="inline-flex mt-1 items-center gap-1 px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-sm font-black border border-slate-200">—</div>
-          </div>
-        </div>
-
-        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-5">
-          <!-- Footnote & Flag -->
-          <div class="rounded-3xl border border-slate-100 bg-slate-50/50 p-5 flex flex-col h-full">
-            <div class="flex items-center justify-between mb-2">
-              <div class="font-extrabold text-slate-800 flex items-center gap-2">📝 Notes</div>
-              <span class="text-xs px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-500 font-medium" id="caseLens">Lens: —</span>
+    <!-- RIGHT: Active Game Area -->
+    <section class="lg:col-span-9 flex flex-col gap-6 relative min-h-[600px]">
+      
+      <!-- IN-GAME BOARD (Hidden during Game Over) -->
+      <div id="gameBoard" class="flex flex-col gap-6">
+        
+        <!-- Case File Display -->
+        <div class="soft-card rounded-2xl border-t-[5px] border-t-[#c1c6e6] p-6 md:p-8 relative animate-in">
+          <div class="stamp" id="caseStamp">SOLVED</div>
+          
+          <div class="flex flex-col md:flex-row items-start justify-between gap-4 mb-6">
+            <div>
+              <div class="flex items-center gap-3 mb-2">
+                <span class="text-[10px] font-bold text-[#5c699c] bg-[#f0f2f8] px-2 py-1 rounded border border-[#e1e4f0] uppercase tracking-widest">Exhibit A</span>
+                <span class="text-[11px] text-[#8c8982] font-semibold" id="caseLens">Lens: —</span>
+              </div>
+              <h1 id="caseTitle" class="font-extrabold text-2xl md:text-3xl text-[#2d2c29] tracking-tight">Awaiting Initialization</h1>
+              <p id="casePrompt" class="text-[#5c5a55] mt-2 text-sm md:text-base">Add teams and initialize the case files to begin your investigation.</p>
             </div>
-            <p id="caseFootnote" class="text-sm text-slate-600 leading-relaxed italic mb-4 flex-grow">—</p>
+            <div id="caseDifficulty" class="shrink-0 px-3 py-1 rounded-md bg-[#faf9f7] border border-[#eae6df] text-[#5c5a55] text-[11px] font-bold uppercase tracking-widest">—</div>
+          </div>
 
-            <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Data Table -->
+            <div class="flex flex-col h-full">
               <div class="flex items-center justify-between mb-2">
-                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Red-Flag Meter</div>
-                <div id="flagLabel" class="text-xs font-black text-slate-800">—</div>
+                <h3 class="font-bold text-[11px] uppercase tracking-widest text-[#8c8982]">Ledger Data</h3>
               </div>
-              <div class="h-4 rounded-full bg-slate-100 inner-shadow overflow-hidden relative">
-                <div id="flagBar" class="h-full w-0 bg-gradient-to-r from-yellow-400 to-rose-500 transition-all duration-1000 ease-out rounded-full"></div>
+              <div class="grow rounded-xl border border-[#eae6df] bg-white overflow-hidden flex flex-col">
+                <div class="overflow-x-auto">
+                  <table class="min-w-full text-sm text-left whitespace-nowrap">
+                    <thead id="dataHead" class="text-[11px] uppercase text-[#8c8982] border-b border-[#eae6df] font-bold"></thead>
+                    <tbody id="dataBody" class="mono text-[#5c5a55] divide-y divide-[#f4f1eb]"></tbody>
+                  </table>
+                </div>
               </div>
-              <div class="text-xs text-slate-500 mt-2 leading-tight" id="flagExplain">—</div>
+            </div>
+
+            <!-- Chart -->
+            <div class="flex flex-col h-full">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-[11px] uppercase tracking-widest text-[#8c8982]">Trend Visualization</h3>
+              </div>
+              <div class="grow rounded-xl border border-[#eae6df] bg-white p-4 flex items-center justify-center">
+                <canvas id="chart"></canvas>
+              </div>
             </div>
           </div>
-
-          <!-- Chart -->
-          <div class="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
-            <div class="font-extrabold text-slate-800 mb-1 flex items-center gap-2">📊 Trend</div>
-            <div class="mt-2">
-              <canvas id="chart"></canvas>
-            </div>
+          
+          <!-- Footnote -->
+          <div class="p-4 rounded-xl bg-[#faf9f7] border-l-4 border-[#dcd7ce] text-sm text-[#5c5a55] flex items-start gap-3">
+            <svg class="w-5 h-5 text-[#8c8982] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span id="caseFootnote" class="italic">System standing by.</span>
           </div>
         </div>
 
-        <!-- Data Table -->
-        <div class="mt-6">
-          <div class="flex items-center justify-between gap-3 mb-3">
+        <!-- Interaction Area -->
+        <div class="soft-card rounded-2xl p-6 md:p-8 relative transition-all duration-300" id="interactionCard">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-[#eae6df] pb-4">
             <div>
-              <div class="font-extrabold text-slate-800 flex items-center gap-2">🗄️ Dataset</div>
+              <h2 class="font-extrabold text-xl text-[#2d2c29]">Make Your Call</h2>
+              <p class="text-[11px] text-[#8c8982] mt-1 uppercase tracking-widest font-bold">Select the primary issue and up to 3 supporting reasons.</p>
             </div>
-            <button id="btnCopyCase" class="btn px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-600 flex items-center gap-1">
-              <span>📋</span> Copy CSV
-            </button>
-          </div>
-
-          <div class="overflow-hidden border border-slate-200 rounded-2xl shadow-sm">
-            <div class="overflow-x-auto">
-              <table class="min-w-full text-sm">
-                <thead id="dataHead" class="bg-slate-50"></thead>
-                <tbody id="dataBody" class="bg-white divide-y divide-slate-100"></tbody>
-              </table>
+            <div class="flex gap-2 w-full md:w-auto">
+              <button id="btnLock" class="btn flex-1 md:flex-none px-6 py-2.5 rounded-lg bg-[#e3e6f0] hover:bg-[#d5daeb] text-[#4a5578] text-sm font-bold border border-[#d1d7e8] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" disabled>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                Lock & Score
+              </button>
+              <button id="btnNext" class="btn flex-1 md:flex-none px-6 py-2.5 rounded-lg bg-[#faf9f7] hover:bg-[#f0eee9] text-[#5c5a55] text-sm font-bold border border-[#eae6df] transition-all" disabled>
+                Next File →
+              </button>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- Interaction Area -->
-      <div class="card rounded-3xl bg-white border border-slate-200 p-6 relative transition-colors duration-500" id="interactionCard">
-        <div class="flex items-center justify-between gap-3 mb-4">
-          <div>
-            <h2 class="font-extrabold text-xl text-slate-800">Your Call</h2>
-            <p class="text-sm text-slate-500" id="interactionSub">Select answer, tags, and risk level.</p>
+          <!-- Feedback Reveal (Hidden by default) -->
+          <div id="feedbackArea" class="hidden mb-6 p-5 rounded-xl bg-[#f8f9fc] border border-[#dce0f2] relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-1 h-full bg-[#a5b4fc]"></div>
+            <h3 class="font-bold text-[#5c699c] text-[11px] uppercase tracking-widest mb-2">Declassification Brief</h3>
+            <p id="feedbackText" class="text-[#3f3e3a] text-sm leading-relaxed"></p>
           </div>
-          <button id="btnLock" class="btn px-6 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-extrabold shadow-lg shadow-slate-300 disabled:opacity-50 disabled:shadow-none flex items-center gap-2" disabled>
-            🔒 Lock & Score
-          </button>
-        </div>
 
-        <!-- Feedback Section (Hidden by default) -->
-        <div id="feedbackArea" class="hidden mb-6 p-4 rounded-2xl bg-indigo-50 border border-indigo-100 feedback-reveal">
-          <div class="flex items-start gap-3">
-            <div class="text-2xl mt-1">💡</div>
+          <div id="answerArea" class="grid grid-cols-1 md:grid-cols-2 gap-8 opacity-50 pointer-events-none transition-opacity duration-300">
+            <!-- Answer Choices -->
+            <div class="space-y-4">
+               <div class="flex items-center gap-2 mb-2">
+                 <div class="w-6 h-6 rounded bg-[#f0f2f5] text-[#8c8982] flex items-center justify-center text-xs font-bold mono border border-[#e4e7eb]">1</div>
+                 <h3 class="text-[11px] font-bold text-[#8c8982] uppercase tracking-widest">Primary Conclusion</h3>
+               </div>
+               <div id="answerChoices" class="space-y-3"></div>
+            </div>
+
+            <!-- Reasoning Tags -->
             <div>
-              <h3 class="font-bold text-indigo-900 text-lg">Case Resolution</h3>
-              <p id="feedbackText" class="text-indigo-800 text-sm leading-relaxed mt-1"></p>
-            </div>
-          </div>
-        </div>
-
-        <div id="answerArea" class="grid grid-cols-1 md:grid-cols-2 gap-5 opacity-50 pointer-events-none transition-opacity duration-300">
-          <!-- Answer Choices -->
-          <div class="space-y-3">
-             <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">1. Select Answer</div>
-             <div id="answerChoices" class="space-y-2"></div>
-          </div>
-
-          <!-- Reasoning & Risk -->
-          <div class="flex flex-col gap-5">
-            <div>
-              <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">2. Reasoning (Pick up to 3)</div>
+              <div class="flex items-center gap-2 mb-4">
+                <div class="w-6 h-6 rounded bg-[#f0f2f5] text-[#8c8982] flex items-center justify-center text-xs font-bold mono border border-[#e4e7eb]">2</div>
+                <h3 class="text-[11px] font-bold text-[#8c8982] uppercase tracking-widest">Supporting Evidence (Max 3)</h3>
+              </div>
               <div id="tagChoices" class="flex flex-wrap gap-2"></div>
             </div>
-
-            <div class="pt-4 border-t border-slate-100">
-              <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">3. Risk Assessment</div>
-              <div id="riskChoices" class="flex gap-2 flex-wrap"></div>
-            </div>
           </div>
         </div>
       </div>
+
+      <!-- GAME OVER AREA (Hidden initially) -->
+      <div id="gameOverArea" class="hidden soft-card rounded-2xl p-8 text-center animate-in flex flex-col items-center justify-center min-h-[500px]">
+        <div class="inline-block p-4 rounded-full bg-[#f0f2f8] mb-4 border border-[#e1e4f0]">
+          <svg class="w-10 h-10 text-[#5c699c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+        </div>
+        <h1 class="text-3xl font-extrabold text-[#2d2c29] mb-2 tracking-tight">Investigation Complete</h1>
+        <p class="text-[#5c5a55] mb-10 max-w-md text-sm">All cases have been processed. Review the final standings of your audit teams below.</p>
+        
+        <!-- Podium -->
+        <div id="podium" class="flex items-end justify-center gap-2 sm:gap-4 h-48 mb-12 w-full max-w-2xl mx-auto border-b border-[#eae6df] pb-0">
+          <!-- Populated by JS -->
+        </div>
+
+        <button id="btnSubmitScores" class="btn px-8 py-4 rounded-xl bg-[#d5e0d9] hover:bg-[#c6d4cc] text-[#3d5a49] font-bold text-lg border border-[#bdccc3] shadow-sm flex items-center gap-3 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+          Submit for Competition
+        </button>
+        <p class="text-xs text-[#8c8982] mt-4 mono" id="submitStatus"></p>
+      </div>
+
     </section>
   </main>
 
-  <!-- Modal -->
-  <div id="modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="max-w-2xl w-full rounded-3xl bg-white shadow-2xl p-6 transform transition-all scale-100">
-      <div class="flex items-start justify-between gap-3 mb-4">
+  <!-- Briefing Modal -->
+  <div id="modal" class="fixed inset-0 bg-[#3f3e3a]/40 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="soft-card max-w-xl w-full rounded-2xl p-8 transform transition-all scale-100">
+      <div class="flex items-start justify-between mb-6">
         <div>
-          <div class="text-xs font-bold text-indigo-500 uppercase tracking-widest">TUTORIAL</div>
-          <div class="font-extrabold text-2xl text-slate-900">How to Play</div>
+          <div class="text-[11px] font-bold text-[#8c8982] uppercase tracking-widest mb-1">Mission Briefing</div>
+          <h2 class="font-extrabold text-2xl text-[#2d2c29]">How to Play</h2>
         </div>
-        <button id="btnClose" class="btn p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600">✕</button>
+        <button id="btnClose" class="p-2 rounded-lg bg-[#f0f2f5] text-[#8c8982] hover:text-[#3f3e3a] hover:bg-[#e4e7eb] transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
       </div>
-      <div class="space-y-4 text-slate-600">
-        <div class="flex gap-3">
-          <div class="h-8 w-8 rounded-full bg-indigo-100 text-indigo-600 font-bold grid place-items-center shrink-0">1</div>
-          <p>Add teams (or play solo!).</p>
+      <div class="space-y-6 text-[#5c5a55] text-sm">
+        <div class="flex gap-4">
+          <div class="w-8 h-8 rounded-full bg-[#f0f2f8] text-[#5c699c] font-bold flex items-center justify-center shrink-0 border border-[#e1e4f0]">1</div>
+          <div>
+            <strong class="text-[#2d2c29] block mb-1">Create Your Teams</strong>
+            Add one or multiple teams to compete. Select a team on the left to lock in their answers.
+          </div>
         </div>
-        <div class="flex gap-3">
-          <div class="h-8 w-8 rounded-full bg-indigo-100 text-indigo-600 font-bold grid place-items-center shrink-0">2</div>
-          <p>Review the case file. Look for red flags in the footnotes and data trends.</p>
+        <div class="flex gap-4">
+          <div class="w-8 h-8 rounded-full bg-[#f0f2f8] text-[#5c699c] font-bold flex items-center justify-center shrink-0 border border-[#e1e4f0]">2</div>
+          <div>
+            <strong class="text-[#2d2c29] block mb-1">Analyze the Evidence</strong>
+            Review the case context, footnotes, ledger data, and trend visualization. Look for accounting anomalies.
+          </div>
         </div>
-        <div class="flex gap-3">
-          <div class="h-8 w-8 rounded-full bg-indigo-100 text-indigo-600 font-bold grid place-items-center shrink-0">3</div>
-          <p>Make your call: pick the correct answer, back it up with reasoning tags, and assess the risk level.</p>
+        <div class="flex gap-4">
+          <div class="w-8 h-8 rounded-full bg-[#f0f2f8] text-[#5c699c] font-bold flex items-center justify-center shrink-0 border border-[#e1e4f0]">3</div>
+          <div>
+            <strong class="text-[#2d2c29] block mb-1">Make Your Call & Select Tags</strong>
+            Choose the primary conclusion (+100 pts) and up to 3 supporting tags (+20 pts each). Careful: incorrect tags cost you -10 pts! Click Lock to score, or simply click Next to skip without penalty.
+          </div>
         </div>
       </div>
-      <div class="mt-6 p-4 rounded-2xl bg-emerald-50 text-emerald-800 text-sm font-medium border border-emerald-100">
-        ✨ New: Instant Feedback! When you lock your answer, the game will reveal the correct choice, the ideal risk level, and the reasoning behind the solution.
+      <div class="mt-8 p-4 rounded-xl bg-[#faf9f7] border border-[#eae6df] text-[#8c8982] text-xs text-center mono font-semibold">
+        8 Comprehensive Cases Covering Core Accounting Modules
       </div>
     </div>
   </div>
 
   <script>
     /***********************
-     * Minimal chart helper
+     * Minimal Chart Helper
      ***********************/
     const ChartMini = (() => {
-      function drawLine(ctx, labels, series, opts = {}) {
+      function drawLine(ctx, labels, series) {
         const W = ctx.canvas.width, H = ctx.canvas.height;
         ctx.clearRect(0,0,W,H);
-        const pad = 38, innerW = W - pad*2, innerH = H - pad*2;
+        const padX = 40, padY = 30, innerW = W - padX*2, innerH = H - padY*2;
         const vals = series.map(d => d.value);
         let min = Math.min(...vals), max = Math.max(...vals);
         if (min === max) { min -= 1; max += 1; }
-        const y = v => pad + innerH * (1 - (v - min) / (max - min));
-        const x = i => pad + innerW * (i / Math.max(1, series.length - 1));
+        
+        const range = max - min;
+        min -= range * 0.1; 
+        max += range * 0.1;
 
-        // Grid
+        const y = v => padY + innerH * (1 - (v - min) / (max - min));
+        const x = i => padX + innerW * (i / Math.max(1, series.length - 1));
+
+        // Grid Lines
         ctx.beginPath();
-        ctx.strokeStyle = "rgba(15,23,42,.06)";
+        ctx.strokeStyle = "#f0f0f0";
         ctx.lineWidth = 1;
-        for (let k=0;k<=4;k++){
-          const yy = pad + innerH*(k/4);
-          ctx.moveTo(pad, yy); ctx.lineTo(pad+innerW, yy);
+        for (let k=0; k<=4; k++){
+          const yy = padY + innerH*(k/4);
+          ctx.moveTo(padX, yy); ctx.lineTo(padX+innerW, yy);
         }
         ctx.stroke();
 
         // Line
-        ctx.strokeStyle = "#6366f1"; // Indigo-500
-        ctx.lineWidth = 4;
+        ctx.strokeStyle = "#8ba898"; // soft sage
+        ctx.lineWidth = 3;
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
         ctx.beginPath();
@@ -329,41 +410,51 @@
         });
         ctx.stroke();
 
-        // Area under line (Gradient)
-        const grad = ctx.createLinearGradient(0, pad, 0, pad+innerH);
-        grad.addColorStop(0, "rgba(99, 102, 241, 0.2)");
-        grad.addColorStop(1, "rgba(99, 102, 241, 0)");
+        // Gradient Fill
+        const grad = ctx.createLinearGradient(0, padY, 0, padY+innerH);
+        grad.addColorStop(0, "rgba(139, 168, 152, 0.2)");
+        grad.addColorStop(1, "rgba(139, 168, 152, 0)");
         ctx.fillStyle = grad;
         ctx.beginPath();
         series.forEach((d,i)=>{
           const xx = x(i), yy = y(d.value);
           if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
         });
-        ctx.lineTo(pad+innerW, pad+innerH);
-        ctx.lineTo(pad, pad+innerH);
+        ctx.lineTo(padX+innerW, padY+innerH);
+        ctx.lineTo(padX, padY+innerH);
         ctx.fill();
 
         // Points
-        ctx.fillStyle = "#fff";
-        ctx.strokeStyle = "#4f46e5";
-        ctx.lineWidth = 2;
         series.forEach((d,i)=>{
           const xx = x(i), yy = y(d.value);
-          ctx.beginPath(); ctx.arc(xx,yy,5,0,Math.PI*2); ctx.fill(); ctx.stroke();
+          ctx.beginPath(); 
+          ctx.arc(xx, yy, 5, 0, Math.PI*2); 
+          ctx.fillStyle = "#ffffff"; 
+          ctx.fill(); 
+          ctx.strokeStyle = "#8ba898"; 
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          
+          ctx.fillStyle = "#8c8982";
+          ctx.font = "600 10px 'JetBrains Mono', monospace";
+          ctx.textAlign = "center";
+          ctx.fillText(d.value.toFixed(1).replace('.0',''), xx, yy - 12);
         });
 
-        // Labels
-        ctx.fillStyle = "#64748b";
-        ctx.font = "bold 11px sans-serif";
+        // X-Axis Labels
+        ctx.fillStyle = "#8c8982";
+        ctx.font = "600 11px 'Plus Jakarta Sans', sans-serif";
+        ctx.textAlign = "center";
         labels.forEach((lab,i)=>{
-          const xx = x(i);
-          ctx.fillText(lab, Math.max(2, xx-10), pad+innerH+20);
+          ctx.fillText(lab, x(i), padY+innerH+20);
         });
       }
 
       function fitCanvas(canvas){
         const dpr = window.devicePixelRatio || 1;
-        const rect = canvas.getBoundingClientRect();
+        const rect = canvas.parentNode.getBoundingClientRect(); 
+        canvas.style.width = rect.width + 'px';
+        canvas.style.height = rect.height + 'px';
         canvas.width = Math.floor(rect.width * dpr);
         canvas.height = Math.floor(rect.height * dpr);
         const ctx = canvas.getContext("2d");
@@ -374,75 +465,75 @@
     })();
 
     /***********************
-     * Case bank
+     * Expanded Case Bank (8 Cases)
      ***********************/
     const CASE_BANK = [
       {
         id: "RR-5STEP",
         lens: "Revenue Recognition",
         difficulty: "Warm-up",
-        title: "Case 1 — Timing of Revenue",
-        prompt: "Which contract should recognize revenue OVER TIME?",
-        footnote: "Note: Revenue is recognized when control transfers. Contract A is a standard retail shipment. Contract B is a monthly security monitoring service.",
+        title: "Timing of Revenue",
+        prompt: "Based on control transfer, which contract should recognize revenue OVER TIME?",
+        footnote: "Note: Revenue is recognized when (or as) control of goods or services transfers to the customer. Contract A is standard retail shipment. Contract B is a continuous security monitoring service.",
         data: [
           { Contract: "A: Retail Goods", Performance: "Single delivery", Billing: "At shipment", Returns: "Est. 2%" },
           { Contract: "B: Security Svc", Performance: "Continuous 24/7", Billing: "Monthly", Returns: "N/A" }
         ],
-        chart: { title: "Revenue pattern (illustrative)", labels: ["M1","M2","M3","M4","M5"], series: [10,10,10,10,10] },
+        chart: { labels: ["M1","M2","M3","M4","M5"], series: [10,10,10,10,10] },
         answers: [
           { key:"A", text:"Contract A (Retail Goods)" },
           { key:"B", text:"Contract B (Security Service)" }
         ],
         correctAnswerKey: "B",
         tags: [
-          { key:"control", text:"Customer receives benefit as performed (Continuous)" },
-          { key:"series", text:"Distinct service periods (Series guidance)" },
-          { key:"point", text:"Control transfers at a specific point in time" }
+          { key:"t1", text:"Continuous Benefit Received" },
+          { key:"t2", text:"Point-in-Time Transfer" },
+          { key:"t3", text:"Right of Return Liability" },
+          { key:"t4", text:"Series of Distinct Services" }
         ],
-        correctTags: ["control","series"],
-        riskStrength: 20,
-        flagExplain: "Low Risk. The service nature is clear. Timing risk is higher when 'percentage of completion' is based on estimates. Correct is B."
+        correctTags: ["t1", "t4"],
+        feedbackText: "Contract B represents a 'series' of distinct services where the customer consumes the benefit continuously. Contract A transfers control at a point in time (shipment/delivery)."
       },
       {
         id: "RR-CONTRACTASSET",
         lens: "Revenue Recognition",
         difficulty: "Medium",
-        title: "Case 2 — The Unbilled Asset",
-        prompt: "Contract Assets are rising faster than Revenue. What is the most likely cause?",
+        title: "The Unbilled Asset",
+        prompt: "Contract Assets are rising substantially faster than Revenue. What does this signal?",
         footnote: "Refresher: Contract Assets = Revenue recognized but NOT yet billed. Accounts Receivable = Billed and unconditional right to cash.",
         data: [
-          { Year: 2021, Revenue: 100, AccountsReceivable: 10.0, ContractAssets: 9.5 },
-          { Year: 2022, Revenue: 102, AccountsReceivable: 9.1, ContractAssets: 11.5 },
-          { Year: 2023, Revenue: 103, AccountsReceivable: 8.8, ContractAssets: 14.2 }
+          { Year: "2021", Revenue: "100", Billed_AR: "10.0", ContractAssets: "9.5" },
+          { Year: "2022", Revenue: "102", Billed_AR: "9.1", ContractAssets: "11.5" },
+          { Year: "2023", Revenue: "103", Billed_AR: "8.8", ContractAssets: "14.2" }
         ],
-        chart: { title:"Contract Assets ($M)", labels:["21","22","23"], seriesFrom:"ContractAssets" },
+        chart: { labels:["2021","2022","2023"], seriesFrom:"ContractAssets" },
         answers: [
           { key:"A", text:"Customers are paying their bills faster" },
-          { key:"B", text:"Aggressive recognition ahead of billing milestones" },
+          { key:"B", text:"Aggressive recognition ahead of billing rights" },
           { key:"C", text:"Allowance for doubtful accounts is increasing" }
         ],
         correctAnswerKey: "B",
         tags: [
-          { key:"unbilled", text:"Revenue recorded before invoicing rights exist" },
-          { key:"timing", text:"Aggressive timing (pull-forward of revenue)" },
-          { key:"credit", text:"Collections issue (Customers refusing to pay)" }
+          { key:"t1", text:"Accelerated Revenue Pull-Forward" },
+          { key:"t2", text:"Delayed Invoicing Milestones" },
+          { key:"t3", text:"Credit/Collections Issue" },
+          { key:"t4", text:"Unconditional Right to Cash" }
         ],
-        correctTags: ["unbilled","timing"],
-        riskStrength: 60,
-        flagExplain: "High Signal. Growing unbilled revenue relative to sales suggests the company is recognizing revenue well before they can legally invoice. Correct is B."
+        correctTags: ["t1", "t2"],
+        feedbackText: "Growing unbilled revenue relative to sales suggests the company is recognizing revenue well before they can legally invoice."
       },
       {
         id: "RR-ALLOWANCES",
         lens: "Revenue Quality",
         difficulty: "Medium",
-        title: "Case 3 — Shrinking Allowances",
+        title: "Shrinking Allowances",
         prompt: "Are allowances for returns/discounts likely understated or overstated in 2022?",
         footnote: "Formula: Net Sales = Gross Sales - Allowances. If you underestimate allowances, you artificially inflate Net Sales today.",
         data: [
-          { Year: 2021, GrossSales: 500, Additions: 52, ActualReturns: 50, ReserveBalance: 16 },
-          { Year: 2022, GrossSales: 520, Additions: 50, ActualReturns: 60, ReserveBalance: 6 }
+          { Year: "2021", GrossSales: "500", Additions: "52", ActualReturns: "50", ReserveBal: "16" },
+          { Year: "2022", GrossSales: "520", Additions: "50", ActualReturns: "60", ReserveBal: "6" }
         ],
-        chart: { title:"Reserve Balance ($M)", labels:["21","22"], seriesFrom:"ReserveBalance" },
+        chart: { labels:["2021","2022"], seriesFrom:"ReserveBal" },
         answers: [
           { key:"A", text:"Understated (Net Sales artificially high)" },
           { key:"B", text:"Overstated (Net Sales artificially low)" },
@@ -450,28 +541,28 @@
         ],
         correctAnswerKey: "A",
         tags: [
-          { key:"enddrop", text:"Reserve balance collapsed despite higher sales" },
-          { key:"actualgt", text:"Actual returns exceeded the new provisions" },
-          { key:"pressure", text:"Conservative accounting practice" }
+          { key:"t1", text:"Reserve balance collapsed" },
+          { key:"t2", text:"Actual returns exceeded provisions" },
+          { key:"t3", text:"Conservative accounting practice" },
+          { key:"t4", text:"Income Smoothing" }
         ],
-        correctTags: ["enddrop","actualgt"],
-        riskStrength: 55,
-        flagExplain: "Medium-High. The reserve cushion is nearly gone (dropped to 6) while actual returns are rising. This boosts current earnings unsustainably. Correct is A."
+        correctTags: ["t1", "t2"],
+        feedbackText: "The reserve cushion is nearly gone (dropped to 6) while actual returns are rising. This artificially boosts current earnings."
       },
       {
         id: "RR-DEFERRED",
         lens: "Deferred Revenue",
         difficulty: "Medium",
-        title: "Case 4 — The Booking Slowdown",
+        title: "The Booking Slowdown",
         prompt: "Deferred Revenue growth has stalled. What does this signal for the future?",
-        footnote: "Context: For subscription SaaS companies, Deferred Revenue is a leading indicator. It represents cash collected for future service.",
+        footnote: "Context: For subscription/SaaS companies, Deferred Revenue is a leading indicator. It represents cash collected for future service.",
         data: [
-          { Year: 2019, DeferredRev: 900, Growth: "20%" },
-          { Year: 2020, DeferredRev: 1090, Growth: "21%" },
-          { Year: 2021, DeferredRev: 1180, Growth: "8%" },
-          { Year: 2022, DeferredRev: 1210, Growth: "2%" }
+          { Year: "2019", DeferredRev: "900", Growth: "20%" },
+          { Year: "2020", DeferredRev: "1090", Growth: "21%" },
+          { Year: "2021", DeferredRev: "1180", Growth: "8%" },
+          { Year: "2022", DeferredRev: "1210", Growth: "2%" }
         ],
-        chart: { title:"Deferred Revenue ($M)", labels:["19","20","21","22"], seriesFrom:"DeferredRev" },
+        chart: { labels:["2019","2020","2021","2022"], seriesFrom:"DeferredRev" },
         answers: [
           { key:"A", text:"Future revenue growth will likely decelerate" },
           { key:"B", text:"Current revenue is overstated due to refunds" },
@@ -479,28 +570,28 @@
         ],
         correctAnswerKey: "A",
         tags: [
-          { key:"prepay", text:"New bookings/prepayments have slowed down" },
-          { key:"lead", text:"Deferred Revenue acts as a 'backlog' indicator" },
-          { key:"timing", text:"Credit quality degradation" }
+          { key:"t1", text:"Prepayments are slowing down" },
+          { key:"t2", text:"Leading indicator of backlog" },
+          { key:"t3", text:"Cash basis accounting" },
+          { key:"t4", text:"Revenue recognized too early" }
         ],
-        correctTags: ["prepay","lead"],
-        riskStrength: 40,
-        flagExplain: "Medium Signal. While not accounting fraud, it's a vital business health warning. The 'fuel tank' for future revenue is emptying. Correct is A."
+        correctTags: ["t1", "t2"],
+        feedbackText: "While not fraud, it's a vital health warning. The 'fuel tank' for future revenue is emptying as new bookings slow down."
       },
       {
         id: "AR-AGING",
         lens: "Credit Quality (A/R)",
         difficulty: "Hard",
-        title: "Case 5 — The Aging Bucket Estimate",
+        title: "The Aging Bucket Estimate",
         prompt: "Which allowance matrix represents a realistic view of non-collection risk?",
-        footnote: "Rule of Thumb: The older a receivable gets, the less likely it is to be collected. Rates should increase progressively.",
+        footnote: "Rule of Thumb: The older a receivable gets, the less likely it is to be collected. Rates should reflect this deterioration.",
         data: [
-          { Bucket: "Current", Amount: 50000 },
-          { Bucket: "1–60 days", Amount: 30000 },
-          { Bucket: "61–90 days", Amount: 15000 },
-          { Bucket: "90+ days", Amount: 5000 }
+          { Bucket: "Current", Amount: "50000" },
+          { Bucket: "1–60 days", Amount: "30000" },
+          { Bucket: "61–90 days", Amount: "15000" },
+          { Bucket: "90+ days", Amount: "5000" }
         ],
-        chart: { title:"A/R Amount by Age", labels:["Cur","1–60","61–90","90+"], series: [50,30,15,5] },
+        chart: { labels:["Cur","1–60","61–90","90+"], series: [50,30,15,5] },
         answers: [
           { key:"A", text:"Rates: 2%, 5%, 15%, 50% (Progressive)" },
           { key:"B", text:"Rates: 2%, 2%, 2%, 2% (Flat)" },
@@ -508,46 +599,103 @@
         ],
         correctAnswerKey: "A",
         tags: [
-          { key:"progressive", text:"Non-collection risk rises significantly with age" },
-          { key:"judgment", text:"Management judgment applied correctly" },
-          { key:"signal", text:"Flat rates ignore credit deterioration" }
+          { key:"t1", text:"Risk rises significantly with age" },
+          { key:"t2", text:"Flat rates ignore credit deterioration" },
+          { key:"t3", text:"Optimistic management assumptions" },
+          { key:"t4", text:"Strict credit policy" }
         ],
-        correctTags: ["progressive","signal"],
-        riskStrength: 70,
-        flagExplain: "High Risk area. Companies often apply flat low rates to old buckets to minimize Bad Debt Expense. Correct is A."
+        correctTags: ["t1", "t2"],
+        feedbackText: "Non-collection risk rises significantly with age. Companies sometimes apply flat low rates to older buckets to minimize Bad Debt Expense improperly."
       },
       {
         id: "AR-ADJUST",
         lens: "Analyst Adjustment",
         difficulty: "Boss Round",
-        title: "Case 6 — The Cookie Jar?",
-        prompt: "Compare the reported allowance to the historical average. What is the impact?",
-        footnote: "Analyst Check: Calculate the 3-year average loss rate. If the current rate is lower without justification, earnings are boosted.",
+        title: "The Cookie Jar",
+        prompt: "Compare the reported allowance rate to historical trends. What is the impact?",
+        footnote: "Analyst Check: If the current reserve rate is lower without justification, earnings are artificially boosted.",
         data: [
-          { Year: 2021, GrossAR: 110, ReportedAllow: 5.0, Rate: "4.5%" },
-          { Year: 2022, GrossAR: 112, ReportedAllow: 4.0, Rate: "3.6%" },
-          { Year: 2023, GrossAR: 114, ReportedAllow: 3.0, Rate: "2.6%" }
+          { Year: "2021", GrossAR: "110", ReportedAllow: "5.0", RatePct: "4.5" },
+          { Year: "2022", GrossAR: "112", ReportedAllow: "4.0", RatePct: "3.6" },
+          { Year: "2023", GrossAR: "114", ReportedAllow: "3.0", RatePct: "2.6" }
         ],
-        chart: { title:"Reported Allowance Rate %", labels:["21","22","23"], series: [4.5, 3.6, 2.6] },
+        chart: { labels:["2021","2022","2023"], seriesFrom:"RatePct" },
         answers: [
-          { key:"A", text:"Under-reserved (Earnings inflated)" },
-          { key:"B", text:"Over-reserved (Earnings depressed)" },
+          { key:"A", text:"Under-reserved (Earnings artificially inflated)" },
+          { key:"B", text:"Over-reserved (Earnings artificially depressed)" },
           { key:"C", text:"Neutral impact" }
         ],
         correctAnswerKey: "A",
         tags: [
-          { key:"decline", text:"Reserve rate is declining while A/R grows" },
-          { key:"boost", text:"Reducing the reserve creates 'paper profit'" },
-          { key:"yardstick", text:"Historical average suggests higher reserve needed" }
+          { key:"t1", text:"Reserve rate declining while A/R grows" },
+          { key:"t2", text:"Cookie Jar Accounting" },
+          { key:"t3", text:"Artificial Earnings Boost" },
+          { key:"t4", text:"Matching Principle" }
         ],
-        correctTags: ["decline","boost","yardstick"],
-        riskStrength: 65,
-        flagExplain: "High Signal. This is a classic 'Cookie Jar' usage—draining the reserve to meet EPS targets. Correct is A."
+        correctTags: ["t1", "t2", "t3"],
+        feedbackText: "This is a classic 'Cookie Jar' usage—draining the reserve balance to create paper profits and meet EPS targets."
+      },
+      {
+        id: "CLASS5-CHANNEL",
+        lens: "Rev Rec Pitfalls",
+        difficulty: "Hard",
+        title: "The Q4 Surprise",
+        prompt: "Sales surged in Q4, but Q1 returns are massive. What pitfall is likely occurring?",
+        footnote: "Note: Look at the relationship between unnatural Q4 sales spikes and subsequent Q1 returns or deteriorating A/R aging.",
+        data: [
+          { Quarter: "Q1", GrossSales: "420", Returns: "20", ARAging90: "4%" },
+          { Quarter: "Q2", GrossSales: "435", Returns: "22", ARAging90: "4%" },
+          { Quarter: "Q3", GrossSales: "430", Returns: "21", ARAging90: "5%" },
+          { Quarter: "Q4", GrossSales: "680", Returns: "105", ARAging90: "12%" }
+        ],
+        chart: { labels:["Q1","Q2","Q3","Q4"], seriesFrom:"GrossSales" },
+        answers: [
+          { key:"A", text:"Legitimate Seasonal Sales Boom" },
+          { key:"B", text:"Channel Stuffing (Trade Loading)" },
+          { key:"C", text:"Deferred Revenue Amortization" }
+        ],
+        correctAnswerKey: "B",
+        tags: [
+          { key:"t1", text:"Channel Stuffing" },
+          { key:"t2", text:"Cutoff Manipulation" },
+          { key:"t3", text:"Deteriorating A/R Aging" },
+          { key:"t4", text:"Legitimate Seasonality" }
+        ],
+        correctTags: ["t1", "t2", "t3"],
+        feedbackText: "This pattern represents 'Channel Stuffing'. Management forced inventory onto distributors to hit targets (Cutoff Manipulation), leading to high returns next period."
+      },
+      {
+        id: "CLASS5-ALLOWANCE",
+        lens: "A/R & Allowances",
+        difficulty: "Boss Round",
+        title: "The Allowance Illusion",
+        prompt: "Analyze the Allowance Rollforward. What does this reveal about management?",
+        footnote: "Equation: Beg Allowance + Provision - Charge-offs = End Allowance. If Charge-offs outpace Provisions consistently, what happens?",
+        data: [
+          { Year: "2021", GrossAR: "800", Provision: "40", ChargeOffs: "35", EndAllow: "55" },
+          { Year: "2022", GrossAR: "850", Provision: "40", ChargeOffs: "50", EndAllow: "45" },
+          { Year: "2023", GrossAR: "920", Provision: "40", ChargeOffs: "70", EndAllow: "15" }
+        ],
+        chart: { labels:["2021","2022","2023"], seriesFrom:"EndAllow" },
+        answers: [
+          { key:"A", text:"Earnings are artificially inflated (Under-reserved)" },
+          { key:"B", text:"Earnings are artificially depressed (Over-reserved)" },
+          { key:"C", text:"Reserves are perfectly matching credit risk" }
+        ],
+        correctAnswerKey: "A",
+        tags: [
+          { key:"t1", text:"Under-provisioning" },
+          { key:"t2", text:"Charge-offs outpace provisions" },
+          { key:"t3", text:"Artificial Net Income boost" },
+          { key:"t4", text:"Conservative Accounting" }
+        ],
+        correctTags: ["t1", "t2", "t3"],
+        feedbackText: "By keeping the Provision flat while Charge-offs skyrocket, management drains the allowance balance to avoid hitting the Income Statement, inflating Net Income."
       }
     ];
 
     /***********************
-     * State
+     * Game State
      ***********************/
     const state = {
       teams: [],
@@ -557,145 +705,139 @@
       scoredRounds: new Set(),
     };
     
-    const AVATARS = ["🦊", "🦁", "🐸", "🐙", "🦄", "🤖", "👽", "🦉", "🐯", "🐼"];
+    // Auto-generate initials for teams instead of emojis
+    function getInitials(name) {
+      const parts = name.trim().split(" ");
+      if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+      return name.substring(0, 2).toUpperCase();
+    }
 
     /***********************
-     * DOM
+     * DOM Elements
      ***********************/
     const el = (id) => document.getElementById(id);
 
     const leaderboardEl = el("leaderboard");
     const gameMetaEl = el("gameMeta");
+    const teamNameInput = el("teamName");
     const btnAddTeam = el("btnAddTeam");
     const btnStart = el("btnStart");
     const btnNext = el("btnNext");
     const btnLock = el("btnLock");
     const btnReset = el("btnReset");
     const btnHow = el("btnHow");
-    const btnClose = el("btnClose");
-    const modal = el("modal");
-    const btnExport = el("btnExport");
-    const btnCopyCase = el("btnCopyCase");
-
+    
+    const gameBoard = el("gameBoard");
+    const gameOverArea = el("gameOverArea");
     const caseTitle = el("caseTitle");
     const casePrompt = el("casePrompt");
     const caseDifficulty = el("caseDifficulty");
     const caseFootnote = el("caseFootnote");
     const caseLens = el("caseLens");
+    const caseStamp = el("caseStamp");
+    
     const dataHead = el("dataHead");
     const dataBody = el("dataBody");
     const answerArea = el("answerArea");
-    const interactionCard = el("interactionCard");
-    const interactionSub = el("interactionSub");
     const feedbackArea = el("feedbackArea");
     const feedbackText = el("feedbackText");
     const answerChoices = el("answerChoices");
     const tagChoices = el("tagChoices");
-    const riskChoices = el("riskChoices");
-    const flagBar = el("flagBar");
-    const flagLabel = el("flagLabel");
-    const flagExplain = el("flagExplain");
-    const teamNameInput = el("teamName");
+    
     const canvas = el("chart");
     let ctx = null;
 
     /***********************
-     * Helpers
+     * Core Functions
      ***********************/
-    const uid = () => Math.random().toString(16).slice(2) + Date.now().toString(16);
+    const uid = () => Math.random().toString(36).substr(2, 9);
+    const escapeHtml = (str) => (str ?? "").toString().replace(/[&<>'"]/g, 
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag])
+    );
 
-    function setEnabled(node, on){
-      node.disabled = !on;
-      node.classList.toggle("opacity-50", !on);
-      node.classList.toggle("cursor-not-allowed", !on);
+    function roundMeta() {
+      if (state.roundIndex < 0) {
+        gameMetaEl.textContent = `PRE-GAME`;
+      } else {
+        gameMetaEl.textContent = `FILE ${state.roundIndex + 1}/${CASE_BANK.length}`;
+      }
     }
 
-    function roundMeta(){
-      const total = CASE_BANK.length;
-      const r = Math.max(0, state.roundIndex + 1);
-      gameMetaEl.textContent = `Round ${r} / ${total}`;
+    function currentCase() {
+      return state.roundIndex >= 0 ? CASE_BANK[state.roundIndex] : null;
     }
 
-    function currentCase(){
-      if (state.roundIndex < 0) return null;
-      return CASE_BANK[state.roundIndex];
-    }
-
-    function renderLeaderboard(){
+    function renderLeaderboard() {
       leaderboardEl.innerHTML = "";
-      const sorted = [...state.teams].sort((a,b)=>b.score - a.score);
+      const sorted = [...state.teams].sort((a,b) => b.score - a.score);
 
-      sorted.forEach(team => {
+      if (sorted.length === 0) {
+        leaderboardEl.innerHTML = `<div class="text-[11px] text-[#b0aba3] italic p-2 text-center">No teams initialized.</div>`;
+        return;
+      }
+
+      sorted.forEach((team) => {
         const active = team.id === state.activeTeamId;
         const row = document.createElement("button");
-        row.className = `w-full text-left rounded-2xl border px-3 py-3 flex items-center justify-between gap-3 transition-all overflow-visible
-          ${active ? "border-indigo-400 bg-indigo-50 shadow-md transform scale-[1.02]" : "border-slate-100 bg-white hover:bg-slate-50"}`;
         
+        row.className = `w-full text-left rounded-xl border p-3 flex items-center justify-between gap-2 transition-all
+          ${active 
+            ? "border-[#a5b4fc] bg-[#f0f2f8] shadow-sm" 
+            : "border-[#eae6df] bg-white hover:bg-[#faf9f7]"}`;
         row.id = `team-row-${team.id}`;
         
-        row.onclick = () => { 
-          state.activeTeamId = team.id; 
-          ensureSelection(team.id); 
-          renderLeaderboard(); 
-          syncUIFromSelection(); 
+        row.onclick = () => {
+          state.activeTeamId = team.id;
+          if (state.roundIndex >= 0) ensureSelection(team.id);
+          renderLeaderboard();
+          if (state.roundIndex >= 0) syncUIFromSelection();
         };
 
-        const left = document.createElement("div");
-        left.className = "flex items-center gap-3";
-        left.innerHTML = `
-          <div class="text-2xl">${team.avatar}</div>
-          <div>
-            <div class="font-bold text-slate-800 text-sm">${escapeHtml(team.name)}</div>
-            ${active ? '<div class="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">Playing Now</div>' : ''}
+        row.innerHTML = `
+          <div class="flex items-center gap-3 relative">
+            <div class="text-[11px] font-bold text-[#5c699c] bg-[#e3e6f0] border border-[#d1d7e8] rounded-md w-8 h-8 flex items-center justify-center">${getInitials(team.name)}</div>
+            <div>
+              <div class="font-bold text-[#3f3e3a] text-sm tracking-tight truncate max-w-[120px]">${escapeHtml(team.name)}</div>
+              ${active && state.roundIndex >= 0 ? '<div class="text-[9px] font-bold text-[#8ba898] uppercase tracking-widest mt-0.5">Active Target</div>' : ''}
+            </div>
+          </div>
+          <div class="text-right shrink-0">
+            <div class="mono font-bold text-base text-[#2d2c29]">${team.score}</div>
+            <div class="text-[9px] text-[#8c8982] uppercase font-bold">Pts</div>
           </div>
         `;
-
-        const right = document.createElement("div");
-        right.className = "text-right";
-        right.innerHTML = `
-          <div class="mono font-black text-lg text-slate-900">${team.score}</div>
-          <div class="text-[10px] text-slate-400 uppercase font-bold">pts</div>
-        `;
-
-        row.appendChild(left);
-        row.appendChild(right);
         leaderboardEl.appendChild(row);
       });
 
-      if (!state.activeTeamId && state.teams.length){
+      if (!state.activeTeamId && state.teams.length) {
         state.activeTeamId = state.teams[0].id;
       }
     }
 
-    function ensureSelection(teamId){
+    function ensureSelection(teamId) {
       if (!state.selectionsByTeam[teamId]) {
-        state.selectionsByTeam[teamId] = { answerKey: null, tags: new Set(), risk: null };
+        state.selectionsByTeam[teamId] = { answerKey: null, tags: new Set() };
       }
     }
 
-    function clearSelectionsForNewRound(){
+    function clearSelectionsForNewRound() {
       state.selectionsByTeam = {};
       state.scoredRounds = new Set();
       if (state.activeTeamId) ensureSelection(state.activeTeamId);
     }
 
-    function escapeHtml(str){
-      return (str ?? "").toString().replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
-    }
-
-    function getIdealRisk(strength){
-      return strength >= 65 ? "High" : strength >= 40 ? "Med" : "Low";
-    }
-
-    function renderCase(){
+    function renderCase() {
       const c = currentCase();
       if (!c) return;
 
-      // Reset Feedback UI
+      caseStamp.classList.remove("show");
       feedbackArea.classList.add("hidden");
-      interactionSub.textContent = "Select answer, tags, and risk level.";
+      answerArea.classList.remove("opacity-50", "pointer-events-none");
       
-      // Re-enable inputs if they were disabled by lock
+      btnLock.disabled = false;
+      btnLock.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg> Lock & Score`;
+      btnNext.disabled = false; // Next is ALWAYS available
+
       answerArea.querySelectorAll("button, input").forEach(el => el.disabled = false);
 
       caseTitle.textContent = c.title;
@@ -704,318 +846,293 @@
       caseLens.textContent = `Lens: ${c.lens}`;
       caseFootnote.textContent = c.footnote;
 
-      const strength = c.riskStrength;
-      flagBar.style.width = Math.max(5, Math.min(100, strength)) + "%";
-      flagBar.className = `h-full transition-all duration-1000 ease-out rounded-full ${strength > 60 ? 'bg-rose-500' : strength > 35 ? 'bg-yellow-400' : 'bg-emerald-400'}`;
-      
-      flagLabel.textContent = strength >= 65 ? "HIGH" : strength >= 40 ? "MEDIUM" : "LOW";
-      flagExplain.textContent = c.flagExplain;
-
       renderTable(c.data);
-      renderChart(c);
+      setTimeout(() => renderChart(c), 10);
       renderAnswerUI(c);
 
-      answerArea.classList.remove("opacity-50","pointer-events-none");
-      btnLock.disabled = false;
       roundMeta();
+      syncUIFromSelection();
     }
 
-    function renderTable(rows){
-      const cols = Object.keys(rows[0] || {});
-      dataHead.innerHTML = `<tr>${cols.map(h=>`<th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">${escapeHtml(h)}</th>`).join("")}</tr>`;
+    function renderTable(rows) {
+      if (!rows || rows.length === 0) return;
+      const cols = Object.keys(rows[0]);
+      dataHead.innerHTML = `<tr>${cols.map(h => `<th class="px-4 py-3">${escapeHtml(h.replace(/_/g, ' '))}</th>`).join("")}</tr>`;
       dataBody.innerHTML = rows.map(r => `
-        <tr class="hover:bg-slate-50 transition-colors">
-          ${cols.map(k=>`<td class="px-4 py-3 text-sm text-slate-700 font-mono">${escapeHtml(r[k])}</td>`).join("")}
+        <tr class="transition-colors hover:bg-[#faf9f7]">
+          ${cols.map(k => `<td class="px-4 py-2.5">${escapeHtml(r[k])}</td>`).join("")}
         </tr>
       `).join("");
     }
 
-    function renderChart(c){
+    function renderChart(c) {
       if (!ctx) ctx = ChartMini.fitCanvas(canvas);
-      let labels = c.chart.labels;
+      else ChartMini.fitCanvas(canvas);
+      
       let series = [];
       if (c.chart.series) {
         series = c.chart.series.map(v => ({ value: v }));
       } else if (c.chart.seriesFrom) {
-        const key = c.chart.seriesFrom;
-        series = c.data.map(d => ({ value: Number(d[key] || 0) }));
+        series = c.data.map(d => ({ value: Number(d[c.chart.seriesFrom] || 0) }));
       }
-      ctx = ChartMini.fitCanvas(canvas);
-      ChartMini.drawLine(ctx, labels, series);
+      ChartMini.drawLine(ctx, c.chart.labels, series);
     }
 
-    function renderAnswerUI(c){
+    function renderAnswerUI(c) {
       answerChoices.innerHTML = "";
       c.answers.forEach(a => {
-        const row = document.createElement("label");
-        row.className = "flex items-center gap-3 p-4 rounded-xl border border-slate-200 bg-white hover:bg-indigo-50 hover:border-indigo-200 cursor-pointer transition-all group";
-        // ID used for feedback targeting
-        row.dataset.key = a.key;
+        const label = document.createElement("label");
+        label.className = "flex items-start gap-3 p-4 rounded-xl border border-[#eae6df] bg-[#faf9f7] hover:bg-[#f4f1eb] cursor-pointer transition-all";
+        label.dataset.key = a.key;
         
-        row.innerHTML = `
-          <div class="relative flex items-center">
-            <input type="radio" name="answer" value="${a.key}" class="peer h-5 w-5 border-2 border-slate-300 text-indigo-600 focus:ring-indigo-500" />
+        label.innerHTML = `
+          <div class="mt-0.5">
+            <div class="w-5 h-5 rounded-full border-2 border-[#dcd7ce] flex items-center justify-center transition-colors radio-circle bg-white">
+              <div class="w-2 h-2 rounded-full bg-[#5c699c] opacity-0 transition-opacity radio-dot"></div>
+            </div>
+            <input type="radio" name="answer" value="${a.key}" class="hidden" />
           </div>
           <div class="flex-1">
-            <div class="font-bold text-slate-800 group-hover:text-indigo-900">${a.key}</div>
-            <div class="text-sm text-slate-600">${escapeHtml(a.text)}</div>
+            <div class="font-bold text-[#3f3e3a]">${a.key}. ${escapeHtml(a.text)}</div>
           </div>
         `;
-        row.querySelector("input").onchange = (e) => {
+        
+        label.querySelector("input").onchange = (e) => {
           const teamId = state.activeTeamId;
           if (!teamId) return;
           ensureSelection(teamId);
           state.selectionsByTeam[teamId].answerKey = e.target.value;
           syncUIFromSelection();
         };
-        answerChoices.appendChild(row);
+        answerChoices.appendChild(label);
       });
 
       tagChoices.innerHTML = "";
       c.tags.forEach(t => {
-        const chip = document.createElement("button");
-        chip.type = "button";
-        chip.className = "btn px-3 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-600 transition-colors text-left";
-        chip.textContent = t.text;
-        chip.dataset.key = t.key;
-        chip.onclick = () => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "px-3 py-1.5 rounded-lg border border-[#eae6df] bg-[#faf9f7] text-[11px] font-bold text-[#5c5a55] hover:bg-[#f4f1eb] transition-all text-left";
+        btn.textContent = t.text;
+        btn.dataset.key = t.key;
+        
+        btn.onclick = () => {
           const teamId = state.activeTeamId;
           if (!teamId) return;
           ensureSelection(teamId);
           const set = state.selectionsByTeam[teamId].tags;
-          if (set.has(t.key)) set.delete(t.key); else {
-            if (set.size >= 3) return; 
+          
+          if (set.has(t.key)) {
+            set.delete(t.key);
+          } else {
+            if (set.size >= 3) {
+              btn.classList.add("translate-x-1");
+              setTimeout(()=>btn.classList.remove("translate-x-1"), 100);
+              return; 
+            }
             set.add(t.key);
           }
           syncUIFromSelection();
         };
-        tagChoices.appendChild(chip);
+        tagChoices.appendChild(btn);
       });
-
-      const risks = [
-        { key:"Low",  text:"Low Risk",  color:"bg-emerald-500" },
-        { key:"Med",  text:"Medium Risk", color:"bg-yellow-500" },
-        { key:"High", text:"High Risk", color:"bg-rose-500" }
-      ];
-      riskChoices.innerHTML = "";
-      risks.forEach(r => {
-        const b = document.createElement("button");
-        b.type = "button";
-        b.className = "btn px-4 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-sm font-bold text-slate-600 transition-colors";
-        b.textContent = r.text;
-        b.onclick = () => {
-          const teamId = state.activeTeamId;
-          if (!teamId) return;
-          ensureSelection(teamId);
-          state.selectionsByTeam[teamId].risk = r.key;
-          syncUIFromSelection();
-        };
-        b.dataset.risk = r.key;
-        riskChoices.appendChild(b);
-      });
-      syncUIFromSelection();
     }
 
-    function syncUIFromSelection(){
-      const c = currentCase();
-      if (!c) return;
+    function syncUIFromSelection() {
       const teamId = state.activeTeamId;
-      if (!teamId) return;
-
+      const c = currentCase();
+      if (!teamId || !c) return;
       ensureSelection(teamId);
       const sel = state.selectionsByTeam[teamId];
+      const isLocked = state.scoredRounds.has(`${state.roundIndex}|${teamId}`);
 
-      // Highlight selected answer container
-      document.querySelectorAll('input[name="answer"]').forEach(r => {
-        const isChecked = (r.value === sel.answerKey);
-        r.checked = isChecked;
-        const container = r.closest('label');
-        if(isChecked) {
-           container.classList.add('border-indigo-600', 'bg-indigo-50');
-           container.classList.remove('border-slate-200', 'bg-white');
+      // Update Radio UI
+      document.querySelectorAll('input[name="answer"]').forEach(radio => {
+        const isChecked = (radio.value === sel.answerKey);
+        radio.checked = isChecked;
+        const container = radio.closest('label');
+        const dot = container.querySelector('.radio-dot');
+        const circle = container.querySelector('.radio-circle');
+        
+        if (isChecked) {
+          container.classList.add('answer-selected');
+          container.classList.remove('border-[#eae6df]', 'bg-[#faf9f7]', 'hover:bg-[#f4f1eb]');
+          dot.classList.remove('opacity-0');
+          circle.classList.add('border-[#a5b4fc]');
         } else {
-           container.classList.remove('border-indigo-600', 'bg-indigo-50');
-           container.classList.add('border-slate-200', 'bg-white');
+          container.classList.remove('answer-selected');
+          container.classList.add('border-[#eae6df]', 'bg-[#faf9f7]', 'hover:bg-[#f4f1eb]');
+          dot.classList.add('opacity-0');
+          circle.classList.remove('border-[#a5b4fc]');
         }
       });
 
-      // Highlight selected tags
-      [...tagChoices.children].forEach(chip => {
-        const on = sel.tags.has(chip.dataset.key);
-        if (on) {
-          chip.classList.add('btn-selected'); 
-          chip.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
+      // Update Tags UI
+      [...tagChoices.children].forEach(btn => {
+        if (sel.tags.has(btn.dataset.key)) {
+          btn.classList.add('tag-selected');
+          btn.classList.remove('bg-[#faf9f7]', 'text-[#5c5a55]', 'border-[#eae6df]');
         } else {
-          chip.classList.remove('btn-selected');
-          chip.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
+          btn.classList.remove('tag-selected');
+          btn.classList.add('bg-[#faf9f7]', 'text-[#5c5a55]', 'border-[#eae6df]');
         }
       });
 
-      // Highlight selected risk
-      [...riskChoices.children].forEach(btn => {
-        const on = (btn.dataset.risk === sel.risk);
-        if (on) {
-          btn.classList.add('btn-risk-selected');
-          btn.classList.remove('bg-white', 'text-slate-600');
-        } else {
-          btn.classList.remove('btn-risk-selected');
-          btn.classList.add('bg-white', 'text-slate-600');
-        }
-      });
+      // Handle Locked State
+      if (isLocked) {
+        revealResultsForLockedTeam(teamId);
+        btnLock.disabled = true;
+        btnLock.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg> Locked`;
+      } else {
+        feedbackArea.classList.add("hidden");
+        answerArea.classList.remove("opacity-50", "pointer-events-none");
+        caseStamp.classList.remove("show");
+        btnLock.disabled = false;
+        btnLock.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg> Lock & Score`;
+      }
     }
 
-    function showScoreAnimation(teamId, points) {
-      const row = document.getElementById(`team-row-${teamId}`);
-      if (!row) return;
-
-      const rect = row.getBoundingClientRect();
-      const pop = document.createElement("div");
-      pop.className = "score-pop text-2xl font-black";
-      pop.textContent = `+${points}`;
-      pop.style.left = (row.offsetWidth / 2) + "px";
-      pop.style.top = "5px";
-      
-      row.appendChild(pop);
-      
-      setTimeout(() => {
-        if (pop.parentNode) pop.parentNode.removeChild(pop);
-      }, 1500);
-    }
-
-    function scoreSelection(teamId){
+    function scoreSelection(teamId) {
       const c = currentCase();
       const sel = state.selectionsByTeam[teamId];
       if (!c || !sel) return 0;
+      
       const key = `${state.roundIndex}|${teamId}`;
-      if (state.scoredRounds.has(key)) return 0;
+      if (state.scoredRounds.has(key)) return 0; 
 
       let pts = 0;
       if (sel.answerKey === c.correctAnswerKey) pts += 100;
 
       const correctTagSet = new Set(c.correctTags);
-      sel.tags.forEach(t => { if (correctTagSet.has(t)) pts += 10; });
-
-      const ideal = getIdealRisk(c.riskStrength);
-      if (sel.risk){
-        if (sel.risk === ideal) pts += (ideal==="High" ? 40 : ideal==="Med" ? 25 : 10);
-        else if ((sel.risk==="Med" && ideal!=="Med") || (ideal==="Med" && sel.risk!=="Med")) pts += 8;
-      }
+      sel.tags.forEach(t => { 
+        if (correctTagSet.has(t)) pts += 20; 
+        else pts -= 10;
+      });
 
       const team = state.teams.find(t=>t.id===teamId);
-      if (team) {
-        team.score += pts;
-      }
+      if (team) team.score += pts;
+      
       state.scoredRounds.add(key);
       return pts;
     }
 
-    function revealResults(teamId) {
+    function revealResultsForLockedTeam(teamId) {
       const c = currentCase();
       const sel = state.selectionsByTeam[teamId];
       if (!c || !sel) return;
 
-      // 1. Show Explanation Block
+      answerArea.classList.add("pointer-events-none");
+      caseStamp.classList.add("show");
       feedbackArea.classList.remove("hidden");
-      interactionSub.textContent = "Scores locked. Review the solution below.";
-      feedbackText.textContent = c.flagExplain;
+      feedbackText.innerHTML = `<strong>Actual Outcome:</strong> ${c.feedbackText}`;
 
-      // 2. Highlight Answers
-      // Disable inputs
-      document.querySelectorAll('input[name="answer"]').forEach(i => i.disabled = true);
-      
+      // Highlight Answers
       const answerLabels = answerChoices.children;
       for (let label of answerLabels) {
         const key = label.dataset.key;
-        label.classList.remove('hover:bg-indigo-50', 'hover:border-indigo-200', 'cursor-pointer', 'bg-white', 'bg-indigo-50', 'border-indigo-600', 'border-slate-200');
+        label.className = "flex items-start gap-3 p-4 rounded-xl border transition-all"; 
         
         if (key === c.correctAnswerKey) {
           label.classList.add('answer-correct');
-          // Add checkmark icon
-          const div = document.createElement("div");
-          div.className = "absolute -right-2 -top-2 bg-emerald-500 text-white rounded-full p-1 shadow-sm";
-          div.innerHTML = `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>`;
-          label.appendChild(div);
+          if(!label.innerHTML.includes("CORRECT")) {
+            label.innerHTML += `<div class="absolute right-4 top-1/2 -translate-y-1/2 text-[#059669] font-bold tracking-widest text-[10px]">CORRECT</div>`;
+          }
         } else if (key === sel.answerKey && key !== c.correctAnswerKey) {
           label.classList.add('answer-wrong');
         } else {
-          label.classList.add('opacity-40', 'bg-slate-50', 'border-slate-100');
+          label.classList.add('opacity-40', 'bg-[#f4f1eb]', 'border-[#eae6df]');
         }
       }
 
-      // 3. Highlight Tags
+      // Highlight Tags
       const correctTagSet = new Set(c.correctTags);
       const tags = tagChoices.children;
       for (let btn of tags) {
-        btn.disabled = true;
         const key = btn.dataset.key;
         const isSelected = sel.tags.has(key);
         const isCorrect = correctTagSet.has(key);
 
-        btn.classList.remove('btn-selected', 'bg-white', 'text-slate-600', 'border-slate-200', 'hover:bg-slate-50');
+        btn.className = "px-3 py-1.5 rounded-lg border text-[11px] font-bold text-left transition-all"; 
 
         if (isCorrect) {
-          // Highlight correct tags in green (even if missed)
-          if (isSelected) {
-            btn.classList.add('tag-correct');
-          } else {
-            btn.classList.add('tag-missed');
-          }
+          if (isSelected) btn.classList.add('tag-correct');
+          else btn.classList.add('tag-missed');
         } else if (isSelected && !isCorrect) {
-          // Wrong selection
-          btn.classList.add('bg-rose-100', 'text-rose-700', 'border-rose-200', 'opacity-70');
+          btn.classList.add('tag-wrong'); 
         } else {
-          // Irrelevant
-          btn.classList.add('opacity-30', 'bg-slate-50');
-        }
-      }
-
-      // 4. Highlight Risk
-      const idealRisk = getIdealRisk(c.riskStrength);
-      const riskBtns = riskChoices.children;
-      for (let btn of riskBtns) {
-        btn.disabled = true;
-        const riskKey = btn.dataset.risk;
-        const isSelected = (sel.risk === riskKey);
-        
-        btn.classList.remove('btn-risk-selected', 'bg-white', 'text-slate-600', 'hover:bg-slate-50');
-
-        if (riskKey === idealRisk) {
-          btn.classList.add('bg-slate-800', 'text-white', 'ring-2', 'ring-emerald-400', 'ring-offset-2');
-        } else if (isSelected && riskKey !== idealRisk) {
-          btn.classList.add('bg-slate-200', 'text-slate-400', 'line-through');
-        } else {
-          btn.classList.add('opacity-30', 'bg-slate-50');
+          btn.classList.add('opacity-30', 'bg-[#faf9f7]', 'border-[#eae6df]', 'text-[#8c8982]');
         }
       }
     }
 
-    function toCSV(rows){
-      const cols = Object.keys(rows[0] || {});
-      const esc = v => `"${String(v ?? "").replaceAll('"','""')}"`;
-      const lines = [
-        cols.map(esc).join(","),
-        ...rows.map(r => cols.map(k=>esc(r[k])).join(","))
+    function showScoreAnimation(teamId, points) {
+      const row = document.getElementById(`team-row-${teamId}`);
+      if (!row) return;
+      const pop = document.createElement("div");
+      pop.className = "score-pop mono";
+      pop.textContent = points >= 0 ? `+${points}` : points;
+      pop.style.color = points >= 0 ? '#4b8a6b' : '#c4727e'; 
+      
+      const rect = row.getBoundingClientRect();
+      pop.style.left = (rect.width - 60) + "px";
+      pop.style.top = "10px";
+      
+      row.appendChild(pop);
+      setTimeout(() => pop.remove(), 1200);
+    }
+
+    function showGameOverScreen() {
+      gameBoard.classList.add("hidden");
+      gameOverArea.classList.remove("hidden");
+      
+      const sorted = [...state.teams].sort((a,b) => b.score - a.score);
+      const podium = el("podium");
+      podium.innerHTML = "";
+      
+      const places = [
+        { rank: 2, team: sorted[1], class: "podium-2" },
+        { rank: 1, team: sorted[0], class: "podium-1" },
+        { rank: 3, team: sorted[2], class: "podium-3" }
       ];
-      return lines.join("\n");
+
+      places.forEach(p => {
+        if (!p.team) return; 
+        
+        const col = document.createElement("div");
+        col.className = "flex flex-col items-center justify-end w-1/3 sm:w-1/4 animate-in";
+        col.style.animationDelay = `${(3 - p.rank) * 0.2}s`;
+        
+        col.innerHTML = `
+          <div class="text-sm font-bold bg-white border border-[#eae6df] text-[#5c699c] rounded-lg w-10 h-10 flex items-center justify-center mb-2 shadow-sm">${getInitials(p.team.name)}</div>
+          <div class="font-bold text-[#3f3e3a] text-sm truncate w-full text-center px-1">${escapeHtml(p.team.name)}</div>
+          <div class="mono text-[#8c8982] text-[11px] font-bold mb-3">${p.team.score} pts</div>
+          <div class="w-full rounded-t-lg flex items-start justify-center pt-4 ${p.class}">
+            <span class="font-bold text-[#8c8982]/40 text-2xl">${p.rank}</span>
+          </div>
+        `;
+        podium.appendChild(col);
+      });
     }
 
     /***********************
-     * Events
+     * Event Listeners
      ***********************/
-    btnHow.onclick = () => { modal.classList.remove("hidden"); modal.classList.add("flex"); };
-    btnClose.onclick = () => { modal.classList.add("hidden"); modal.classList.remove("flex"); };
-    modal.onclick = (e) => { if (e.target === modal) { modal.classList.add("hidden"); modal.classList.remove("flex"); } };
+    btnHow.onclick = () => { el("modal").classList.remove("hidden"); el("modal").classList.add("flex"); };
+    el("btnClose").onclick = () => { el("modal").classList.add("hidden"); el("modal").classList.remove("flex"); };
+    el("modal").onclick = (e) => { if (e.target === el("modal")) { el("modal").classList.add("hidden"); el("modal").classList.remove("flex"); } };
 
     btnAddTeam.onclick = () => {
       const name = (teamNameInput.value || "").trim();
       if (!name) return;
-      const av = AVATARS[Math.floor(Math.random() * AVATARS.length)];
-      state.teams.push({ id: uid(), name, avatar: av, score: 0 });
+      state.teams.push({ id: uid(), name, score: 0 });
       teamNameInput.value = "";
-      if (!state.activeTeamId) state.activeTeamId = state.teams[state.teams.length-1].id;
+      if (!state.activeTeamId) state.activeTeamId = state.teams[0].id;
       renderLeaderboard();
-      setEnabled(btnStart, state.teams.length >= 1);
+      btnStart.disabled = state.teams.length === 0;
     };
+    
+    teamNameInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") btnAddTeam.click();
+    });
 
     btnStart.onclick = () => {
       if (state.teams.length < 1) return;
@@ -1023,28 +1140,10 @@
       clearSelectionsForNewRound();
       renderLeaderboard();
       renderCase();
-      setEnabled(btnNext, true);
-      setEnabled(btnLock, true);
-      setEnabled(btnStart, false);
-      setEnabled(btnAddTeam, false);
+      
       teamNameInput.disabled = true;
-    };
-
-    btnNext.onclick = () => {
-      if (state.roundIndex < 0) return;
-      if (state.roundIndex >= CASE_BANK.length - 1) {
-        caseTitle.textContent = "🎉 Game Over — Final Scores";
-        casePrompt.textContent = "Check the leaderboard to see who won!";
-        feedbackArea.classList.add("hidden");
-        answerArea.classList.add("hidden");
-        setEnabled(btnNext, false);
-        return;
-      }
-      state.roundIndex += 1;
-      clearSelectionsForNewRound();
-      renderCase();
-      renderLeaderboard();
-      syncUIFromSelection();
+      btnAddTeam.disabled = true;
+      btnStart.classList.add("hidden");
     };
 
     btnLock.onclick = () => {
@@ -1052,87 +1151,88 @@
       if (!teamId) return;
       ensureSelection(teamId);
       const sel = state.selectionsByTeam[teamId];
-      if (!sel.answerKey) { alert("⚠️ Please select an answer first."); return; }
+      if (!sel.answerKey) { 
+        alert("Please select a primary conclusion before locking."); 
+        return; 
+      }
 
-      // 1. Calculate Score
-      const gained = scoreSelection(teamId);
+      const pts = scoreSelection(teamId);
+      renderLeaderboard();
+      showScoreAnimation(teamId, pts);
+      syncUIFromSelection(); 
+    };
+
+    btnNext.onclick = () => {
+      if (state.roundIndex < 0) return;
       
-      // 2. Render Leaderboard
-      renderLeaderboard(); 
-
-      // 3. Trigger Animation
-      requestAnimationFrame(() => {
-        showScoreAnimation(teamId, gained);
-      });
-
-      // 4. Reveal Visual Feedback (NEW)
-      revealResults(teamId);
-      btnLock.disabled = true;
+      if (state.roundIndex >= CASE_BANK.length - 1) {
+        showGameOverScreen();
+        return;
+      }
+      
+      state.roundIndex++;
+      clearSelectionsForNewRound();
+      renderCase();
+      renderLeaderboard();
     };
 
     btnReset.onclick = () => {
-      if (!confirm("Reset the whole game?")) return;
+      if (!confirm("Are you sure you want to scrub all data and reset the room?")) return;
       state.teams = [];
       state.roundIndex = -1;
       state.activeTeamId = null;
       state.selectionsByTeam = {};
       state.scoredRounds = new Set();
-      renderLeaderboard();
-      renderCase();
-      roundMeta();
-      setEnabled(btnStart, false);
-      setEnabled(btnNext, false);
-      setEnabled(btnLock, false);
-      setEnabled(btnAddTeam, true);
-      teamNameInput.disabled = false;
-      answerArea.classList.remove("hidden");
       
-      // Reset texts
-      caseTitle.textContent = "Add a team to begin.";
-      casePrompt.textContent = "Get ready to analyze the data.";
+      teamNameInput.disabled = false;
+      btnAddTeam.disabled = false;
+      btnStart.classList.remove("hidden");
+      btnStart.disabled = true;
+      
+      gameBoard.classList.remove("hidden");
+      gameOverArea.classList.add("hidden");
+      
+      caseTitle.textContent = "Awaiting Initialization";
+      casePrompt.textContent = "Add teams and initialize the case files to begin your investigation.";
+      dataHead.innerHTML = ""; dataBody.innerHTML = "";
+      if(ctx) ctx.clearRect(0,0, canvas.width, canvas.height);
+      answerChoices.innerHTML = "";
+      tagChoices.innerHTML = "";
+      feedbackArea.classList.add("hidden");
+      caseStamp.classList.remove("show");
+      
+      renderLeaderboard();
+      roundMeta();
     };
-    
-    // Stored script URL to prevent hardcoding issues
-    const googleScriptUrl = "https://script.google.com/macros/s/AKfycbxNX7FoRk0gUz9mJkPIlB4cIEqQP2xZ_6MK9BTUHt__5gtpx2dCWk6AUXVh0-XWM3zo/exec";
 
-    btnExport.onclick = () => {
-      const payload = { roundIndex: state.roundIndex, teams: state.teams };
-      const btn = btnExport;
-      const originalText = btn.innerText;
-      btn.innerText = "Sending...";
+    window.addEventListener("resize", () => {
+      if (currentCase() && state.roundIndex >= 0) {
+        renderChart(currentCase());
+      }
+    });
+
+    // Mock Submit Handler
+    el("btnSubmitScores").onclick = () => {
+      const btn = el("btnSubmitScores");
+      const status = el("submitStatus");
+      
       btn.disabled = true;
+      btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-[#3d5a49]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Transmitting...`;
+      status.textContent = "Connecting to submission server...";
 
-      fetch(googleScriptUrl, {
-        method: "POST", mode: "no-cors", 
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
-      })
-      .then(() => { alert("✅ Request Sent!"); })
-      .catch((err) => { 
-        console.error(err); 
-        alert("❌ Error sending data.");
-      })
-      .finally(() => { btn.innerText = originalText; btn.disabled = false; });
+      setTimeout(() => {
+        btn.classList.remove("bg-[#d5e0d9]", "hover:bg-[#c6d4cc]", "text-[#3d5a49]");
+        btn.classList.add("bg-[#e3e6f0]", "text-[#4a5578]");
+        btn.innerHTML = `✓ Official Results Submitted`;
+        status.innerHTML = "<span class='text-[#4b8a6b]'>Success. Data safely stored for official review.</span>";
+      }, 1500);
     };
-
-    btnCopyCase.onclick = async () => {
-      const c = currentCase();
-      if (!c) return;
-      const csv = toCSV(c.data);
-      try { await navigator.clipboard.writeText(csv); alert("Dataset copied!"); } catch { alert("Clipboard blocked."); }
-    };
-
-    window.addEventListener("resize", () => { if (currentCase()) renderChart(currentCase()); });
 
     /***********************
-     * Init
+     * Initialization
      ***********************/
     renderLeaderboard();
-    renderCase();
     roundMeta();
-    setEnabled(btnStart, false);
-    setEnabled(btnNext, false);
-    setEnabled(btnLock, false);
   </script>
 </body>
 </html>
