@@ -132,9 +132,9 @@
     ::-webkit-scrollbar-thumb:hover { background: #b0aba3; }
 
     /* Podium */
-    .podium-1 { height: 140px; background-color: #e8e6fb; border: 1px solid #c7c4f0;} 
-    .podium-2 { height: 100px; background-color: #f1f0ee; border: 1px solid #e1deda;}
-    .podium-3 { height: 70px; background-color: #f1f0ee; border: 1px solid #e1deda;}
+    .podium-1 { height: 160px; background-color: #e8e6fb; border: 1px solid #c7c4f0;} 
+    .podium-2 { height: 110px; background-color: #f1f0ee; border: 1px solid #e1deda;}
+    .podium-3 { height: 80px; background-color: #f1f0ee; border: 1px solid #e1deda;}
   </style>
 </head>
 
@@ -322,21 +322,21 @@
       <!-- GAME OVER AREA -->
       <div id="gameOverArea" class="hidden soft-card rounded-2xl p-8 text-center animate-in flex flex-col items-center justify-center min-h-[500px]">
         <div class="inline-block p-4 rounded-full bg-[#f0f2f8] mb-4 border border-[#e1e4f0]">
-          <svg class="w-10 h-10 text-[#5c699c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+          <svg class="w-12 h-12 text-[#5c699c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
         </div>
-        <h1 class="text-3xl font-extrabold text-[#2d2c29] mb-2 tracking-tight">Investigation Complete</h1>
-        <p class="text-[#5c5a55] mb-10 max-w-md text-sm">All cases have been processed. Review the final standings of your audit teams below.</p>
+        <h1 class="text-4xl font-extrabold text-[#2d2c29] mb-3 tracking-tight">Investigation Complete</h1>
+        <p class="text-[#5c5a55] mb-12 max-w-md text-base">All cases have been processed. Review the final standings of your audit teams below.</p>
         
         <!-- Podium -->
-        <div id="podium" class="flex items-end justify-center gap-2 sm:gap-4 h-48 mb-12 w-full max-w-2xl mx-auto border-b border-[#eae6df] pb-0">
+        <div id="podium" class="flex items-end justify-center gap-3 sm:gap-6 h-56 mb-16 w-full max-w-3xl mx-auto border-b-2 border-[#eae6df] pb-0">
           <!-- Populated by JS -->
         </div>
 
-        <button id="btnSubmitScores" class="btn px-8 py-4 rounded-xl bg-[#d5e0d9] hover:bg-[#c6d4cc] text-[#3d5a49] font-bold text-lg border border-[#bdccc3] shadow-sm flex items-center gap-3 transition-all">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+        <button id="btnSubmitScores" class="btn px-8 py-4 rounded-xl bg-[#d5e0d9] hover:bg-[#c6d4cc] text-[#3d5a49] font-bold text-lg border border-[#bdccc3] shadow-md flex items-center gap-3 transition-all">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
           Submit for Competition
         </button>
-        <p class="text-xs text-[#8c8982] mt-4 mono" id="submitStatus"></p>
+        <p class="text-xs text-[#8c8982] mt-5 mono font-semibold" id="submitStatus"></p>
       </div>
 
     </section>
@@ -499,23 +499,25 @@
         prompt: "Based on control transfer, which contract should recognize revenue OVER TIME?",
         footnote: "Note: Revenue is recognized when (or as) control of goods or services transfers to the customer. Contract A is standard retail shipment. Contract B is a continuous security monitoring service.",
         data: [
-          { Contract: "A: Retail Goods", Performance: "Single delivery", Billing: "At shipment", Returns: "Est. 2%" },
-          { Contract: "B: Security Svc", Performance: "Continuous 24/7", Billing: "Monthly", Returns: "N/A" }
+          { "Contract Type": "A: Retail Goods", "Performance Obligation": "Single delivery", "Billing terms": "At shipment", "Expected Returns": "Est. 2%" },
+          { "Contract Type": "B: Security Service", "Performance Obligation": "Continuous 24/7", "Billing terms": "Monthly", "Expected Returns": "N/A" }
         ],
-        chart: { labels: ["M1","M2","M3","M4","M5"], series: [10,10,10,10,10] },
+        chart: { labels: ["Month 1","Month 2","Month 3","Month 4","Month 5"], series: [10,10,10,10,10] },
         answers: [
           { key:"A", text:"Contract A (Retail Goods)" },
           { key:"B", text:"Contract B (Security Service)" }
         ],
         correctAnswerKey: "B",
         tags: [
-          { key:"t1", text:"Continuous Benefit Received" },
-          { key:"t2", text:"Point-in-Time Transfer" },
-          { key:"t3", text:"Right of Return Liability" },
-          { key:"t4", text:"Series of Distinct Services" }
+          { key:"t1", text:"Continuous Transfer of Control" },
+          { key:"t2", text:"Point-in-Time Delivery Transfer" },
+          { key:"t3", text:"Right of Return Liability Overstated" },
+          { key:"t4", text:"Series of Distinct Services Provided" },
+          { key:"t5", text:"Performance Obligation Satisfied Over Time" },
+          { key:"t6", text:"Milestone Based Percentage of Completion" }
         ],
-        correctTags: ["t1", "t4"],
-        feedbackText: "Contract B represents a 'series' of distinct services where the customer consumes the benefit continuously. Contract A transfers control at a point in time (shipment/delivery)."
+        correctTags: ["t1", "t4", "t5"],
+        feedbackText: "Contract B represents a 'series' of distinct services where the customer consumes the benefit continuously as performed over time. Contract A transfers control at a specific point in time (upon shipment/delivery)."
       },
       {
         id: "RR-CONTRACTASSET",
@@ -525,11 +527,11 @@
         prompt: "Contract Assets are rising substantially faster than Revenue. What does this signal?",
         footnote: "Refresher: Contract Assets = Revenue recognized but NOT yet billed. Accounts Receivable = Billed and unconditional right to cash.",
         data: [
-          { Year: "2021", Revenue: "100", Billed_AR: "10.0", ContractAssets: "9.5" },
-          { Year: "2022", Revenue: "102", Billed_AR: "9.1", ContractAssets: "11.5" },
-          { Year: "2023", Revenue: "103", Billed_AR: "8.8", ContractAssets: "14.2" }
+          { "Financial Year": "2024", "Total Revenue": "100", "Billed Accounts Receivable": "10.0", "Unbilled Contract Assets": "9.5" },
+          { "Financial Year": "2025", "Total Revenue": "102", "Billed Accounts Receivable": "9.1", "Unbilled Contract Assets": "11.5" },
+          { "Financial Year": "2026", "Total Revenue": "103", "Billed Accounts Receivable": "8.8", "Unbilled Contract Assets": "14.2" }
         ],
-        chart: { labels:["2021","2022","2023"], seriesFrom:"ContractAssets" },
+        chart: { labels:["2024","2025","2026"], seriesFrom:"Unbilled Contract Assets" },
         answers: [
           { key:"A", text:"Customers are paying their bills faster" },
           { key:"B", text:"Aggressive recognition ahead of billing rights" },
@@ -539,24 +541,26 @@
         tags: [
           { key:"t1", text:"Accelerated Revenue Pull-Forward" },
           { key:"t2", text:"Delayed Invoicing Milestones" },
-          { key:"t3", text:"Credit/Collections Issue" },
-          { key:"t4", text:"Unconditional Right to Cash" }
+          { key:"t3", text:"Deteriorating Customer Credit Quality" },
+          { key:"t4", text:"Unconditional Right to Consideration Exists" },
+          { key:"t5", text:"Aggressive Percentage of Completion Estimates" },
+          { key:"t6", text:"Revenue Recognized Before Billing Rights" }
         ],
-        correctTags: ["t1", "t2"],
-        feedbackText: "Growing unbilled revenue relative to sales suggests the company is recognizing revenue well before they can legally invoice."
+        correctTags: ["t1", "t5", "t6"],
+        feedbackText: "Growing unbilled revenue relative to sales suggests the company is recognizing revenue well before they hit milestones allowing them to legally invoice the client."
       },
       {
         id: "RR-ALLOWANCES",
         lens: "Revenue Quality",
         difficulty: "Medium",
         title: "Shrinking Allowances",
-        prompt: "Are allowances for returns/discounts likely understated or overstated in 2022?",
+        prompt: "Are allowances for returns/discounts likely understated or overstated in 2025?",
         footnote: "Formula: Net Sales = Gross Sales - Allowances. If you underestimate allowances, you artificially inflate Net Sales today.",
         data: [
-          { Year: "2021", GrossSales: "500", Additions: "52", ActualReturns: "50", ReserveBal: "16" },
-          { Year: "2022", GrossSales: "520", Additions: "50", ActualReturns: "60", ReserveBal: "6" }
+          { "Financial Year": "2024", "Gross Sales": "500", "New Reserve Additions": "52", "Actual Returns": "50", "Reserve Balance": "16" },
+          { "Financial Year": "2025", "Gross Sales": "520", "New Reserve Additions": "50", "Actual Returns": "60", "Reserve Balance": "6" }
         ],
-        chart: { labels:["2021","2022"], seriesFrom:"ReserveBal" },
+        chart: { labels:["2024","2025"], seriesFrom:"Reserve Balance" },
         answers: [
           { key:"A", text:"Understated (Net Sales artificially high)" },
           { key:"B", text:"Overstated (Net Sales artificially low)" },
@@ -564,13 +568,15 @@
         ],
         correctAnswerKey: "A",
         tags: [
-          { key:"t1", text:"Reserve balance collapsed" },
-          { key:"t2", text:"Actual returns exceeded provisions" },
-          { key:"t3", text:"Conservative accounting practice" },
-          { key:"t4", text:"Income Smoothing" }
+          { key:"t1", text:"Reserve Balance Significantly Depleted" },
+          { key:"t2", text:"Actual Returns Exceeded Provision Estimates" },
+          { key:"t3", text:"Conservative Accounting Methodology" },
+          { key:"t4", text:"Artificial Inflation of Net Sales" },
+          { key:"t5", text:"Inadequate Sales Return Allowance" },
+          { key:"t6", text:"Excessive Warranty Liabilities Recorded" }
         ],
-        correctTags: ["t1", "t2"],
-        feedbackText: "The reserve cushion is nearly gone (dropped to 6) while actual returns are rising. This artificially boosts current earnings."
+        correctTags: ["t1", "t2", "t4"],
+        feedbackText: "The reserve cushion is nearly gone (dropped from 16 to 6) while actual returns are rising. This artificially boosts current Net Sales and Earnings."
       },
       {
         id: "RR-DEFERRED",
@@ -580,12 +586,12 @@
         prompt: "Deferred Revenue growth has stalled. What does this signal for the future?",
         footnote: "Context: For subscription/SaaS companies, Deferred Revenue is a leading indicator. It represents cash collected for future service.",
         data: [
-          { Year: "2019", DeferredRev: "900", Growth: "20%" },
-          { Year: "2020", DeferredRev: "1090", Growth: "21%" },
-          { Year: "2021", DeferredRev: "1180", Growth: "8%" },
-          { Year: "2022", DeferredRev: "1210", Growth: "2%" }
+          { "Financial Year": "2022", "Deferred Revenue": "900", "Growth Rate": "20%" },
+          { "Financial Year": "2023", "Deferred Revenue": "1090", "Growth Rate": "21%" },
+          { "Financial Year": "2024", "Deferred Revenue": "1180", "Growth Rate": "8%" },
+          { "Financial Year": "2025", "Deferred Revenue": "1210", "Growth Rate": "2%" }
         ],
-        chart: { labels:["2019","2020","2021","2022"], seriesFrom:"DeferredRev" },
+        chart: { labels:["2022","2023","2024","2025"], seriesFrom:"Deferred Revenue" },
         answers: [
           { key:"A", text:"Future revenue growth will likely decelerate" },
           { key:"B", text:"Current revenue is overstated due to refunds" },
@@ -593,13 +599,15 @@
         ],
         correctAnswerKey: "A",
         tags: [
-          { key:"t1", text:"Prepayments are slowing down" },
-          { key:"t2", text:"Leading indicator of backlog" },
-          { key:"t3", text:"Cash basis accounting" },
-          { key:"t4", text:"Revenue recognized too early" }
+          { key:"t1", text:"Customer Prepayments Decelerating" },
+          { key:"t2", text:"Leading Indicator of Backlog Shrinkage" },
+          { key:"t3", text:"Switch to Cash Basis Accounting" },
+          { key:"t4", text:"Revenue Recognized Too Early" },
+          { key:"t5", text:"Fuel for Future Revenue Depleted" },
+          { key:"t6", text:"Deferred Acquisition Costs Rising" }
         ],
-        correctTags: ["t1", "t2"],
-        feedbackText: "While not fraud, it's a vital health warning. The 'fuel tank' for future revenue is emptying as new bookings slow down."
+        correctTags: ["t1", "t2", "t5"],
+        feedbackText: "While not inherently fraudulent, it is a vital health warning. The 'fuel tank' for future revenue is emptying as new upfront bookings slow down."
       },
       {
         id: "AR-AGING",
@@ -607,14 +615,14 @@
         difficulty: "Hard",
         title: "The Aging Bucket Estimate",
         prompt: "Which allowance matrix represents a realistic view of non-collection risk?",
-        footnote: "Rule of Thumb: The older a receivable gets, the less likely it is to be collected. Rates should reflect this deterioration.",
+        footnote: "Rule of Thumb: The older a receivable gets, the less likely it is to be collected. Expected loss rates should reflect this deterioration.",
         data: [
-          { Bucket: "Current", Amount: "50000" },
-          { Bucket: "1–60 days", Amount: "30000" },
-          { Bucket: "61–90 days", Amount: "15000" },
-          { Bucket: "90+ days", Amount: "5000" }
+          { "Aging Bucket": "Current", "Outstanding Amount": "50000" },
+          { "Aging Bucket": "1–60 days past due", "Outstanding Amount": "30000" },
+          { "Aging Bucket": "61–90 days past due", "Outstanding Amount": "15000" },
+          { "Aging Bucket": "90+ days past due", "Outstanding Amount": "5000" }
         ],
-        chart: { labels:["Cur","1–60","61–90","90+"], series: [50,30,15,5] },
+        chart: { labels:["Current","1–60 days","61–90 days","90+ days"], series: [50,30,15,5] },
         answers: [
           { key:"A", text:"Rates: 2%, 5%, 15%, 50% (Progressive)" },
           { key:"B", text:"Rates: 2%, 2%, 2%, 2% (Flat)" },
@@ -622,98 +630,106 @@
         ],
         correctAnswerKey: "A",
         tags: [
-          { key:"t1", text:"Risk rises significantly with age" },
-          { key:"t2", text:"Flat rates ignore credit deterioration" },
-          { key:"t3", text:"Optimistic management assumptions" },
-          { key:"t4", text:"Strict credit policy" }
+          { key:"t1", text:"Non-Collection Risk Rises with Age" },
+          { key:"t2", text:"Flat Rates Ignore Credit Deterioration" },
+          { key:"t3", text:"Optimistic Management Assumptions" },
+          { key:"t4", text:"Strict Credit Policy Implementation" },
+          { key:"t5", text:"Inadequate Bad Debt Provision Required" },
+          { key:"t6", text:"Matching Principle Violated" }
         ],
-        correctTags: ["t1", "t2"],
-        feedbackText: "Non-collection risk rises significantly with age. Companies sometimes apply flat low rates to older buckets to minimize Bad Debt Expense improperly."
+        correctTags: ["t1", "t2", "t5"],
+        feedbackText: "Non-collection risk naturally rises significantly with age. Companies occasionally apply flat, low rates to older buckets to improperly minimize their Bad Debt Expense."
       },
       {
         id: "AR-ADJUST",
         lens: "Analyst Adjustment",
         difficulty: "Boss Round",
         title: "The Cookie Jar",
-        prompt: "Compare the reported allowance rate to historical trends. What is the impact?",
-        footnote: "Analyst Check: If the current reserve rate is lower without justification, earnings are artificially boosted.",
+        prompt: "Compare the reported allowance rate to historical trends. What is the financial impact?",
+        footnote: "Analyst Check: If the current reserve rate is mysteriously lowered without operational justification, earnings are artificially boosted.",
         data: [
-          { Year: "2021", GrossAR: "110", ReportedAllow: "5.0", RatePct: "4.5" },
-          { Year: "2022", GrossAR: "112", ReportedAllow: "4.0", RatePct: "3.6" },
-          { Year: "2023", GrossAR: "114", ReportedAllow: "3.0", RatePct: "2.6" }
+          { "Financial Year": "2024", "Gross Accounts Receivable": "110", "Reported Allowance": "5.0", "Allowance Rate (%)": "4.5" },
+          { "Financial Year": "2025", "Gross Accounts Receivable": "112", "Reported Allowance": "4.0", "Allowance Rate (%)": "3.6" },
+          { "Financial Year": "2026", "Gross Accounts Receivable": "114", "Reported Allowance": "3.0", "Allowance Rate (%)": "2.6" }
         ],
-        chart: { labels:["2021","2022","2023"], seriesFrom:"RatePct" },
+        chart: { labels:["2024","2025","2026"], seriesFrom:"Allowance Rate (%)" },
         answers: [
           { key:"A", text:"Under-reserved (Earnings artificially inflated)" },
           { key:"B", text:"Over-reserved (Earnings artificially depressed)" },
-          { key:"C", text:"Neutral impact" }
+          { key:"C", text:"Neutral operational impact" }
         ],
         correctAnswerKey: "A",
         tags: [
-          { key:"t1", text:"Reserve rate declining while A/R grows" },
-          { key:"t2", text:"Cookie Jar Accounting" },
+          { key:"t1", text:"Reserve Rate Declining Despite Growth" },
+          { key:"t2", text:"Cookie Jar Accounting Tactics" },
           { key:"t3", text:"Artificial Earnings Boost" },
-          { key:"t4", text:"Matching Principle" }
+          { key:"t4", text:"Strict Matching Principle Adherence" },
+          { key:"t5", text:"Reversal of Prior Year Allowances" },
+          { key:"t6", text:"Aggressive Receivables Write-Off Strategy" }
         ],
         correctTags: ["t1", "t2", "t3"],
-        feedbackText: "This is a classic 'Cookie Jar' usage—draining the reserve balance to create paper profits and meet EPS targets."
+        feedbackText: "This is a classic 'Cookie Jar' accounting technique—quietly draining the reserve balance to create paper profits and meet Wall Street EPS targets."
       },
       {
         id: "CLASS5-CHANNEL",
         lens: "Rev Rec Pitfalls",
         difficulty: "Hard",
         title: "The Q4 Surprise",
-        prompt: "Sales surged in Q4, but Q1 returns are massive. What pitfall is likely occurring?",
-        footnote: "Note: Look at the relationship between unnatural Q4 sales spikes and subsequent Q1 returns or deteriorating A/R aging.",
+        prompt: "Sales surged in Q4, but Q1 returns are massive. What accounting pitfall is likely occurring?",
+        footnote: "Note: Look at the relationship between unnatural Q4 sales spikes and subsequent Q1 returns or deteriorating Accounts Receivable aging.",
         data: [
-          { Quarter: "Q1", GrossSales: "420", Returns: "20", ARAging90: "4%" },
-          { Quarter: "Q2", GrossSales: "435", Returns: "22", ARAging90: "4%" },
-          { Quarter: "Q3", GrossSales: "430", Returns: "21", ARAging90: "5%" },
-          { Quarter: "Q4", GrossSales: "680", Returns: "105", ARAging90: "12%" }
+          { "Fiscal Quarter": "Q1", "Gross Sales": "420", "Actual Returns": "20", "A/R Aging 90+ Days": "4%" },
+          { "Fiscal Quarter": "Q2", "Gross Sales": "435", "Actual Returns": "22", "A/R Aging 90+ Days": "4%" },
+          { "Fiscal Quarter": "Q3", "Gross Sales": "430", "Actual Returns": "21", "A/R Aging 90+ Days": "5%" },
+          { "Fiscal Quarter": "Q4", "Gross Sales": "680", "Actual Returns": "105", "A/R Aging 90+ Days": "12%" }
         ],
-        chart: { labels:["Q1","Q2","Q3","Q4"], seriesFrom:"GrossSales" },
+        chart: { labels:["Q1","Q2","Q3","Q4"], seriesFrom:"Gross Sales" },
         answers: [
           { key:"A", text:"Legitimate Seasonal Sales Boom" },
           { key:"B", text:"Channel Stuffing (Trade Loading)" },
-          { key:"C", text:"Deferred Revenue Amortization" }
+          { key:"C", text:"Deferred Revenue Amortization Shift" }
         ],
         correctAnswerKey: "B",
         tags: [
-          { key:"t1", text:"Channel Stuffing" },
-          { key:"t2", text:"Cutoff Manipulation" },
-          { key:"t3", text:"Deteriorating A/R Aging" },
-          { key:"t4", text:"Legitimate Seasonality" }
+          { key:"t1", text:"Channel Stuffing and Trade Loading" },
+          { key:"t2", text:"Cutoff Period Manipulation" },
+          { key:"t3", text:"Deteriorating Accounts Receivable Aging" },
+          { key:"t4", text:"Legitimate Business Seasonality" },
+          { key:"t5", text:"Accelerated Bad Debt Recoveries" },
+          { key:"t6", text:"Relaxed Credit Standards at Year-End" }
         ],
         correctTags: ["t1", "t2", "t3"],
-        feedbackText: "This pattern represents 'Channel Stuffing'. Management forced inventory onto distributors to hit targets (Cutoff Manipulation), leading to high returns next period."
+        feedbackText: "This pattern represents 'Channel Stuffing'. Management effectively forced inventory onto distributors at year-end to hit targets (Cutoff Manipulation), leading to high subsequent returns."
       },
       {
         id: "CLASS5-ALLOWANCE",
         lens: "A/R & Allowances",
         difficulty: "Boss Round",
         title: "The Allowance Illusion",
-        prompt: "Analyze the Allowance Rollforward. What does this reveal about management?",
-        footnote: "Equation: Beg Allowance + Provision - Charge-offs = End Allowance. If Charge-offs outpace Provisions consistently, what happens?",
+        prompt: "Analyze the Allowance Rollforward. What does this reveal about management's practices?",
+        footnote: "Equation: Beg Allowance + Provision - Charge-offs = End Allowance. If Charge-offs outpace Provisions consistently, what happens to the balance sheet?",
         data: [
-          { Year: "2021", GrossAR: "800", Provision: "40", ChargeOffs: "35", EndAllow: "55" },
-          { Year: "2022", GrossAR: "850", Provision: "40", ChargeOffs: "50", EndAllow: "45" },
-          { Year: "2023", GrossAR: "920", Provision: "40", ChargeOffs: "70", EndAllow: "15" }
+          { "Financial Year": "2024", "Gross Accounts Receivable": "800", "Bad Debt Provision": "40", "Actual Charge-Offs": "35", "Ending Allowance": "55" },
+          { "Financial Year": "2025", "Gross Accounts Receivable": "850", "Bad Debt Provision": "40", "Actual Charge-Offs": "50", "Ending Allowance": "45" },
+          { "Financial Year": "2026", "Gross Accounts Receivable": "920", "Bad Debt Provision": "40", "Actual Charge-Offs": "70", "Ending Allowance": "15" }
         ],
-        chart: { labels:["2021","2022","2023"], seriesFrom:"EndAllow" },
+        chart: { labels:["2024","2025","2026"], seriesFrom:"Ending Allowance" },
         answers: [
           { key:"A", text:"Earnings are artificially inflated (Under-reserved)" },
           { key:"B", text:"Earnings are artificially depressed (Over-reserved)" },
-          { key:"C", text:"Reserves are perfectly matching credit risk" }
+          { key:"C", text:"Reserves perfectly match the underlying credit risk" }
         ],
         correctAnswerKey: "A",
         tags: [
-          { key:"t1", text:"Under-provisioning" },
-          { key:"t2", text:"Charge-offs outpace provisions" },
-          { key:"t3", text:"Artificial Net Income boost" },
-          { key:"t4", text:"Conservative Accounting" }
+          { key:"t1", text:"Under-Provisioning Bad Debt Expense" },
+          { key:"t2", text:"Charge-Offs Significantly Outpace Provisions" },
+          { key:"t3", text:"Artificial Net Income Inflation" },
+          { key:"t4", text:"Conservative Reserve Building Tactics" },
+          { key:"t5", text:"Depleting Balance Sheet Reserves" },
+          { key:"t6", text:"Overstated Accounts Receivable Quality" }
         ],
-        correctTags: ["t1", "t2", "t3"],
-        feedbackText: "By keeping the Provision flat while Charge-offs skyrocket, management drains the allowance balance to avoid hitting the Income Statement, inflating Net Income."
+        correctTags: ["t1", "t2", "t5"],
+        feedbackText: "By keeping the Bad Debt Provision flat while actual Charge-Offs skyrocket, management depletes the balance sheet allowance to avoid taking an expense hit to the Income Statement."
       }
     ];
 
@@ -883,7 +899,7 @@
     function renderTable(rows) {
       if (!rows || rows.length === 0) return;
       const cols = Object.keys(rows[0]);
-      dataHead.innerHTML = `<tr>${cols.map(h => `<th class="px-4 py-3">${escapeHtml(h.replace(/_/g, ' '))}</th>`).join("")}</tr>`;
+      dataHead.innerHTML = `<tr>${cols.map(h => `<th class="px-4 py-3">${escapeHtml(h)}</th>`).join("")}</tr>`;
       dataBody.innerHTML = rows.map(r => `
         <tr class="transition-colors hover:bg-[#faf9f7]">
           ${cols.map(k => `<td class="px-4 py-2.5">${escapeHtml(r[k])}</td>`).join("")}
@@ -1126,11 +1142,11 @@
         col.style.animationDelay = `${(3 - p.rank) * 0.2}s`;
         
         col.innerHTML = `
-          <div class="text-sm font-bold bg-white border border-[#eae6df] text-[#5c699c] rounded-lg w-10 h-10 flex items-center justify-center mb-2 shadow-sm">${getInitials(p.team.name)}</div>
-          <div class="font-bold text-[#3f3e3a] text-sm truncate w-full text-center px-1">${escapeHtml(p.team.name)}</div>
-          <div class="mono text-[#8c8982] text-[11px] font-bold mb-3">${p.team.score} pts</div>
-          <div class="w-full rounded-t-lg flex items-start justify-center pt-4 ${p.class}">
-            <span class="font-bold text-[#8c8982]/40 text-2xl">${p.rank}</span>
+          <div class="text-lg font-bold bg-white border border-[#eae6df] text-[#5c699c] rounded-xl w-12 h-12 flex items-center justify-center mb-3 shadow-md">${getInitials(p.team.name)}</div>
+          <div class="font-extrabold text-[#3f3e3a] text-base truncate w-full text-center px-1">${escapeHtml(p.team.name)}</div>
+          <div class="mono text-[#4b8a6b] text-2xl font-black mt-1 mb-4 drop-shadow-sm">${p.team.score} <span class="text-xs text-[#8c8982] font-semibold uppercase tracking-widest">pts</span></div>
+          <div class="w-full rounded-t-xl flex items-start justify-center pt-4 ${p.class} shadow-inner">
+            <span class="font-black text-[#8c8982]/50 text-4xl">${p.rank}</span>
           </div>
         `;
         podium.appendChild(col);
