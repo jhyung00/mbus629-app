@@ -4,12 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Corporate Reporting Forensics Lab</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- React and ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <!-- Babel -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
     <style>
@@ -62,10 +59,31 @@
         const FORD_DATA = { begAR: 71414, endAR: 78274, writeOffs: 401, totalRevenue: 165722, consumerPct: 0.75 };
         const FORD_QUIZ = [
             { id: 'q1', q: "Gross Finance Receivables (End of 2023)", a: 78274 },
-            { id: 'q2', q: "Net Consumer Finance Receivables", a: 77395, hint: "Gross - Allowance" },
+            { id: 'q2', q: "Net Consumer Finance Receivables", a: 77395, hint: "Gross Finance Receivables - Allowance for Credit losses for Consumers ending balance from 2023" },
             { id: 'q3', q: "Gross AR from 2021 Sales", a: 11473 },
             { id: 'q4', q: "Bad Debt Expense (2023)", a: 280 },
             { id: 'q5', q: "Write-offs (2023)", a: 401 }
+        ];
+
+        const FORD_MCQ = [
+            {
+                id: 'mcq1',
+                q: "According to the policy, when is the uncollectible portion of a finance receivable charged to the allowance for credit losses?",
+                options: [
+                    { id: 'a', text: "Only when the account is explicitly deemed uncollectible by management." },
+                    { id: 'b', text: "At the earlier of when an account is deemed uncollectible or when it is 120 days delinquent.", correct: true },
+                    { id: 'c', text: "When the collateral is repossessed." }
+                ]
+            },
+            {
+                id: 'mcq2',
+                q: "How are adjustments to the allowance for credit losses recorded?",
+                options: [
+                    { id: 'a', text: "As a reduction to total automotive revenue." },
+                    { id: 'b', text: "By recording charges to Ford Credit interest, operating, and other expenses on the consolidated income statements.", correct: true },
+                    { id: 'c', text: "As a direct deduction from retained earnings." }
+                ]
+            }
         ];
 
         const formatNum = (n) => n.toLocaleString();
@@ -114,8 +132,6 @@
                     setStatus(isValid ? "correct" : "incorrect");
                     
                     if (shouldUpdateParent) {
-                        // Pass the calculated number back as string, or keep expression?
-                        // Requirement: "When pressing enter... show calculated value"
                         onChange(result.toString()); 
                     }
                 } catch (e) {
@@ -190,7 +206,7 @@
                                 <span>+</span>
                                 <span className="text-teal-600">Credit Sales</span>
                                 <span>-</span>
-                                <span className="text-indigo-600">Cash Coll</span>
+                                <span className="text-indigo-600">Cash Collection</span>
                                 <span>-</span>
                                 <span className="text-red-500">{formatNum(data.writeOffs)}</span>
                                 <span>=</span>
@@ -228,7 +244,7 @@
                                 </div>
                                 <div className="w-1/2 p-2 flex flex-col justify-between text-right bg-white">
                                     <div>
-                                        <span className="text-[9px] text-indigo-600 uppercase font-bold tracking-wider">Cash Coll</span>
+                                        <span className="text-[9px] text-indigo-600 uppercase font-bold tracking-wider">Cash Collection</span>
                                         {isInteractive ? (
                                             <SmartInput 
                                                 id={`cash-${creditPct}`}
@@ -243,7 +259,7 @@
                                     </div>
                                     <div>
                                         <span className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Write-offs</span>
-                                        <div className="font-mono text-red-600 font-bold text-sm">({formatNum(data.writeOffs)})</div>
+                                        <div className="font-mono text-red-600 font-bold text-sm">{formatNum(data.writeOffs)}</div>
                                     </div>
                                     <div className="h-6"></div>
                                 </div>
@@ -690,6 +706,7 @@
             const [phase, setPhase] = useState('dataHunt');
             
             const quizAnswers = savedState?.quizAnswers || {};
+            const mcqAnswers = savedState?.mcqAnswers || {};
             const userCredit60 = savedState?.userCredit60 || "";
             const userCash60 = savedState?.userCash60 || "";
             const userCredit30 = savedState?.userCredit30 || "";
@@ -703,12 +720,8 @@
                 updateState('quizAnswers', { ...quizAnswers, [id]: val });
             };
 
-            // Only used for button logic, actual validation happens in SmartInput
-            const canProceedFromHunt = () => {
-                // If instructor mode, allow
-                if (instructorMode) return true;
-                // Otherwise check if all answers roughly match (simplified check as visual feedback is in SmartInput)
-                return Object.keys(quizAnswers).length === FORD_QUIZ.length;
+            const handleMcqChange = (id, val) => {
+                updateState('mcqAnswers', { ...mcqAnswers, [id]: val });
             };
 
             return (
@@ -737,7 +750,8 @@
                             <div className="flex justify-between items-start mb-6">
                                 <div className="max-w-2xl">
                                     <h3 className="text-xl font-bold text-slate-800">Step 1: 10-K Data Extraction</h3>
-                                    <div className="mt-3 p-4 bg-blue-50 text-blue-900 text-sm rounded-lg border border-blue-100 leading-relaxed">
+                                    <p className="text-slate-600 font-medium mt-2">Focus on <strong>Consumer Finance Receivables</strong> to answer the following questions. Look closely at <strong>Note 10: Ford Credit Finance Receivables and Allowance for credit losses</strong>.</p>
+                                    <div className="mt-4 p-4 bg-blue-50 text-blue-900 text-sm rounded-lg border border-blue-100 leading-relaxed">
                                         <strong className="block mb-1 text-blue-700 flex items-center gap-1"><IconBriefcase /> Audit Instruction</strong>
                                         Enter the values exactly as found in the Ford 10-K (Note 10). Math expressions (e.g., 78274 - 879) are supported.
                                     </div>
@@ -763,6 +777,34 @@
                                     </div>
                                 ))}
                             </div>
+
+                            <div className="mt-12 border-t border-slate-200 pt-8 max-w-3xl">
+                                <h4 className="text-lg font-bold text-slate-800 mb-2">Policy Review: Allowance for Credit Losses</h4>
+                                <div className="mb-6">
+                                    
+                                </div>
+                                {FORD_MCQ.map(mcq => (
+                                    <div key={mcq.id} className="mb-6 bg-slate-50 p-5 rounded-lg border border-slate-200">
+                                        <p className="font-semibold text-slate-800 mb-4">{mcq.q}</p>
+                                        <div className="space-y-3">
+                                            {mcq.options.map(opt => (
+                                                <button
+                                                    key={opt.id}
+                                                    onClick={() => handleMcqChange(mcq.id, opt.id)}
+                                                    className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${
+                                                        mcqAnswers[mcq.id] === opt.id
+                                                            ? 'bg-teal-50 border-teal-500 ring-1 ring-teal-500 font-medium text-teal-900'
+                                                            : 'bg-white border-slate-300 hover:border-teal-300 text-slate-700'
+                                                    } ${instructorMode && opt.correct ? 'ring-2 ring-purple-400 ring-offset-1' : ''}`}
+                                                >
+                                                    {opt.text}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
                             <button onClick={() => setPhase('baseCase')} className="mt-8 px-8 py-3 bg-slate-800 text-white font-bold rounded-lg hover:bg-slate-700 shadow-lg transition-transform active:scale-95">
                                 Proceed to Analysis &rarr;
                             </button>
@@ -773,7 +815,7 @@
                         <div className="bg-white p-8 rounded-xl shadow-md border border-slate-200 fade-in">
                              <div className="mb-6">
                                 <h3 className="text-xl font-bold text-slate-800">Step 2: Base Case Reconstruction</h3>
-                                <p className="text-slate-500">Assume <strong>60%</strong> of Consumer Revenue is on credit. Solve for Cash Collections.</p>
+                                <p className="text-slate-500">Assume <strong>60%</strong> of Consumer Revenue is on credit. Solve for Cash Collection.</p>
                             </div>
                             <div className="flex flex-col items-center">
                                 <div className="w-full max-w-2xl">
@@ -867,7 +909,7 @@
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {/* Module Cards (Same as before) */}
+                        {/* Module Cards */}
                         <div onClick={() => setView('revenue')} className="bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all cursor-pointer border border-slate-100 group hover:-translate-y-1">
                             <div className="w-16 h-16 bg-teal-100 rounded-2xl flex items-center justify-center mb-6 text-teal-600 group-hover:bg-teal-600 group-hover:text-white transition-colors">
                                 <IconBriefcase />
@@ -933,9 +975,9 @@
             const [studentName, setStudentName] = useState("");
             
             const [microsoftState, setMicrosoftState] = useState({ completedCases: [], answers: {}, selections: {}, isSubmitted: false });
-            const [fordState, setFordState] = useState({ quizAnswers: {}, userCredit60: "", userCash60: "", userCredit30: "", userCash30: "" });
+            const [fordState, setFordState] = useState({ quizAnswers: {}, mcqAnswers: {}, userCredit60: "", userCash60: "", userCredit30: "", userCash30: "" });
 
-            const hasData = (microsoftState.completedCases.length > 0) || (Object.keys(fordState.quizAnswers).length > 0);
+            const hasData = (microsoftState.completedCases.length > 0) || (Object.keys(fordState.quizAnswers).length > 0) || (Object.keys(fordState.mcqAnswers).length > 0);
 
             // Instructor Actions
             const handleAutoFill = () => {
@@ -943,6 +985,12 @@
                 const newQuiz = {};
                 FORD_QUIZ.forEach(q => newQuiz[q.id] = q.a.toString());
                 
+                const newMcq = {};
+                FORD_MCQ.forEach(q => {
+                    const corr = q.options.find(o => o.correct);
+                    if (corr) newMcq[q.id] = corr.id;
+                });
+
                 const c60 = Math.round((FORD_DATA.totalRevenue * FORD_DATA.consumerPct) * 0.60);
                 const cash60 = FORD_DATA.begAR + c60 - FORD_DATA.writeOffs - FORD_DATA.endAR;
                 const c30 = Math.round((FORD_DATA.totalRevenue * FORD_DATA.consumerPct) * 0.30);
@@ -950,6 +998,7 @@
 
                 setFordState({
                     quizAnswers: newQuiz,
+                    mcqAnswers: newMcq,
                     userCredit60: c60.toString(),
                     userCash60: cash60.toString(),
                     userCredit30: c30.toString(),
@@ -978,7 +1027,7 @@
 
             const handleClearAll = () => {
                 setMicrosoftState({ completedCases: [], answers: {}, selections: {}, isSubmitted: false });
-                setFordState({ quizAnswers: {}, userCredit60: "", userCash60: "", userCredit30: "", userCash30: "" });
+                setFordState({ quizAnswers: {}, mcqAnswers: {}, userCredit60: "", userCash60: "", userCredit30: "", userCash30: "" });
                 setInstructorMode(false); // Requirement: "Clears all fields AND exits instructor mode"
             };
 
