@@ -630,218 +630,7 @@
         </div>
     </div>
 
-    <!-- NEW SLIDE 7: AI Economy Diagram -->
-    <div class="slide" style="padding: 0; overflow: hidden;">
-        <!-- Hidden title for TOC -->
-        <h2 style="display:none;">Visualizing the AI Economy</h2>
-        <iframe srcdoc='<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2026 AI Circular Financing Model</title>
-<style>
-    :root {
-        --nvidia-green: #15803d; /* Darker green for light bg */
-        --startup-color: #9333ea;
-        --cloud-color: #0369a1;
-        --bg-color: #f8fafc;
-        --card-bg: #ffffff;
-        --text-color: #1e293b;
-    }
-
-    body {
-        font-family: "Inter", "Segoe UI", sans-serif;
-        background-color: var(--bg-color);
-        background-image: radial-gradient(circle at 50% 0%, #e2e8f0 0%, #f8fafc 70%);
-        color: var(--text-color);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        margin: 0;
-        overflow: hidden;
-    }
-
-    h2 {
-        font-weight: 800;
-        letter-spacing: -0.5px;
-        margin-bottom: 10px;
-        text-transform: uppercase;
-        color: #0369a1;
-        font-family: sans-serif;
-        font-size: 2rem;
-    }
-
-    .sub-header {
-        font-size: 0.9rem;
-        color: #64748b;
-        margin-bottom: 60px;
-        max-width: 600px;
-        text-align: center;
-        line-height: 1.5;
-        font-family: sans-serif;
-    }
-
-    /* Diagram Container */
-    .diagram-container {
-        position: relative;
-        width: 500px;
-        height: 450px;
-    }
-
-    /* Node Styling */
-    .node {
-        position: absolute;
-        width: 140px;
-        height: 140px;
-        border-radius: 50%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        backdrop-filter: blur(10px);
-        background: var(--card-bg);
-        border: 1px solid #cbd5e1;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        z-index: 2;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        cursor: pointer;
-        font-family: sans-serif;
-    }
-
-    .node:hover {
-        transform: scale(1.05);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-        border-color: #94a3b8;
-    }
-
-    .node strong { font-size: 1.1rem; display: block; margin-bottom: 4px; }
-    .node span { font-size: 0.8rem; opacity: 0.7; }
-
-    /* Specific Node Branding */
-    #nvidia { top: 0; left: 50%; transform: translateX(-50%); border-top: 3px solid var(--nvidia-green); }
-    #nvidia:hover { box-shadow: 0 0 30px rgba(21, 128, 61, 0.2); }
-
-    #startup { bottom: 0; left: 0; border-top: 3px solid var(--startup-color); }
-    #startup:hover { box-shadow: 0 0 30px rgba(147, 51, 234, 0.2); }
-
-    #cloud { bottom: 0; right: 0; border-top: 3px solid var(--cloud-color); }
-    #cloud:hover { box-shadow: 0 0 30px rgba(3, 105, 161, 0.2); }
-
-    /* SVG Overlay for Arrows */
-    svg {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-        pointer-events: none; /* Let clicks pass through to nodes */
-    }
-
-    /* Flow Lines */
-    .flow-line {
-        fill: none;
-        stroke: #cbd5e1;
-        stroke-width: 2;
-    }
-
-    .flow-active {
-        fill: none;
-        stroke: url(#gradient);
-        stroke-width: 3;
-        stroke-dasharray: 10, 10;
-        animation: dash 2s linear infinite;
-        opacity: 0.8;
-    }
-
-    /* Arrow Heads */
-    .arrow-head { fill: #94a3b8; }
-
-    /* Labels on lines */
-    .label-container {
-        position: absolute;
-        background: rgba(255,255,255,0.9);
-        padding: 5px 10px;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        color: #475569;
-        border: 1px solid #cbd5e1;
-        white-space: nowrap;
-        font-family: sans-serif;
-    }
-
-    /* Positioning Labels using simple approx percentages based on layout */
-    #lbl-invest { top: 40%; left: 20%; transform: rotate(-35deg); }
-    #lbl-rent { bottom: 10px; left: 50%; transform: translateX(-50%); }
-    #lbl-revenue { top: 40%; right: 20%; transform: rotate(35deg); }
-
-    @keyframes dash {
-        to { stroke-dashoffset: -20; }
-    }
-
-</style>
-</head>
-<body>
-
-    <h2>The AI Circular Economy</h2>
-    <p class="sub-header">
-        In 2026, tech giants invest in startups, who then use that capital to rent cloud compute,<br>
-        returning revenue to the investor via hardware purchases.
-    </p>
-    
-    <div class="diagram-container">
-        
-        <svg viewBox="0 0 500 450">
-            <defs>
-                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" style="stop-color:#15803d;stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:#0369a1;stop-opacity:1" />
-                </linearGradient>
-                <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
-                    <path d="M0,0 L0,6 L9,3 z" class="arrow-head" />
-                </marker>
-            </defs>
-
-            <path d="M220,100 L100,310" class="flow-line" />
-            <path d="M220,100 L100,310" class="flow-active" marker-end="url(#arrow)" />
-
-            <path d="M140,380 L360,380" class="flow-line" />
-            <path d="M140,380 L360,380" class="flow-active" marker-end="url(#arrow)" />
-
-            <path d="M400,310 L280,100" class="flow-line" />
-            <path d="M400,310 L280,100" class="flow-active" marker-end="url(#arrow)" />
-        </svg>
-
-        <div class="node" id="nvidia">
-            <strong>Nvidia</strong>
-            <span>(Investor)</span>
-        </div>
-        
-        <div class="node" id="startup">
-            <strong>AI Startup</strong>
-            <span>(e.g. OpenAI)</span>
-        </div>
-        
-        <div class="node" id="cloud">
-            <strong>Cloud Provider</strong>
-            <span>(e.g. CoreWeave)</span>
-        </div>
-
-        <div class="label-container" id="lbl-invest">$$$ Investment</div>
-        <div class="label-container" id="lbl-rent">Cloud Rental Fees</div>
-        <div class="label-container" id="lbl-revenue">Chip Purchase (Revenue)</div>
-
-    </div>
-
-</body>
-</html>' style="width:100%; height:100%; border:none;"></iframe>
-    </div>
-
-    <!-- NEW SLIDE 8: Interactive Simulation -->
+    <!-- NEW SLIDE 7: Interactive Simulation -->
     <div class="slide" style="padding: 0; overflow: hidden;">
         <!-- Hidden title for TOC -->
         <h2 style="display:none;">Interactive Simulation</h2>
@@ -999,7 +788,7 @@
                 </p>
                 <button onclick="injectCapital()" id="btn-inject" class="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg transform transition active:scale-95 flex justify-center items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0-2.08-.402-2.599-1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     Sign $10B Deal
                 </button>
@@ -1192,7 +981,7 @@
 </html>' style="width:100%; height:100%; border:none;"></iframe>
     </div>
 
-    <!-- SLIDE 9: Core Principle (Shifted) -->
+    <!-- SLIDE 8: Core Principle (Shifted) -->
     <div class="slide">
         <h2>Revenue Recognition Principle</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -1216,7 +1005,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 10: Exercise - Courtesy Chevrolet -->
+    <!-- SLIDE 9: Exercise - Courtesy Chevrolet -->
     <div class="slide">
         <h2>Exercise: Amount to Recognize</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -1234,7 +1023,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 11: Exercise - Guess (Order) -->
+    <!-- SLIDE 10: Exercise - Guess (Order) -->
     <div class="slide">
         <h2>Exercise: The Sales Cycle (1/3)</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -1252,7 +1041,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 12: Exercise - Guess (Production) -->
+    <!-- SLIDE 11: Exercise - Guess (Production) -->
     <div class="slide">
         <h2>Exercise: The Sales Cycle (2/3)</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -1270,7 +1059,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 13: Exercise - Guess (Delivery) -->
+    <!-- SLIDE 12: Exercise - Guess (Delivery) -->
     <div class="slide">
         <h2>Exercise: The Sales Cycle (3/3)</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -1289,7 +1078,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 14: Exercise - United Airlines -->
+    <!-- SLIDE 13: Exercise - United Airlines -->
     <div class="slide">
         <h2>Exercise: Airline Tickets</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -1308,7 +1097,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 15: Expense Recognition -->
+    <!-- SLIDE 14: Expense Recognition -->
     <div class="slide">
         <h2>Expense Recognition</h2>
         <div class="cols-2">
@@ -1335,7 +1124,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 16: Exercise - Period vs Product -->
+    <!-- SLIDE 15: Exercise - Period vs Product -->
     <div class="slide">
         <h2>Exercise: Expense Timing</h2>
         <div class="cols-2">
@@ -1368,7 +1157,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 17: Exercise - Capitalization -->
+    <!-- SLIDE 16: Exercise - Capitalization -->
     <div class="slide">
         <h2>Exercise: Capital Expenditure</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -1387,7 +1176,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 18: Exercise - Dividends -->
+    <!-- SLIDE 17: Exercise - Dividends -->
     <div class="slide">
         <h2>Exercise: Dividends</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -1406,7 +1195,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 19: Pfizer Case -->
+    <!-- SLIDE 18: Pfizer Case -->
     <div class="slide">
         <h2>Pfizer: Transfer of Control</h2>
         <div class="problem-box">
@@ -1427,7 +1216,7 @@
         <p>These are estimated and recorded in the <strong>same period</strong> as the revenue.</p>
     </div>
 
-    <!-- SLIDE 20: ASC 606 Intro -->
+    <!-- SLIDE 19: ASC 606 Intro -->
     <div class="slide">
         <h2>ASC 606: The 5-Step Model</h2>
         <div class="cols-2">
@@ -1444,7 +1233,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 21: Step 1 (NEW) -->
+    <!-- SLIDE 20: Step 1 (NEW) -->
     <div class="slide">
         <h2>Step 1: Identify the Contract</h2>
         <div class="problem-box">
@@ -1461,7 +1250,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 22: Step 2: Identify POs (UPDATED) -->
+    <!-- SLIDE 21: Step 2: Identify POs (UPDATED) -->
     <div class="slide">
         <h2>Step 2: Identify Performance Obligations</h2>
         <div class="cols-2">
@@ -1488,7 +1277,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 23: Step 3: Transaction Price -->
+    <!-- SLIDE 22: Step 3: Transaction Price -->
     <div class="slide">
         <h2>Step 3: Determine Transaction Price</h2>
         <div class="problem-box">
@@ -1504,7 +1293,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 24: Step 4: Allocate Scenario 1 -->
+    <!-- SLIDE 23: Step 4: Allocate Scenario 1 -->
     <div class="slide">
         <h2>Step 4: Allocate (Scenario 1)</h2>
         <p><strong>If Setup is NOT distinct:</strong></p>
@@ -1515,12 +1304,13 @@
         </div>
     </div>
 
-    <!-- SLIDE 25: Step 4: Allocate Scenario 2 (UPDATED: Flip Cards) -->
+    <!-- SLIDE 24: Step 4: Allocate Scenario 2 (UPDATED: Flip Cards) -->
     <div class="slide">
         <h2>Step 4: Allocate (Scenario 2)</h2>
         <p><strong>If Setup IS distinct (Two POs):</strong></p>
         <div class="cols-2">
             <div class="financial-data" style="font-size: 0.9rem;">
+                <p style="color: var(--primary); font-weight: bold; margin-bottom: 8px;">SSP = Standalone Selling Price</p>
                 <p>Subscription SSP = $1,200</p>
                 <p>Setup SSP = $300</p>
                 <hr>
@@ -1555,7 +1345,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 26: Step 5 Recognition -->
+    <!-- SLIDE 25: Step 5 Recognition -->
     <div class="slide">
         <h2>Step 5: Recognize Revenue</h2>
         <div class="cols-2">
@@ -1576,7 +1366,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 27: Construction Ex 1 (Blueprint BG) -->
+    <!-- SLIDE 26: Construction Ex 1 (Blueprint BG) -->
     <div class="slide blueprint-bg">
         <h2>Construction: Customer's Land</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -1596,7 +1386,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 28: Construction Ex 2 (Blueprint BG) -->
+    <!-- SLIDE 27: Construction Ex 2 (Blueprint BG) -->
     <div class="slide blueprint-bg">
         <h2>Construction: Spec Home</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -1616,7 +1406,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 29: Construction Ex 3 (Blueprint BG) -->
+    <!-- SLIDE 28: Construction Ex 3 (Blueprint BG) -->
     <div class="slide blueprint-bg">
         <h2>Construction: Unique Floorplan</h2>
         <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -1637,7 +1427,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 30: Apple Case Intro -->
+    <!-- SLIDE 29: Apple Case Intro -->
     <div class="slide">
         <h2>Revenue Recognition at Apple</h2>
         <div class="cols-2">
@@ -1656,7 +1446,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 31: Apple Data & 96% Calculation -->
+    <!-- SLIDE 30: Apple Data & 96% Calculation -->
     <div class="slide">
         <h2>Apple Data & Allocation Logic</h2>
         <div class="financial-data">
@@ -1675,7 +1465,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 32: Apple Allocation Table -->
+    <!-- SLIDE 31: Apple Allocation Table -->
     <div class="slide">
         <h2>Apple: Allocation & Recognition</h2>
         <div class="real-table">
@@ -1718,7 +1508,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 33: Right of Return -->
+    <!-- SLIDE 32: Right of Return -->
     <div class="slide">
         <h2>Right of Return</h2>
         <div class="problem-box">
@@ -1734,7 +1524,7 @@
         </p>
     </div>
 
-    <!-- SLIDE 34: Gift Cards (Interactive Flip Card) -->
+    <!-- SLIDE 33: Gift Cards (Interactive Flip Card) -->
     <div class="slide">
         <h2>Gift Cards (Target Case)</h2>
         <div class="cols-2">
@@ -1755,9 +1545,17 @@
                     </div>
                 </div>
                 
-                <div class="problem-box" style="margin-top: 20px;">
-                    <h3>Breakage</h3>
-                    <p>Unused balances are recognized as "breakage" revenue over time in proportion to actual redemptions.</p>
+                <!-- NEW Flip Card for Breakage -->
+                <div class="flip-card" onclick="this.classList.toggle('flipped')" style="height: 150px; margin-top: 20px;">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front" style="background: var(--card-bg); border: 2px solid var(--accent);">
+                            <h3 style="color: var(--accent); margin-top: 40px;">What is "Breakage"?</h3>
+                        </div>
+                        <div class="flip-card-back" style="background: var(--accent);">
+                            <h3>Breakage</h3>
+                            <p style="font-size: 0.9rem;">Unused balances are recognized as "breakage" revenue over time in proportion to actual redemptions.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div style="text-align: center;">
@@ -1766,7 +1564,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 35: Construction Contracts (Flip Card) -->
+    <!-- SLIDE 34: Construction Contracts (Flip Card) -->
     <div class="slide">
         <h2>Construction Contracts</h2>
         <div class="problem-box">
@@ -1788,7 +1586,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 36: Cost-to-Cost Example (Year 1) -->
+    <!-- SLIDE 35: Cost-to-Cost Example (Year 1) -->
     <div class="slide">
         <h2>Cost-to-Cost Method (Raytheon)</h2>
         <div class="financial-data">
@@ -1804,7 +1602,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 37: Cost-to-Cost Year 2 -->
+    <!-- SLIDE 36: Cost-to-Cost Year 2 -->
     <div class="slide">
         <h2>Raytheon: Year 2 Completion</h2>
         <div class="financial-data">
@@ -1813,17 +1611,17 @@
         </div>
         <div class="problem-box">
             <h3>Year 2 Calculation</h3>
-            <p><strong>Total Cumulative Cost:</strong> $4.5M + $3M = $7.5M</p>
-            <p><strong>% Complete:</strong> 100%</p>
-            <br>
-            <p><strong>Total Revenue to Date:</strong> 100% * $10M = $10,000,000</p>
-            <p><strong>Less: Rev Recognized in Year 1:</strong> ($6,000,000)</p>
-            <hr style="border-color: #555; margin: 10px 0;">
-            <h3 style="color: var(--success);">Year 2 Revenue: $4,000,000</h3>
+            <p class="reveal-item"><strong>Total Cumulative Cost:</strong> $4.5M + $3M = $7.5M</p>
+            <p class="reveal-item"><strong>% Complete:</strong> 100%</p>
+            <br class="reveal-item">
+            <p class="reveal-item"><strong>Total Revenue to Date:</strong> 100% * $10M = $10,000,000</p>
+            <p class="reveal-item"><strong>Less: Rev Recognized in Year 1:</strong> ($6,000,000)</p>
+            <hr class="reveal-item" style="border-color: #555; margin: 10px 0;">
+            <h3 class="reveal-item" style="color: var(--success);">Year 2 Revenue: $4,000,000</h3>
         </div>
     </div>
 
-    <!-- SLIDE 38: Raytheon Balance Sheet (STATIC) -->
+    <!-- SLIDE 37: Raytheon Balance Sheet (STATIC) -->
     <div class="slide">
         <h2>Balance Sheet Presentation</h2>
         <p>Difference between Revenue Recognized and Amount Billed.</p>
@@ -1834,6 +1632,7 @@
                         <th>Scenario</th>
                         <th>Comparison</th>
                         <th>Balance Sheet Item</th>
+                        <th>Implication</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1841,11 +1640,13 @@
                         <td style="color: var(--text-main);">Recognized > Billed</td>
                         <td>Rev ($6M) > Bill ($5M)</td>
                         <td style="color: var(--success); font-weight: bold;">Contract Asset<br><span style="font-size:0.8rem; color: #64748b;">(Unbilled Receivable)</span></td>
+                        <td style="font-size: 0.85rem; color: var(--accent);">Aggressive recognition maybe?</td>
                     </tr>
                     <tr>
                         <td style="color: var(--text-main);">Billed > Recognized</td>
                         <td>Bill ($7M) > Rev ($6M)</td>
                         <td style="color: var(--error); font-weight: bold;">Contract Liability<br><span style="font-size:0.8rem; color: #64748b;">(Deferred Revenue)</span></td>
+                        <td style="font-size: 0.85rem; color: var(--success);">Conservative recognition</td>
                     </tr>
                 </tbody>
             </table>
@@ -1857,7 +1658,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 39: Uber Delta Partnership -->
+    <!-- SLIDE 38: Uber Delta Partnership -->
     <div class="slide">
         <h2>Uber-Delta Partnership</h2>
         <div class="cols-2">
@@ -1892,7 +1693,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 40: Delta Balance Sheet -->
+    <!-- SLIDE 39: Delta Balance Sheet -->
     <div class="slide">
         <h2>Delta's Balance Sheet Effects</h2>
         <div class="real-table">
@@ -1934,7 +1735,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 41: Sales Allowances (Levi Strauss) -->
+    <!-- SLIDE 40: Sales Allowances (Levi Strauss) -->
     <div class="slide">
         <h2>Sales Allowances (Levi Strauss)</h2>
         <p>Sells jeans for $130. Cost $80. Expects 3% returns.</p>
@@ -1945,12 +1746,12 @@
             <p><strong>Net Sales: $126.10</strong></p>
         </div>
         <div class="problem-box" style="margin-top: 15px;">
-            <p><strong>Balance Sheet:</strong> Create "Refund Liability" for $3.90.</p>
-            <p><strong>COGS Adjustment:</strong> Reduce COGS by estimated cost of returned inventory ($80/130 * 3.90 = $2.40).</p>
+            <p class="reveal-item"><strong>Balance Sheet:</strong> Create "Refund Liability" for $3.90.</p>
+            <p class="reveal-item"><strong>COGS Adjustment:</strong> Reduce COGS by estimated cost of returned inventory ($80/130 * 3.90 = $2.40).</p>
         </div>
     </div>
 
-    <!-- SLIDE 42: Detailed FSET (UPDATED TABLE) -->
+    <!-- SLIDE 41: Detailed FSET (UPDATED TABLE) -->
     <div class="slide">
         <h2>Sales Allowances: FSET Analysis</h2>
         
@@ -2001,7 +1802,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 43: Accounts Receivable Intro -->
+    <!-- SLIDE 42: Accounts Receivable Intro -->
     <div class="slide">
         <h2>Accounts Receivable (AR)</h2>
         <p>GAAP requires reporting at <strong>Net Realizable Value</strong>.</p>
@@ -2011,7 +1812,7 @@
         <p>We must estimate the "bad debt" (amounts we won't collect) to avoid overstating assets.</p>
     </div>
 
-    <!-- SLIDE 44: Aging Analysis -->
+    <!-- SLIDE 43: Aging Analysis -->
     <div class="slide">
         <h2>Aging Analysis</h2>
         <div class="cols-2">
@@ -2040,10 +1841,10 @@
                             <td>$5,000</td>
                             <td>8%</td>
                         </tr>
-                        <tr style="font-weight: bold; border-top: 2px solid #cbd5e1;">
+                        <tr style="font-weight: bold; border-top: 2px solid #cbd5e1; background: #f8fafc;">
                             <td>Total</td>
                             <td>$85,000</td>
-                            <td></td>
+                            <td style="text-align: center; color: #94a3b8;">&mdash;</td>
                         </tr>
                     </tbody>
                 </table>
@@ -2064,11 +1865,11 @@
         </div>
     </div>
 
-    <!-- SLIDE 45: FSET - Establishing Allowance -->
+    <!-- SLIDE 44: FSET - Establishing Allowance -->
     <div class="slide">
         <h2>Effects of Establishing Allowance</h2>
         <p>Recording the estimate of $2,300 bad debt.</p>
-        <div class="fse-grid">
+        <div class="fse-grid reveal-item">
             <div class="fse-header">Assets</div>
             <div class="fse-header">=</div>
             <div class="fse-header">Liabilities</div>
@@ -2091,7 +1892,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 46: Write Off Analysis (UPDATED: Corrected Numbers & Questions) -->
+    <!-- SLIDE 45: Write Off Analysis (UPDATED: Corrected Numbers & Questions) -->
     <div class="slide">
         <h2>The Write-Off: Financial Effects</h2>
         <p>Scenario: Customer goes bankrupt. Write off $500 balance.</p>
@@ -2102,10 +1903,10 @@
                     <h3>Does Net AR Change?</h3>
                     <div style="font-family: 'Fira Code', monospace; font-size: 0.9rem;">
                         <p><strong>Before:</strong></p>
-                        <p>85,000 (Gross) - 2,300 (Allow) = <span style="color:var(--success)">82,700</span></p>
+                        <p class="reveal-item">85,000 (Gross) - 2,300 (Allow) = <span style="color:var(--success)">82,700</span></p>
                         <br>
                         <p><strong>After Write-off ($500):</strong></p>
-                        <p>84,500 (Gross) - 1,800 (Allow) = <span style="color:var(--success)">82,700</span></p>
+                        <p class="reveal-item">84,500 (Gross) - 1,800 (Allow) = <span style="color:var(--success)">82,700</span></p>
                     </div>
                 </div>
             </div>
@@ -2139,7 +1940,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 47: BASE Formula -->
+    <!-- SLIDE 46: BASE Formula -->
     <div class="slide">
         <h2>The "BASE" Formula for AR</h2>
         <div class="cols-2">
@@ -2163,7 +1964,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 48: Microsoft Case -->
+    <!-- SLIDE 47: Microsoft Case -->
     <div class="slide">
         <h2>Microsoft 2024: The Financials</h2>
         
@@ -2203,7 +2004,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 49: Microsoft Case Questions (UPDATED: With Embedded Data) -->
+    <!-- SLIDE 48: Microsoft Case Questions (UPDATED: With Embedded Data) -->
     <div class="slide">
         <h2>Microsoft: Analysis</h2>
         <div class="cols-2">
@@ -2216,8 +2017,8 @@
                 </div>
                 <h3>Find the Missing Numbers:</h3>
                 <ol style="line-height: 2.5; font-size: 1.2rem;">
-                    <li>1. What was the amount of <strong>Write-offs</strong>?</li>
-                    <li>2. What were the <strong>Cash Collections</strong>?</li>
+                    <li>What was the amount of <strong>Write-offs</strong>?</li>
+                    <li>What were the <strong>Cash Collections</strong>?</li>
                 </ol>
             </div>
             
@@ -2252,7 +2053,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 50: Quiz Intro -->
+    <!-- SLIDE 49: Quiz Intro -->
     <div class="slide">
         <div style="text-align: center; margin-top: 100px;">
             <i class="fas fa-brain" style="font-size: 8rem; color: var(--accent); margin-bottom: 30px;"></i>
