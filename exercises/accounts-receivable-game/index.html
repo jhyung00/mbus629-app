@@ -13,6 +13,7 @@
       font-family: 'Plus Jakarta Sans', sans-serif; 
       background-color: #f7f5f2; /* Soft pastel beige */
       color: #3f3e3a; 
+      overflow-x: hidden;
     }
     .mono { font-family: 'JetBrains Mono', monospace; }
     
@@ -25,20 +26,7 @@
     
     .btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
     .btn:active { transform: scale(0.97); }
-
-    /* Reliable Canvas Container */
-    .chart-container {
-      position: relative;
-      width: 100%;
-      height: 240px; 
-    }
-    canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
+    canvas { width: 100% !important; height: 100% !important; min-height: 240px; }
 
     /* Animations */
     @keyframes floatUp {
@@ -81,6 +69,21 @@
       z-index: 50;
     }
     .stamp.show { animation: stampIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+    /* Ticker Animation */
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-wrapper {
+      display: flex;
+      white-space: nowrap;
+      animation: ticker 40s linear infinite;
+      width: max-content;
+    }
+    .ticker-wrapper:hover {
+      animation-play-state: paused;
+    }
 
     /* Selection States */
     .answer-selected {
@@ -132,18 +135,49 @@
     ::-webkit-scrollbar-thumb:hover { background: #b0aba3; }
 
     /* Podium */
-    .podium-1 { height: 160px; background-color: #e8e6fb; border: 1px solid #c7c4f0;} 
-    .podium-2 { height: 110px; background-color: #f1f0ee; border: 1px solid #e1deda;}
-    .podium-3 { height: 80px; background-color: #f1f0ee; border: 1px solid #e1deda;}
+    .podium-1 { height: 140px; background-color: #e8e6fb; border: 1px solid #c7c4f0;} /* Soft lavender */
+    .podium-2 { height: 100px; background-color: #f1f0ee; border: 1px solid #e1deda;}
+    .podium-3 { height: 70px; background-color: #f1f0ee; border: 1px solid #e1deda;}
   </style>
 </head>
 
 <body class="selection:bg-indigo-100">
+
+  <!-- Urgent Ticker -->
+  <div class="bg-[#a65d6c] text-white overflow-hidden py-2 border-b border-[#8a4d5a] relative z-40">
+    <div class="ticker-wrapper text-[11px] font-bold tracking-widest uppercase flex items-center cursor-default">
+      <!-- First Set -->
+      <div class="flex gap-8 items-center pr-8">
+        <span>🚨 FLASH TRAFFIC: SEC PROBES GIFT CARD BREAKAGE RECOGNITION TIMING</span>
+        <span>•</span>
+        <span>☕ ANALYSTS QUESTION SUDDEN SURGE IN STARBUCKS UNREDEEMED BALANCES</span>
+        <span>•</span>
+        <span>🚗 TESLA DEPOSIT LIABILITIES REACH RECORD HIGHS AHEAD OF NEW LAUNCH</span>
+        <span>•</span>
+        <span>📉 UNPRECEDENTED SALES RETURNS LOGGED IN Q1 INVESTIGATION</span>
+        <span>•</span>
+        <span>⚠️ CFO EXTENDS PAYMENT TERMS TO 90 DAYS TO FORCE Q4 SALES</span>
+      </div>
+      <!-- Duplicate Set for Seamless Loop -->
+      <div class="flex gap-8 items-center pr-8">
+        <span>🚨 FLASH TRAFFIC: SEC PROBES GIFT CARD BREAKAGE RECOGNITION TIMING</span>
+        <span>•</span>
+        <span>☕ ANALYSTS QUESTION SUDDEN SURGE IN STARBUCKS UNREDEEMED BALANCES</span>
+        <span>•</span>
+        <span>🚗 TESLA DEPOSIT LIABILITIES REACH RECORD HIGHS AHEAD OF NEW LAUNCH</span>
+        <span>•</span>
+        <span>📉 UNPRECEDENTED SALES RETURNS LOGGED IN Q1 INVESTIGATION</span>
+        <span>•</span>
+        <span>⚠️ CFO EXTENDS PAYMENT TERMS TO 90 DAYS TO FORCE Q4 SALES</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Header -->
   <header class="sticky top-0 z-30 bg-[#f7f5f2]/90 backdrop-blur-md border-b border-[#eae6df]">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
       <div class="flex items-center gap-4">
-        <div class="h-10 w-10 rounded-lg bg-[#d5e0d9] text-[#4b6a57] border border-[#bdccc3] flex items-center justify-center font-bold text-lg">
+        <div class="h-10 w-10 rounded-lg bg-[#d5e0d9] text-[#4b6a57] border border-[#bdccc3] flex items-center justify-center font-bold text-lg shadow-sm">
           RR
         </div>
         <div>
@@ -155,9 +189,6 @@
       </div>
 
       <div class="flex items-center gap-3">
-        <button id="btnInstructor" class="btn p-2 rounded-lg bg-white text-[#8c8982] hover:text-[#3f3e3a] border border-[#eae6df] shadow-sm hover:bg-[#fcfbf9]" title="Instructor Override">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-        </button>
         <button id="btnHow" class="btn px-4 py-2 rounded-lg bg-white text-[#5c5a55] text-sm font-semibold border border-[#eae6df] shadow-sm hover:bg-[#fcfbf9] flex items-center gap-2">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
           Briefing
@@ -255,15 +286,13 @@
               </div>
             </div>
 
-            <!-- Chart Container -->
+            <!-- Chart -->
             <div class="flex flex-col h-full">
               <div class="flex items-center justify-between mb-2">
                 <h3 class="font-bold text-[11px] uppercase tracking-widest text-[#8c8982]">Trend Visualization</h3>
               </div>
-              <div class="grow rounded-xl border border-[#eae6df] bg-white p-4">
-                <div class="chart-container">
-                  <canvas id="chart"></canvas>
-                </div>
+              <div class="grow rounded-xl border border-[#eae6df] bg-white p-4 flex items-center justify-center min-h-[260px] relative w-full overflow-hidden" id="chartContainer">
+                <canvas id="chart"></canvas>
               </div>
             </div>
           </div>
@@ -293,10 +322,12 @@
             </div>
           </div>
 
-          <!-- Feedback Reveal -->
+          <!-- Feedback Reveal (Hidden by default) -->
           <div id="feedbackArea" class="hidden mb-6 p-5 rounded-xl bg-[#f8f9fc] border border-[#dce0f2] relative overflow-hidden">
             <div class="absolute top-0 left-0 w-1 h-full bg-[#a5b4fc]"></div>
-            <h3 class="font-bold text-[#5c699c] text-[11px] uppercase tracking-widest mb-2">Declassification Brief</h3>
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-[#5c699c] text-[11px] uppercase tracking-widest">Declassification Brief</h3>
+            </div>
             <p id="feedbackText" class="text-[#3f3e3a] text-sm leading-relaxed"></p>
           </div>
 
@@ -322,24 +353,24 @@
         </div>
       </div>
 
-      <!-- GAME OVER AREA -->
+      <!-- GAME OVER AREA (Hidden initially) -->
       <div id="gameOverArea" class="hidden soft-card rounded-2xl p-8 text-center animate-in flex flex-col items-center justify-center min-h-[500px]">
         <div class="inline-block p-4 rounded-full bg-[#f0f2f8] mb-4 border border-[#e1e4f0]">
-          <svg class="w-12 h-12 text-[#5c699c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+          <svg class="w-10 h-10 text-[#5c699c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
         </div>
-        <h1 class="text-4xl font-extrabold text-[#2d2c29] mb-3 tracking-tight">Investigation Complete</h1>
-        <p class="text-[#5c5a55] mb-12 max-w-md text-base">All cases have been processed. Review the final standings of your audit teams below.</p>
+        <h1 class="text-3xl font-extrabold text-[#2d2c29] mb-2 tracking-tight">Investigation Complete</h1>
+        <p class="text-[#5c5a55] mb-10 max-w-md text-sm">All cases have been processed. Review the final standings of your audit teams below.</p>
         
         <!-- Podium -->
-        <div id="podium" class="flex items-end justify-center gap-3 sm:gap-6 h-56 mb-16 w-full max-w-3xl mx-auto border-b-2 border-[#eae6df] pb-0">
+        <div id="podium" class="flex items-end justify-center gap-2 sm:gap-4 h-48 mb-12 w-full max-w-2xl mx-auto border-b border-[#eae6df] pb-0">
           <!-- Populated by JS -->
         </div>
 
-        <button id="btnSubmitScores" class="btn px-8 py-4 rounded-xl bg-[#d5e0d9] hover:bg-[#c6d4cc] text-[#3d5a49] font-bold text-lg border border-[#bdccc3] shadow-md flex items-center gap-3 transition-all">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+        <button id="btnSubmitScores" class="btn px-8 py-4 rounded-xl bg-[#d5e0d9] hover:bg-[#c6d4cc] text-[#3d5a49] font-bold text-lg border border-[#bdccc3] shadow-sm flex items-center gap-3 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
           Submit for Competition
         </button>
-        <p class="text-xs text-[#8c8982] mt-5 mono font-semibold" id="submitStatus"></p>
+        <p class="text-xs text-[#8c8982] mt-4 mono" id="submitStatus"></p>
       </div>
 
     </section>
@@ -388,43 +419,35 @@
 
   <script>
     /***********************
-     * Bulletproof Charting 
+     * Advanced Chart Helper
      ***********************/
     const ChartMini = (() => {
-      function drawLine(canvas, labels, series) {
-        if (!series || !series.length) return;
+      function drawGraph(ctx, W, H, config, series) {
+        ctx.clearRect(0,0,W,H);
         
-        const dpr = window.devicePixelRatio || 1;
-        const parent = canvas.parentElement;
-        const rect = parent.getBoundingClientRect();
+        const type = config.type || 'line';
+        const labels = config.labels;
         
-        // Grab dimensions directly from CSS container to prevent shrinking to 0
-        const W = rect.width || parent.clientWidth || 300;
-        const H = rect.height || parent.clientHeight || 240;
-
-        canvas.width = W * dpr;
-        canvas.height = H * dpr;
-        
-        const ctx = canvas.getContext("2d");
-        ctx.scale(dpr, dpr);
-        ctx.clearRect(0, 0, W, H);
-        
-        const padX = 35, padY = 30;
-        const innerW = W - padX * 2;
-        const innerH = H - padY * 2;
-        
-        const vals = series.map(d => Number(d.value) || 0);
+        const padX = 45, padY = 40, innerW = W - padX*2, innerH = H - padY*2;
+        const vals = series.map(d => d.value);
         let min = Math.min(...vals), max = Math.max(...vals);
+        
         if (min === max) { min -= 1; max += 1; }
         
-        const range = max - min;
-        min -= range * 0.1; 
-        max += range * 0.1;
+        if (type === 'bar' && min >= 0) {
+          min = 0;
+        } else {
+          const range = max - min;
+          min -= range * 0.15; 
+        }
+        max += (max - min) * 0.15;
 
         const y = v => padY + innerH * (1 - (v - min) / (max - min));
-        const x = i => padX + innerW * (i / Math.max(1, series.length - 1));
+        const x = i => {
+          if (type === 'bar') return padX + (innerW / labels.length) * (i + 0.5);
+          else return padX + innerW * (i / Math.max(1, series.length - 1));
+        };
 
-        // Grid Lines
         ctx.beginPath();
         ctx.strokeStyle = "#f0f0f0";
         ctx.lineWidth = 1;
@@ -434,60 +457,92 @@
         }
         ctx.stroke();
 
-        // Line
-        ctx.strokeStyle = "#8ba898"; // soft sage
-        ctx.lineWidth = 3;
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
-        ctx.beginPath();
-        series.forEach((d,i)=>{
-          const xx = x(i), yy = y(d.value);
-          if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
-        });
-        ctx.stroke();
-
-        // Gradient Fill
-        const grad = ctx.createLinearGradient(0, padY, 0, padY+innerH);
-        grad.addColorStop(0, "rgba(139, 168, 152, 0.3)");
-        grad.addColorStop(1, "rgba(139, 168, 152, 0)");
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        series.forEach((d,i)=>{
-          const xx = x(i), yy = y(d.value);
-          if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
-        });
-        ctx.lineTo(padX+innerW, padY+innerH);
-        ctx.lineTo(padX, padY+innerH);
-        ctx.fill();
-
-        // Points
-        series.forEach((d,i)=>{
-          const xx = x(i), yy = y(d.value);
-          ctx.beginPath(); 
-          ctx.arc(xx, yy, 5, 0, Math.PI*2); 
-          ctx.fillStyle = "#ffffff"; 
-          ctx.fill(); 
-          ctx.strokeStyle = "#8ba898"; 
-          ctx.lineWidth = 2;
-          ctx.stroke();
+        if (type === 'bar') {
+          const barW = (innerW / labels.length) * 0.55; 
           
-          ctx.fillStyle = "#8c8982";
-          ctx.font = "600 10px 'JetBrains Mono', monospace";
-          ctx.textAlign = "center";
-          // Render value correctly above point
-          ctx.fillText(Number(d.value).toFixed(1).replace('.0',''), xx, yy - 12);
-        });
+          series.forEach((d, i) => {
+             const cx = x(i); 
+             const top = y(d.value);
+             const bottom = y(Math.max(0, min)); 
+             const height = bottom - top;
+             
+             ctx.fillStyle = "rgba(139, 168, 152, 0.4)"; 
+             ctx.fillRect(cx - barW/2, top, barW, height);
+             
+             ctx.strokeStyle = "#8ba898";
+             ctx.lineWidth = 2;
+             ctx.strokeRect(cx - barW/2, top, barW, height);
+             
+             ctx.fillStyle = "#8c8982";
+             ctx.font = "600 10px 'JetBrains Mono', monospace";
+             ctx.textAlign = "center";
+             ctx.fillText(d.value.toFixed(1).replace('.0',''), cx, top - 8);
+          });
+        } else {
+          ctx.strokeStyle = "#8ba898"; 
+          ctx.lineWidth = 3;
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+          ctx.beginPath();
+          series.forEach((d,i)=>{
+            const xx = x(i), yy = y(d.value);
+            if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
+          });
+          ctx.stroke();
 
-        // X-Axis Labels
+          const grad = ctx.createLinearGradient(0, padY, 0, padY+innerH);
+          grad.addColorStop(0, "rgba(139, 168, 152, 0.2)");
+          grad.addColorStop(1, "rgba(139, 168, 152, 0)");
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          series.forEach((d,i)=>{
+            const xx = x(i), yy = y(d.value);
+            if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
+          });
+          ctx.lineTo(padX+innerW, padY+innerH);
+          ctx.lineTo(padX, padY+innerH);
+          ctx.fill();
+
+          series.forEach((d,i)=>{
+            const xx = x(i), yy = y(d.value);
+            ctx.beginPath(); 
+            ctx.arc(xx, yy, 5, 0, Math.PI*2); 
+            ctx.fillStyle = "#ffffff"; 
+            ctx.fill(); 
+            ctx.strokeStyle = "#8ba898"; 
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            ctx.fillStyle = "#8c8982";
+            ctx.font = "600 10px 'JetBrains Mono', monospace";
+            ctx.textAlign = "center";
+            ctx.fillText(d.value.toFixed(1).replace('.0',''), xx, yy - 12);
+          });
+        }
+
         ctx.fillStyle = "#8c8982";
         ctx.font = "600 11px 'Plus Jakarta Sans', sans-serif";
         ctx.textAlign = "center";
         labels.forEach((lab,i)=>{
-          ctx.fillText(lab, x(i), padY+innerH+18);
+          ctx.fillText(lab, x(i), padY+innerH+25);
         });
       }
 
-      return { drawLine };
+      function fitCanvas(canvas){
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.parentNode.getBoundingClientRect(); 
+        
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.width = Math.floor(rect.width * dpr);
+        canvas.height = Math.floor(rect.height * dpr);
+        
+        const ctx = canvas.getContext("2d");
+        ctx.scale(dpr,dpr);
+        return { ctx, width: rect.width, height: rect.height };
+      }
+      
+      return { drawGraph, fitCanvas };
     })();
 
     /***********************
@@ -502,84 +557,148 @@
         prompt: "Based on control transfer, which contract should recognize revenue OVER TIME?",
         footnote: "Note: Revenue is recognized when (or as) control of goods or services transfers to the customer. Contract A is standard retail shipment. Contract B is a continuous security monitoring service.",
         data: [
-          { "Contract Type": "A: Retail Goods", "Performance Obligation": "Single delivery", "Billing terms": "At shipment", "Expected Returns": "Est. 2%" },
-          { "Contract Type": "B: Security Service", "Performance Obligation": "Continuous 24/7", "Billing terms": "Monthly", "Expected Returns": "N/A" }
+          { Contract: "A: Retail Goods", Performance: "Single delivery", Billing: "At shipment", Returns: "Est. 2%" },
+          { Contract: "B: Security Svc", Performance: "Continuous 24/7", Billing: "Monthly", Returns: "N/A" }
         ],
-        chart: { labels: ["Month 1","Month 2","Month 3","Month 4","Month 5"], series: [10,10,10,10,10] },
+        chart: { type: "line", labels: ["M1","M2","M3","M4","M5"], series: [10,10,10,10,10] },
         answers: [
           { key:"A", text:"Contract A (Retail Goods)" },
           { key:"B", text:"Contract B (Security Service)" }
         ],
         correctAnswerKey: "B",
         tags: [
-          { key:"t1", text:"Continuous Transfer of Control" },
-          { key:"t2", text:"Point-in-Time Delivery Transfer" },
-          { key:"t3", text:"Right of Return Liability Overstated" },
-          { key:"t4", text:"Series of Distinct Services Provided" },
-          { key:"t5", text:"Performance Obligation Satisfied Over Time" },
-          { key:"t6", text:"Milestone Based Percentage of Completion" }
+          { key:"t1", text:"Continuous Consumption of Benefit" },
+          { key:"t2", text:"Point-in-Time Transfer" },
+          { key:"t3", text:"Right of Return Liability" },
+          { key:"t4", text:"Series of Distinct Services" },
+          { key:"t5", text:"Customer Controls Asset as Created" },
+          { key:"t6", text:"Alternate Use Exception" }
         ],
         correctTags: ["t1", "t4", "t5"],
-        feedbackText: "Contract B represents a 'series' of distinct services where the customer consumes the benefit continuously as performed over time. Contract A transfers control at a specific point in time (upon shipment/delivery)."
+        feedbackText: "Contract B represents a 'series' of distinct services where the customer consumes the benefit continuously as it is created. Contract A transfers control definitively at a single point in time (shipment)."
       },
       {
-        id: "RR-CONTRACTASSET",
+        id: "RR-BREAKAGE",
         lens: "Revenue Recognition",
-        difficulty: "Medium",
-        title: "The Unbilled Asset",
-        prompt: "Contract Assets are rising substantially faster than Revenue. What does this signal?",
-        footnote: "Refresher: Contract Assets = Revenue recognized but NOT yet billed. Accounts Receivable = Billed and unconditional right to cash.",
+        difficulty: "Hard",
+        title: "The Breakage Bonanza",
+        prompt: "Scenario: Staring down a brutal Q4 where the company is slated to miss Wall Street earnings estimates by $0.05 per share, the CFO suddenly alters the gift card 'breakage' estimation model. What does this achieve?",
+        footnote: "Case Study Insight (Inspired by Starbucks): Companies hold billions in unredeemed customer funds. Breakage is recognized proportionally as cards are used. Accelerating this assumed rate boosts 'free' revenue without selling a single product.",
         data: [
-          { "Financial Year": "2024", "Total Revenue": "100", "Billed Accounts Receivable": "10.0", "Unbilled Contract Assets": "9.5" },
-          { "Financial Year": "2025", "Total Revenue": "102", "Billed Accounts Receivable": "9.1", "Unbilled Contract Assets": "11.5" },
-          { "Financial Year": "2026", "Total Revenue": "103", "Billed Accounts Receivable": "8.8", "Unbilled Contract Assets": "14.2" }
+          { Quarter: "2025-Q1", LiabilityBal: "$1.4B", HistRate: "4.0%", BreakageRev: "$14M" },
+          { Quarter: "2025-Q2", LiabilityBal: "$1.5B", HistRate: "4.0%", BreakageRev: "$15M" },
+          { Quarter: "2025-Q3", LiabilityBal: "$1.5B", HistRate: "4.0%", BreakageRev: "$15M" },
+          { Quarter: "2025-Q4", LiabilityBal: "$1.6B", NewRate: "8.5%", BreakageRev: "$68M" }
         ],
-        chart: { labels:["2024","2025","2026"], seriesFrom:"Unbilled Contract Assets" },
+        chart: { type: "bar", labels: ["Q1", "Q2", "Q3", "Q4"], series: [14, 15, 15, 68] },
         answers: [
-          { key:"A", text:"Customers are paying their bills faster" },
-          { key:"B", text:"Aggressive recognition ahead of billing rights (indicating weakening revenue quality)" },
-          { key:"C", text:"Allowance for doubtful accounts is increasing" }
+          { key:"A", text:"A legitimate reflection of shifting consumer habits" },
+          { key:"B", text:"Aggressive earnings management to hit analyst targets" },
+          { key:"C", text:"A required GAAP adjustment for cash-basis accounting" }
         ],
         correctAnswerKey: "B",
         tags: [
-          { key:"t1", text:"Accelerated Revenue Pull-Forward" },
-          { key:"t2", text:"Delayed Invoicing Milestones" },
-          { key:"t3", text:"Deteriorating Customer Credit Quality" },
-          { key:"t4", text:"Unconditional Right to Consideration Exists" },
-          { key:"t5", text:"Aggressive Percentage of Completion Estimates" },
-          { key:"t6", text:"Revenue Recognized Before Billing Rights" }
+          { key:"t1", text:"Change in Accounting Estimate" },
+          { key:"t2", text:"Artificial Earnings Boost" },
+          { key:"t3", text:"Valid Reflection of Consumer Habits" },
+          { key:"t4", text:"Operating Cash Flow Generation" },
+          { key:"t5", text:"Meeting EPS / Analyst Targets" },
+          { key:"t6", text:"Delayed Revenue Recognition" }
         ],
-        correctTags: ["t1", "t5", "t6"],
-        feedbackText: "Growing unbilled revenue relative to sales suggests the company is recognizing revenue well before they hit milestones allowing them to legally invoice the client."
+        correctTags: ["t1", "t2", "t5"],
+        feedbackText: "By suddenly changing the historical breakage estimate from 4% to 8.5% in Q4, the CFO manufactured $53M in high-margin revenue out of thin air to cover the exact EPS shortfall."
       },
       {
-        id: "RR-ALLOWANCES",
+        id: "RR-DEPOSITS",
+        lens: "Liability Classification",
+        difficulty: "Medium",
+        title: "The Reservation Mirage",
+        prompt: "A trendy EV company collected 500,000 fully refundable $1,000 reservations for a vehicle still in R&D. Can they recognize this massive cash influx as revenue?",
+        footnote: "Case Study Insight (Inspired by Tesla): Taking reservations provides a massive influx of operating cash, padding the bank account. But how should it be booked?",
+        data: [
+          { Year: "2024", Reservations: "100k", CashCollected: "$100M", Delivered: "0" },
+          { Year: "2025", Reservations: "300k", CashCollected: "$300M", Delivered: "0" },
+          { Year: "2026", Reservations: "500k", CashCollected: "$500M", Delivered: "0" }
+        ],
+        chart: { type: "bar", labels: ["2024", "2025", "2026"], series: [100, 300, 500] },
+        answers: [
+          { key:"A", text:"Yes, as Deferred Revenue (amortized over time)" },
+          { key:"B", text:"Yes, as Earned Revenue (since cash was received)" },
+          { key:"C", text:"No, strictly as a Customer Deposit Liability" }
+        ],
+        correctAnswerKey: "C",
+        tags: [
+          { key:"t1", text:"Performance Obligation Not Met" },
+          { key:"t2", text:"Fully Refundable Right" },
+          { key:"t3", text:"Immediate Revenue Recognition" },
+          { key:"t4", text:"Artificial Income Inflation" },
+          { key:"t5", text:"Boosts Operating Cash Flow" },
+          { key:"t6", text:"Long-term Debt Issuance" }
+        ],
+        correctTags: ["t1", "t2", "t5"],
+        feedbackText: "Until the vehicle is delivered, the $500M is purely a liability (Customer Deposits). It boosts operating cash flow, creating a massive cash cushion for operations, but strictly cannot touch the income statement."
+      },
+      {
+        id: "RR-RETURNMANIP",
         lens: "Revenue Quality",
         difficulty: "Medium",
-        title: "Shrinking Allowances",
-        prompt: "Are allowances for returns/discounts likely understated or overstated in 2025?",
-        footnote: "Formula: Net Sales = Gross Sales - Allowances. If you underestimate allowances, you artificially inflate Net Sales today.",
+        title: "The Phantom Sales",
+        prompt: "Sales are booming, but the return provision rate is shrinking. What does this signal?",
+        footnote: "GAAP requires estimating and accruing for expected returns at the time of sale. Failing to accrue the proper liability creates a mirage in the books.",
         data: [
-          { "Financial Year": "2024", "Gross Sales": "500", "New Reserve Additions": "52", "Actual Returns": "50", "Reserve Balance": "16" },
-          { "Financial Year": "2025", "Gross Sales": "520", "New Reserve Additions": "50", "Actual Returns": "60", "Reserve Balance": "6" }
+          { Quarter: "2026-Q1", GrossSales: "100", ActualReturns: "5.0", ProvRate: "5.0%" },
+          { Quarter: "2026-Q2", GrossSales: "110", ActualReturns: "5.5", ProvRate: "4.8%" },
+          { Quarter: "2026-Q3", GrossSales: "125", ActualReturns: "7.0", ProvRate: "4.2%" },
+          { Quarter: "2026-Q4", GrossSales: "180", ActualReturns: "12.0", ProvRate: "1.5%" }
         ],
-        chart: { labels:["2024","2025"], seriesFrom:"Reserve Balance" },
+        chart: { type: "line", labels:["Q1","Q2","Q3","Q4"], series: [5.0, 4.8, 4.2, 1.5] },
         answers: [
-          { key:"A", text:"Understated (Net Sales artificially high)" },
-          { key:"B", text:"Overstated (Net Sales artificially low)" },
-          { key:"C", text:"Appropriate based on volume" }
+          { key:"A", text:"Customers are simply returning fewer items" },
+          { key:"B", text:"Aggressive under-accrual to inflate Net Revenue" },
+          { key:"C", text:"Appropriate adjustment based on sales volume" }
         ],
-        correctAnswerKey: "A",
+        correctAnswerKey: "B",
         tags: [
-          { key:"t1", text:"Reserve Balance Significantly Depleted" },
-          { key:"t2", text:"Actual Returns Exceeded Provision Estimates" },
-          { key:"t3", text:"Conservative Accounting Methodology" },
-          { key:"t4", text:"Artificial Inflation of Net Sales" },
-          { key:"t5", text:"Inadequate Sales Return Allowance" },
-          { key:"t6", text:"Excessive Warranty Liabilities Recorded" }
+          { key:"t1", text:"Aggressive Earnings Management" },
+          { key:"t2", text:"Under-accrued Return Liability" },
+          { key:"t3", text:"Disconnect from Actual Trends" },
+          { key:"t4", text:"Legitimate Volume Variance" },
+          { key:"t5", text:"Conservative Accounting Practice" },
+          { key:"t6", text:"Overstated Contra-Revenue" }
+        ],
+        correctTags: ["t1", "t2", "t3"],
+        feedbackText: "Despite record sales and rising actual returns, the company slashed its provision rate in Q4 to a mere 1.5%. This aggressive under-accrual artificially inflates reported Net Revenue to meet year-end targets."
+      },
+      {
+        id: "RR-DSO",
+        lens: "A/R Quality & DSO",
+        difficulty: "Hard",
+        title: "The Extended Terms",
+        prompt: "Days Sales Outstanding (DSO) has spiked despite flat revenue. What underlying manipulation does this metric shift likely reveal?",
+        footnote: "DSO measures how many days it takes to collect payment. A spiking DSO means cash is trapped in Receivables much longer than historical norms.",
+        data: [
+          { Quarter: "2024-Q1", Revenue: "$100M", AR_Balance: "$33M", DSO: "30 days" },
+          { Quarter: "2024-Q2", Revenue: "$105M", AR_Balance: "$35M", DSO: "30 days" },
+          { Quarter: "2024-Q3", Revenue: "$102M", AR_Balance: "$51M", DSO: "45 days" },
+          { Quarter: "2024-Q4", Revenue: "$108M", AR_Balance: "$90M", DSO: "75 days" }
+        ],
+        chart: { type: "line", labels: ["Q1", "Q2", "Q3", "Q4"], series: [30, 30, 45, 75] },
+        answers: [
+          { key:"A", text:"Highly effective cash collection practices" },
+          { key:"B", text:"Secretly extending payment terms to pull forward sales" },
+          { key:"C", text:"Aggressive write-offs of uncollectible accounts" }
+        ],
+        correctAnswerKey: "B",
+        tags: [
+          { key:"t1", text:"Pulling Forward Future Demand" },
+          { key:"t2", text:"Deteriorating Earnings Quality" },
+          { key:"t3", text:"Highly Efficient Collections" },
+          { key:"t4", text:"Secret Side Letters / Extended Terms" },
+          { key:"t5", text:"Faster Cash Conversion Cycle" },
+          { key:"t6", text:"Overstated Bad Debt Reserve" }
         ],
         correctTags: ["t1", "t2", "t4"],
-        feedbackText: "The reserve cushion is nearly gone (dropped from 16 to 6) while actual returns are rising. This artificially boosts current Net Sales and Earnings."
+        feedbackText: "To hit Q4 targets, sales teams often offer customers 90+ days to pay ('extended terms') to convince them to buy now. This spikes A/R and DSO, signaling deteriorating earnings quality and pulling forward future revenue."
       },
       {
         id: "RR-DEFERRED",
@@ -589,12 +708,12 @@
         prompt: "Deferred Revenue growth has stalled. What does this signal for the future?",
         footnote: "Context: For subscription/SaaS companies, Deferred Revenue is a leading indicator. It represents cash collected for future service.",
         data: [
-          { "Financial Year": "2022", "Deferred Revenue": "900", "Growth Rate": "20%" },
-          { "Financial Year": "2023", "Deferred Revenue": "1090", "Growth Rate": "21%" },
-          { "Financial Year": "2024", "Deferred Revenue": "1180", "Growth Rate": "8%" },
-          { "Financial Year": "2025", "Deferred Revenue": "1210", "Growth Rate": "2%" }
+          { Year: "2024", DeferredRev: "900", Growth: "20%" },
+          { Year: "2025", DeferredRev: "1090", Growth: "21%" },
+          { Year: "2026", DeferredRev: "1180", Growth: "8%" },
+          { Year: "2027", DeferredRev: "1210", Growth: "2%" }
         ],
-        chart: { labels:["2022","2023","2024","2025"], seriesFrom:"Deferred Revenue" },
+        chart: { type: "line", labels:["2024","2025","2026","2027"], seriesFrom:"DeferredRev" },
         answers: [
           { key:"A", text:"Future revenue growth will likely decelerate" },
           { key:"B", text:"Current revenue is overstated due to refunds" },
@@ -603,29 +722,29 @@
         correctAnswerKey: "A",
         tags: [
           { key:"t1", text:"Customer Prepayments Decelerating" },
-          { key:"t2", text:"Leading Indicator of Backlog Shrinkage" },
-          { key:"t3", text:"Switch to Cash Basis Accounting" },
-          { key:"t4", text:"Revenue Recognized Too Early" },
-          { key:"t5", text:"Fuel for Future Revenue Depleted" },
-          { key:"t6", text:"Deferred Acquisition Costs Rising" }
+          { key:"t2", text:"Leading Indicator of Revenue Drop" },
+          { key:"t3", text:"Cash-Basis Accounting Shift" },
+          { key:"t4", text:"Decreasing Sales Pipeline / Backlog" },
+          { key:"t5", text:"Artificial Revenue Pull-Forward" },
+          { key:"t6", text:"Accelerated Amortization Schedule" }
         ],
-        correctTags: ["t1", "t2", "t5"],
-        feedbackText: "While not inherently fraudulent, it is a vital health warning. The 'fuel tank' for future revenue is emptying as new upfront bookings slow down."
+        correctTags: ["t1", "t2", "t4"],
+        feedbackText: "While not fraud, it's a vital health warning. The 'fuel tank' for future revenue is emptying as new bookings slow down."
       },
       {
         id: "AR-AGING",
         lens: "Credit Quality (A/R)",
         difficulty: "Hard",
         title: "The Aging Bucket Estimate",
-        prompt: "Which allowance matrix represents a realistic view of non-collection risk?",
-        footnote: "Rule of Thumb: The older a receivable gets, the less likely it is to be collected. Expected loss rates should reflect this deterioration.",
+        prompt: "Which allowance matrix represents a realistic view of non-collection risk for these bucketed balances?",
+        footnote: "Rule of Thumb: The older a receivable gets, the exponentially less likely it is to be collected. Rates should reflect this deterioration.",
         data: [
-          { "Aging Bucket": "Current", "Outstanding Amount": "50000" },
-          { "Aging Bucket": "1–60 days past due", "Outstanding Amount": "30000" },
-          { "Aging Bucket": "61–90 days past due", "Outstanding Amount": "15000" },
-          { "Aging Bucket": "90+ days past due", "Outstanding Amount": "5000" }
+          { Bucket: "Current", Amount: "$50,000" },
+          { Bucket: "1–60 days", Amount: "$30,000" },
+          { Bucket: "61–90 days", Amount: "$15,000" },
+          { Bucket: "90+ days", Amount: "$5,000" }
         ],
-        chart: { labels:["Current","1–60 days","61–90 days","90+ days"], series: [50,30,15,5] },
+        chart: { type: "bar", labels:["Cur","1–60","61–90","90+"], series: [50, 30, 15, 5] },
         answers: [
           { key:"A", text:"Rates: 2%, 5%, 15%, 50% (Progressive)" },
           { key:"B", text:"Rates: 2%, 2%, 2%, 2% (Flat)" },
@@ -633,106 +752,46 @@
         ],
         correctAnswerKey: "A",
         tags: [
-          { key:"t1", text:"Non-Collection Risk Rises with Age" },
-          { key:"t2", text:"Flat Rates Ignore Credit Deterioration" },
+          { key:"t1", text:"Collection Risk Rises with Age" },
+          { key:"t2", text:"Flat Rates Ignore Deterioration" },
           { key:"t3", text:"Optimistic Management Assumptions" },
-          { key:"t4", text:"Strict Credit Policy Implementation" },
-          { key:"t5", text:"Inadequate Bad Debt Provision Required" },
-          { key:"t6", text:"Matching Principle Violated" }
-        ],
-        correctTags: ["t1", "t2", "t5"],
-        feedbackText: "Non-collection risk naturally rises significantly with age. Companies occasionally apply flat, low rates to older buckets to improperly minimize their Bad Debt Expense."
-      },
-      {
-        id: "AR-ADJUST",
-        lens: "Analyst Adjustment",
-        difficulty: "Boss Round",
-        title: "The Cookie Jar",
-        prompt: "Compare the reported allowance rate to historical trends. What is the financial impact?",
-        footnote: "Analyst Check: If the current reserve rate is mysteriously lowered without operational justification, earnings are artificially boosted.",
-        data: [
-          { "Financial Year": "2024", "Gross Accounts Receivable": "110", "Reported Allowance": "5.0", "Allowance Rate (%)": "4.5" },
-          { "Financial Year": "2025", "Gross Accounts Receivable": "112", "Reported Allowance": "4.0", "Allowance Rate (%)": "3.6" },
-          { "Financial Year": "2026", "Gross Accounts Receivable": "114", "Reported Allowance": "3.0", "Allowance Rate (%)": "2.6" }
-        ],
-        chart: { labels:["2024","2025","2026"], seriesFrom:"Allowance Rate (%)" },
-        answers: [
-          { key:"A", text:"Under-reserved (Earnings artificially inflated)" },
-          { key:"B", text:"Over-reserved (Earnings artificially depressed)" },
-          { key:"C", text:"Neutral operational impact" }
-        ],
-        correctAnswerKey: "A",
-        tags: [
-          { key:"t1", text:"Reserve Rate Declining Despite Growth" },
-          { key:"t2", text:"Cookie Jar Accounting Tactics" },
-          { key:"t3", text:"Artificial Earnings Boost" },
-          { key:"t4", text:"Strict Matching Principle Adherence" },
-          { key:"t5", text:"Reversal of Prior Year Allowances" },
-          { key:"t6", text:"Aggressive Receivables Write-Off Strategy" }
+          { key:"t4", text:"Overly Conservative Provisioning" },
+          { key:"t5", text:"Strict Credit Policy Implementation" },
+          { key:"t6", text:"Accurate Historical Matching" }
         ],
         correctTags: ["t1", "t2", "t3"],
-        feedbackText: "This is a classic 'Cookie Jar' accounting technique—quietly draining the reserve balance to create paper profits and meet Wall Street EPS targets."
+        feedbackText: "Non-collection risk rises significantly with age. Companies sometimes apply flat low rates to older buckets to improperly minimize Bad Debt Expense."
       },
       {
         id: "CLASS5-CHANNEL",
         lens: "Rev Rec Pitfalls",
-        difficulty: "Hard",
+        difficulty: "Boss Round",
         title: "The Q4 Surprise",
-        prompt: "Sales surged in Q4, but Q1 returns are massive. What accounting pitfall is likely occurring?",
-        footnote: "Note: Look at the relationship between unnatural Q4 sales spikes and subsequent Q1 returns or deteriorating Accounts Receivable aging.",
+        prompt: "Sales surged in Q4, but Q1 returns are massive. What pitfall is likely occurring?",
+        footnote: "Note: Look at the relationship between unnatural Q4 sales spikes and subsequent Q1 returns or deteriorating A/R aging.",
         data: [
-          { "Fiscal Quarter": "Q1", "Gross Sales": "420", "Actual Returns": "20", "A/R Aging 90+ Days": "4%" },
-          { "Fiscal Quarter": "Q2", "Gross Sales": "435", "Actual Returns": "22", "A/R Aging 90+ Days": "4%" },
-          { "Fiscal Quarter": "Q3", "Gross Sales": "430", "Actual Returns": "21", "A/R Aging 90+ Days": "5%" },
-          { "Fiscal Quarter": "Q4", "Gross Sales": "680", "Actual Returns": "105", "A/R Aging 90+ Days": "12%" }
+          { Quarter: "2026-Q1", GrossSales: "420", Returns: "20", ARAging90: "4%" },
+          { Quarter: "2026-Q2", GrossSales: "435", Returns: "22", ARAging90: "4%" },
+          { Quarter: "2026-Q3", GrossSales: "430", Returns: "21", ARAging90: "5%" },
+          { Quarter: "2026-Q4", GrossSales: "680", Returns: "105", ARAging90: "12%" }
         ],
-        chart: { labels:["Q1","Q2","Q3","Q4"], seriesFrom:"Gross Sales" },
+        chart: { type: "line", labels:["Q1","Q2","Q3","Q4"], seriesFrom:"GrossSales" },
         answers: [
           { key:"A", text:"Legitimate Seasonal Sales Boom" },
           { key:"B", text:"Channel Stuffing (Trade Loading)" },
-          { key:"C", text:"Deferred Revenue Amortization Shift" }
+          { key:"C", text:"Deferred Revenue Amortization" }
         ],
         correctAnswerKey: "B",
         tags: [
-          { key:"t1", text:"Channel Stuffing and Trade Loading" },
-          { key:"t2", text:"Cutoff Period Manipulation" },
-          { key:"t3", text:"Deteriorating Accounts Receivable Aging" },
-          { key:"t4", text:"Legitimate Business Seasonality" },
-          { key:"t5", text:"Accelerated Bad Debt Recoveries" },
-          { key:"t6", text:"Relaxed Credit Standards at Year-End" }
+          { key:"t1", text:"Channel Stuffing / Trade Loading" },
+          { key:"t2", text:"End-of-Period Cutoff Manipulation" },
+          { key:"t3", text:"Deteriorating A/R Quality" },
+          { key:"t4", text:"Legitimate Seasonal Sales Boom" },
+          { key:"t5", text:"Deferred Revenue Amortization" },
+          { key:"t6", text:"Understated Inventory Asset" }
         ],
         correctTags: ["t1", "t2", "t3"],
-        feedbackText: "This pattern represents 'Channel Stuffing'. Management effectively forced inventory onto distributors at year-end to hit targets (Cutoff Manipulation), leading to high subsequent returns."
-      },
-      {
-        id: "CLASS5-ALLOWANCE",
-        lens: "A/R & Allowances",
-        difficulty: "Boss Round",
-        title: "The Allowance Illusion",
-        prompt: "Analyze the Allowance Rollforward. What does this reveal about management's practices?",
-        footnote: "Equation: Beg Allowance + Provision - Charge-offs = End Allowance. If Charge-offs outpace Provisions consistently, what happens to the balance sheet?",
-        data: [
-          { "Financial Year": "2024", "Gross Accounts Receivable": "800", "Bad Debt Provision": "40", "Actual Charge-Offs": "35", "Ending Allowance": "55" },
-          { "Financial Year": "2025", "Gross Accounts Receivable": "850", "Bad Debt Provision": "40", "Actual Charge-Offs": "50", "Ending Allowance": "45" },
-          { "Financial Year": "2026", "Gross Accounts Receivable": "920", "Bad Debt Provision": "40", "Actual Charge-Offs": "70", "Ending Allowance": "15" }
-        ],
-        chart: { labels:["2024","2025","2026"], seriesFrom:"Ending Allowance" },
-        answers: [
-          { key:"A", text:"Earnings are artificially inflated (Under-reserved)" },
-          { key:"B", text:"Earnings are artificially depressed (Over-reserved)" },
-          { key:"C", text:"Reserves perfectly match the underlying credit risk" }
-        ],
-        correctAnswerKey: "A",
-        tags: [
-          { key:"t1", text:"Under-Provisioning Bad Debt Expense" },
-          { key:"t2", text:"Charge-Offs Significantly Outpace Provisions" },
-          { key:"t3", text:"Artificial Net Income Inflation" },
-          { key:"t4", text:"Conservative Reserve Building Tactics" },
-          { key:"t5", text:"Depleting Balance Sheet Reserves" },
-          { key:"t6", text:"Overstated Accounts Receivable Quality" }
-        ],
-        correctTags: ["t1", "t2", "t5"],
-        feedbackText: "By keeping the Bad Debt Provision flat while actual Charge-Offs skyrocket, management depletes the balance sheet allowance to avoid taking an expense hit to the Income Statement."
+        feedbackText: "This pattern represents 'Channel Stuffing'. Management forced inventory onto distributors to hit targets (Cutoff Manipulation), leading to high returns next period."
       }
     ];
 
@@ -745,9 +804,10 @@
       activeTeamId: null,
       selectionsByTeam: {},
       scoredRounds: new Set(),
+      roundScores: {}, // Added explicit score tracking
     };
     
-    // Auto-generate initials for teams
+    // Auto-generate initials for teams instead of emojis
     function getInitials(name) {
       const parts = name.trim().split(" ");
       if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
@@ -768,7 +828,6 @@
     const btnLock = el("btnLock");
     const btnReset = el("btnReset");
     const btnHow = el("btnHow");
-    const btnInstructor = el("btnInstructor");
     
     const gameBoard = el("gameBoard");
     const gameOverArea = el("gameOverArea");
@@ -864,7 +923,6 @@
 
     function clearSelectionsForNewRound() {
       state.selectionsByTeam = {};
-      state.scoredRounds = new Set();
       if (state.activeTeamId) ensureSelection(state.activeTeamId);
     }
 
@@ -878,7 +936,14 @@
       
       btnLock.disabled = false;
       btnLock.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg> Lock & Score`;
-      btnNext.disabled = false;
+      
+      // Update Next button behavior for the final case
+      if (state.roundIndex === CASE_BANK.length - 1) {
+        btnNext.innerHTML = `Finish Investigation &rarr;`;
+      } else {
+        btnNext.innerHTML = `Next File &rarr;`;
+      }
+      btnNext.disabled = false; 
 
       answerArea.querySelectorAll("button, input").forEach(el => el.disabled = false);
 
@@ -889,13 +954,9 @@
       caseFootnote.textContent = c.footnote;
 
       renderTable(c.data);
-      
-      // Request animation frame ensures DOM has rendered container sizes
-      requestAnimationFrame(() => {
-        renderChart(c);
-      });
-      
+      renderChart(c); // Will use setTimeout internally
       renderAnswerUI(c);
+
       roundMeta();
       syncUIFromSelection();
     }
@@ -903,7 +964,7 @@
     function renderTable(rows) {
       if (!rows || rows.length === 0) return;
       const cols = Object.keys(rows[0]);
-      dataHead.innerHTML = `<tr>${cols.map(h => `<th class="px-4 py-3">${escapeHtml(h)}</th>`).join("")}</tr>`;
+      dataHead.innerHTML = `<tr>${cols.map(h => `<th class="px-4 py-3">${escapeHtml(h.replace(/_/g, ' '))}</th>`).join("")}</tr>`;
       dataBody.innerHTML = rows.map(r => `
         <tr class="transition-colors hover:bg-[#faf9f7]">
           ${cols.map(k => `<td class="px-4 py-2.5">${escapeHtml(r[k])}</td>`).join("")}
@@ -912,14 +973,19 @@
     }
 
     function renderChart(c) {
-      if (!c.chart) return;
-      let series = [];
-      if (c.chart.series) {
-        series = c.chart.series.map(v => ({ value: v }));
-      } else if (c.chart.seriesFrom) {
-        series = c.data.map(d => ({ value: Number(d[c.chart.seriesFrom] || 0) }));
-      }
-      ChartMini.drawLine(canvas, c.chart.labels, series);
+      // Delay rendering slightly to ensure bounding boxes are perfectly calculated after reflows
+      setTimeout(() => {
+        const { ctx, width, height } = ChartMini.fitCanvas(canvas);
+        
+        let series = [];
+        if (c.chart.series) {
+          series = c.chart.series.map(v => ({ value: v }));
+        } else if (c.chart.seriesFrom) {
+          series = c.data.map(d => ({ value: Number(d[c.chart.seriesFrom] || 0) }));
+        }
+        
+        ChartMini.drawGraph(ctx, width, height, c.chart, series);
+      }, 50);
     }
 
     function renderAnswerUI(c) {
@@ -1056,6 +1122,7 @@
       if (team) team.score += pts;
       
       state.scoredRounds.add(key);
+      state.roundScores[key] = pts; // save specific points for explicitly showing it
       return pts;
     }
 
@@ -1067,7 +1134,13 @@
       answerArea.classList.add("pointer-events-none");
       caseStamp.classList.add("show");
       feedbackArea.classList.remove("hidden");
-      feedbackText.innerHTML = `<strong>Actual Outcome:</strong> ${c.feedbackText}`;
+      
+      const key = `${state.roundIndex}|${teamId}`;
+      const pts = state.roundScores[key];
+      const ptColor = pts >= 0 ? 'text-[#4b8a6b]' : 'text-[#a65d6c]';
+      const ptsDisplay = pts !== undefined ? `<span class="inline-block px-2.5 py-1 bg-white rounded-md border border-[#dce0f2] ${ptColor} font-bold mono mr-2 shadow-sm text-xs">ROUND SCORE: ${pts >= 0 ? '+'+pts : pts}</span>` : '';
+      
+      feedbackText.innerHTML = `${ptsDisplay} <strong>Actual Outcome:</strong> ${c.feedbackText}`;
 
       // Highlight Answers
       const answerLabels = answerChoices.children;
@@ -1102,52 +1175,6 @@
           else btn.classList.add('tag-missed');
         } else if (isSelected && !isCorrect) {
           btn.classList.add('tag-wrong'); 
-        } else {
-          btn.classList.add('opacity-30', 'bg-[#faf9f7]', 'border-[#eae6df]', 'text-[#8c8982]');
-        }
-      }
-    }
-    
-    function revealInstructorAnswers() {
-      const c = currentCase();
-      if (!c) return;
-
-      // Disable inputs and lock button to prevent confusing state
-      answerArea.classList.add("pointer-events-none");
-      btnLock.disabled = true;
-      btnLock.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg> Locked by Instructor`;
-      
-      // Show Feedback
-      feedbackArea.classList.remove("hidden");
-      feedbackText.innerHTML = `<strong>Instructor Override Reveal:</strong> ${c.feedbackText}`;
-
-      // Highlight correct answer
-      const answerLabels = answerChoices.children;
-      for (let label of answerLabels) {
-        const key = label.dataset.key;
-        label.className = "flex items-start gap-3 p-4 rounded-xl border transition-all"; 
-        
-        if (key === c.correctAnswerKey) {
-          label.classList.add('answer-correct');
-          if(!label.innerHTML.includes("CORRECT")) {
-            label.innerHTML += `<div class="absolute right-4 top-1/2 -translate-y-1/2 text-[#059669] font-bold tracking-widest text-[10px]">CORRECT</div>`;
-          }
-        } else {
-          label.classList.add('opacity-40', 'bg-[#f4f1eb]', 'border-[#eae6df]');
-        }
-      }
-
-      // Highlight correct tags
-      const correctTagSet = new Set(c.correctTags);
-      const tags = tagChoices.children;
-      for (let btn of tags) {
-        const key = btn.dataset.key;
-        const isCorrect = correctTagSet.has(key);
-
-        btn.className = "px-3 py-1.5 rounded-lg border text-[11px] font-bold text-left transition-all"; 
-
-        if (isCorrect) {
-          btn.classList.add('tag-correct');
         } else {
           btn.classList.add('opacity-30', 'bg-[#faf9f7]', 'border-[#eae6df]', 'text-[#8c8982]');
         }
@@ -1192,11 +1219,11 @@
         col.style.animationDelay = `${(3 - p.rank) * 0.2}s`;
         
         col.innerHTML = `
-          <div class="text-lg font-bold bg-white border border-[#eae6df] text-[#5c699c] rounded-xl w-12 h-12 flex items-center justify-center mb-3 shadow-md">${getInitials(p.team.name)}</div>
-          <div class="font-extrabold text-[#3f3e3a] text-base truncate w-full text-center px-1">${escapeHtml(p.team.name)}</div>
-          <div class="mono text-[#4b8a6b] text-2xl font-black mt-1 mb-4 drop-shadow-sm">${p.team.score} <span class="text-xs text-[#8c8982] font-semibold uppercase tracking-widest">pts</span></div>
-          <div class="w-full rounded-t-xl flex items-start justify-center pt-4 ${p.class} shadow-inner">
-            <span class="font-black text-[#8c8982]/50 text-4xl">${p.rank}</span>
+          <div class="text-sm font-bold bg-white border border-[#eae6df] text-[#5c699c] rounded-lg w-10 h-10 flex items-center justify-center mb-2 shadow-sm">${getInitials(p.team.name)}</div>
+          <div class="font-bold text-[#3f3e3a] text-sm truncate w-full text-center px-1">${escapeHtml(p.team.name)}</div>
+          <div class="mono text-[#8c8982] text-[11px] font-bold mb-3">${p.team.score} pts</div>
+          <div class="w-full rounded-t-lg flex items-start justify-center pt-4 ${p.class}">
+            <span class="font-bold text-[#8c8982]/40 text-2xl">${p.rank}</span>
           </div>
         `;
         podium.appendChild(col);
@@ -1209,19 +1236,6 @@
     btnHow.onclick = () => { el("modal").classList.remove("hidden"); el("modal").classList.add("flex"); };
     el("btnClose").onclick = () => { el("modal").classList.add("hidden"); el("modal").classList.remove("flex"); };
     el("modal").onclick = (e) => { if (e.target === el("modal")) { el("modal").classList.add("hidden"); el("modal").classList.remove("flex"); } };
-
-    btnInstructor.onclick = () => {
-      if (state.roundIndex < 0) {
-        alert("Please initialize a case file first.");
-        return;
-      }
-      const pwd = prompt("Instructor Override: Enter Password");
-      if (pwd === "rr") {
-        revealInstructorAnswers();
-      } else if (pwd !== null) {
-        alert("Incorrect password.");
-      }
-    };
 
     btnAddTeam.onclick = () => {
       const name = (teamNameInput.value || "").trim();
@@ -1286,6 +1300,7 @@
       state.activeTeamId = null;
       state.selectionsByTeam = {};
       state.scoredRounds = new Set();
+      state.roundScores = {};
       
       teamNameInput.disabled = false;
       btnAddTeam.disabled = false;
@@ -1298,8 +1313,10 @@
       caseTitle.textContent = "Awaiting Initialization";
       casePrompt.textContent = "Add teams and initialize the case files to begin your investigation.";
       dataHead.innerHTML = ""; dataBody.innerHTML = "";
+      
       const ctx = canvas.getContext("2d");
       ctx.clearRect(0,0, canvas.width, canvas.height);
+      
       answerChoices.innerHTML = "";
       tagChoices.innerHTML = "";
       feedbackArea.classList.add("hidden");
@@ -1315,9 +1332,7 @@
       }
     });
 
-    // Google Sheets Submission Handler
-    const googleScriptUrl = "https://script.google.com/macros/s/AKfycbxNX7FoRk0gUz9mJkPIlB4cIEqQP2xZ_6MK9BTUHt__5gtpx2dCWk6AUXVh0-XWM3zo/exec";
-
+    // Mock Submit Handler
     el("btnSubmitScores").onclick = () => {
       const btn = el("btnSubmitScores");
       const status = el("submitStatus");
@@ -1326,29 +1341,12 @@
       btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-[#3d5a49]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Transmitting...`;
       status.textContent = "Connecting to submission server...";
 
-      const payload = {
-        roundIndex: state.roundIndex,
-        teams: state.teams
-      };
-
-      fetch(googleScriptUrl, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
-      })
-      .then(() => {
+      setTimeout(() => {
         btn.classList.remove("bg-[#d5e0d9]", "hover:bg-[#c6d4cc]", "text-[#3d5a49]");
         btn.classList.add("bg-[#e3e6f0]", "text-[#4a5578]");
         btn.innerHTML = `✓ Official Results Submitted`;
         status.innerHTML = "<span class='text-[#4b8a6b]'>Success. Data safely stored for official review.</span>";
-      })
-      .catch((err) => {
-        console.error(err);
-        btn.disabled = false;
-        btn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> Submit for Competition`;
-        status.innerHTML = "<span class='text-[#a65d6c]'>Error transmitting data. Please try again.</span>";
-      });
+      }, 1500);
     };
 
     /***********************
