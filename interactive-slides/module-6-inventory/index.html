@@ -1296,8 +1296,8 @@
         <!-- 44. Case Study -->
         <div class="slide" id="slide-44">
             <h2>Case Study: First Brands</h2>
-            <div class="flex-row" style="align-items: center;">
-                <div class="flex-col">
+            <div class="flex-row" style="align-items: center; height: 100%;">
+                <div class="flex-col" style="flex: 1;">
                     <div class="callout" style="border-left-color: var(--color-error); margin-top:0;">
                         <h3 style="color:var(--color-error); margin-top:0;">The Discrepancy</h3>
                         <p style="margin-bottom:5px; font-size:0.9rem;"><strong>Public Claim:</strong> First Brands told lenders it had <strong>$5.9 Billion</strong> in debt.</p>
@@ -1305,9 +1305,11 @@
                     </div>
                     <p style="font-size:0.95rem; margin-top: 15px;">How did they hide over $2 Billion? They used <strong>Inventory Factoring</strong> via Special Purpose Entities (SPEs).</p>
                 </div>
-                <div class="flex-col">
-                    <div style="border: var(--border-style); box-shadow: var(--shadow-card); border-radius: 6px; overflow: hidden; line-height: 0;">
-                        <iframe width="100%" height="240" src="https://www.youtube.com/embed/OPI3i6ZywoI" title="How First Brands Group collapsed | FT" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <div class="flex-col" style="flex: 1.2;">
+                    <div style="background: white; padding: 10px; border-radius: 8px; box-shadow: var(--shadow-card); border: var(--border-style);">
+                        <div style="width: 100%; aspect-ratio: 16/9; border-radius: 4px; overflow: hidden; background: #0f172a;">
+                            <iframe style="width: 100%; height: 100%; border: none;" src="https://www.youtube.com/embed/OPI3i6ZywoI" title="How First Brands Group collapsed | FT" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1315,22 +1317,76 @@
 
         <!-- 45. Factoring -->
         <div class="slide" id="slide-45">
-            <h2>What is Inventory Factoring?</h2>
-            <p>A mechanism to raise cash by selling or pledging inventory to a financier.</p>
-            <div class="flex-row" style="margin-top: 15px;">
-                <div class="flex-col" style="background:white; padding:15px; border: var(--border-style); border-radius:6px;">
-                    <h3 style="margin-top:0;">The Mechanism</h3>
-                    <ul style="padding-left:15px; font-size:0.85rem;">
-                        <li>Financier advances cash (e.g., 70–90% of inventory value).</li>
-                        <li>Often done through off-balance sheet <strong>SPEs</strong>.</li>
-                    </ul>
+            <h2>Supply Chain Finance (Reverse Factoring)</h2>
+            <div class="flex-row" style="margin-top: 0; align-items: center;">
+                <div class="flex-col" style="flex: 0.8;">
+                    <p style="font-size:0.85rem; margin-bottom: 10px;">A mechanism to manage cash flow by using a third-party financier to pay suppliers early.</p>
+                    <div style="background:white; padding:12px; border: var(--border-style); border-radius:6px; margin-bottom:10px;">
+                        <h3 style="margin-top:0;">The Mechanism</h3>
+                        <ul style="padding-left:15px; font-size:0.8rem; margin-bottom:0;">
+                            <li style="margin-bottom: 4px;">Supplier sends goods; Company promises to pay later.</li>
+                            <li style="margin-bottom: 4px;">Supplier sells the approved invoice to a Financier.</li>
+                            <li style="margin-bottom: 4px;">Financier pays Supplier immediately (discounted).</li>
+                            <li>Company pays the Financier at the term end.</li>
+                        </ul>
+                    </div>
+                    <div style="background:white; padding:12px; border: var(--border-style); border-radius:6px;">
+                        <h3 style="margin-top:0; color:var(--color-error);">The Risk (The Illusion)</h3>
+                        <p style="font-size:0.8rem; margin-bottom:0;">It looks like Accounts Payable, but functions like <strong>Short-Term Debt</strong>. Hiding this debt artificially improves the Cash Conversion Cycle.</p>
+                    </div>
                 </div>
-                <div class="flex-col" style="background:white; padding:15px; border: var(--border-style); border-radius:6px;">
-                    <h3 style="margin-top:0;">Two Structures</h3>
-                    <ol style="padding-left: 15px; font-size:0.85rem;">
-                        <li style="margin-bottom: 5px;"><strong>True Sale:</strong> Inventory removed from books. (Off BS)</li>
-                        <li><strong>Financing:</strong> Loan secured by inventory. (On BS)</li>
-                    </ol>
+                
+                <div class="flex-col" style="flex: 1.4;">
+                    <!-- Pure CSS/HTML FT Diagram -->
+                    <div style="background-color: #4e7d55; color: white; padding: 15px; border-radius: 12px; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-family: 'Inter', sans-serif;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                            <div style="background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; font-family: serif; letter-spacing: 2px;">FT</div>
+                            <h4 style="font-size: 1.1rem; font-weight: normal; margin: 0;">How supply chain finance works</h4>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; position: relative;">
+                            <!-- Background dashed line -->
+                            <div style="position: absolute; top: 50%; left: 15%; right: 15%; height: 1px; border-top: 2px dashed rgba(255,255,255,0.3); z-index: 0; transform: translateY(-10px);"></div>
+                            
+                            <!-- Company -->
+                            <div style="display: flex; flex-direction: column; align-items: center; text-align: center; z-index: 10; height: 100%;">
+                                <i class="fas fa-building" style="font-size: 3rem; color: #facc15; margin-bottom: 10px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));"></i>
+                                <span style="font-weight: bold; font-size: 0.95rem;">Company</span>
+                                <div style="margin-top: auto; padding-top: 15px; width: 100%;">
+                                    <div style="background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; text-align: left; font-size: 0.7rem; border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; line-height: 1.3;">
+                                        <span style="background: #facc15; color: black; font-weight: bold; width: 16px; height: 16px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; margin-right: 4px;">4</span>
+                                        Company pays the financier directly at the time specified
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Supplier -->
+                            <div style="display: flex; flex-direction: column; align-items: center; text-align: center; z-index: 10; height: 100%;">
+                                <div style="margin-bottom: 15px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; text-align: left; font-size: 0.7rem; border: 1px solid rgba(255,255,255,0.1); width: 100%; box-sizing: border-box; line-height: 1.3;">
+                                    <span style="background: #facc15; color: black; font-weight: bold; width: 16px; height: 16px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; margin-right: 4px;">1</span>
+                                    Supplier sends goods to company. Promises to pay in 30-180 days.
+                                </div>
+                                <i class="fas fa-industry" style="font-size: 3rem; color: #facc15; margin-bottom: 10px; margin-top: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));"></i>
+                                <span style="font-weight: bold; font-size: 0.95rem;">Supplier</span>
+                            </div>
+                            
+                            <!-- Financier -->
+                            <div style="display: flex; flex-direction: column; align-items: center; text-align: center; z-index: 10; height: 100%;">
+                                <div style="margin-bottom: 10px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; text-align: left; font-size: 0.7rem; border: 1px solid rgba(255,255,255,0.1); width: 100%; box-sizing: border-box; line-height: 1.3;">
+                                    <span style="background: #facc15; color: black; font-weight: bold; width: 16px; height: 16px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; margin-right: 4px;">2</span>
+                                    Supplier sends approved invoice to financier
+                                </div>
+                                <i class="fas fa-landmark" style="font-size: 3rem; color: #facc15; margin-bottom: 10px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));"></i>
+                                <span style="font-weight: bold; font-size: 0.95rem;">Financier</span>
+                                <div style="margin-top: 10px; width: 100%;">
+                                    <div style="background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; text-align: left; font-size: 0.7rem; border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; line-height: 1.3;">
+                                        <span style="background: #facc15; color: black; font-weight: bold; width: 16px; height: 16px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; margin-right: 4px;">3</span>
+                                        Financier pays amount owed immediately, at a discount
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1742,7 +1798,7 @@
         {q:"Inventory Turnover indicates how efficiently a company manages its stock. How is this ratio properly calculated?", o:["Average Inventory divided by Cost of Goods Sold","Cost of Goods Sold divided by Average Inventory","Total Sales divided by Cash on Hand"], a:1},
         {q:"Once inventory is finally sold to a customer, the capitalized cost moves off the Balance Sheet. Where does it immediately go?", o:["It remains on the Balance Sheet as a long-term asset.","It hits the Income Statement as Cost of Goods Sold (COGS).","It is recorded directly on the Statement of Cash Flows."], a:1},
         {q:"If a company's Days Payable Outstanding (DPO) decreases from 60 days to 40 days, what does this indicate about their cash management?", o:["They are paying their suppliers faster, which ties up more of their cash.","They are delaying payments to suppliers, keeping more cash on hand.","They are collecting money from customers much faster."], a:0},
-        {q:"Inventory Factoring can be structured as either a 'True Sale' or a secured financing arrangement. In reality, what is the underlying economic substance of these transactions?", o:["It is always a pure sale of inventory to a third-party customer.","It is strictly a way to avoid paying corporate income taxes.","It is essentially borrowing cash using the inventory as collateral."], a:2}
+        {q:"Supply Chain Finance (or Reverse Factoring) can mask a company's true liabilities. What is the underlying economic substance of these transactions?", o:["It is always a pure sale of inventory to a third-party customer.","It is strictly a way to avoid paying corporate income taxes.","It is essentially borrowing cash (debt) to extend payment terms."], a:2}
     ];
     let quizIdx = 0;
     let score = 0;
