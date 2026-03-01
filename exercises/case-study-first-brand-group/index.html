@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business School Teaching Case: First Brands Group</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ft: {
+                            salmon: '#fff1e5',      /* FT main background */
+                            salmonDark: '#e9decf',  /* FT borders/darker elements */
+                            text: '#33302e',        /* FT main text */
+                            crimson: '#9e2f50',     /* FT accent red */
+                            teal: '#0d7680',        /* FT accent teal */
+                            slate: '#262a33'        /* FT dark header/sidebar */
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fff1e5; /* FT Salmon */
+            color: #33302e;
+        }
+        
+        h1, h2, h3, .serif-text {
+            font-family: 'Merriweather', serif;
+        }
+
+        /* Smooth tab transitions */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Sidebar active link styling */
+        .nav-link.active {
+            background-color: #1a1d24;
+            color: #fff1e5;
+            border-left: 4px solid #9e2f50; /* FT Crimson */
+        }
+        
+        /* Tooltip Arrow */
+        .tooltip-arrow::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -6px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: #262a33 transparent transparent transparent;
+        }
+
+        /* Model Answer Transition */
+        .model-answer {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: all 0.5s ease-in-out;
+        }
+        .model-answer.revealed {
+            max-height: 1000px;
+            opacity: 1;
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body class="antialiased h-screen overflow-hidden flex">
+
+    <!-- Left Side Pane (Modular Navigation) -->
+    <aside class="w-72 bg-ft-slate text-slate-300 flex flex-col h-full shrink-0 shadow-xl z-10 overflow-y-auto border-r border-ft-slate">
+        <div class="p-6 pb-2 border-b border-slate-700">
+            <div class="flex items-center space-x-2 text-ft-salmon mb-2 font-semibold tracking-wider text-xs uppercase">
+                <i data-lucide="book-open" class="w-4 h-4"></i>
+                <span>Financial Times Case</span>
+            </div>
+            <h1 class="text-xl font-bold text-white leading-tight mb-2 serif-text">First Brands Group Collapse</h1>
+            <p class="text-xs text-slate-400">Gonzaga University</p>
+        </div>
+        
+        <nav class="flex-1 py-4 flex flex-col gap-1">
+            <button onclick="switchTab('intro')" id="nav-intro" class="nav-link active flex items-center w-full text-left px-6 py-3 hover:bg-slate-800 transition-colors">
+                <i data-lucide="play-circle" class="w-5 h-5 mr-3"></i>
+                <span class="font-medium text-sm">1. Overview & Video</span>
+            </button>
+            <button onclick="switchTab('background')" id="nav-background" class="nav-link flex items-center w-full text-left px-6 py-3 hover:bg-slate-800 transition-colors">
+                <i data-lucide="file-text" class="w-5 h-5 mr-3"></i>
+                <span class="font-medium text-sm">2. Case Background</span>
+            </button>
+            <button onclick="switchTab('alphaville')" id="nav-alphaville" class="nav-link flex items-center w-full text-left px-6 py-3 hover:bg-slate-800 transition-colors">
+                <i data-lucide="trending-down" class="w-5 h-5 mr-3"></i>
+                <span class="font-medium text-sm">3. Lifting the Hood</span>
+            </button>
+            <button onclick="switchTab('research')" id="nav-research" class="nav-link flex items-center w-full text-left px-6 py-3 hover:bg-slate-800 transition-colors">
+                <i data-lucide="microscope" class="w-5 h-5 mr-3"></i>
+                <span class="font-medium text-sm">4. Academic Context</span>
+            </button>
+            <button onclick="switchTab('questions')" id="nav-questions" class="nav-link flex items-center w-full text-left px-6 py-3 hover:bg-slate-800 transition-colors">
+                <i data-lucide="edit-3" class="w-5 h-5 mr-3"></i>
+                <span class="font-medium text-sm">5. Case Questions</span>
+            </button>
+        </nav>
+        
+        <div class="p-6 border-t border-slate-700 text-xs text-slate-500">
+            &copy; 2026 The Financial Times Ltd.<br>Educational Use Only.
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto bg-ft-salmon p-8 md:p-12 relative">
+        
+        <div class="max-w-4xl mx-auto">
+            <!-- 1. Overview & Video Tab -->
+            <section id="intro" class="tab-content active space-y-8">
+                <div class="border-b border-ft-salmonDark pb-6">
+                    <h2 class="text-4xl font-bold text-ft-text mb-3 serif-text">Introduction & Overview</h2>
+                    <h3 class="text-2xl text-ft-teal font-light serif-text">Could — or should — the books have flagged the risks?</h3>
+                </div>
+
+                <div class="bg-white p-3 rounded-xl shadow-sm border border-ft-salmonDark">
+                    <div class="aspect-video w-full rounded-lg overflow-hidden bg-slate-900">
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/OPI3i6ZywoI" title="How First Brands Group collapsed | FT" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Case Background Tab -->
+            <section id="background" class="tab-content space-y-6">
+                <h2 class="text-3xl font-bold text-ft-text mb-6 border-b border-ft-salmonDark pb-4 serif-text">The Case Background</h2>
+                
+                <article class="prose prose-lg max-w-none serif-text text-ft-text leading-relaxed">
+                    <p><span class="text-5xl font-bold float-left mr-2 leading-none text-ft-crimson mt-1">I</span>n late September, First Brands Group (FBG), a privately held US auto parts company, filed for bankruptcy protection. The petition listed total liabilities of $10-50bn. FBG and related entities carried more than $8bn of secured corporate borrowings and inventory-backed financing. The central issue was its use of multiple forms of working capital financing, including leasing structures that were not clearly disclosed to other lenders.</p>
+                    
+                    <h3 class="font-sans font-bold text-xl text-ft-text mt-8 mb-4">Hidden Debt & Factoring</h3>
+                    <p>Rating agencies noted an increase in factoring, through which a company sells its unpaid invoices to a third party. Because factoring is usually structured as a sale rather than a loan, this did not add debt to FBG’s balance sheet, even though rating agencies treated them as debt-like when assessing leverage.</p>
+                    
+                    <!-- Supply Chain Finance Visualization -->
+                    <div class="my-8 bg-[#4e7d55] text-white rounded-xl font-sans relative shadow-md md:aspect-[5/3] overflow-hidden">
+                        <div class="p-6 flex items-center space-x-3 w-full relative z-20">
+                            <div class="bg-white/20 px-2 py-1 rounded text-sm font-bold font-serif tracking-widest text-white">FT</div>
+                            <h4 class="text-xl font-normal text-white">How supply chain finance works</h4>
+                        </div>
+                        
+                        <!-- Desktop View (Arrows and Exact FT Layout) -->
+                        <div class="hidden md:block absolute inset-0 w-full h-full">
+                            <!-- SVG Background for Arrows -->
+                            <svg class="absolute inset-0 w-full h-full z-0" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet">
+                                <defs>
+                                    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                                        <path d="M 0 0 L 10 5 L 0 10 z" fill="white" />
+                                    </marker>
+                                </defs>
+
+                                <!-- Arrow 1 (Company to Supplier) -->
+                                <path d="M 230 280 Q 333 180 436 280" fill="none" stroke="white" stroke-width="3" marker-end="url(#arrow)"/>
+                                <circle cx="333" cy="225" r="16" fill="#facc15" />
+                                <text x="333" y="230" font-family="sans-serif" font-weight="bold" font-size="14" fill="black" text-anchor="middle">1</text>
+
+                                <!-- Arrow 2 (Supplier to Financier) -->
+                                <path d="M 563 280 Q 666 180 770 280" fill="none" stroke="white" stroke-width="3" marker-end="url(#arrow)"/>
+                                <circle cx="666" cy="225" r="16" fill="#facc15" />
+                                <text x="666" y="230" font-family="sans-serif" font-weight="bold" font-size="14" fill="black" text-anchor="middle">2</text>
+
+                                <!-- Arrow 3 (Financier to Supplier) -->
+                                <path d="M 770 360 Q 666 460 563 360" fill="none" stroke="white" stroke-width="3" marker-end="url(#arrow)"/>
+                                <circle cx="666" cy="415" r="16" fill="#facc15" />
+                                <text x="666" y="420" font-family="sans-serif" font-weight="bold" font-size="14" fill="black" text-anchor="middle">3</text>
+
+                                <!-- Arrow 4 (Company to Financier) -->
+                                <path d="M 200 380 Q 500 650 800 380" fill="none" stroke="white" stroke-width="3" marker-end="url(#arrow)"/>
+                                <circle cx="500" cy="515" r="16" fill="#facc15" />
+                                <text x="500" y="520" font-family="sans-serif" font-weight="bold" font-size="14" fill="black" text-anchor="middle">4</text>
+                            </svg>
+
+                            <!-- HTML Elements Overlay -->
+                            <!-- Nodes -->
+                            <div class="absolute top-[53%] left-[16.6%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-10">
+                                <i data-lucide="building-2" class="w-16 h-16 text-yellow-400 drop-shadow-md mb-2"></i>
+                                <span class="font-bold text-lg">Company</span>
+                            </div>
+                            <div class="absolute top-[53%] left-[50%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-10">
+                                <i data-lucide="factory" class="w-16 h-16 text-yellow-400 drop-shadow-md mb-2"></i>
+                                <span class="font-bold text-lg">Supplier</span>
+                            </div>
+                            <div class="absolute top-[53%] left-[83.3%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-10">
+                                <i data-lucide="landmark" class="w-16 h-16 text-yellow-400 drop-shadow-md mb-2"></i>
+                                <span class="font-bold text-lg">Financier</span>
+                            </div>
+
+                            <!-- Text Labels -->
+                            <div class="absolute top-[20%] left-[33%] -translate-x-1/2 -translate-y-full w-56 text-center z-10">
+                                <p class="text-[14px] leading-tight text-white/90 font-medium drop-shadow-sm">Supplier sends goods to company.<br>Company promises to pay in 30-180 days</p>
+                            </div>
+                            <div class="absolute top-[20%] left-[67%] -translate-x-1/2 -translate-y-full w-48 text-center z-10">
+                                <p class="text-[14px] leading-tight text-white/90 font-medium drop-shadow-sm">Supplier sends approved invoice to financier</p>
+                            </div>
+                            <div class="absolute top-[68%] left-[50%] -translate-x-1/2 w-64 text-center z-10">
+                                <p class="text-[14px] leading-tight text-white/90 font-medium drop-shadow-sm">Financier pays the amount owed immediately, but at a discount according to the risk</p>
+                            </div>
+                            <div class="absolute top-[75%] left-[23%] -translate-x-1/2 w-48 text-left z-10">
+                                <p class="text-[14px] leading-tight text-white/90 font-medium drop-shadow-sm">Company pays the financier directly at the time specified</p>
+                            </div>
+                        </div>
+
+                        <!-- Mobile View (Fallback Stack, visible only on sm and below) -->
+                        <div class="md:hidden p-6 pt-0 space-y-6 relative">
+                            <!-- Company -->
+                            <div class="flex flex-col items-center z-10 text-center relative h-full">
+                                <i data-lucide="building-2" class="w-16 h-16 text-yellow-400 mb-3 drop-shadow-md"></i>
+                                <span class="font-bold text-lg">Company</span>
+                                <div class="mt-4 w-full">
+                                    <div class="bg-black/20 p-3 rounded-lg text-left text-xs text-white/90 border border-white/10 w-full h-full">
+                                        <span class="bg-yellow-400 text-black font-bold w-5 h-5 rounded-full inline-flex items-center justify-center mr-1 text-[10px]">4</span>
+                                        Company pays the financier directly at the time specified
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Supplier -->
+                            <div class="flex flex-col items-center z-10 text-center relative h-full">
+                                <div class="mb-4 bg-black/20 p-3 rounded-lg text-left text-xs text-white/90 border border-white/10 w-full">
+                                    <span class="bg-yellow-400 text-black font-bold w-5 h-5 rounded-full inline-flex items-center justify-center mr-1 text-[10px]">1</span>
+                                    Supplier sends goods to company. Company promises to pay in 30-180 days
+                                </div>
+                                <i data-lucide="factory" class="w-16 h-16 text-yellow-400 mb-3 mt-auto drop-shadow-md"></i>
+                                <span class="font-bold text-lg">Supplier</span>
+                            </div>
+                            
+                            <!-- Financier -->
+                            <div class="flex flex-col items-center z-10 text-center relative h-full">
+                                <div class="mb-4 bg-black/20 p-3 rounded-lg text-left text-xs text-white/90 border border-white/10 w-full">
+                                    <span class="bg-yellow-400 text-black font-bold w-5 h-5 rounded-full inline-flex items-center justify-center mr-1 text-[10px]">2</span>
+                                    Supplier sends approved invoice to financier
+                                </div>
+                                <i data-lucide="landmark" class="w-16 h-16 text-yellow-400 mb-3 drop-shadow-md"></i>
+                                <span class="font-bold text-lg">Financier</span>
+                                <div class="mt-4 w-full">
+                                    <div class="bg-black/20 p-3 rounded-lg text-left text-xs text-white/90 border border-white/10 w-full h-full">
+                                        <span class="bg-yellow-400 text-black font-bold w-5 h-5 rounded-full inline-flex items-center justify-center mr-1 text-[10px]">3</span>
+                                        Financier pays the amount owed immediately, but at a discount according to the risk
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p>Inventory-backed funding was also used. Utah-based leasing firm Onset Financial, which had originally loaned equipment to FBG, became its largest creditor with a $1.9bn claim.</p>
+
+                    <h3 class="font-sans font-bold text-xl text-ft-text mt-8 mb-4">The Private Credit Boom & A Shelved $6bn Deal</h3>
+                    <p>The scale of this hidden leverage was fueled by FBG’s owner, Patrick James, whose strategy relied heavily on aggressive, fully debt-financed acquisitions. To fund this rapid expansion, FBG turned to the burgeoning private credit market. Yield-hungry alternative lenders—including Jefferies, UBS O’Connor, Pemberton, and Katsumi Global—stepped in to fill the gap left by traditional banks, providing opaque invoice financing and factoring lines that often yielded more than 10% (an unusually high rate given that FBG's customers were often investment-grade automotive retailers).</p>
+
+                    <p>The situation reached a breaking point when FBG attempted to market a massive $6bn loan deal. Prospective investors began to balk at the opaque financial disclosures and the dearth of public information surrounding James. Their hesitation was compounded by the discovery that James had been sued a decade prior by Fortress Investment Group and Tristate Capital Bank over alleged fraud and misrepresentations of accounts receivable and inventory (both cases were ultimately settled and dismissed).</p>
+
+                    <div class="bg-white/60 border-l-4 border-ft-teal p-5 my-6 rounded-r-md shadow-sm">
+                        <p class="text-sm font-sans text-ft-text"><strong class="text-ft-teal">The Catalyst:</strong> Unable to assuage investor fears, FBG was forced to shelve the $6bn refinancing deal. In a desperate bid to restore market confidence, the company appointed Deloitte to conduct a strict "quality of earnings" review, specifically targeting its sprawling, off-balance-sheet invoice factoring programs.</p>
+                    </div>
+
+                    <!-- Interactive Diagram -->
+                    <div class="my-8 p-6 bg-white/60 border border-ft-salmonDark rounded-xl font-sans">
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-ft-teal mb-4 text-center">Typical Off-Balance-Sheet Financing Flow</h4>
+                        <div class="flex flex-col md:flex-row items-center justify-center gap-4 text-sm font-medium">
+                            <div class="bg-ft-slate text-white p-4 rounded-lg shadow text-center w-40">
+                                <strong>Parent Co.</strong><br><span class="text-xs font-light">(FBG)</span>
+                            </div>
+                            <div class="hidden md:block text-ft-slate"><i data-lucide="arrow-right" class="w-6 h-6"></i></div>
+                            <div class="md:hidden text-ft-slate"><i data-lucide="arrow-down" class="w-6 h-6"></i></div>
+                            <div class="bg-ft-teal text-white p-4 rounded-lg shadow text-center w-40 relative group cursor-help border-2 border-dashed border-white">
+                                <!-- SPE Tooltip Target -->
+                                <strong>SPEs</strong><br><span class="text-xs font-light">(Carnaby Inventory)</span>
+                                
+                                <!-- SPE Tooltip Content -->
+                                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-72 p-4 bg-ft-slate text-white text-xs rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none tooltip-arrow text-left font-sans">
+                                    <strong class="text-ft-salmon block mb-1 text-sm">Special Purpose Entity (SPE)</strong>
+                                    A legally distinct subsidiary created by a parent company to isolate financial risk or hold specific assets.<br><br>
+                                    <span class="text-ft-teal font-semibold">Application:</span> By moving inventory into an SPE, FBG secured high-yield financing against that inventory without the massive debt showing up on FBG's "headline" balance sheet.
+                                </div>
+                            </div>
+                            <div class="hidden md:block text-ft-slate"><i data-lucide="arrow-right" class="w-6 h-6"></i></div>
+                            <div class="md:hidden text-ft-slate"><i data-lucide="arrow-down" class="w-6 h-6"></i></div>
+                            <div class="bg-ft-crimson text-white p-4 rounded-lg shadow text-center w-40">
+                                <strong>Private Credit</strong><br><span class="text-xs font-light">(High-Yield Lenders)</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="font-sans font-bold text-xl text-ft-text mt-8 mb-4">The Liquidity Squeeze</h3>
+                    <p>Until the week of the bankruptcy filing, many lenders were unaware that FBG had billions in inventory-backed loans via off-balance-sheet Special Purpose Entities (SPEs). After filing, one lender asked how much of the $2bn advanced to FBG remained in a segregated account and was told: "$0".</p>
+
+                </article>
+            </section>
+
+            <!-- 3. The SPE Debt (Alphaville) Tab -->
+            <section id="alphaville" class="tab-content space-y-6">
+                <h2 class="text-3xl font-bold text-ft-text mb-6 border-b border-ft-salmonDark pb-4 serif-text">Lifting the Hood: The SPE Debt</h2>
+                
+                <div class="bg-white/80 p-8 rounded-xl shadow-sm border border-ft-salmonDark">
+                    <p class="text-sm font-bold text-ft-crimson uppercase tracking-wider mb-2">FT Alphaville Investigation</p>
+                    <h3 class="text-2xl font-bold text-ft-text mb-4 serif-text">Gradually, then suddenly: off-balance-sheet finance edition</h3>
+                    
+                    <div class="prose prose-slate max-w-none text-ft-text space-y-4 serif-text">
+                        <p>Several off-balance-sheet financing entities tied to FBG entered bankruptcy shortly before the company itself.</p>
+                        
+                        <p>To get a sense of just how messy this could get, the Carnaby bankruptcy filing states the companies involved have estimated liabilities of between $1bn and $10bn, against assets of just $500mn-$1bn.</p>
+                        
+                        <p>The owner of Carnaby is listed in the petition as Viceroy Private Capital, LLC. A public notice from Romania’s competition council describes Viceroy as a US entity that is “part of the group of companies controlled by Patrick James, which owns the Romanian subsidiary Trico Wipers Ploiești SRL”. Trico is part of First Brands Group.</p>
+                        
+                        <p>The bankruptcy petition also lists a number of “SPE Subsidiaries”; presumably an acronym for “special purpose entities”:</p>
+                        
+                        <!-- Recreated Schedule B Table -->
+                        <div class="my-8 max-w-md mx-auto bg-white border border-gray-300 shadow-sm font-serif p-8 text-black">
+                            <h4 class="text-center font-bold underline mb-4 tracking-wide text-lg">SCHEDULE B</h4>
+                            <table class="w-full border-collapse border border-gray-400 text-sm">
+                                <thead>
+                                    <tr class="bg-gray-200/80">
+                                        <th class="border border-gray-400 py-1.5 font-bold text-center">SPE Subsidiary</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td class="border border-gray-400 py-1.5 px-3">1. Starlight Inventory I, LLC</td></tr>
+                                    <tr><td class="border border-gray-400 py-1.5 px-3">2. Patterson Inventory, LLC</td></tr>
+                                    <tr><td class="border border-gray-400 py-1.5 px-3">3. Broad Street Financial, LLC</td></tr>
+                                    <tr><td class="border border-gray-400 py-1.5 px-3">4. Carnaby Inventory II, LLC</td></tr>
+                                    <tr><td class="border border-gray-400 py-1.5 px-3">5. Carnaby Inventory III, LLC</td></tr>
+                                    <tr><td class="border border-gray-400 py-1.5 px-3">6. Global Assets LLC</td></tr>
+                                </tbody>
+                            </table>
+                            <p class="text-center italic mt-6 text-sm">[Signature pages follow]</p>
+                        </div>
+                        
+                        <p>A closer look at the debt linked to these entities reveals staggering, red-flag yields for what is ostensibly short-term, secured working capital finance:</p>
+                        
+                        <ul class="list-disc pl-5 space-y-3 mt-4 font-sans text-sm">
+                            <li>
+                                <strong>Sky-High Coupons:</strong> Debt carried coupons of 14 percentage points over the 
+                                <!-- SOFR Tooltip Target -->
+                                <span class="relative group cursor-help font-bold text-ft-teal border-b-2 border-dotted border-ft-teal">
+                                    SOFR benchmark
+                                    <!-- SOFR Tooltip Content -->
+                                    <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-72 p-4 bg-ft-slate text-white text-xs rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none tooltip-arrow text-left font-sans font-normal leading-relaxed">
+                                        <strong class="text-ft-salmon block mb-1 text-sm">Secured Overnight Financing Rate</strong>
+                                        A broad measure of the cost of borrowing cash overnight collateralized by Treasury securities. <br><br>
+                                        <span class="text-ft-teal font-semibold">Context:</span> It recently replaced LIBOR as the standard global benchmark interest rate for dollar-denominated derivatives and loans.
+                                    </span>
+                                </span>, 
+                                making for an all-in coupon of nearly <strong>19%</strong>.
+                            </li>
+                            <li><strong>Level-3 Assets:</strong> These loans were designated as 
+                                <span class="relative group cursor-help font-bold text-ft-crimson border-b-2 border-dotted border-ft-crimson">
+                                    Level-3 fair-value classifications
+                                    <!-- Level 3 Tooltip Content -->
+                                    <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-72 p-4 bg-ft-slate text-white text-xs rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none tooltip-arrow text-left font-sans font-normal leading-relaxed">
+                                        <strong class="text-ft-salmon block mb-1 text-sm">Level 3 Assets</strong>
+                                        Financial assets and liabilities whose values are based on unobservable inputs (management's own assumptions or internal pricing models) because there is little to no market activity for them.<br><br>
+                                        <span class="text-ft-crimson font-semibold">Risk:</span> Highly illiquid and hard to value accurately, especially in distress scenarios.
+                                    </span>
+                                </span>, 
+                                signaling limited transparency and illiquidity.
+                            </li>
+                            <li><strong>Extreme Returns:</strong> Filings from the Keystone Private Income Fund showed exposure to Carnaby Inventory IV with listed "coupon rates" of up to <strong>50%</strong> (indicative of massive risk premiums).</li>
+                        </ul>
+
+                        <!-- Yield Bar Chart Visualization -->
+                        <div class="mt-8 bg-ft-salmon p-6 rounded-lg border border-ft-salmonDark font-sans">
+                            <h4 class="font-bold text-sm mb-4 text-ft-slate uppercase tracking-wider text-center">Yield Comparison: Standard vs. Hidden SPE Debt</h4>
+                            <div class="space-y-4">
+                                <!-- Standard Debt Bar -->
+                                <div>
+                                    <div class="flex justify-between text-xs font-semibold mb-1">
+                                        <span>FBG Standard 1st-Lien Loan (2027)</span>
+                                        <span>~10% (SOFR + 5%)</span>
+                                    </div>
+                                    <div class="w-full bg-white rounded-full h-4">
+                                        <div class="bg-ft-slate h-4 rounded-full" style="width: 20%"></div>
+                                    </div>
+                                </div>
+                                <!-- SPE Debt Bar 1 -->
+                                <div>
+                                    <div class="flex justify-between text-xs font-semibold mb-1">
+                                        <span>Carnaby Inventory III (AB CarVal)</span>
+                                        <span class="text-ft-crimson">~19% (SOFR + 14%)</span>
+                                    </div>
+                                    <div class="w-full bg-white rounded-full h-4">
+                                        <div class="bg-ft-crimson h-4 rounded-full" style="width: 38%"></div>
+                                    </div>
+                                </div>
+                                <!-- SPE Debt Bar 2 -->
+                                <div>
+                                    <div class="flex justify-between text-xs font-semibold mb-1">
+                                        <span>Carnaby Inventory IV (Keystone IRR)</span>
+                                        <span class="text-red-600">Up to 50%</span>
+                                    </div>
+                                    <div class="w-full bg-white rounded-full h-4 relative">
+                                        <div class="bg-red-600 h-4 rounded-full" style="width: 100%"></div>
+                                        <div class="absolute inset-0 bg-stripe-pattern opacity-20 rounded-full"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Academic Research Tab -->
+            <section id="research" class="tab-content space-y-6">
+                <h2 class="text-3xl font-bold text-ft-text mb-6 border-b border-ft-salmonDark pb-4 serif-text">Academic Research Context</h2>
+                
+                <div class="bg-white/80 p-8 rounded-xl shadow-sm border border-ft-salmonDark">
+                    <h3 class="text-2xl font-bold text-ft-text mb-2 serif-text">Does formalizing off-balance-sheet financing help?</h3>
+                    <p class="text-sm text-ft-teal mb-6 font-bold uppercase tracking-wider">Source: ScienceDirect (ASU No. 2016-02 Study)</p>
+                    
+                    <div class="prose prose-slate max-w-none text-ft-text text-sm space-y-4 font-sans leading-relaxed">
+                        
+                        <div class="bg-ft-salmon p-4 border-l-4 border-ft-slate rounded-r-lg mb-6">
+                            <h4 class="font-bold text-ft-slate mb-2">A Brief History of Hidden Leases</h4>
+                            <p>Before 2019, companies legally engaged in massive off-balance-sheet financing through <em>Operating Leases</em>. Airlines would lease entire fleets of planes, and retailers would lease hundreds of storefronts, but because these weren't classified as "Capital Leases," the multi-billion dollar liabilities never appeared on the balance sheet. They were hidden in the footnotes. This made companies appear far less leveraged than they actually were. Standard setters eventually fought back with <strong>ASU No. 2016-02</strong>, forcing companies to capitalize these operating leases as "Right-of-Use" assets and liabilities.</p>
+                        </div>
+
+                        <p>To understand the implications of FBG's hidden inventory leasing structures, we can look at academic research analyzing that exact Accounting Standards Update (ASU No. 2016-02).</p>
+                        
+                        <!-- Visualizing Key Findings -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 mb-6 font-sans">
+                            <!-- Finding 1 -->
+                            <div class="bg-white border border-ft-salmonDark rounded-xl p-5 shadow-sm flex flex-col items-center text-center relative overflow-hidden group hover:border-ft-teal transition-colors">
+                                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-4 shadow-inner group-hover:scale-110 transition-transform">
+                                    <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
+                                </div>
+                                <h4 class="font-bold text-ft-slate mb-2">1. Improved Quality</h4>
+                                <p class="text-xs text-ft-text/80 leading-relaxed">Overall financial reporting quality improves significantly after forcing off-balance-sheet items onto the books.</p>
+                            </div>
+                            
+                            <!-- Finding 2 -->
+                            <div class="bg-white border border-ft-salmonDark rounded-xl p-5 shadow-sm flex flex-col items-center text-center relative overflow-hidden group hover:border-ft-crimson transition-colors">
+                                <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mb-4 shadow-inner group-hover:scale-110 transition-transform">
+                                    <i data-lucide="eye-off" class="w-6 h-6"></i>
+                                </div>
+                                <h4 class="font-bold text-ft-slate mb-2">2. Less Asymmetry</h4>
+                                <p class="text-xs text-ft-text/80 leading-relaxed">This improvement is highly concentrated among firms that previously suffered from high information asymmetry.</p>
+                            </div>
+                            
+                            <!-- Finding 3 -->
+                            <div class="bg-white border border-ft-salmonDark rounded-xl p-5 shadow-sm flex flex-col items-center text-center relative overflow-hidden group hover:border-ft-teal transition-colors">
+                                <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mb-4 shadow-inner group-hover:scale-110 transition-transform">
+                                    <i data-lucide="banknote" class="w-6 h-6"></i>
+                                </div>
+                                <h4 class="font-bold text-ft-slate mb-2">3. Access to Debt</h4>
+                                <p class="text-xs text-ft-text/80 leading-relaxed">Ironically, firms exhibiting improved reporting quality used <em>more</em> traditional debt financing afterward, as lenders trusted their books more.</p>
+                            </div>
+                        </div>
+                        
+                        <p class="border-t border-b border-ft-salmonDark py-4 text-ft-crimson font-serif italic text-lg text-center mt-6">
+                            "Our evidence corroborates the argument that ASU 2016-02 increases the cost of [hidden] financing, and firms mitigate the impact by improving overall financial reporting quality."
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Discussion Questions Tab -->
+            <section id="questions" class="tab-content space-y-6 pb-20">
+                <div class="border-b border-ft-salmonDark pb-4 mb-6">
+                    <h2 class="text-3xl font-bold text-ft-text serif-text">Discussion Questions</h2>
+                    <p class="text-ft-text/70 mt-2 font-sans">Jot down your notes below. The instructor can unlock the model answers globally at the bottom of the page.</p>
+                </div>
+                
+                <div class="space-y-8">
+                    
+                    <!-- Question 1 -->
+                    <div class="bg-white/80 rounded-xl shadow-sm border border-ft-salmonDark p-6">
+                        <h3 class="text-lg font-bold text-ft-slate mb-3 flex items-start serif-text">
+                            <span class="bg-ft-teal text-white rounded-full w-7 h-7 flex items-center justify-center text-sm mr-3 mt-0.5 shrink-0 font-sans">1</span>
+                            Which accounts or notes would you expect to capture factoring, supply-chain finance, and inventory-backed leasing (such as sale-leaseback or repo transactions)?
+                        </h3>
+                        <textarea class="w-full bg-ft-salmon/30 border border-ft-salmonDark rounded-lg p-3 text-sm font-sans focus:outline-none focus:border-ft-teal focus:ring-1 focus:ring-ft-teal resize-y" rows="3" placeholder="Jot down your thoughts here..."></textarea>
+                        
+                        <!-- Answer Q1 -->
+                        <div id="ans1" class="model-answer bg-ft-slate/5 border-l-4 border-ft-teal rounded-r-lg p-5">
+                            <h4 class="font-bold text-ft-teal mb-2 uppercase text-xs tracking-wider font-sans">Model Answer</h4>
+                            <div class="text-ft-text space-y-2 text-sm font-sans">
+                                <p><strong>Factoring:</strong> If receivables are sold <em>without recourse</em>, they are removed from the balance sheet and disclosed under "Transfers of Financial Assets". If sold <em>with recourse</em>, they remain on the balance sheet as short-term borrowing.</p>
+                                <p><strong>Supply-Chain Finance (Reverse Factoring):</strong> Recent FASB updates require specific disclosures for supplier finance programs detailing terms, pending liability amounts, and balance sheet location.</p>
+                                <p><strong>Inventory-Backed Leasing / Sale-Leaseback / Repo:</strong> Under ASC 842 / IFRS 16, true leases require recognizing a Right-of-Use (ROU) asset and Lease Liability. However, if structured through unconsolidated Special Purpose Entities (SPEs), they might only be briefly mentioned in "Variable Interest Entities (VIEs)" footnotes.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="bg-white/80 rounded-xl shadow-sm border border-ft-salmonDark p-6">
+                        <h3 class="text-lg font-bold text-ft-slate mb-3 flex items-start serif-text">
+                            <span class="bg-ft-teal text-white rounded-full w-7 h-7 flex items-center justify-center text-sm mr-3 mt-0.5 shrink-0 font-sans">2</span>
+                            Where should the participation of FBG executives in Onset-linked deals appear in disclosures? What controls mitigate incentive conflicts?
+                        </h3>
+                        <textarea class="w-full bg-ft-salmon/30 border border-ft-salmonDark rounded-lg p-3 text-sm font-sans focus:outline-none focus:border-ft-teal focus:ring-1 focus:ring-ft-teal resize-y" rows="3" placeholder="Jot down your thoughts here..."></textarea>
+                        
+                        <div id="ans2" class="model-answer bg-ft-slate/5 border-l-4 border-ft-teal rounded-r-lg p-5">
+                            <h4 class="font-bold text-ft-teal mb-2 uppercase text-xs tracking-wider font-sans">Model Answer</h4>
+                            <div class="text-ft-text space-y-2 text-sm font-sans">
+                                <p><strong>Disclosure Location:</strong> Must be disclosed in the <strong>"Related Party Transactions"</strong> footnote, detailing the relationship nature, monetary value, and specific terms (e.g., the "double-digit rates" paid by FBG).</p>
+                                <p><strong>Proposed Controls:</strong> Independent Approval by an Audit/Risk Committee, absolute Recusal Policies for executives with financial interests, and obtaining independent third-party Fairness Opinions to prove terms are at market rates.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="bg-white/80 rounded-xl shadow-sm border border-ft-salmonDark p-6">
+                        <h3 class="text-lg font-bold text-ft-slate mb-3 flex items-start serif-text">
+                            <span class="bg-ft-teal text-white rounded-full w-7 h-7 flex items-center justify-center text-sm mr-3 mt-0.5 shrink-0 font-sans">3</span>
+                            Where should the boundary sit between an audit opinion on historical books and credit due diligence for cash and collateral‑intensive structures?
+                        </h3>
+                        <textarea class="w-full bg-ft-salmon/30 border border-ft-salmonDark rounded-lg p-3 text-sm font-sans focus:outline-none focus:border-ft-teal focus:ring-1 focus:ring-ft-teal resize-y" rows="3" placeholder="Jot down your thoughts here..."></textarea>
+                        
+                        <div id="ans3" class="model-answer bg-ft-slate/5 border-l-4 border-ft-teal rounded-r-lg p-5">
+                            <h4 class="font-bold text-ft-teal mb-2 uppercase text-xs tracking-wider font-sans">Model Answer</h4>
+                            <div class="text-ft-text space-y-2 text-sm font-sans">
+                                <p><strong>The Role of the Audit:</strong> Audits provide reasonable assurance of historical compliance with GAAP/IFRS. They verify technical rules (like SPE non-consolidation) but do not predict future liquidity crises or uncover sophisticated cash commingling hidden by paper documentation.</p>
+                                <p><strong>Credit Due Diligence:</strong> Covers forward-looking economic reality: physically tracing cash/segregated accounts, legal review of collateral priority (perfecting liens), and recognizing the true <em>Economic Substance</em> (a "lease" acting like high-interest debt). Auditors map the past; creditors must map future cash flow risks.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="bg-white/80 rounded-xl shadow-sm border border-ft-salmonDark p-6">
+                        <h3 class="text-lg font-bold text-ft-slate mb-3 flex items-start serif-text">
+                            <span class="bg-ft-teal text-white rounded-full w-7 h-7 flex items-center justify-center text-sm mr-3 mt-0.5 shrink-0 font-sans">4</span>
+                            Would recognition rules similar to leases (ASU 2016-02) improve transparency around working-capital financing — or simply shift the activity?
+                        </h3>
+                        <textarea class="w-full bg-ft-salmon/30 border border-ft-salmonDark rounded-lg p-3 text-sm font-sans focus:outline-none focus:border-ft-teal focus:ring-1 focus:ring-ft-teal resize-y" rows="3" placeholder="Jot down your thoughts here..."></textarea>
+                        
+                        <div id="ans4" class="model-answer bg-ft-slate/5 border-l-4 border-ft-teal rounded-r-lg p-5">
+                            <h4 class="font-bold text-ft-teal mb-2 uppercase text-xs tracking-wider font-sans">Model Answer</h4>
+                            <div class="text-ft-text space-y-2 text-sm font-sans">
+                                <p><strong>Improving Transparency:</strong> Yes, formalizing off-balance sheet items generally improves financial reporting quality. If factoring and supply-chain finance were universally recognized as short-term debt, "headline debt" would accurately reflect leverage without rating agency adjustments.</p>
+                                <p><strong>Shifting the Activity:</strong> However, financial engineering adapts. Forcing it onto the balance sheet would likely incentivize new, more complex structures (synthetic derivatives, highly sophisticated unconsolidated SPEs) to achieve the same off-balance-sheet leverage goals.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- Discreet Global Instructor Padlock -->
+    <div class="fixed bottom-4 right-4 z-50 flex flex-col items-end group">
+        <div id="hidden-instructor-panel" class="hidden bg-ft-slate p-4 rounded-xl shadow-2xl mb-3 border border-slate-700 w-64 origin-bottom-right transition-all transform scale-95 opacity-0">
+            <div class="flex justify-between items-center mb-3">
+                <p class="text-xs text-ft-salmon font-sans font-bold uppercase tracking-wider">Instructor Access</p>
+                <button onclick="toggleInstructorPanel()" class="text-slate-400 hover:text-white transition-colors"><i data-lucide="x" class="w-3 h-3"></i></button>
+            </div>
+            <div class="flex gap-2">
+                <input type="password" id="global-pwd" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-ft-teal transition-colors" placeholder="Password...">
+                <button onclick="unlockAllAnswers()" class="bg-ft-teal text-white px-3 py-1.5 rounded-lg text-xs hover:bg-teal-600 transition font-bold">Unlock</button>
+            </div>
+            <p id="global-err" class="text-ft-crimson text-[10px] mt-2 hidden font-bold">Incorrect password.</p>
+        </div>
+        <button onclick="toggleInstructorPanel()" id="tiny-lock-btn" class="w-10 h-10 rounded-full bg-slate-400/30 text-slate-700 hover:bg-ft-slate hover:text-white flex items-center justify-center transition-all duration-300 backdrop-blur-sm opacity-30 hover:opacity-100 shadow-sm border border-slate-500/30">
+            <i data-lucide="lock" class="w-4 h-4" id="tiny-lock-icon"></i>
+        </button>
+    </div>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Sidebar Navigation Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.getElementById('nav-' + tabId).classList.add('active');
+            document.querySelector('main').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Discreet Panel Toggle
+        function toggleInstructorPanel() {
+            const panel = document.getElementById('hidden-instructor-panel');
+            if (panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                // Small delay to allow display:block to apply before animating opacity
+                setTimeout(() => {
+                    panel.classList.remove('scale-95', 'opacity-0');
+                    panel.classList.add('scale-100', 'opacity-100');
+                    document.getElementById('global-pwd').focus();
+                }, 10);
+            } else {
+                panel.classList.remove('scale-100', 'opacity-100');
+                panel.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => panel.classList.add('hidden'), 200); // Wait for transition
+            }
+        }
+
+        // Global Padlock Logic
+        function unlockAllAnswers() {
+            const pwdInput = document.getElementById('global-pwd');
+            const errorText = document.getElementById('global-err');
+            const tinyLockBtn = document.getElementById('tiny-lock-btn');
+            const tinyLockIcon = document.getElementById('tiny-lock-icon');
+            
+            if (pwdInput.value === 'fbg') {
+                // Success: Reveal all answers
+                document.querySelectorAll('.model-answer').forEach(el => {
+                    el.classList.add('revealed');
+                });
+                
+                // Hide Error
+                errorText.classList.add('hidden');
+                
+                // Transform tiny lock to show success
+                tinyLockBtn.classList.remove('opacity-30', 'text-slate-700', 'bg-slate-400/30');
+                tinyLockBtn.classList.add('opacity-100', 'bg-ft-teal', 'text-white', 'border-ft-teal');
+                tinyLockBtn.setAttribute('title', 'Answers Unlocked');
+                
+                // Change icon
+                tinyLockIcon.outerHTML = '<i data-lucide="unlock" class="w-4 h-4" id="tiny-lock-icon"></i>';
+                lucide.createIcons();
+                
+                // Hide the panel
+                toggleInstructorPanel();
+
+            } else {
+                // Failure: Show error and shake effect
+                errorText.classList.remove('hidden');
+                const panel = document.getElementById('hidden-instructor-panel');
+                panel.classList.add('animate-pulse');
+                setTimeout(() => panel.classList.remove('animate-pulse'), 500);
+                pwdInput.value = ''; 
+                pwdInput.focus();
+            }
+        }
+        
+        // Add "Enter" key listener for the password input
+        document.getElementById('global-pwd').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                unlockAllAnswers();
+            }
+        });
+    </script>
+</body>
+</html>
