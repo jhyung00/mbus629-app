@@ -330,14 +330,19 @@
         .summary-item.visible { opacity: 1; transform: translateX(0); pointer-events: auto; }
 
         /* Quiz */
-        .quiz-container { max-width: 800px; margin: 0 auto; height: 250px; overflow-y: auto; padding-right: 10px;}
+        .quiz-container { max-width: 850px; margin: 0 auto; max-height: 400px; overflow-y: auto; padding-right: 10px;}
         .quiz-option {
             background: white; border: 1px solid var(--color-cobalt-20); padding: 12px 15px; margin: 8px 0;
-            cursor: pointer; transition: 0.2s; font-size: 0.95rem; border-radius: 4px;
+            cursor: pointer; transition: 0.2s; font-size: 0.95rem; border-radius: 4px; line-height: 1.4;
         }
         .quiz-option:hover { background: var(--color-newday); border-color: var(--color-cobalt-core); }
         .quiz-option.correct { background: #dcfce7; color: var(--color-midnight); border-color: var(--color-success); }
         .quiz-option.wrong { background: #fee2e2; color: var(--color-midnight); border-color: var(--color-error); }
+        .quiz-result { text-align: center; display: none; flex-direction: column; align-items: center; justify-content: center; height: 100%;}
+        .quiz-result h2 { border: none; font-size: 2.5rem; margin-bottom: 10px; }
+        .quiz-result .score { font-size: 4rem; font-weight: bold; color: var(--color-cobalt-core); margin-bottom: 20px;}
+
+        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; }
 
         /* Controls */
         #controls {
@@ -374,7 +379,7 @@
         .flex-row { display: flex; gap: 20px; align-items: flex-start; }
         .flex-col { flex: 1; }
         
-        .poll-question { font-size: 1.3rem; font-weight: 600; color: var(--color-midnight); margin-bottom: 15px; }
+        .poll-question { font-size: 1.2rem; font-weight: 600; color: var(--color-midnight); margin-bottom: 15px; line-height: 1.4; }
         .poll-option { background: white; border: 1px solid var(--color-cobalt-20); padding: 12px; margin: 8px 0; cursor: pointer; transition: 0.2s; font-size: 1rem; border-radius: 4px;}
         .poll-option:hover { border-color: var(--color-cobalt-core); background: var(--color-newday); }
         .poll-reveal { display: none; margin-top: 15px; padding: 15px; background: #e8f6f3; border: 1px solid var(--color-success); color: var(--color-midnight); font-size: 0.95rem; border-radius: 4px;}
@@ -482,6 +487,8 @@
 <body>
 
 <div id="app-container">
+
+    <canvas id="confetti-canvas"></canvas>
 
     <!-- Menu Button -->
     <button id="menu-btn" onclick="toggleMenu()">
@@ -1289,12 +1296,21 @@
         <!-- 44. Case Study -->
         <div class="slide" id="slide-44">
             <h2>Case Study: First Brands</h2>
-            <div class="callout" style="border-left-color: var(--color-error);">
-                <h3 style="color:var(--color-error); margin-top:0;">The Discrepancy</h3>
-                <p style="margin-bottom:5px;"><strong>Public Claim:</strong> First Brands told lenders it had <strong>$5.9 Billion</strong> in debt.</p>
-                <p style="margin-bottom:0;"><strong>The Reality:</strong> The bankruptcy filing revealed <strong>over $8 Billion</strong> in secured obligations.</p>
+            <div class="flex-row" style="align-items: center;">
+                <div class="flex-col">
+                    <div class="callout" style="border-left-color: var(--color-error); margin-top:0;">
+                        <h3 style="color:var(--color-error); margin-top:0;">The Discrepancy</h3>
+                        <p style="margin-bottom:5px; font-size:0.9rem;"><strong>Public Claim:</strong> First Brands told lenders it had <strong>$5.9 Billion</strong> in debt.</p>
+                        <p style="margin-bottom:0; font-size:0.9rem;"><strong>The Reality:</strong> The bankruptcy filing revealed <strong>over $8 Billion</strong> in secured obligations.</p>
+                    </div>
+                    <p style="font-size:0.95rem; margin-top: 15px;">How did they hide over $2 Billion? They used <strong>Inventory Factoring</strong> via Special Purpose Entities (SPEs).</p>
+                </div>
+                <div class="flex-col">
+                    <div style="border: var(--border-style); box-shadow: var(--shadow-card); border-radius: 6px; overflow: hidden; line-height: 0;">
+                        <iframe width="100%" height="240" src="https://www.youtube.com/embed/OPI3i6ZywoI" title="How First Brands Group collapsed | FT" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                </div>
             </div>
-            <p>How did they hide over $2 Billion? They used <strong>Inventory Factoring</strong> via Special Purpose Entities (SPEs).</p>
         </div>
 
         <!-- 45. Factoring -->
@@ -1373,14 +1389,14 @@
 
         <!-- 49. Quiz -->
         <div class="slide" id="slide-49">
-            <h2>Final Quiz (10 Questions)</h2>
-            <div class="quiz-container">
+            <h2>Final Quiz</h2>
+            <div class="quiz-container" id="quiz-container">
                 <div id="quiz-question" class="poll-question"></div>
                 <div id="quiz-options"></div>
                 <div id="quiz-feedback" class="poll-reveal"></div>
-                <div style="display:flex; justify-content:space-between; margin-top:15px; align-items:center;">
+                <div id="quiz-controls" style="display:flex; justify-content:space-between; margin-top:15px; align-items:center;">
                     <span id="quiz-progress" style="font-weight:bold; font-family:'JetBrains Mono'; font-size:0.9rem;">1 / 10</span>
-                    <button class="nav-btn" onclick="nextQuestion()">Next</button>
+                    <button class="nav-btn" id="quiz-next-btn" onclick="nextQuestion()">Next</button>
                 </div>
             </div>
         </div>
@@ -1717,61 +1733,136 @@
 
     /* Quiz */
     const quizData = [
-        {q:"Rising prices: highest Net Income?", o:["LIFO","FIFO","W-Avg"], a:1},
-        {q:"LIFO Liquidation causes...", o:["Lower Taxes","Higher Taxes","No Change"], a:1},
-        {q:"CCC Formula?", o:["DIO+DSO-DPO","DIO-DSO+DPO","DIO+DSO+DPO"], a:0},
-        {q:"NRV < Cost effect?", o:["No Entry","Write-down","Write-up"], a:1},
-        {q:"LIFO Reserve purpose?", o:["Tax Evasion","Comparability","Marketing"], a:1},
-        {q:"First Brands issue?", o:["High Revenue","Hidden Debt","Inventory Theft"], a:1},
-        {q:"Inventory Turnover Formula?", o:["Avg Inv / COGS","COGS / Avg Inv","Sales / Cash"], a:1},
-        {q:"COGS is on the...", o:["Balance Sheet","Income Statement","Cash Flow"], a:1},
-        {q:"Lower DPO means...", o:["Paying Faster","Paying Slower","More Cash"], a:0},
-        {q:"Inventory Factoring is?", o:["A Sale","Borrowing","Often Both"], a:2}
+        {q:"In an economic environment experiencing steady inflation, which inventory costing method will generally yield the highest reported Net Income?", o:["LIFO (Last-In, First-Out)","FIFO (First-In, First-Out)","Weighted Average"], a:1},
+        {q:"When a company using LIFO sells more inventory than it purchases, it dips into older, cheaper cost layers. What is the primary financial consequence of this 'LIFO Liquidation'?", o:["It artificially decreases Net Income and lowers taxes.","It inflates Gross Profit and results in a higher tax burden.","It has no impact on the Income Statement."], a:1},
+        {q:"The Cash Conversion Cycle (CCC) measures how long a company's cash is tied up in its operations. Which formula correctly calculates this metric?", o:["DIO + DSO - DPO","DIO - DSO + DPO","DIO + DSO + DPO"], a:0},
+        {q:"Under the Lower of Cost or Market (LCM) rule, what accounting action is required if the Net Realizable Value of inventory falls below its historical cost?", o:["No entry is made until the inventory is sold.","An immediate write-down is recorded, recognizing a loss.","The inventory is written up to reflect current market value."], a:1},
+        {q:"Why do accounting standards require companies using LIFO to disclose their 'LIFO Reserve' in the footnotes of their financial statements?", o:["To penalize companies for avoiding taxes.","To allow analysts to convert LIFO figures to FIFO, enabling peer comparability.","To estimate the marketing value of older inventory layers."], a:1},
+        {q:"In the First Brands case study, the company utilized inventory factoring through Special Purpose Entities (SPEs). What was the primary deception in this strategy?", o:["They artificially inflated their sales revenue.","They successfully hid over $2 Billion in secured debt from public lenders.","They covered up massive physical inventory theft."], a:1},
+        {q:"Inventory Turnover indicates how efficiently a company manages its stock. How is this ratio properly calculated?", o:["Average Inventory divided by Cost of Goods Sold","Cost of Goods Sold divided by Average Inventory","Total Sales divided by Cash on Hand"], a:1},
+        {q:"Once inventory is finally sold to a customer, the capitalized cost moves off the Balance Sheet. Where does it immediately go?", o:["It remains on the Balance Sheet as a long-term asset.","It hits the Income Statement as Cost of Goods Sold (COGS).","It is recorded directly on the Statement of Cash Flows."], a:1},
+        {q:"If a company's Days Payable Outstanding (DPO) decreases from 60 days to 40 days, what does this indicate about their cash management?", o:["They are paying their suppliers faster, which ties up more of their cash.","They are delaying payments to suppliers, keeping more cash on hand.","They are collecting money from customers much faster."], a:0},
+        {q:"Inventory Factoring can be structured as either a 'True Sale' or a secured financing arrangement. In reality, what is the underlying economic substance of these transactions?", o:["It is always a pure sale of inventory to a third-party customer.","It is strictly a way to avoid paying corporate income taxes.","It is essentially borrowing cash using the inventory as collateral."], a:2}
     ];
     let quizIdx = 0;
+    let score = 0;
 
     function loadQuestion() {
         if(quizIdx >= quizData.length) {
-            document.getElementById('quiz-question').innerText = "Quiz Complete!";
-            document.getElementById('quiz-options').innerHTML = "";
+            showQuizResults();
             return;
         }
-        const d = quizData[quizIdx];
-        document.getElementById('quiz-question').innerText = d.q;
+        document.getElementById('quiz-question').innerText = quizData[quizIdx].q;
         const c = document.getElementById('quiz-options');
         c.innerHTML = '';
         document.getElementById('quiz-feedback').style.display = 'none';
         
-        d.o.forEach((opt, i) => {
+        quizData[quizIdx].o.forEach((opt, i) => {
             const div = document.createElement('div');
             div.className = 'quiz-option';
             div.innerText = opt;
             div.onclick = () => {
-                if(i === d.a) {
+                const options = c.querySelectorAll('.quiz-option');
+                options.forEach(o => o.onclick = null); // disable further clicks
+                if(i === quizData[quizIdx].a) {
                     div.classList.add('correct');
+                    score++;
                     document.getElementById('quiz-feedback').innerText = "Correct!";
                     document.getElementById('quiz-feedback').style.display = 'block';
                     document.getElementById('quiz-feedback').style.background = '#dcfce7';
                     document.getElementById('quiz-feedback').style.color = 'var(--color-midnight)';
                 } else {
                     div.classList.add('wrong');
+                    options[quizData[quizIdx].a].classList.add('correct'); // Highlight correct answer
                     document.getElementById('quiz-feedback').innerText = "Incorrect.";
                     document.getElementById('quiz-feedback').style.display = 'block';
                     document.getElementById('quiz-feedback').style.background = '#fee2e2';
                     document.getElementById('quiz-feedback').style.color = 'var(--color-midnight)';
                 }
+                document.getElementById('quiz-next-btn').style.display = 'inline-block';
             };
             c.appendChild(div);
         });
         document.getElementById('quiz-progress').innerText = `${quizIdx+1} / 10`;
+        document.getElementById('quiz-next-btn').style.display = 'none'; // hide next button initially
     }
 
-    function nextQuestion() { quizIdx++; loadQuestion(); }
+    function showQuizResults() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = `
+            <div class="quiz-result" style="display:flex;">
+                <h2>Quiz Complete!</h2>
+                <div class="score">${score} / 10</div>
+                <p>${score >= 7 ? 'Excellent work!' : 'Good effort, keep reviewing!'}</p>
+                <button class="nav-btn" onclick="location.reload()" style="margin-top:20px;">Restart Module</button>
+            </div>
+        `;
+        if (score >= 7) {
+            startConfetti();
+        }
+    }
+
+    function nextQuestion() { 
+        quizIdx++; 
+        loadQuestion(); 
+    }
     
     function revealPoll(el, msg) {
         const r = el.parentElement.querySelector('.poll-reveal');
         r.style.display = 'block'; r.innerText = msg;
         if(msg.includes('Correct')) { el.style.background='#dcfce7'; el.style.borderColor='var(--color-success)'; } else { el.style.background='#fee2e2'; el.style.borderColor='var(--color-error)'; }
+    }
+
+    // Confetti Animation
+    function startConfetti() {
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const particles = [];
+        const colors = ['#265cff', '#1e4bd6', '#041330', '#188038', '#f1c40f', '#cc5de8', '#00d2d3'];
+
+        for(let i=0; i<150; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height - canvas.height,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                size: Math.random() * 8 + 4,
+                speedY: Math.random() * 3 + 2,
+                speedX: Math.random() * 2 - 1,
+                rotation: Math.random() * 360,
+                rotationSpeed: Math.random() * 10 - 5
+            });
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let activeParticles = 0;
+            particles.forEach(p => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+                p.rotation += p.rotationSpeed;
+                
+                if (p.y < canvas.height) {
+                    activeParticles++;
+                }
+
+                ctx.save();
+                ctx.translate(p.x + p.size/2, p.y + p.size/2);
+                ctx.rotate(p.rotation * Math.PI / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+                ctx.restore();
+            });
+            
+            if (activeParticles > 0) {
+                requestAnimationFrame(animate);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // clear when done
+            }
+        }
+        animate();
     }
 
     // Init
