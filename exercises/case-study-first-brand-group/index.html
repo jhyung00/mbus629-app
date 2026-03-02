@@ -94,7 +94,7 @@
                 <span>Financial Times Case</span>
             </div>
             <h1 class="text-xl font-bold text-white leading-tight mb-2 serif-text">First Brands Group Collapse</h1>
-            <p class="text-xs text-slate-400">Gonzaga University</p>
+            <p class="text-xs text-slate-400">Shenandoah University</p>
         </div>
         
         <nav class="flex-1 py-4 flex flex-col gap-1">
@@ -264,6 +264,17 @@
                     </div>
 
                     <p>Inventory-backed funding was also used. Utah-based leasing firm Onset Financial, which had originally loaned equipment to FBG, became its largest creditor with a $1.9bn claim.</p>
+
+                    <!-- Explainer Box for Repo & Sale-Leaseback -->
+                    <div class="bg-ft-salmonDark/30 p-6 rounded-lg border-l-4 border-ft-teal my-8 font-sans shadow-sm">
+                        <h4 class="font-bold text-ft-slate mb-4 text-lg flex items-center">
+                            <i data-lucide="book-open-check" class="w-5 h-5 mr-2 text-ft-teal"></i> Explainer: Repos & Sale-Leasebacks
+                        </h4>
+                        <div class="space-y-4 text-sm text-ft-text leading-relaxed">
+                            <p><strong>Repo (Repurchase Agreement):</strong> A transaction where a company legally "sells" an asset (like inventory sitting in a warehouse) for an immediate injection of cash, with a strict contractual promise to buy it back a short time later at a slightly higher price. That price difference acts as the interest on the hidden "loan."</p>
+                            <p><strong>Sale-Leaseback:</strong> A company sells an asset it already owns (like factory machinery or equipment) to a financier, and then immediately signs a contract to lease it back. This gives the company a massive lump sum of cash upfront while allowing them to continue using the equipment to run their business seamlessly.</p>
+                        </div>
+                    </div>
 
                     <h3 class="font-sans font-bold text-xl text-ft-text mt-8 mb-4">The Private Credit Boom & A Shelved $6bn Deal</h3>
                     <p>The scale of this hidden leverage was fueled by FBG’s owner, Patrick James, whose strategy relied heavily on aggressive, fully debt-financed acquisitions. To fund this rapid expansion, FBG turned to the burgeoning private credit market. Yield-hungry alternative lenders—including Jefferies, UBS O’Connor, Pemberton, and Katsumi Global—stepped in to fill the gap left by traditional banks, providing opaque invoice financing and factoring lines that often yielded more than 10% (an unusually high rate given that FBG's customers were often investment-grade automotive retailers).</p>
@@ -483,16 +494,51 @@
                 
                 <div class="space-y-8">
                     
-                    <!-- Question 1 -->
+                    <!-- Question 1 (Introductory) -->
                     <div class="bg-white/80 rounded-xl shadow-sm border border-ft-salmonDark p-6">
                         <h3 class="text-lg font-bold text-ft-slate mb-3 flex items-start serif-text">
                             <span class="bg-ft-teal text-white rounded-full w-7 h-7 flex items-center justify-center text-sm mr-3 mt-0.5 shrink-0 font-sans">1</span>
-                            Which accounts or notes would you expect to capture factoring, supply-chain finance, and inventory-backed leasing (such as sale-leaseback or repo transactions)?
+                            From a basic financial perspective, why might management choose to use off-balance-sheet financing even if the interest rates are significantly higher (e.g., 19%) than traditional bank loans? How does this affect metrics like the Debt-to-Equity ratio?
                         </h3>
                         <textarea class="w-full bg-ft-salmon/30 border border-ft-salmonDark rounded-lg p-3 text-sm font-sans focus:outline-none focus:border-ft-teal focus:ring-1 focus:ring-ft-teal resize-y" rows="3" placeholder="Jot down your thoughts here..."></textarea>
                         
                         <!-- Answer Q1 -->
                         <div id="ans1" class="model-answer bg-ft-slate/5 border-l-4 border-ft-teal rounded-r-lg p-5">
+                            <h4 class="font-bold text-ft-teal mb-2 uppercase text-xs tracking-wider font-sans">Model Answer</h4>
+                            <div class="text-ft-text space-y-2 text-sm font-sans">
+                                <p><strong>Why Management Uses It:</strong> Management uses off-balance-sheet financing to raise immediate cash without violating existing <em>debt covenants</em> (strict rules set by current lenders limiting total borrowing). It maintains a facade of financial health, allowing the company to raise funds or appease investors, even if the cost of that hidden capital is exorbitant.</p>
+                                <p><strong>Impact on Financial Metrics:</strong> Because the financing is kept off the official balance sheet, the "Total Liabilities" figure is artificially suppressed. As a result, critical leverage metrics like the <strong>Debt-to-Equity</strong> or <strong>Debt-to-Assets</strong> ratios appear much healthier and lower than the economic reality dictates, creating a "mirage" of stability.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 (New Introductory) -->
+                    <div class="bg-white/80 rounded-xl shadow-sm border border-ft-salmonDark p-6">
+                        <h3 class="text-lg font-bold text-ft-slate mb-3 flex items-start serif-text">
+                            <span class="bg-ft-teal text-white rounded-full w-7 h-7 flex items-center justify-center text-sm mr-3 mt-0.5 shrink-0 font-sans">2</span>
+                            In simple terms, what is the difference between a traditional bank loan and a "sale-leaseback" or "repo" transaction? Why would a company like FBG use its own inventory for a repo instead of simply selling that inventory to its customers for cash?
+                        </h3>
+                        <textarea class="w-full bg-ft-salmon/30 border border-ft-salmonDark rounded-lg p-3 text-sm font-sans focus:outline-none focus:border-ft-teal focus:ring-1 focus:ring-ft-teal resize-y" rows="3" placeholder="Jot down your thoughts here..."></textarea>
+                        
+                        <div id="ans2" class="model-answer bg-ft-slate/5 border-l-4 border-ft-teal rounded-r-lg p-5">
+                            <h4 class="font-bold text-ft-teal mb-2 uppercase text-xs tracking-wider font-sans">Model Answer</h4>
+                            <div class="text-ft-text space-y-2 text-sm font-sans">
+                                <p><strong>The Difference:</strong> In a traditional bank loan, a company borrows money and pledges assets as collateral; the loan is clearly recorded as a liability on the balance sheet. In a sale-leaseback or repo, the company legally <em>sells</em> the asset for cash and agrees to rent or buy it back later. Because it is legally structured as a "sale," companies have historically used this loophole to keep the obligation off the balance sheet.</p>
+                                <p><strong>Why Repo Instead of Selling to Customers:</strong> Finding customers, negotiating sales, and waiting 30-90 days for them to pay their invoices takes time. A repo provides <em>instant liquidity</em>. FBG needed massive amounts of cash immediately to fund acquisitions or survive a liquidity squeeze. A repo turns warehouse stock into instant cash while allowing the company to eventually retain the stock to fill future customer orders.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="bg-white/80 rounded-xl shadow-sm border border-ft-salmonDark p-6">
+                        <h3 class="text-lg font-bold text-ft-slate mb-3 flex items-start serif-text">
+                            <span class="bg-ft-teal text-white rounded-full w-7 h-7 flex items-center justify-center text-sm mr-3 mt-0.5 shrink-0 font-sans">3</span>
+                            Which accounts or notes would you expect to capture factoring, supply-chain finance, and inventory-backed leasing (such as sale-leaseback or repo transactions)?
+                        </h3>
+                        <textarea class="w-full bg-ft-salmon/30 border border-ft-salmonDark rounded-lg p-3 text-sm font-sans focus:outline-none focus:border-ft-teal focus:ring-1 focus:ring-ft-teal resize-y" rows="3" placeholder="Jot down your thoughts here..."></textarea>
+                        
+                        <!-- Answer Q3 -->
+                        <div id="ans3" class="model-answer bg-ft-slate/5 border-l-4 border-ft-teal rounded-r-lg p-5">
                             <h4 class="font-bold text-ft-teal mb-2 uppercase text-xs tracking-wider font-sans">Model Answer</h4>
                             <div class="text-ft-text space-y-2 text-sm font-sans">
                                 <p><strong>Factoring:</strong> If receivables are sold <em>without recourse</em>, they are removed from the balance sheet and disclosed under "Transfers of Financial Assets". If sold <em>with recourse</em>, they remain on the balance sheet as short-term borrowing.</p>
@@ -502,15 +548,15 @@
                         </div>
                     </div>
 
-                    <!-- Question 2 -->
+                    <!-- Question 4 -->
                     <div class="bg-white/80 rounded-xl shadow-sm border border-ft-salmonDark p-6">
                         <h3 class="text-lg font-bold text-ft-slate mb-3 flex items-start serif-text">
-                            <span class="bg-ft-teal text-white rounded-full w-7 h-7 flex items-center justify-center text-sm mr-3 mt-0.5 shrink-0 font-sans">2</span>
+                            <span class="bg-ft-teal text-white rounded-full w-7 h-7 flex items-center justify-center text-sm mr-3 mt-0.5 shrink-0 font-sans">4</span>
                             Where should the participation of FBG executives in Onset-linked deals appear in disclosures? What controls mitigate incentive conflicts?
                         </h3>
                         <textarea class="w-full bg-ft-salmon/30 border border-ft-salmonDark rounded-lg p-3 text-sm font-sans focus:outline-none focus:border-ft-teal focus:ring-1 focus:ring-ft-teal resize-y" rows="3" placeholder="Jot down your thoughts here..."></textarea>
                         
-                        <div id="ans2" class="model-answer bg-ft-slate/5 border-l-4 border-ft-teal rounded-r-lg p-5">
+                        <div id="ans4" class="model-answer bg-ft-slate/5 border-l-4 border-ft-teal rounded-r-lg p-5">
                             <h4 class="font-bold text-ft-teal mb-2 uppercase text-xs tracking-wider font-sans">Model Answer</h4>
                             <div class="text-ft-text space-y-2 text-sm font-sans">
                                 <p><strong>Disclosure Location:</strong> Must be disclosed in the <strong>"Related Party Transactions"</strong> footnote, detailing the relationship nature, monetary value, and specific terms (e.g., the "double-digit rates" paid by FBG).</p>
@@ -519,15 +565,15 @@
                         </div>
                     </div>
 
-                    <!-- Question 3 -->
+                    <!-- Question 5 -->
                     <div class="bg-white/80 rounded-xl shadow-sm border border-ft-salmonDark p-6">
                         <h3 class="text-lg font-bold text-ft-slate mb-3 flex items-start serif-text">
-                            <span class="bg-ft-teal text-white rounded-full w-7 h-7 flex items-center justify-center text-sm mr-3 mt-0.5 shrink-0 font-sans">3</span>
+                            <span class="bg-ft-teal text-white rounded-full w-7 h-7 flex items-center justify-center text-sm mr-3 mt-0.5 shrink-0 font-sans">5</span>
                             Where should the boundary sit between an audit opinion on historical books and credit due diligence for cash and collateral‑intensive structures?
                         </h3>
                         <textarea class="w-full bg-ft-salmon/30 border border-ft-salmonDark rounded-lg p-3 text-sm font-sans focus:outline-none focus:border-ft-teal focus:ring-1 focus:ring-ft-teal resize-y" rows="3" placeholder="Jot down your thoughts here..."></textarea>
                         
-                        <div id="ans3" class="model-answer bg-ft-slate/5 border-l-4 border-ft-teal rounded-r-lg p-5">
+                        <div id="ans5" class="model-answer bg-ft-slate/5 border-l-4 border-ft-teal rounded-r-lg p-5">
                             <h4 class="font-bold text-ft-teal mb-2 uppercase text-xs tracking-wider font-sans">Model Answer</h4>
                             <div class="text-ft-text space-y-2 text-sm font-sans">
                                 <p><strong>The Role of the Audit:</strong> Audits provide reasonable assurance of historical compliance with GAAP/IFRS. They verify technical rules (like SPE non-consolidation) but do not predict future liquidity crises or uncover sophisticated cash commingling hidden by paper documentation.</p>
@@ -536,15 +582,15 @@
                         </div>
                     </div>
 
-                    <!-- Question 4 -->
+                    <!-- Question 6 -->
                     <div class="bg-white/80 rounded-xl shadow-sm border border-ft-salmonDark p-6">
                         <h3 class="text-lg font-bold text-ft-slate mb-3 flex items-start serif-text">
-                            <span class="bg-ft-teal text-white rounded-full w-7 h-7 flex items-center justify-center text-sm mr-3 mt-0.5 shrink-0 font-sans">4</span>
+                            <span class="bg-ft-teal text-white rounded-full w-7 h-7 flex items-center justify-center text-sm mr-3 mt-0.5 shrink-0 font-sans">6</span>
                             Would recognition rules similar to leases (ASU 2016-02) improve transparency around working-capital financing — or simply shift the activity?
                         </h3>
                         <textarea class="w-full bg-ft-salmon/30 border border-ft-salmonDark rounded-lg p-3 text-sm font-sans focus:outline-none focus:border-ft-teal focus:ring-1 focus:ring-ft-teal resize-y" rows="3" placeholder="Jot down your thoughts here..."></textarea>
                         
-                        <div id="ans4" class="model-answer bg-ft-slate/5 border-l-4 border-ft-teal rounded-r-lg p-5">
+                        <div id="ans6" class="model-answer bg-ft-slate/5 border-l-4 border-ft-teal rounded-r-lg p-5">
                             <h4 class="font-bold text-ft-teal mb-2 uppercase text-xs tracking-wider font-sans">Model Answer</h4>
                             <div class="text-ft-text space-y-2 text-sm font-sans">
                                 <p><strong>Improving Transparency:</strong> Yes, formalizing off-balance sheet items generally improves financial reporting quality. If factoring and supply-chain finance were universally recognized as short-term debt, "headline debt" would accurately reflect leverage without rating agency adjustments.</p>
