@@ -9,17 +9,17 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Phosphor Icons (Fun, playful, duotone icons) -->
-  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- Font Awesome 6 (Extremely Reliable Icon Set) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <style>
     :root {
       /* Professional Corporate Palette */
-      --bg-body: #f8fafc;      /* Clean slate background */
+      --bg-body: #f8fafc;      
       --bg-card: #ffffff;
       
-      --text-main: #0f172a;    /* Deep slate gray */
-      --text-muted: #64748b;   /* Professional muted tone */
+      --text-main: #0f172a;    
+      --text-muted: #64748b;   
       --text-light: #94a3b8;
       
       /* Trustworthy Gradients (Navy/Blue) */
@@ -100,7 +100,6 @@
       position: relative;
     }
 
-    /* Futuristic Hover Effect */
     .nav-links a:hover { 
       color: #00e5ff; 
       text-shadow: 0 0 12px rgba(0, 229, 255, 0.7);
@@ -135,7 +134,7 @@
     .hero-container {
       max-width: 650px;
       margin: 0 auto;
-      animation: fadeInDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: fadeInDown 0.8s ease forwards;
     }
 
     @keyframes fadeInDown {
@@ -175,8 +174,8 @@
       position: relative;
       padding-bottom: 0.4rem;
       opacity: 0;
-      animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      animation-delay: calc(var(--b) * 0.15s);
+      animation: slideInRight 0.6s ease forwards;
+      animation-delay: calc(var(--b) * 0.1s);
     }
 
     @keyframes slideInRight {
@@ -225,15 +224,15 @@
       border: 1px solid rgba(0,0,0,0.03);
       
       opacity: 0;
-      transform: translateY(15px) scale(0.98);
-      animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-      animation-delay: calc(var(--i) * 0.06s);
+      transform: translateY(10px);
+      animation: popIn 0.4s ease forwards;
+      animation-delay: calc(var(--i) * 0.04s);
       
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.3s ease;
     }
 
     @keyframes popIn {
-      100% { opacity: 1; transform: translateY(0) scale(1); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .card::before {
@@ -245,11 +244,11 @@
       border-radius: var(--radius-xl) var(--radius-xl) 0 0;
       transform: scaleX(0);
       transform-origin: left;
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.4s ease;
     }
 
     .card:hover {
-      transform: translateY(-3px) scale(1.01);
+      transform: translateY(-3px);
       box-shadow: var(--shadow-hover);
       border-color: rgba(37, 99, 235, 0.1);
       z-index: 2;
@@ -257,7 +256,7 @@
 
     .card:hover::before { transform: scaleX(1); }
 
-    /* Bouncier, Fun Icon Box */
+    /* Fun Icon Box */
     .icon-box {
       background: var(--icon-bg);
       color: var(--icon-color);
@@ -268,11 +267,11 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: all 0.4s ease;
     }
     
     .icon-box i {
-      font-size: 28px;
+      font-size: 22px; /* Sized for Font Awesome */
       line-height: 1;
       transition: all 0.3s ease;
     }
@@ -283,12 +282,6 @@
       transform: rotate(-6deg) scale(1.12);
       border-radius: 50%;
       box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-    }
-    
-    .card:hover .icon-box i {
-      /* Duotone layers pop in white on hover */
-      --ph-primary: #ffffff;
-      --ph-secondary: rgba(255, 255, 255, 0.7);
     }
 
     .card-content { 
@@ -389,7 +382,7 @@
       <div class="grid">
         <a class="card" href="financial-reporting-landscape/" style="--i: 1;">
           <div class="icon-box">
-            <i class="ph-duotone ph-mountains"></i>
+            <i class="fa-solid fa-mountain"></i>
           </div>
           <div class="card-content">
             <h3>Reporting Landscape</h3>
@@ -400,7 +393,7 @@
 
         <a class="card" href="10-K/" style="--i: 2;">
           <div class="icon-box">
-            <i class="ph-duotone ph-treasure-chest"></i>
+            <i class="fa-solid fa-gem"></i>
           </div>
           <div class="card-content">
             <h3>10-K Scavenger Hunt</h3>
@@ -411,7 +404,7 @@
 
         <a class="card" href="DEF14/" style="--i: 3;">
           <div class="icon-box">
-            <i class="ph-duotone ph-gavel"></i>
+            <i class="fa-solid fa-gavel"></i>
           </div>
           <div class="card-content">
             <h3>Corporate Governance</h3>
@@ -422,7 +415,7 @@
 
         <a class="card" href="articulation/" style="--i: 4;">
           <div class="icon-box">
-            <i class="ph-duotone ph-puzzle-piece"></i>
+            <i class="fa-solid fa-puzzle-piece"></i>
           </div>
           <div class="card-content">
             <h3>Articulation</h3>
@@ -433,7 +426,7 @@
         
         <a class="card" href="finding-mistakes/" style="--i: 5;">
           <div class="icon-box">
-            <i class="ph-duotone ph-bandaids"></i>
+            <i class="fa-solid fa-eraser"></i>
           </div>
           <div class="card-content">
             <h3>Correcting Mistakes</h3>
@@ -444,7 +437,7 @@
 
         <a class="card" href="accrual-vs-cash/" style="--i: 6;">
           <div class="icon-box">
-            <i class="ph-duotone ph-scales"></i>
+            <i class="fa-solid fa-scale-balanced"></i>
           </div>
           <div class="card-content">
             <h3>Accrual Based Accounting</h3>
@@ -455,7 +448,7 @@
         
         <a class="card" href="transactions/" style="--i: 7;">
           <div class="icon-box">
-            <i class="ph-duotone ph-cash-register"></i>
+            <i class="fa-solid fa-cash-register"></i>
           </div>
           <div class="card-content">
             <h3>Transactions</h3>
@@ -473,7 +466,7 @@
       <div class="grid">
         <a class="card" href="dupont/" style="--i: 8;">
           <div class="icon-box">
-            <i class="ph-duotone ph-flask"></i>
+            <i class="fa-solid fa-flask"></i>
           </div>
           <div class="card-content">
             <h3>DuPont Analysis</h3>
@@ -484,7 +477,7 @@
         
         <a class="card" href="dupont-practice/" style="--i: 9;">
           <div class="icon-box">
-            <i class="ph-duotone ph-barbell"></i>
+            <i class="fa-solid fa-dumbbell"></i>
           </div>
           <div class="card-content">
             <h3>DuPont Disaggregation</h3>
@@ -495,7 +488,7 @@
 
         <a class="card" href="dupont-game/" style="--i: 10;">
           <div class="icon-box">
-            <i class="ph-duotone ph-game-controller"></i>
+            <i class="fa-solid fa-gamepad"></i>
           </div>
           <div class="card-content">
             <h3>DuPont Game</h3>
@@ -513,7 +506,7 @@
       <div class="grid">
         <a class="card" href="revenue-rec-game/" style="--i: 11;">
           <div class="icon-box">
-            <i class="ph-duotone ph-confetti"></i>
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
           </div>
           <div class="card-content">
             <h3>Revenue Recognition</h3>
@@ -524,10 +517,10 @@
 
         <a class="card" href="accounts-receivable/" style="--i: 12;">
           <div class="icon-box">
-            <i class="ph-duotone ph-boomerang"></i>
+            <i class="fa-solid fa-file-invoice-dollar"></i>
           </div>
           <div class="card-content">
-            <h3>Receivables</h3>
+            <h3>Accounts Receivable</h3>
             <div class="card-meta">Allowance & Bad Debt</div>
           </div>
           <div class="card-arrow">→</div>
@@ -535,7 +528,7 @@
         
         <a class="card" href="accounts-receivable-game/" style="--i: 13;">
           <div class="icon-box">
-            <i class="ph-duotone ph-joystick"></i>
+            <i class="fa-solid fa-ghost"></i>
           </div>
           <div class="card-content">
             <h3>A/R Game</h3>
@@ -546,7 +539,7 @@
 
         <a class="card" href="inventory/" style="--i: 14;">
           <div class="icon-box">
-            <i class="ph-duotone ph-warehouse"></i>
+            <i class="fa-solid fa-boxes-stacked"></i>
           </div>
           <div class="card-content">
             <h3>Inventory</h3>
@@ -557,7 +550,7 @@
         
         <a class="card" href="Inventory-alchemist/" style="--i: 15;">
           <div class="icon-box">
-            <i class="ph-duotone ph-potion"></i>
+            <i class="fa-solid fa-flask-vial"></i>
           </div>
           <div class="card-content">
             <h3>Inventory Alchemist</h3>
@@ -568,7 +561,7 @@
 
         <a class="card" href="deferred-rev/" style="--i: 16;">
           <div class="icon-box">
-            <i class="ph-duotone ph-gift"></i>
+            <i class="fa-solid fa-gift"></i>
           </div>
           <div class="card-content">
             <h3>Deferred Revenue</h3>
@@ -579,7 +572,7 @@
 
         <a class="card" href="ppe/" style="--i: 17;">
           <div class="icon-box">
-            <i class="ph-duotone ph-tractor"></i>
+            <i class="fa-solid fa-tractor"></i>
           </div>
           <div class="card-content">
             <h3>PPE Analysis</h3>
@@ -590,7 +583,7 @@
         
         <a class="card" href="earnings-game/" style="--i: 18;">
           <div class="icon-box">
-            <i class="ph-duotone ph-dice-five"></i>
+            <i class="fa-solid fa-dice"></i>
           </div>
           <div class="card-content">
             <h3>Earnings Game</h3>
@@ -598,22 +591,24 @@
           </div>
           <div class="card-arrow">→</div>
         </a>
-        <a class="card" href="restaurant-rescue-inv-ppe/" style="--i: 18;">
+        
+        <a class="card" href="restaurant-rescue-inv-ppe/" style="--i: 19;">
           <div class="icon-box">
-            <i class="ph-duotone ph-hamburger"></i>
+            <i class="fa-solid fa-burger"></i>
           </div>
           <div class="card-content">
-            <h3>Restaurant Rescue Mission  </h3>
-            <div class="card-meta">Inventory & Long Lived Assets </div>
+            <h3>Restaurant Rescue Mission</h3>
+            <div class="card-meta">Inventory & Long Lived Assets</div>
           </div>
           <div class="card-arrow">→</div>
         </a>
-        <a class="card" href="case-study-first-brand-group/" style="--i: 18;">
+        
+        <a class="card" href="case-study-first-brand-group/" style="--i: 20;">
           <div class="icon-box">
-            <i class="ph-duotone ph-detective"></i>
+            <i class="fa-solid fa-user-secret"></i>
           </div>
           <div class="card-content">
-            <h3>Case Study - First Brand Group </h3>
+            <h3>Case Study - First Brand Group</h3>
             <div class="card-meta">Financial Times Case Study</div>
           </div>
           <div class="card-arrow">→</div>
@@ -626,9 +621,9 @@
         <h2 class="bucket-title">IV. Cash Flows</h2>
       </div>
       <div class="grid">
-        <a class="card" href="indirect-method/" style="--i: 19;">
+        <a class="card" href="indirect-method/" style="--i: 21;">
           <div class="icon-box">
-            <i class="ph-duotone ph-recycle"></i>
+            <i class="fa-solid fa-recycle"></i>
           </div>
           <div class="card-content">
             <h3>Cash Flows (Indirect)</h3>
@@ -637,9 +632,9 @@
           <div class="card-arrow">→</div>
         </a>
 
-        <a class="card" href="cash-flows/" style="--i: 20;">
+        <a class="card" href="cash-flows/" style="--i: 22;">
           <div class="icon-box">
-            <i class="ph-duotone ph-coins"></i>
+            <i class="fa-solid fa-coins"></i>
           </div>
           <div class="card-content">
             <h3>Cash Flows</h3>
