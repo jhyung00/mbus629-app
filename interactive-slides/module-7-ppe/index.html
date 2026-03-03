@@ -177,6 +177,11 @@
         .highlight-row { background-color: rgba(38, 92, 255, 0.05); }
         .negative { color: var(--danger); }
         .positive { color: var(--success); }
+        
+        /* Table Hidden Rows for Interactive Reveal */
+        .hidden-row { display: none; }
+        .show-all .hidden-row { display: table-row; animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
 
         /* Flip Cards - Height Reduced */
         .card-grid {
@@ -279,18 +284,6 @@
         .legend { display: flex; gap: 15px; justify-content: center; margin-top: 8px; font-size: 0.75rem; }
         .legend-item { display: flex; align-items: center; gap: 4px; } .dot { width: 8px; height: 8px; border-radius: 50%; }
 
-        /* Macy's Chart */
-        .macys-chart-container { display: flex; justify-content: center; height: 180px; padding: 0.5rem; background: white; position: relative; border: var(--border-style); border-radius:4px;}
-        .macys-bars-area { position: relative; width: 100%; height: 100%; }
-        .macys-zero-line { position: absolute; top: 65%; left: 0; width: 100%; height: 1px; background: var(--text); opacity: 0.3; z-index: 1; border-top: 1px dashed var(--text); }
-        .macys-bars-flex { display: flex; justify-content: space-around; align-items: flex-start; width: 100%; height: 100%; position: relative; z-index: 2; }
-        .m-col { position: relative; width: 30px; height: 100%; }
-        .m-bar-pos { background: var(--success); position: absolute; bottom: 35%; width: 100%; border-radius: 2px 2px 0 0;}
-        .m-bar-neg { background: var(--danger); position: absolute; top: 65%; width: 100%; border-radius: 0 0 2px 2px;}
-        .m-label { position: absolute; bottom: 0px; font-size: 0.65rem; width: 100%; text-align: center; color: var(--text-muted); font-weight: bold; }
-        .m-val { position: absolute; font-size: 0.7rem; width: 150%; left: -25%; text-align: center; font-weight: bold; }
-        .m-val-pos { bottom: 100%; margin-bottom: 2px; } .m-val-neg { top: 100%; margin-top: 2px; }
-
         /* Reveals & Fun */
         .reveal-box { background: var(--color-newday); border: 2px dashed var(--secondary); color: transparent; cursor: pointer; padding: 0.2rem 0.5rem; transition: all 0.3s; user-select: none; border-radius: 4px;}
         .reveal-box.revealed { background: var(--secondary); color: white; border-style: solid; font-weight: bold; }
@@ -350,7 +343,7 @@
 
         <!-- Slide 2: Hook -->
         <div class="slide">
-            <h2>The Detective's Dilemma</h2>
+            <h2>The Analyst's Dilemma</h2>
             <div class="hook-box">
                 <p>Imagine you're analyzing "TechTitan Inc." They just reported a massive 50% jump in Net Income. The stock is soaring. Everyone is cheering.</p>
                 <p>But you dig deeper. You find that their actual sales of software are <em>down</em>.</p>
@@ -433,46 +426,89 @@
 
         <!-- Slide 6: Depreciation -->
         <div class="slide">
-            <h2>Depreciation: Using it Up</h2>
-            <p>Depreciation is the allocation of cost over time. It requires three estimates:</p>
-            <ul style="margin-bottom:0;">
-                <li><strong>Useful Life:</strong> How long will it last?</li>
-                <li><strong>Salvage Value:</strong> What's it worth at the end?</li>
-                <li><strong>Method:</strong> How fast does it wear out?</li>
-            </ul>
-            <div class="hook-box">
-                <p><strong>Straight-Line:</strong> Equal expense every year. (Most common for financial reporting)</p>
-                <p><strong>Accelerated (MACRS):</strong> More expense early on. (Used for Tax to save cash flow)</p>
+            <h2>Depreciation: GAAP vs TAX</h2>
+            <p>Depreciation allocates an asset's cost over time. Companies keep <strong>two sets of books</strong>.</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <!-- GAAP Box -->
+                <div style="border: var(--border-style); border-left: 4px solid var(--secondary); padding: 1rem; background: white; border-radius: 4px;">
+                    <h3 style="color: var(--secondary); margin-top:0;">GAAP (Financial Statements)</h3>
+                    <p style="font-size: 0.85rem; margin-bottom: 1rem;"><strong>Goal:</strong> Match expense to the asset's economic use over its life.</p>
+                    <div style="display: flex; justify-content: space-around; gap: 1rem;">
+                        <div style="flex:1; text-align:center; background:var(--color-newday); padding: 0.5rem; border-radius: 4px; border: var(--border-style);">
+                            <h4 style="margin:0 0 0.5rem 0;">Straight-Line</h4>
+                            <div style="display: flex; gap: 4px; align-items: flex-end; height: 35px; justify-content: center; margin-bottom: 0.5rem;">
+                                <div style="width: 15px; height: 25px; background: var(--secondary); border-radius: 2px 2px 0 0;"></div>
+                                <div style="width: 15px; height: 25px; background: var(--secondary); border-radius: 2px 2px 0 0;"></div>
+                                <div style="width: 15px; height: 25px; background: var(--secondary); border-radius: 2px 2px 0 0;"></div>
+                            </div>
+                            <p style="font-size: 0.75rem; margin:0; color:var(--text-muted);">Equal expense every year.</p>
+                        </div>
+                        <div style="flex:1; text-align:center; background:var(--color-newday); padding: 0.5rem; border-radius: 4px; border: var(--border-style);">
+                            <h4 style="margin:0 0 0.5rem 0;">DDB (Accelerated)</h4>
+                            <div style="display: flex; gap: 4px; align-items: flex-end; height: 35px; justify-content: center; margin-bottom: 0.5rem;">
+                                <div style="width: 15px; height: 35px; background: var(--accent); border-radius: 2px 2px 0 0;"></div>
+                                <div style="width: 15px; height: 20px; background: var(--accent); border-radius: 2px 2px 0 0;"></div>
+                                <div style="width: 15px; height: 8px; background: var(--accent); border-radius: 2px 2px 0 0;"></div>
+                            </div>
+                            <p style="font-size: 0.75rem; margin:0; color:var(--text-muted);"><strong>Double Declining Balance:</strong> Double the straight-line rate applied to a shrinking book value.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAX Box (Flip Card) -->
+                <div class="flip-card wide" style="height: 100px;" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front" style="border: 2px dashed var(--danger); background: var(--danger-bg); padding: 1rem;">
+                            <h3 style="font-size: 1.2rem; color:var(--danger); margin:0;">TAX (IRS Rules)</h3>
+                            <p style="font-weight:bold; margin: 0.2rem 0;">MACRS System</p>
+                            <p style="font-size:0.8rem; color:var(--danger); margin-top:0.2rem;">(Tap to reveal)</p>
+                        </div>
+                        <div class="flip-card-back" style="justify-content:center; background: var(--danger); border-color: var(--danger); padding: 1rem;">
+                            <p style="font-size: 1rem; font-weight: bold; margin-bottom: 0.5rem;">A Completely Separate System</p>
+                            <p class="no-italics" style="font-size: 0.85rem; margin:0;"><strong>Modified Accelerated Cost Recovery System (MACRS)</strong> is meant to calculate allowable tax deductions. It's strictly regulated by the IRS to encourage investment, totally divorced from GAAP's matching principle.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Slide 7: Straight Line Math -->
         <div class="slide">
             <h2>Straight-Line Math</h2>
-            <p>Let's crunch the numbers.</p>
+            <p>Let's crunch the numbers for our standard straight-line formula.</p>
             <p><strong>Machine Cost:</strong> $100,000 | <strong>Salvage Value:</strong> $10,000 | <strong>Life:</strong> 5 Years</p>
 
-            <div class="equation-box">
-                (Cost - Salvage) / Life<br>
-                ($100,000 - $10,000) / 5<br>
-                = <span style="color:var(--secondary); font-weight:bold;">$18,000 per year</span>
+            <div class="card-grid" style="margin-top:1.5rem;">
+                <div class="flip-card wide" style="height: 180px;" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front" style="justify-content: center; background:var(--color-newday);">
+                            <h3 style="color:var(--text); margin-bottom: 1rem;">Tap to Calculate</h3>
+                            <p style="font-family:'JetBrains Mono', monospace; font-size:1.2rem; color:var(--secondary); font-weight:bold;">(Cost - Salvage) / Life</p>
+                        </div>
+                        <div class="flip-card-back" style="justify-content:center; background:var(--secondary);">
+                            <p style="font-family:'JetBrains Mono', monospace; font-size:1.2rem; margin-bottom:1rem;">($100,000 - $10,000) / 5</p>
+                            <h3 style="color:white; font-size:2rem; margin:0;">= $18,000 / year</h3>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Slide 8: Net Book Value -->
         <div class="slide">
             <h2>Net Book Value (NBV)</h2>
-            <p>On the Balance Sheet, the asset shrinks every year.</p>
-            <table class="financial-table">
+            <p>On the Balance Sheet, the asset shrinks every year. <span style="font-style:italic; font-size:0.9rem;">(Tap the blank boxes to reveal the math)</span></p>
+            <table class="financial-table" style="font-size: 0.95rem;">
                 <thead>
                     <tr><th>Year</th><th>Asset Cost</th><th>Accumulated Depr.</th><th>Net Book Value</th></tr>
                 </thead>
                 <tbody>
                     <tr><td>Start</td><td>$100,000</td><td>$0</td><td>$100,000</td></tr>
-                    <tr><td>Year 1</td><td>$100,000</td><td>($18,000)</td><td>$82,000</td></tr>
-                    <tr><td>Year 2</td><td>$100,000</td><td>($36,000)</td><td>$64,000</td></tr>
+                    <tr><td>Year 1</td><td>$100,000</td><td><span class="reveal-box" style="display:inline-block; min-width:80px; text-align:center;" onclick="this.classList.add('revealed')">($18,000)</span></td><td><span class="reveal-box" style="display:inline-block; min-width:80px; text-align:center;" onclick="this.classList.add('revealed')">$82,000</span></td></tr>
+                    <tr><td>Year 2</td><td>$100,000</td><td><span class="reveal-box" style="display:inline-block; min-width:80px; text-align:center;" onclick="this.classList.add('revealed')">($36,000)</span></td><td><span class="reveal-box" style="display:inline-block; min-width:80px; text-align:center;" onclick="this.classList.add('revealed')">$64,000</span></td></tr>
                     <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-                    <tr><td>Year 5</td><td>$100,000</td><td>($90,000)</td><td><strong>$10,000</strong> (Salvage)</td></tr>
+                    <tr><td>Year 5</td><td>$100,000</td><td><span class="reveal-box" style="display:inline-block; min-width:80px; text-align:center;" onclick="this.classList.add('revealed')">($90,000)</span></td><td><strong><span class="reveal-box" style="display:inline-block; min-width:80px; text-align:center;" onclick="this.classList.add('revealed')">$10,000</span></strong> (Salvage)</td></tr>
                 </tbody>
             </table>
         </div>
@@ -546,61 +582,38 @@
                 </div>
             </div>
             <div class="hook-box">
-                <h3 style="margin-top:0;">Macy's Example (2022)</h3>
-                <p style="margin-bottom:0;">Macy's reported <strong>$89M</strong> gains from selling real estate. Is this core income? <strong>NO.</strong> It's a one-time "Noise" event.</p>
+                <h3 style="margin-top:0;">Gain / Loss Interpretation</h3>
+                <p style="margin-bottom:0;"><strong>Gain =</strong> Depreciated <em>too much</em> in the past. Profits were understated.</p>
+                <p style="margin-bottom:0;"><strong>Loss =</strong> Didn't depreciate enough. Past profits were overstated.</p>
             </div>
         </div>
 
-        <!-- Slide 12: Macy's Story -->
+        <!-- Slide 12: Macy's EBITDA Reconciliation -->
         <div class="slide">
-            <h2>Real World Noise: Macy's 2025</h2>
-            <div style="display: flex; gap: 2rem;">
-                <div style="flex: 1;">
-                    <div class="hook-box" style="margin-top:0;">
-                        <h3 style="color: var(--secondary); margin-top:0;">The Headline</h3>
-                        <p><strong>Net Income Fell:</strong> $11M (2025) vs $28M (Prior Year).</p>
-                        <p><strong>The Noise:</strong> Adjusted EPS stripped out real estate gains.</p>
-                        <p><strong>The Signal:</strong> Same-Store Sales actually grew >3%.</p>
-                    </div>
-                </div>
-                
-                <div style="flex: 1.2;">
-                    <h3 style="text-align: center; margin-top:0;">Macy's Comp Sales Growth</h3>
-                    <div class="macys-chart-container">
-                        <div class="macys-bars-area">
-                            <div class="macys-zero-line"></div>
-                            <div class="macys-bars-flex">
-                                <div class="m-col"><div class="m-bar-neg" style="height: 60px;"><span class="m-val m-val-neg">-7.2</span></div><span class="m-label">Q1'23</span></div>
-                                <div class="m-col"><div class="m-bar-neg" style="height: 61px;"><span class="m-val m-val-neg">-7.3</span></div><span class="m-label">Q2'23</span></div>
-                                <div class="m-col"><div class="m-bar-neg" style="height: 4px;"><span class="m-val m-val-neg">-0.4</span></div><span class="m-label">Q1'24</span></div>
-                                <div class="m-col"><div class="m-bar-neg" style="height: 28px;"><span class="m-val m-val-neg">-3.3</span></div><span class="m-label">Q2'24</span></div>
-                                <div class="m-col"><div class="m-bar-neg" style="height: 11px;"><span class="m-val m-val-neg">-1.3</span></div><span class="m-label">Q3'24</span></div>
-                                <div class="m-col"><div class="m-bar-pos" style="height: 2px;"><span class="m-val m-val-pos">+0.2</span></div><span class="m-label">Q4'24</span></div>
-                                <div class="m-col"><div class="m-bar-neg" style="height: 10px;"><span class="m-val m-val-neg">-1.2</span></div><span class="m-label">Q1'25</span></div>
-                                <div class="m-col"><div class="m-bar-pos" style="height: 16px;"><span class="m-val m-val-pos">+1.9</span></div><span class="m-label">Q2'25</span></div>
-                                <div class="m-col"><div class="m-bar-pos" style="height: 27px;"><span class="m-val m-val-pos">+3.2</span></div><span class="m-label">Q3'25</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <h2>Macy's: Net Income vs. Adjusted EBITDA</h2>
+            <p>Moving from GAAP to Non-GAAP profit measures to find the "core" performance.</p>
+            
+            <table class="financial-table" style="font-size: 0.85rem;">
+                <thead>
+                    <tr><th>Measure (in Millions)</th><th>2022</th><th>2023</th><th>2024</th></tr>
+                </thead>
+                <tbody onclick="this.classList.toggle('show-all')" style="cursor: pointer;">
+                    <tr><td>Net Income (GAAP)</td><td>$1,146</td><td class="negative">$45</td><td>$582</td></tr>
+                    
+                    <tr class="hidden-row"><td colspan="4" style="text-align:center; font-style:italic; color:var(--secondary); background:var(--color-newday); font-size: 0.75rem;">&darr; Add-backs (Taxes, Depr, Interest) &darr;</td></tr>
+                    <tr class="hidden-row"><td>(+) Non-Operating Add-backs</td><td>$1,381</td><td>$1,030</td><td>$1,178</td></tr>
+                    <tr class="hidden-row highlight-row"><td><strong>EBITDA</strong></td><td><strong>$2,527</strong></td><td><strong>$1,075</strong></td><td><strong>$1,760</strong></td></tr>
+                    
+                    <tr class="hidden-row"><td colspan="4" style="text-align:center; font-style:italic; color:var(--secondary); background:var(--color-newday); font-size: 0.75rem;">&darr; Unusual Items (Impairment, Restructuring) &darr;</td></tr>
+                    <tr class="hidden-row"><td>(+) Impairment & Restructuring</td><td>$80</td><td>$1,161</td><td>$217</td></tr>
+                    
+                    <tr class="highlight-row" style="background-color: var(--success-bg); border-top: 2px solid var(--success);"><td><strong>Adjusted EBITDA</strong></td><td><strong>$2,607</strong></td><td><strong>$2,236</strong></td><td><strong>$1,977</strong></td></tr>
+                </tbody>
+            </table>
+            <p style="text-align:center; font-size: 0.8rem; color: var(--text-muted); margin-top: 0;">(Tap table to reveal how we arrived at Adjusted EBITDA)</p>
 
-        <!-- Slide 13: Analyst Insight -->
-        <div class="slide">
-            <h2>The Deeper Insight</h2>
-            <div class="img-container">
-                <img src="https://images.unsplash.com/photo-1543286386-713bdd548da4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Correction of history" style="max-height: 150px;">
-            </div>
-            
-            <div style="text-align:center;">
-                <p>Here is a secret:</p>
-                <div class="fun-text">The Gain is just a correction of history.</div>
-            </div>
-            
-            <div style="margin-top: 1rem; text-align: center;">
-                <p><strong>Gain =</strong> Depreciated <em>too much</em> in the past. Profits were understated.</p>
-                <p><strong>Loss =</strong> Didn't depreciate enough. Past profits were overstated.</p>
+            <div class="hook-box" style="margin-top: 0.5rem; padding: 0.8rem;">
+                <p style="margin-bottom:0; font-size: 0.95rem;"><strong>Question for you:</strong> In 2023, GAAP Net Income looked weak ($45M), but Adjusted EBITDA was $2.2B. Why would management prefer investors to focus on the Adjusted number, and what is the risk of doing so?</p>
             </div>
         </div>
 
@@ -623,72 +636,85 @@
             </div>
         </div>
 
-        <!-- Slide 15: Impairment -->
+        <!-- Slide 14: Impairment -->
         <div class="slide">
-            <h2>Impairment Analysis</h2>
-            <div style="background:var(--bg-card); padding:1rem; border: var(--border-style); text-align:center; margin-bottom: 1rem; border-radius:4px;">
-                <h3 style="margin:0;">Is Sum of Future Cash Flows < Net Book Value?</h3>
-            </div>
-            <div class="card-grid" style="margin-top:0;">
-                <div class="flip-card wide" onclick="this.classList.toggle('flipped')">
-                    <div class="flip-card-inner">
-                        <div class="flip-card-front" style="background:var(--danger-bg); border: 2px solid var(--danger);">
-                            <h3 style="color:var(--danger); font-size: 1.8rem;">YES</h3>
-                            <p style="color:var(--danger);">Tap for Consequence</p>
-                        </div>
-                        <div class="flip-card-back" style="background:var(--danger); color: white;">
-                            <h3>THE HIT</h3>
-                            <p style="font-size:0.9rem;">Asset Impaired. Write down to Fair Value. Recognize Loss.</p>
+            <h2>Impairment Analysis Visualized</h2>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-top: 1rem;">
+                <div style="background:var(--color-midnight); color:white; padding: 1rem; border-radius: 8px; width: 60%; text-align: center;">
+                    <h3 style="color: white; margin-top: 0;">Step 1: The Trigger Event</h3>
+                    <p style="margin:0; font-size:0.9rem;">Market conditions suggest asset value might not be recoverable.</p>
+                </div>
+                
+                <div style="font-size: 2rem; color: var(--secondary); font-weight: bold;">&darr;</div>
+                
+                <div class="card-grid" style="margin-top:0; width:100%;">
+                    <!-- Flip Card 1 -->
+                    <div class="flip-card" style="height:180px;" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front" style="border: 2px dashed var(--danger);">
+                                <h4 style="color:var(--danger); margin-top:0; font-size: 1.1rem;">Future Cash Flows < Net Book Value</h4>
+                                <p style="font-size:0.85rem; color:var(--text-muted);">(Tap to reveal)</p>
+                            </div>
+                            <div class="flip-card-back" style="background:var(--danger); border-color:var(--danger);">
+                                <div style="font-size: 2rem; margin: 0.5rem 0;">📉</div>
+                                <p style="font-weight: bold; margin-bottom:0; color: white; font-size: 1.2rem;">IMPAIRMENT HIT</p>
+                                <p style="font-size:0.9rem; margin-top:0.5rem; color:white;">Asset is impaired. Write down to Fair Value and recognize a Loss.</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="flip-card wide" onclick="this.classList.toggle('flipped')">
-                    <div class="flip-card-inner">
-                        <div class="flip-card-front" style="background:var(--success-bg); border: 2px solid var(--success);">
-                            <h3 style="color:var(--success); font-size: 1.8rem;">NO</h3>
-                            <p style="color:var(--success);">Tap for Consequence</p>
-                        </div>
-                        <div class="flip-card-back" style="background:var(--success); color: white;">
-                            <h3>THE REALITY</h3>
-                            <p style="font-size:0.9rem;">Do Nothing. GAAP ignores increases in value.</p>
+                    
+                    <!-- Flip Card 2 -->
+                    <div class="flip-card" style="height:180px;" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front" style="border: 2px dashed var(--success);">
+                                <h4 style="color:var(--success); margin-top:0; font-size: 1.1rem;">Future Cash Flows &ge; Net Book Value</h4>
+                                <p style="font-size:0.85rem; color:var(--text-muted);">(Tap to reveal)</p>
+                            </div>
+                            <div class="flip-card-back" style="background:var(--success); border-color:var(--success);">
+                                <div style="font-size: 2rem; margin: 0.5rem 0;">🛡️</div>
+                                <p style="font-weight: bold; margin-bottom:0; color: white; font-size: 1.2rem;">NO ACTION</p>
+                                <p style="font-size:0.9rem; margin-top:0.5rem; color:white;">Do nothing. GAAP conservatism ignores increases in asset value.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 16: CVS Example -->
-        <div class="slide">
-            <h2>Real Life: CVS Health (2021)</h2>
-            <p>CVS decided to close 900 stores. The assets in those stores (shelves, signs, lease rights) were suddenly worth much less.</p>
-            <div class="hook-box">
-                <p><strong>The Hit:</strong> $1,358 Million Impairment Charge.</p>
-                <p style="margin-bottom:0;"><strong>The Reality:</strong> This is a non-cash expense. The cash was spent years ago to build the stores. This charge just acknowledges the mistake in valuation.</p>
-            </div>
-        </div>
-
-        <!-- Slide 17: Restructuring -->
+        <!-- Slide 15: Restructuring -->
         <div class="slide">
             <h2>Restructuring: The "Big Bath"</h2>
-            <div style="display: flex; align-items: center; justify-content: space-around; gap: 1rem;">
-                <div style="flex:1;">
-                    <p>Companies often group bad news into one big "Restructuring" charge to clear the decks.</p>
-                    <ul style="font-size:0.95rem;">
-                        <li><strong>Severance:</strong> Cash paid to fired workers.</li>
-                        <li><strong>Write-downs:</strong> Non-cash asset reductions.</li>
-                        <li><strong>Exit Costs:</strong> Fees to break leases.</li>
-                    </ul>
+            <p>A "Big Bath" strategy occurs when management bundles multiple expenses into one notoriously weak year.</p>
+            
+            <div style="display: flex; align-items: center; justify-content: space-around; gap: 1rem; margin-top:1rem;">
+                <div style="display:flex; flex-direction:column; gap:0.5rem; flex:1;">
+                    <div style="background:white; border:var(--border-style); padding:0.5rem; text-align:center; font-weight:bold; border-radius:4px; font-size: 0.9rem;">Acquisition Charges</div>
+                    <div style="background:white; border:var(--border-style); padding:0.5rem; text-align:center; font-weight:bold; border-radius:4px; font-size: 0.9rem;">Severance / Restructuring</div>
+                    <div style="background:white; border:var(--border-style); padding:0.5rem; text-align:center; font-weight:bold; border-radius:4px; font-size: 0.9rem;">Asset Write-downs</div>
                 </div>
-                <div class="bath-container">
-                    <svg viewBox="0 0 100 100" fill="none" stroke="var(--secondary)" stroke-width="2">
-                        <path d="M10,40 Q20,80 50,80 Q80,80 90,40 L90,30 L10,30 Z" fill="white"/>
-                        <line x1="20" y1="30" x2="20" y2="10" />
-                        <line x1="30" y1="30" x2="30" y2="10" />
-                        <path d="M15,10 Q25,0 35,10" />
-                        <path d="M15,40 Q30,50 45,40 T75,40 T90,40" stroke="var(--accent)" />
-                        <circle cx="50" cy="70" r="5" fill="var(--danger)"/>
-                    </svg>
+                
+                <div style="font-size: 2.5rem; color:var(--secondary); font-weight:bold; padding: 0 1rem;">&#10145;</div>
+                
+                <div style="flex:1; display:flex; flex-direction:column; align-items:center;">
+                    <div class="bath-container" style="width:120px; height:120px;">
+                        <svg viewBox="0 0 100 100" fill="none" stroke="var(--secondary)" stroke-width="2">
+                            <path d="M10,40 Q20,80 50,80 Q80,80 90,40 L90,30 L10,30 Z" fill="var(--color-newday)"/>
+                            <line x1="20" y1="30" x2="20" y2="10" />
+                            <line x1="30" y1="30" x2="30" y2="10" />
+                            <path d="M15,10 Q25,0 35,10" />
+                            <path d="M15,40 Q30,50 45,40 T75,40 T90,40" stroke="var(--accent)" />
+                            <!-- "Trash" falling in -->
+                            <circle cx="30" cy="50" r="4" fill="var(--danger)"/>
+                            <rect x="50" y="55" width="8" height="8" fill="var(--danger)"/>
+                            <polygon points="70,45 75,55 65,55" fill="var(--danger)"/>
+                        </svg>
+                    </div>
+                    <h3 style="color:var(--danger); margin-top:0.5rem; text-align:center;">ONE Massive Charge</h3>
                 </div>
+            </div>
+            
+            <div class="hook-box" style="margin-top:1rem; padding:0.8rem;">
+                <p style="margin:0; font-size:0.9rem;"><strong>The Goal:</strong> Take all the pain at once so future earnings look miraculously better. It "clears the decks" and resets the baseline for future executive bonuses.</p>
             </div>
         </div>
 
@@ -711,7 +737,7 @@
             </div>
         </div>
 
-        <!-- Slide 19: Health Check Overview -->
+        <!-- Slide 17: Health Check Overview -->
         <div class="slide">
             <h2>Part 3: Diagnosing PP&E Health</h2>
             <p>Is the factory productive? Are the machines falling apart? Check these vitals:</p>
@@ -737,16 +763,19 @@
             </div>
         </div>
 
-        <!-- Slide 20: PP&E Turnover -->
+        <!-- Slide 18: PP&E Turnover -->
         <div class="slide">
-            <h2>PP&E Turnover: Interpreting Ratio</h2>
+            <h2>PP&E Turnover: Efficiency Check</h2>
+            <div style="text-align:center; margin-bottom: 1rem;">
+                <h3 style="color: var(--secondary); margin-bottom: 0;">Which turnover ratio indicates higher efficiency?</h3>
+            </div>
             <div class="card-grid">
                 <div class="flip-card" onclick="this.classList.toggle('flipped')">
                     <div class="flip-card-inner">
                         <div class="flip-card-front"><h3>HIGH Turnover</h3></div>
                         <div class="flip-card-back">
-                            <p><strong>Efficient</strong></p>
-                            <p style="font-size:0.9rem;">Generating lots of sales with few assets.</p>
+                            <p><strong>Higher Efficiency</strong></p>
+                            <p style="font-size:0.9rem;">Generating lots of sales with very few fixed assets.</p>
                         </div>
                     </div>
                 </div>
@@ -755,14 +784,14 @@
                         <div class="flip-card-front"><h3>LOW Turnover</h3></div>
                         <div class="flip-card-back">
                             <p><strong>Capital Intensive</strong></p>
-                            <p style="font-size:0.9rem;">Heavy investment required (Utilities, Telecom).</p>
+                            <p style="font-size:0.9rem;">Heavy investment required just to operate (Utilities, Telecom).</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 21: Home Depot Turnover -->
+        <!-- Slide 19: Home Depot Turnover -->
         <div class="slide">
             <h2>Home Depot Turnover (2022)</h2>
             <div class="equation-box">
@@ -771,17 +800,19 @@
             <div class="card-grid" style="margin-top:0;">
                 <div class="flip-card wide" onclick="this.classList.toggle('flipped')">
                     <div class="flip-card-inner">
-                        <div class="flip-card-front"><h3>TAP TO REVEAL</h3></div>
+                        <div class="flip-card-front">
+                            <h3 style="font-size: 1.5rem; color:var(--secondary);">$157,403 / $25,415 = 6.2x</h3>
+                            <p style="font-size:0.85rem; color:var(--text-muted);">(Tap for interpretation)</p>
+                        </div>
                         <div class="flip-card-back">
-                            <p style="font-size: 1.1rem; margin-bottom:0.5rem;">$157,403 / $25,415 = <strong>6.2 times</strong></p>
-                            <p class="no-italics" style="font-size:0.9rem;">Home Depot generates <strong>$6.20 in Sales per $1 of Net PP&E</strong>.</p>
+                            <p class="no-italics" style="font-size:1.1rem; margin-top:1rem;">Home Depot generates <strong>$6.20 in Sales per $1 of Net PP&E</strong>.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 22: Average Useful Life -->
+        <!-- Slide 20: Average Useful Life -->
         <div class="slide">
             <h2>Average Useful Life</h2>
             <div class="equation-box">
@@ -790,17 +821,19 @@
             <div class="card-grid" style="margin-top:0;">
                 <div class="flip-card wide" onclick="this.classList.toggle('flipped')">
                     <div class="flip-card-inner">
-                        <div class="flip-card-front"><h3>TAP TO REVEAL</h3></div>
+                        <div class="flip-card-front">
+                            <h3 style="font-size: 1.5rem; color:var(--secondary);">$41,916 / $2,756 = 15.2 Years</h3>
+                            <p style="font-size:0.85rem; color:var(--text-muted);">(Tap for interpretation)</p>
+                        </div>
                         <div class="flip-card-back">
-                            <p style="font-size: 1.1rem; margin-bottom:0.5rem;">$41,916 / $2,756 = <strong>15.2 Years</strong></p>
-                            <p class="no-italics" style="font-size:0.9rem;">Their equipment/buildings last ~15 years on average.</p>
+                            <p class="no-italics" style="font-size:1.1rem; margin-top:1rem;">Their equipment and buildings last <strong>~15 years</strong> on average before needing replacement.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 23: Percent Used Up -->
+        <!-- Slide 21: Percent Used Up -->
         <div class="slide">
             <h2>Percent Used Up</h2>
             <div class="equation-box">
@@ -809,17 +842,19 @@
             <div class="card-grid" style="margin-top:0;">
                 <div class="flip-card wide" onclick="this.classList.toggle('flipped')">
                     <div class="flip-card-inner">
-                        <div class="flip-card-front"><h3>TAP TO REVEAL</h3></div>
+                        <div class="flip-card-front">
+                            <h3 style="font-size: 1.5rem; color:var(--secondary);">$26,644 / $42,259 = 63%</h3>
+                            <p style="font-size:0.85rem; color:var(--text-muted);">(Tap for interpretation)</p>
+                        </div>
                         <div class="flip-card-back">
-                            <p style="font-size: 1.1rem; margin-bottom:0.5rem;">$26,644 / $42,259 = <strong>63%</strong></p>
-                            <p class="no-italics" style="font-size:0.9rem;">Assets are 63% "gone". Will need CAPEX soon to replace.</p>
+                            <p class="no-italics" style="font-size:1.1rem; margin-top:1rem;">Assets are <strong>63% "gone"</strong> or used up. Heavy CAPEX may be required soon.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 24: AI Boom -->
+        <!-- Slide 22: AI Boom -->
         <div class="slide">
             <h2>The AI Arms Race: CAPEX</h2>
             <div style="display: flex; gap: 1.5rem; align-items: center;">
@@ -836,17 +871,28 @@
             </div>
         </div>
 
-        <!-- Slide 25: Intangibles -->
+        <!-- Slide 23: Intangibles Flip -->
         <div class="slide">
             <h2>Part 4: The Unseen Value</h2>
             <p>For many companies, physical assets are irrelevant. The value is in Brands, Patents, and Code.</p>
-            <div class="hook-box">
-                <p style="margin-bottom:0;"><strong>The Gap:</strong> Market Value is often 3x-4x higher than Book Value. Why? Internally developed intangibles (like the Nike Swoosh) are <strong>not on the balance sheet</strong>.</p>
+            <div class="card-grid" style="margin-top: 1rem;">
+                <div class="flip-card wide" style="height: 250px;" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front" style="padding: 2rem;">
+                            <h3 style="font-size: 1.4rem; line-height: 1.4; color: var(--text);">Internally developed intangibles (like the Nike Swoosh) are <span style="color:var(--danger);">not on the balance sheet</span>.</h3>
+                            <p style="font-size:0.85rem; color:var(--text-muted); margin-top:1rem;">(Tap to reveal the consequence)</p>
+                        </div>
+                        <div class="flip-card-back" style="padding: 2rem;">
+                            <h3 style="color: white; margin-bottom: 1rem;">The Gap</h3>
+                            <p style="font-size: 1.2rem; line-height: 1.5; margin: 0;">Market Value is often <strong>3x-4x higher</strong> than Book Value.</p>
+                            <p style="font-size: 1.1rem; margin-top: 1rem; font-style: italic;">They only appear on the balance sheet when bought via acquisition.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <p>They only appear when bought.</p>
         </div>
 
-        <!-- Slide 26: Acquisition Math -->
+        <!-- Slide 24: Acquisition Math -->
         <div class="slide">
             <h2>The Birth of Goodwill</h2>
             <p>How is Goodwill created? Let's look at <strong>AMD acquiring Xilinx</strong>.</p>
@@ -861,7 +907,7 @@
             <p style="font-size:0.9rem; text-align:center;">Goodwill is the "Plug." It's the premium paid over the value of identifiable stuff.</p>
         </div>
 
-        <!-- Slide 27: Buffett on Goodwill -->
+        <!-- Slide 25: Buffett on Goodwill -->
         <div class="slide">
             <h2>Warren Buffett on Goodwill</h2>
             <div style="display: flex; gap: 1.5rem; align-items:center;">
@@ -878,7 +924,7 @@
             </div>
         </div>
 
-        <!-- Slide 28: Apple vs MSFT -->
+        <!-- Slide 26: Apple vs MSFT -->
         <div class="slide">
             <h2>Goodwill: Restaurant Analogy</h2>
             <p style="font-size:0.95rem;">Buy a restaurant: pay for ovens (Tangible) + reputation/customers (<strong>Goodwill</strong>).</p>
@@ -931,10 +977,40 @@
             </div>
         </div>
 
-        <!-- Slide 30: Valuing Intangibles -->
+        <!-- Slide 28: Note 6 Intangibles -->
+        <div class="slide">
+            <h2>NOTE 6: Anatomy of Acquired Intangibles (AMD 2023 10-K)</h2>
+            <table class="financial-table" style="font-size: 0.75rem; margin-top:0;">
+                <thead>
+                    <tr><th>Category</th><th>Life</th><th>Gross</th><th>Accum Amort</th><th>Net</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Developed technology</td><td>15 yrs</td><td>$12,360</td><td>($738)</td><td>$11,622</td></tr>
+                    <tr><td>Customer relationships</td><td>13 yrs</td><td>$12,324</td><td>($1,973)</td><td>$10,351</td></tr>
+                    <tr><td>Product trademarks</td><td>11 yrs</td><td>$914</td><td>($68)</td><td>$846</td></tr>
+                    <tr><td>Customer backlog</td><td>1 mo</td><td>$809</td><td>($712)</td><td>$97</td></tr>
+                    <tr><td>Corporate trade name</td><td>1 mo</td><td>$65</td><td>($57)</td><td>$8</td></tr>
+                    <tr class="highlight-row"><td><strong>IPR&D (Not amortized)</strong></td><td>N/A</td><td>$1,194</td><td>-</td><td>$1,194</td></tr>
+                    <tr style="border-top: 2px solid var(--secondary);"><td><strong>Total</strong></td><td></td><td><strong>$27,666</strong></td><td><strong>($3,548)</strong></td><td><strong>$24,118</strong></td></tr>
+                </tbody>
+            </table>
+            
+            <div class="flip-card wide" style="height: 100px; margin-top: 0.5rem;" onclick="this.classList.toggle('flipped')">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front" style="background:var(--color-newday);">
+                        <h3 style="font-size: 1.1rem;">Tap for Analyst Interpretation</h3>
+                    </div>
+                    <div class="flip-card-back">
+                        <p class="no-italics" style="font-size:0.85rem; margin:0;">Most value is in <strong>Tech & Customers</strong>. Short-lived items (backlog) amortize almost instantly. <strong>IPR&D</strong> holds its value on the balance sheet until the project completes or fails.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 29: Valuing Intangibles -->
         <div class="slide">
             <h2>Valuing The Unseen Parts</h2>
-            <p>AMD identified $27B in specific intangibles. How do appraisers do it?</p>
+            <p>On the previous slide, AMD recorded <strong>$27B</strong> in specific intangibles (Tech, Customers). How did their appraisers calculate those exact values?</p>
             <div class="card-grid">
                 <div class="flip-card" onclick="this.classList.toggle('flipped')">
                     <div class="flip-card-inner">
@@ -957,7 +1033,7 @@
             </div>
         </div>
 
-        <!-- Slide 31: Goodwill Impairment -->
+        <!-- Slide 30: Goodwill Impairment -->
         <div class="slide">
             <h2>When Goodwill Goes Bad</h2>
             <p>Goodwill is not amortized. It sits there forever... unless it is <strong>Impaired</strong>.</p>
@@ -968,7 +1044,7 @@
             </div>
         </div>
 
-        <!-- Slide 32: Meta Story -->
+        <!-- Slide 31: Meta Story -->
         <div class="slide">
             <h2>Case Study: Meta's $90B Bet</h2>
             <div style="display: flex; gap: 1.5rem; align-items: center;">
@@ -986,7 +1062,7 @@
             </div>
         </div>
 
-        <!-- Slide 33: Summary -->
+        <!-- Slide 32: Summary -->
         <div class="slide">
             <h2>Summary</h2>
             <p>We have learned to separate Signal from Noise.</p>
@@ -1001,7 +1077,7 @@
             <p style="text-align:center; font-size: 0.8rem; color: var(--text-muted);">(Tap bullets to reveal)</p>
         </div>
 
-        <!-- Slide 34: Quiz Intro -->
+        <!-- Slide 33: Quiz Intro -->
         <div class="slide">
             <div style="text-align:center;">
                 <h1 style="font-size:4rem; color:var(--secondary);">Final Exam</h1>
@@ -1010,7 +1086,7 @@
             </div>
         </div>
 
-        <!-- Slide 35: Quiz -->
+        <!-- Slide 34: Quiz -->
         <div class="slide">
             <div id="quiz-container" style="max-width: 800px; width:100%; margin: 0 auto;">
                 <!-- Quiz Generated by JS -->
