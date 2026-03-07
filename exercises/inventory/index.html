@@ -686,6 +686,10 @@
                                     <DataRow label="LIFO Inventory" value={GAME_DATA.priorYear.lifoInventory} />
                                     <DataRow label="LIFO Reserve" value={GAME_DATA.priorYear.lifoReserve} highlight />
                                 </div>
+                                <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+                                    <h3 className="text-xs uppercase tracking-wider text-slate-500 mb-3 font-semibold">Assumptions</h3>
+                                    <DataRow label="Corporate Tax Rate" value={`${Math.round(GAME_DATA.taxRate * 100)}%`} />
+                                </div>
                             </div>
                         </div>
                     </div>
