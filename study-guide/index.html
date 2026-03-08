@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounting Exam Prep: Interactive Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f9; /* Soft, energetic off-white */
+            color: #1e293b;
+        }
+        
+        /* Custom Scrollbar */
+        .sidebar-scroll::-webkit-scrollbar { width: 6px; }
+        .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+        .sidebar-scroll::-webkit-scrollbar-thumb { background-color: #94a3b8; border-radius: 20px; }
+
+        .card { 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            border: 1px solid #e2e8f0;
+            border-top: 4px solid #e2e8f0;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-top-color: #3b82f6;
+        }
+        
+        .answer-section {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+            opacity: 0;
+        }
+        
+        .answer-section.visible {
+            max-height: 3000px; 
+            overflow-y: auto;
+            opacity: 1;
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .option-btn { 
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+            cursor: pointer; 
+            border: 2px solid #e2e8f0; 
+            background-color: #f8fafc; 
+        }
+        .option-btn:hover { 
+            background-color: #f1f5f9; 
+            transform: scale(1.005); 
+            border-color: #cbd5e1;
+        }
+        .option-btn.selected {
+            background-color: #eff6ff; 
+            border-color: #3b82f6; 
+            color: #1d4ed8; 
+            font-weight: 600; 
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+        }
+        .option-btn.correct-choice {
+            background-color: #f0fdf4 !important;
+            border-color: #10b981 !important;
+            color: #047857 !important;
+            font-weight: 600;
+            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+        }
+        .option-btn.incorrect-choice {
+            background-color: #fef2f2 !important;
+            border-color: #ef4444 !important;
+            color: #b91c1c !important;
+        }
+
+        .nav-item.active {
+            background-color: #eff6ff; color: #1d4ed8; border-right: 4px solid #3b82f6; font-weight: 700;
+        }
+        
+        .lo-pill { cursor: pointer; transition: all 0.2s; }
+        .lo-pill.active { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border-color: transparent; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3); }
+        .lo-pill.active-deep { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border-color: transparent; box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3); }
+        .lo-pill.active-quant { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; border-color: transparent; box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.3); }
+        .lo-pill.active-concept { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; border-color: transparent; box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.3); }
+
+        .badge-conceptual { background-color: #f3e8ff; color: #6d28d9; border-color: #d8b4fe; }
+        .badge-quantitative { background-color: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
+        .badge-deep { background-color: #e0e7ff; color: #4338ca; border-color: #a5b4fc; }
+
+        /* Interactive Table Styles */
+        .q-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.85rem; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .q-table th, .q-table td { border: 1px solid #e2e8f0; padding: 10px 14px; text-align: left; }
+        .q-table th { background-color: #f8fafc; font-weight: 700; color: #1e293b; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;}
+        
+        /* Smart Inputs */
+        .smart-input {
+            width: 100%;
+            min-width: 60px;
+            padding: 6px 10px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            background-color: #ffffff;
+            color: #0f172a;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: monospace;
+            font-size: 0.95rem;
+        }
+        .smart-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            transform: scale(1.02);
+            z-index: 10;
+            position: relative;
+        }
+        .smart-input.correct {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+            color: #047857;
+            font-weight: 700;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+        }
+        .smart-input.incorrect {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+            color: #b91c1c;
+        }
+        select.smart-input {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+        
+        /* Floating Toast Animations */
+        @keyframes floatUp {
+            0% { transform: translateY(20px); opacity: 0; }
+            10% { transform: translateY(0); opacity: 1; }
+            90% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-20px); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col md:flex-row overflow-hidden">
+
+    <header class="bg-gradient-to-r from-blue-700 via-indigo-600 to-violet-700 text-white shadow-lg p-4 flex justify-between items-center z-20 md:hidden">
+        <div class="flex items-center gap-3 font-extrabold text-lg tracking-tight">
+            <div class="bg-white/20 p-2 rounded-lg backdrop-blur-sm"><i data-lucide="rocket" class="w-5 h-5 text-white"></i></div>
+            <span>Exam Prep</span>
+        </div>
+        <button onclick="toggleMobileMenu()" class="text-white hover:text-blue-200 transition-colors">
+            <i data-lucide="menu" class="w-7 h-7"></i>
+        </button>
+    </header>
+
+    <aside id="sidebar" class="bg-white w-full md:w-72 border-r border-slate-200 flex-col absolute md:relative z-10 h-full hidden md:flex transition-transform duration-300 shadow-[4px_0_15px_-3px_rgba(0,0,0,0.05)]">
+        <div class="p-6 border-b border-slate-100 hidden md:flex items-center gap-3 font-extrabold text-xl text-slate-800 bg-gradient-to-br from-slate-50 to-white">
+            <div class="bg-gradient-to-br from-blue-500 to-indigo-600 p-2 rounded-xl shadow-md text-white">
+                <i data-lucide="rocket" class="w-6 h-6"></i>
+            </div>
+            <span>Exam Prep</span>
+        </div>
+        
+        <div class="p-4 overflow-y-auto flex-1 sidebar-scroll space-y-2">
+            <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-3 px-3">Study Sections</div>
+            
+            <button onclick="filterModule('all')" id="btn-all" class="nav-item w-full text-left px-4 py-3.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all active">
+                All Questions <span class="float-right text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full" id="count-all">0</span>
+            </button>
+            <button onclick="filterModule('Multiple Choice')" id="btn-mcq" class="nav-item w-full text-left px-4 py-3.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all">
+                Multiple Choice <span class="float-right text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full" id="count-mcq">0</span>
+            </button>
+            <button onclick="filterModule('Exercises')" id="btn-exercises" class="nav-item w-full text-left px-4 py-3.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all">
+                Interactive Exercises <span class="float-right text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full" id="count-exercises">0</span>
+            </button>
+
+            <div class="mt-8 border-t border-slate-100 pt-6">
+                <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-3 px-3">Helper Tools</div>
+                
+                <button onclick="toggleFormulas()" class="w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-all flex items-center gap-3">
+                    <i data-lucide="sigma" class="w-5 h-5"></i> Formulas & Metrics
+                </button>
+
+                <button onclick="toggleCalculator()" class="w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-all flex items-center gap-3">
+                    <i data-lucide="calculator" class="w-5 h-5"></i> Scratch Calculator
+                </button>
+                <button onclick="toggleAllAnswers()" id="toggleAllSideBtn" class="w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-all flex items-center gap-3 mt-2 border border-slate-200 shadow-sm">
+                    <i data-lucide="eye" class="w-5 h-5 text-blue-500"></i> Show All Answers
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto h-full p-4 md:p-8 bg-slate-50 scroll-smooth relative">
+        <div class="max-w-5xl mx-auto mb-8 bg-gradient-to-r from-blue-700 via-indigo-600 to-violet-700 rounded-3xl p-8 shadow-2xl text-white">
+            <h1 class="text-3xl font-extrabold mb-2 tracking-tight">Financial Reporting Class</h1>
+            <p class="text-blue-100 text-base max-w-2xl leading-relaxed mb-4">Select a topic below to focus your review. The multiple-choice options and interactive exercises will automatically validate your inputs as you engage with them!</p>
+            <div class="bg-white/20 p-4 rounded-xl border border-white/20 flex items-start gap-3">
+                <i data-lucide="flag" class="w-6 h-6 text-yellow-300 flex-shrink-0 mt-0.5"></i>
+                <p class="text-sm text-blue-50"><strong>New Feature:</strong> Use the flag icon on any question to log ones you got wrong or want to revisit later. <em>Note: Flags reset if you refresh the page, but you can save your progress by downloading your study report via the bottom button!</em></p>
+            </div>
+        </div>
+
+        <div class="max-w-5xl mx-auto mb-8 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="flex flex-wrap gap-2 mb-4" id="lo-toolbar">
+                <button onclick="filterLO('all')" id="lo-all" class="lo-pill active px-5 py-2 rounded-full text-sm font-bold border text-blue-700 hover:bg-blue-50">
+                    All Topics
+                </button>
+                <button onclick="filterLO('LO1')" id="lo-1" class="lo-pill px-5 py-2 rounded-full text-sm font-bold border border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600">
+                    Basics & Fin Statements
+                </button>
+                <button onclick="filterLO('LO2')" id="lo-2" class="lo-pill px-5 py-2 rounded-full text-sm font-bold border border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600">
+                    Revenue & Receivables
+                </button>
+                <button onclick="filterLO('LO3')" id="lo-3" class="lo-pill px-5 py-2 rounded-full text-sm font-bold border border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600">
+                    Inventory & PP&E
+                </button>
+                <button onclick="filterLO('LO4')" id="lo-4" class="lo-pill px-5 py-2 rounded-full text-sm font-bold border border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600">
+                    Financial Ratios
+                </button>
+                <button onclick="filterLO('LO5')" id="lo-5" class="lo-pill px-5 py-2 rounded-full text-sm font-bold border border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600">
+                    Cash Flows
+                </button>
+            </div>
+            <div class="flex flex-wrap gap-3 border-t border-slate-100 pt-4 mb-2">
+                <button onclick="filterLO('Conceptual')" id="lo-concept" class="lo-pill px-5 py-2 rounded-full text-sm font-bold border border-purple-200 text-purple-700 hover:bg-purple-50 flex items-center gap-2">
+                    <i data-lucide="book-open" class="w-4 h-4"></i> Conceptual
+                </button>
+                <button onclick="filterLO('Quantitative')" id="lo-quant" class="lo-pill px-5 py-2 rounded-full text-sm font-bold border border-sky-200 text-sky-700 hover:bg-sky-50 flex items-center gap-2">
+                    <i data-lucide="calculator" class="w-4 h-4"></i> Quantitative
+                </button>
+                <button onclick="filterLO('Deep Thinking')" id="lo-deep" class="lo-pill px-5 py-2 rounded-full text-sm font-bold border border-indigo-200 text-indigo-700 hover:bg-indigo-50 flex items-center gap-2">
+                    <i data-lucide="brain" class="w-4 h-4"></i> Deep Thinking
+                </button>
+                <div class="h-6 w-px bg-slate-300 mx-1 self-center"></div>
+                <button onclick="filterLO('Flagged')" id="lo-flagged" class="lo-pill px-5 py-2 rounded-full text-sm font-bold border border-amber-200 text-amber-700 hover:bg-amber-50 flex items-center gap-2">
+                    <i data-lucide="flag" class="w-4 h-4"></i> Flagged for Review
+                </button>
+            </div>
+            
+            <div class="bg-gradient-to-r from-slate-50 to-blue-50/30 p-4 rounded-xl border border-slate-100 mt-5 flex justify-between items-center">
+                <div class="text-sm font-medium text-slate-600 flex items-center gap-2" id="filter-description">
+                    <i data-lucide="info" class="w-5 h-5 text-blue-500"></i> Showing all topics and question types.
+                </div>
+                <div class="text-xs font-black text-indigo-600 bg-indigo-100/50 px-3 py-1.5 rounded-lg border border-indigo-100" id="filter-count">
+                    Showing 0 questions
+                </div>
+            </div>
+        </div>
+        
+        <div id="questions-container" class="max-w-5xl mx-auto space-y-8 pb-24">
+            </div>
+            
+        <!-- Toast Container for Encouragement -->
+        <div id="toast-container" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+
+        <div class="fixed bottom-8 right-8 z-[60]">
+            <button 
+                onclick="downloadReport()"
+                class="group flex items-center gap-3 bg-gradient-to-r from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-700 text-white font-bold py-3 px-6 md:py-4 md:px-8 rounded-full shadow-[0_10px_25px_-5px_rgba(0,0,0,0.3)] transition-all hover:shadow-[0_20px_35px_-5px_rgba(0,0,0,0.4)] hover:scale-105 active:scale-95 ring-4 ring-slate-100/50"
+            >
+                <div class="bg-white/20 p-2 rounded-full group-hover:animate-bounce">
+                    <i data-lucide="download" class="w-5 h-5 text-white"></i>
+                </div>
+                <span>Download Report</span>
+            </button>
+        </div>
+    </main>
+
+    <div id="formula-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="toggleFormulas()"></div>
+        
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-11/12 max-w-6xl bg-white rounded-2xl shadow-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200 border border-slate-200">
+            <div class="p-5 border-b border-slate-200 flex justify-between items-center bg-gradient-to-r from-slate-50 to-white">
+                <h3 class="font-extrabold text-slate-800 flex items-center gap-3 text-xl">
+                    <div class="bg-blue-100 text-blue-600 p-2 rounded-lg"><i data-lucide="sigma" class="w-6 h-6"></i></div> 
+                    Key Accounting Formulas
+                </h3>
+                <button onclick="toggleFormulas()" class="text-slate-400 hover:text-slate-800 transition-colors p-2 hover:bg-slate-200 rounded-full">
+                    <i data-lucide="x" class="w-7 h-7"></i>
+                </button>
+            </div>
+            
+            <div class="p-8 overflow-y-auto bg-white">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-10 text-sm text-slate-700">
+                    <div class="space-y-4">
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm hover:border-blue-300 transition-colors">
+                            <span class="font-black text-slate-900 block text-xs uppercase tracking-wider mb-2 text-blue-700">ROE: Return on Equity</span>
+                            Net Income / Average Equity
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm hover:border-blue-300 transition-colors">
+                            <span class="font-black text-slate-900 block text-xs uppercase tracking-wider mb-2 text-blue-700">ROA: Return on Assets</span>
+                            Net Income / Average Assets
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm hover:border-blue-300 transition-colors">
+                            <span class="font-black text-slate-900 block text-xs uppercase tracking-wider mb-2 text-blue-700">Financial Leverage</span>
+                            Average Assets / Average Equity
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm hover:border-blue-300 transition-colors">
+                            <span class="font-black text-slate-900 block text-xs uppercase tracking-wider mb-2 text-blue-700">Profit Margin</span>
+                            Net Income / Sales
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm hover:border-blue-300 transition-colors">
+                            <span class="font-black text-slate-900 block text-xs uppercase tracking-wider mb-2 text-blue-700">Asset Turnover</span>
+                            Sales / Average Assets
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm hover:border-indigo-300 transition-colors">
+                            <span class="font-black text-slate-900 block text-xs uppercase tracking-wider mb-2 text-indigo-700">NOA: Net Operating Assets</span>
+                            Operating assets - Operating liabilities
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm hover:border-indigo-300 transition-colors">
+                            <span class="font-black text-slate-900 block text-xs uppercase tracking-wider mb-2 text-indigo-700">NOPBT: Net Operating Profit Before Tax</span>
+                            Revenue - Operating expenses including COGS
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm hover:border-indigo-300 transition-colors">
+                            <span class="font-black text-slate-900 block text-xs uppercase tracking-wider mb-2 text-indigo-700">NNE: Net Nonoperating Expense After Tax</span>
+                            Pretax net nonoperating expense × (1 - Tax%)
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm hover:border-indigo-300 transition-colors">
+                            <span class="font-black text-slate-900 block text-xs uppercase tracking-wider mb-2 text-indigo-700">NOPAT: Net Operating Profit After Tax</span>
+                            <div class="font-medium text-slate-800">1. NOPBT - Tax on operating profit</div>
+                            <div class="mt-2 border-t border-slate-300 pt-2 font-medium text-slate-800">2. Net income + NNE</div>
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm hover:border-indigo-300 transition-colors">
+                            <span class="font-black text-slate-900 block text-xs uppercase tracking-wider mb-2 text-indigo-700">RNOA: Return on Net Operating Assets</span>
+                            NOPAT / Average Net Operating Assets
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm hover:border-violet-300 transition-colors">
+                            <span class="font-black text-slate-900 block text-xs uppercase tracking-wider mb-2 text-violet-700">Accounts Receivable Turnover</span>
+                            Net Sales / Average Accounts Receivable
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm hover:border-violet-300 transition-colors">
+                            <span class="font-black text-slate-900 block text-xs uppercase tracking-wider mb-2 text-violet-700">Days Sales Outstanding (DSO)</span>
+                            365 / Accounts Receivable Turnover
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm hover:border-violet-300 transition-colors">
+                            <span class="font-black text-slate-900 block text-xs uppercase tracking-wider mb-2 text-violet-700">PP&E Turnover</span>
+                            Sales / Average PP&E, Net
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm hover:border-violet-300 transition-colors">
+                            <span class="font-black text-slate-900 block text-xs uppercase tracking-wider mb-2 text-violet-700">LIFO Reserve Impact</span>
+                            FIFO Inventory = LIFO Inventory + LIFO Reserve<br>
+                            <div class="mt-1 border-t border-slate-200 pt-1">Cumulative Tax Savings = LIFO Reserve × Tax Rate</div>
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm hover:border-violet-300 transition-colors">
+                            <span class="font-black text-slate-900 block text-xs uppercase tracking-wider mb-2 text-violet-700">Average Useful Life & Percent Used Up</span>
+                            Avg Useful Life = Depreciable Asset Cost / Depreciation Exp<br>
+                            <div class="mt-1 border-t border-slate-200 pt-1">% Used Up = Accumulated Depreciation / Depreciable Asset Cost</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="calculator-container" class="fixed bottom-8 right-8 z-50 hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)]">
+        <div class="bg-slate-800 p-5 rounded-3xl border border-slate-600 w-80">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-slate-300 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                    <i data-lucide="calculator" class="w-4 h-4"></i> Calculator
+                </span>
+                <button onclick="toggleCalculator()" class="text-slate-400 hover:text-white bg-slate-700 p-1 rounded-full transition-colors"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <div class="bg-slate-100 rounded-xl mb-4 p-4 text-right text-3xl font-mono h-16 flex items-center justify-end overflow-hidden text-slate-900 border-2 border-slate-300 shadow-inner" id="calc-display">0</div>
+            <div class="grid grid-cols-4 gap-2.5">
+                <button onclick="clearCalc()" class="calc-btn bg-rose-500 hover:bg-rose-600 text-white p-3.5 rounded-xl font-black col-span-2 shadow-sm transition-transform active:scale-95">C</button>
+                <button onclick="backspace()" class="calc-btn bg-slate-600 hover:bg-slate-500 text-white p-3.5 rounded-xl font-black shadow-sm transition-transform active:scale-95">⌫</button>
+                <button onclick="appendOp('/')" class="calc-btn bg-blue-600 hover:bg-blue-500 text-white p-3.5 rounded-xl font-black shadow-sm transition-transform active:scale-95">÷</button>
+                <button onclick="appendNum('7')" class="calc-btn bg-slate-700 hover:bg-slate-600 text-white p-3.5 rounded-xl font-bold shadow-sm transition-transform active:scale-95">7</button>
+                <button onclick="appendNum('8')" class="calc-btn bg-slate-700 hover:bg-slate-600 text-white p-3.5 rounded-xl font-bold shadow-sm transition-transform active:scale-95">8</button>
+                <button onclick="appendNum('9')" class="calc-btn bg-slate-700 hover:bg-slate-600 text-white p-3.5 rounded-xl font-bold shadow-sm transition-transform active:scale-95">9</button>
+                <button onclick="appendOp('*')" class="calc-btn bg-blue-600 hover:bg-blue-500 text-white p-3.5 rounded-xl font-black shadow-sm transition-transform active:scale-95">×</button>
+                <button onclick="appendNum('4')" class="calc-btn bg-slate-700 hover:bg-slate-600 text-white p-3.5 rounded-xl font-bold shadow-sm transition-transform active:scale-95">4</button>
+                <button onclick="appendNum('5')" class="calc-btn bg-slate-700 hover:bg-slate-600 text-white p-3.5 rounded-xl font-bold shadow-sm transition-transform active:scale-95">5</button>
+                <button onclick="appendNum('6')" class="calc-btn bg-slate-700 hover:bg-slate-600 text-white p-3.5 rounded-xl font-bold shadow-sm transition-transform active:scale-95">6</button>
+                <button onclick="appendOp('-')" class="calc-btn bg-blue-600 hover:bg-blue-500 text-white p-3.5 rounded-xl font-black shadow-sm transition-transform active:scale-95">-</button>
+                <button onclick="appendNum('1')" class="calc-btn bg-slate-700 hover:bg-slate-600 text-white p-3.5 rounded-xl font-bold shadow-sm transition-transform active:scale-95">1</button>
+                <button onclick="appendNum('2')" class="calc-btn bg-slate-700 hover:bg-slate-600 text-white p-3.5 rounded-xl font-bold shadow-sm transition-transform active:scale-95">2</button>
+                <button onclick="appendNum('3')" class="calc-btn bg-slate-700 hover:bg-slate-600 text-white p-3.5 rounded-xl font-bold shadow-sm transition-transform active:scale-95">3</button>
+                <button onclick="appendOp('+')" class="calc-btn bg-blue-600 hover:bg-blue-500 text-white p-3.5 rounded-xl font-black shadow-sm transition-transform active:scale-95">+</button>
+                <button onclick="appendNum('0')" class="calc-btn bg-slate-700 hover:bg-slate-600 text-white p-3.5 rounded-xl font-bold col-span-2 shadow-sm transition-transform active:scale-95">0</button>
+                <button onclick="appendNum('.')" class="calc-btn bg-slate-700 hover:bg-slate-600 text-white p-3.5 rounded-xl font-bold shadow-sm transition-transform active:scale-95">.</button>
+                <button onclick="calculate()" class="calc-btn bg-emerald-500 hover:bg-emerald-400 text-white p-3.5 rounded-xl font-black shadow-sm transition-transform active:scale-95">=</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // --- MULTIPLE CHOICE (58 Questions) ---
+            { id: 1, module: "Multiple Choice", lo: "LO1", skill: "Conceptual", topic: "SEC Filings", 
+              question: `Publicly traded companies must provide to the Securities Exchange Commission annual audited financial statements (10K reports) and quarterly audited financial statements (10Q reports).`, 
+              options: ["True", "False"], answer: "False", rationale: "The 10-Q (quarterly) filings are generally unaudited, while 10-K (annual) filings are thoroughly audited by an independent accounting firm." },
+            { id: 2, module: "Multiple Choice", lo: "LO1", skill: "Conceptual", topic: "Financial Statement Principles", 
+              question: `Which of the following statements are correct (Select all that apply):`, 
+              options: ["A. A balance sheet reports on the cumulative effects of investing and financing activities.", "B. An income statement reports on financing activities.", "C. The statement of equity reports on changes in the accounts that make up equity.", "D. The statement of cash flows reports on cash flows from operating, investing, and financing activities over a period of time.", "E. A balance sheet reports on a company's assets and liabilities over a period of time."], 
+              answer: "A, C, and D", isMultiSelect: true, correctIndices: [0, 2, 3], rationale: "Statement of equity details equity changes (C), Cash Flow statement covers a period (D), and a balance sheet reports cumulative effects (A). The Balance Sheet reports at a specific point in time, not over a period (making E incorrect), and the income statement reports operating activities, not financing (making B incorrect)." },
+            { id: 3, module: "Multiple Choice", lo: "LO1", skill: "Quantitative", topic: "Retained Earnings Calculation", 
+              question: `Kelty Company's year-end financial statements reported the following (in millions):<br><br>Total assets $41,278<br>Total liabilities $29,465<br>Total shareholders' equity $11,813<br>Dividends $205<br>Net income (loss) $3,160<br>Retained earnings, Jan 1 $11,425<br><br>What did Kelty Company report for retained earnings at December 31?`, 
+              options: ["a. $14,585 million", "b. $14,380 million", "c. There is not enough information to determine the answer.", "d. $14,790 million", "e. $14,768 million"], 
+              answer: "b. $14,380 million", rationale: "Ending Retained Earnings = Beginning Retained Earnings + Net Income - Dividends. $11,425 + $3,160 - $205 = $14,380 million." },
+            { id: 4, module: "Multiple Choice", lo: "LO5", skill: "Quantitative", topic: "Cash Flow Equation", 
+              question: `Trio Company's December 31, Year 2 financial statements reported the following (in millions).<br><br>Cash December 31: $2,264<br>Cash from operating activities: $3,008<br>Cash from investing activities: $(1,946)<br>Cash from financing activities: $(1,750)<br><br>What did Trio Company report for cash on its December 31, Year 1 balance sheet?`, 
+              options: ["a. $4,562 million", "b. $1,576 million", "c. $688 million", "d. None of these are correct.", "e. $2,952 million"], 
+              answer: "e. $2,952 million", rationale: "Change in Cash = Operating + Investing + Financing = $3,008 - $1,946 - $1,750 = -$688 million. Beginning Cash + Change = Ending Cash. Beg + (-$688) = $2,264. Beg = $2,952 million." },
+            { id: 5, module: "Multiple Choice", lo: "LO2", skill: "Conceptual", topic: "Revenue Recognition", 
+              question: `A customer's prepayment for services not yet rendered is initially recorded as unearned revenue (a liability). Then, at the end of the accounting period, the unearned revenue is moved from the balance sheet to the income statement. This is an example of the revenue recognition principle.`, 
+              options: ["True", "False"], answer: "False", rationale: "Unearned revenue is recognized as revenue when the performance obligation is actually satisfied (services rendered), not automatically at the end of the accounting period regardless of work done." },
+            { id: 6, module: "Multiple Choice", lo: "LO1", skill: "Deep Thinking", topic: "Financial Statement Articulation", 
+              question: `The income statements of the prior and current year are linked via the balance sheet.`, 
+              options: ["True", "False"], answer: "False", rationale: "The balance sheets of the prior and current year are linked via the income statement and statement of retained earnings. The income statement covers the period between the two balance sheets." },
+            { id: 7, module: "Multiple Choice", lo: "LO1", skill: "Quantitative", topic: "Cost of Sales Calculation", 
+              question: `During the year, Sparkle Inc. had Sales of $2,850.6 million, Gross profit of $1,307.7 million and Selling, general, and administrative expenses of $1,022.4 million.<br><br>What was Sparkle's Cost of sales for the year?`, 
+              options: ["a. $285.3 million", "b. There is not enough information to calculate the amount.", "c. $1,828.2 million", "d. $2,330.1 million", "e. $1,542.9 million"], 
+              answer: "e. $1,542.9 million", rationale: "Gross Profit = Sales - Cost of Sales. $1,307.7 = $2,850.6 - Cost of Sales. Cost of Sales = $2,850.6 - $1,307.7 = $1,542.9 million. SG&A is deducted after Gross Profit." },
+            { id: 8, module: "Multiple Choice", lo: "LO1", skill: "Quantitative", topic: "Accounting Equation", 
+              question: `As of December 31, Drake Inc. reported the following (in millions):<br>Current Assets: $25,574<br>Long-term Assets: $34,190<br>Current Liabilities: $20,906<br>Total Liabilities: $49,193<br><br>What amount did Drake Inc. report as equity on December 31?`, 
+              options: ["a. $59,764 million", "b. None of these are correct.", "c. $10,571 million", "d. $13,966 million", "e. $38,858 million"], 
+              answer: "c. $10,571 million", rationale: "Total Assets = Current Assets + Long-Term Assets = $25,574 + $34,190 = $59,764. Total Assets = Total Liabilities + Equity. $59,764 = $49,193 + Equity. Equity = $10,571 million." },
+            { id: 9, module: "Multiple Choice", lo: "LO1", skill: "Quantitative", topic: "Retained Earnings Balance", 
+              question: `Fitz Inc., a pharmaceutical company, reported net income for fiscal 2016 of $5,772 million, retained earnings at the start of the year of $57,594 million and dividends of $5,958 million, and other transactions with shareholders that increased retained earnings during the year by $11 million.<br><br>If there were no additional transactions during the year that affected retained earnings, what was the balance of retained earnings at the end of the year?`, 
+              options: ["a. $57,769 million", "b. $57,397 million", "c. There is not enough information to calculate the amount.", "d. $57,419 million", "e. $45,875 million"], 
+              answer: "d. $57,419 million", rationale: "Ending RE = Beg RE + Net Income - Dividends + Other Transactions. 57,594 + 5,772 - 5,958 + 11 = $57,419 million." },
+            { id: 10, module: "Multiple Choice", lo: "LO1", skill: "Conceptual", topic: "Income Statement Accounts", 
+              question: `Identify which of the following items would be reported in the income statement.<br>a. Cash, b. Sales, c. Long-term debt, d. Wage expense, e. Wages payable, f. Retained earnings, g. Net income, h. Inventory, i. Cost of goods sold.`, 
+              options: ["A. b, e, g, and h", "B. d, f, g, and h", "C. a, b, d, and i", "D. b, d, g, and i", "E. b, e, f, and g"], 
+              answer: "D. b, d, g, and i", rationale: "Sales (b), Wage expense (d), Net income (g), and Cost of goods sold (i) are all reported on the income statement. Cash, debt, payables, RE, and inventory are balance sheet items." },
+            { id: 11, module: "Multiple Choice", lo: "LO1", skill: "Conceptual", topic: "Preparation Order", 
+              question: `There is a certain order in which a company prepares its financial statements. First, a company prepares its balance sheet.`, 
+              options: ["True", "False"], answer: "False", rationale: "The Income Statement is prepared first to determine Net Income, which is then used in the Statement of Retained Earnings, which is finally used to complete the Balance Sheet." },
+            { id: 12, module: "Multiple Choice", lo: "LO1", skill: "Quantitative", topic: "FSET Transaction", 
+              question: `During the year, Plastics Company recorded cash of $70,240 from customers for accounts receivable collections.<br><br>Which of the following financial statement effects template entries captures this transaction?`, 
+              options: ["a. Cash Asset 70,240, Earned Capital 70,240, Revenues 70,240, Net Income 70,240", "b. Cash Asset (70,240), Noncash Assets (AR) 70,240", "c. Cash Asset 70,240, Noncash Assets (AR) (70,240)", "d. Noncash Assets (AR) 70,240, Earned Capital 70,240, Revenues 70,240, Net Income 70,240"], 
+              answer: "c. Cash Asset 70,240, Noncash Assets (AR) (70,240)", rationale: "Collecting on an account receivable increases Cash (Asset) and decreases Accounts Receivable (Noncash Asset) by the exact same amount. There is no impact on the Income Statement." },
+            { id: 13, module: "Multiple Choice", lo: "LO2", skill: "Quantitative", topic: "Accrual Accounting", 
+              question: `During the month of March, Weimar World, a tax-preparation service, had the following transactions:<br>• Billed $396,800 in revenues on credit<br>• Received $131,200 from customers' accounts receivable<br>• Incurred expenses of $155,200 but only paid $70,160 cash for these expenses<br>• Prepaid $25,776 for computer services to be used next month<br><br>What was the company's accrual basis net income for the month?`, 
+              options: ["a. $326,640", "b. None of these are correct", "c. $44,384", "d. $215,824", "e. $241,600"], 
+              answer: "e. $241,600", rationale: "Accrual Net Income = Revenues Earned - Expenses Incurred. $396,800 (earned on credit) - $155,200 (incurred) = $241,600. Cash receipts and prepayments for future periods do not affect current accrual net income." },
+            { id: 14, module: "Multiple Choice", lo: "LO2", skill: "Conceptual", topic: "Revenue Recognition", 
+              question: `Costco Wholesale Corporation collects annual non-refundable membership fees from customers. When should Costco recognize revenue for these membership fees?`, 
+              options: ["A. Evenly over the current fiscal year", "B. At the end of the membership year when Costco has discharged its obligation to the customer", "C. Evenly over the membership year", "D. Immediately when cash is received because the fees are nonrefundable", "E. Pro rata over the customer's actual purchasing pattern"], 
+              answer: "C. Evenly over the membership year", rationale: "The performance obligation (access to the store) is provided continuously over the life of the membership. Therefore, revenue must be recognized evenly over the membership year." },
+            { id: 15, module: "Multiple Choice", lo: "LO2", skill: "Conceptual", topic: "Principal vs Agent", 
+              question: `Ticketmaster contracts with the producer of Blue Man Group to sell tickets online. Ticketmaster charges each customer a fee of $18 per ticket and receives $44 per ticket from the producer. Ticketmaster does not take control of the ticket inventory. Average ticket price for the event is $210. How much revenue should Ticketmaster recognize for each Blue Man Group ticket sold?`, 
+              options: ["a. $210 because the $166 is cost of goods sold paid to the Blue Man Group producer", "b. None of these are correct.", "c. $228 because the $166 is cost of goods sold paid to the Blue Man Group producer", "d. $62 because both the fee from the customer and the Blue Man Group producer are earned", "e. $18 because the $44 from the producer is similar to a negative cost of goods sold"], 
+              answer: "d. $62 because both the fee from the customer and the Blue Man Group producer are earned", rationale: "As an agent, Ticketmaster recognizes the net amount it retains (its commission). It earns a fee of $18 from the customer and $44 from the producer, making its total recognized revenue $62 per ticket." },
+            { id: 16, module: "Multiple Choice", lo: "LO2", skill: "Quantitative", topic: "Deferred Revenue Schedule", 
+              question: `McKinnon Enterprises owns a professional ice hockey team, the Rockford Penguins. The company sells season tickets for its upcoming season and receives $1,056,000 cash. The season starts January 1, with five home games occurring monthly over the next six months. What is the balance in the company's deferred revenue account at the end of April? (Assume the deferred revenue account had a zero balance on January 1.)`, 
+              options: ["a. $352,000", "b. $1,056,000", "c. None of these are correct.", "d. $528,000", "e. $704,000"], 
+              answer: "a. $352,000", rationale: "Monthly revenue = $1,056,000 / 6 = $176,000. After 4 months (Jan, Feb, Mar, Apr), 2 months of games remain unplayed. Deferred revenue balance = 2 months * $176,000 = $352,000." },
+            { id: 17, module: "Multiple Choice", lo: "LO2", skill: "Conceptual", topic: "Uncollectible Accounts", 
+              question: `Thomas Company receives information that requires the company to increase its expectations of uncollectible accounts receivable. Which of the following does not occur on the company's financial statements?`, 
+              options: ["A. Bad debt expense is increased", "B. Accounts receivables (gross) is reduced", "C. Net income is reduced", "D. The allowance account is increased", "E. None of the above"], 
+              answer: "B. Accounts receivables (gross) is reduced", rationale: "Increasing expectations of uncollectibles increases Bad Debt Expense and increases the Allowance for Doubtful Accounts (which reduces Net AR). It does NOT reduce Gross Accounts Receivable until an account is specifically written off." },
+            { id: 18, module: "Multiple Choice", lo: "LO2", skill: "Quantitative", topic: "Sales Returns", 
+              question: `Heller Company offers an unconditional return policy to its customers. During the current period, the company records total sales of $935,000, with a cost of merchandise to Heller of $374,000. Based on past experience, Heller Company expects 4% of sales to be returned. How much in net sales will Heller Company recognize for the current period?`, 
+              options: ["a. $897,600", "b. $920,040", "c. $935,000", "d. $359,040", "e. $561,000"], 
+              answer: "a. $897,600", rationale: "Gross Sales ($935,000) minus Expected Returns (4% of $935,000 = $37,400) = Net Sales of $897,600. Revenue must be reduced by expected returns at the time of sale." },
+            { id: 19, module: "Multiple Choice", lo: "LO3", skill: "Conceptual", topic: "Depreciation Estimates", 
+              question: `Which of the following estimates are not always required when calculating depreciation expense? Select all that apply.`, 
+              options: ["A. Depreciation rate", "B. Useful life", "C. Depreciation method", "D. Salvage value", "E. None of the above"], 
+              answer: "D. Salvage value", isMultiSelect: true, correctIndices: [3], rationale: "Salvage value is not always required (for example, declining balance methods initially ignore salvage value, or some assets have zero salvage value), whereas useful life, depreciation rate, and method are foundational." },
+            { id: 20, module: "Multiple Choice", lo: "LO3", skill: "Conceptual", topic: "LIFO vs FIFO Disclosure", 
+              question: `Companies using LIFO are required to disclose the amount at which inventory would have been reported had it used FIFO. Similarly, companies using FIFO are required to disclose what their inventory would have been if the company had used LIFO.`, 
+              options: ["True", "False"], answer: "False", rationale: "LIFO firms are required by GAAP to disclose the LIFO reserve (the difference between LIFO and FIFO). FIFO firms are not required to disclose what their inventory would have been under LIFO." },
+            { id: 21, module: "Multiple Choice", lo: "LO4", skill: "Deep Thinking", topic: "Inventory Turnover", 
+              question: `Increasing inventory turnover rate will improve profitability.`, 
+              options: ["True", "False"], answer: "False", rationale: "While high turnover is generally good for efficiency, a company might artificially increase turnover by slashing prices, which drastically hurts gross margins and overall profitability." },
+            { id: 22, module: "Multiple Choice", lo: "LO3", skill: "Conceptual", topic: "LIFO Reserve", 
+              question: `Assume that Barber Co. uses the LIFO inventory costing method for both tax and financial reporting purposes. The balance sheet reports inventories at $297 million. Then, in its footnotes, the company reports that inventories would have been $327 million had the company used the FIFO method. The difference between these two numbers ($30 million) is referred to as:`, 
+              options: ["A. LIFO reserve", "B. LIFO conformity rule", "C. LIFO holding gain", "D. Inventory temporary difference", "E. None of the above"], 
+              answer: "A. LIFO reserve", rationale: "The difference between the inventory balance reported under LIFO and what it would have been under FIFO is formally called the LIFO reserve." },
+            { id: 23, module: "Multiple Choice", lo: "LO5", skill: "Conceptual", topic: "Operating Cash Flows", 
+              question: `A firm's net cash flow from operating activities includes which of the following:`, 
+              options: ["A. Cash received from sale of equipment", "B. Cash received from issuance of common stock", "C. Cash received from sale of merchandise", "D. Cash received as payment of loan from a borrower", "E. None of the above"], 
+              answer: "C. Cash received from sale of merchandise", rationale: "Selling merchandise is the core operating activity of a retail firm. Selling equipment or collecting loans is Investing. Issuing stock is Financing." },
+            { id: 24, module: "Multiple Choice", lo: "LO5", skill: "Conceptual", topic: "Operating Cash Flows (Dividends)", 
+              question: `Which of the following is classified as a cash flow from operating activities in a statement of cash flows?`, 
+              options: ["A. Payment of dividends", "B. Receipt of dividends", "C. Receipt of cash for loan collection", "D. Payment of cash for loan repayment", "E. None of the above"], 
+              answer: "B. Receipt of dividends", rationale: "Under US GAAP, receiving dividends (and interest) is classified as an Operating Cash Flow. Paying dividends is a Financing Cash Flow." },
+            { id: 25, module: "Multiple Choice", lo: "LO5", skill: "Conceptual", topic: "Investing Cash Flows", 
+              question: `A firm's cash flow from investing activities is not affected by:`, 
+              options: ["A. Cash received from sale of a piece of land", "B. Cash received from issuance of bonds payable", "C. Cash paid to purchase a plant asset", "D. Cash paid to purchase common stock of another company", "E. None of the above"], 
+              answer: "B. Cash received from issuance of bonds payable", rationale: "Issuing bonds payable raises capital from creditors, making it a Financing activity, not an Investing activity." },
+            { id: 26, module: "Multiple Choice", lo: "LO1", skill: "Conceptual", topic: "Accrual Accounting (Expenses)", 
+              question: `Under accrual accounting, when is an advertising expense recognized?`, 
+              options: ["a. When the advertisement appears and contributes to revenue.", "b. When the contract is signed.", "c. When cash is paid to the ad agency.", "d. When the invoice is received."], 
+              answer: "a. When the advertisement appears and contributes to revenue.", rationale: "Under the matching principle, an expense is recognized when it is incurred (when the ad runs and ideally generates revenue), not when the cash is paid or the contract is signed." },
+            { id: 27, module: "Multiple Choice", lo: "LO2", skill: "Quantitative", topic: "Net Sales Calculation", 
+              question: `A company sells $50,000 of products in December and expects 2% returns and 3% discounts. What amount is recognized as net sales?`, 
+              options: ["a. $50,000", "b. $49,000", "c. $47,500", "d. $48,500"], 
+              answer: "c. $47,500", rationale: "Net Sales = Gross Sales - Expected Returns - Expected Discounts. $50,000 * (1 - 0.05) = $47,500." },
+            { id: 28, module: "Multiple Choice", lo: "LO1", skill: "Conceptual", topic: "Audit Opinions", 
+              question: `A "qualified opinion" means:`, 
+              options: ["a. The audit found no problems at all.", "b. The financial statements are entirely misleading.", "c. The auditor cannot form any opinion.", "d. Most statements are accurate except for a specific issue."], 
+              answer: "d. Most statements are accurate except for a specific issue.", rationale: "An unqualified (clean) opinion means no problems. A qualified opinion means the statements are fairly presented *except for* a specific limitation or departure from GAAP." },
+            { id: 29, module: "Multiple Choice", lo: "LO3", skill: "Conceptual", topic: "R&D Expense", 
+              question: `A biotech firm spends $200 million developing a drug that shows strong trial results but has not yet received FDA approval. Which is the most appropriate accounting treatment?`, 
+              options: ["a. Capitalize half now and expense the rest upon approval.", "b. Expense it entirely because future benefits are uncertain and not yet controlled.", "c. Record it as an intangible asset because it will likely generate future benefits.", "d. Defer recognition until the drug starts generating revenue."], 
+              answer: "b. Expense it entirely because future benefits are uncertain and not yet controlled.", rationale: "Under US GAAP, internal Research & Development costs must be expensed as incurred because future economic benefits are highly uncertain until commercial viability (FDA approval) is achieved." },
+            { id: 30, module: "Multiple Choice", lo: "LO1", skill: "Deep Thinking", topic: "Contingent Gains", 
+              question: `A company expects to win a $5 million lawsuit, but the final ruling is pending. Why should this potential gain not be recognized as an asset yet?`, 
+              options: ["a. The company's legal team is confident in victory.", "b. The cash has not been received.", "c. Gains can only be recognized if material.", "d. It does not arise from a past transaction and is not controlled by the company."], 
+              answer: "d. It does not arise from a past transaction and is not controlled by the company.", rationale: "Under the conservatism principle, contingent gains are not recognized as assets because the company does not yet have control over the future economic benefit, and the realizing event (the court ruling) hasn't fully occurred." },
+            { id: 31, module: "Multiple Choice", lo: "LO1", skill: "Deep Thinking", topic: "Book vs Market Value", 
+              question: `A machine's book value is $500 K while its market value is $700 K. Investors argue for market value reporting, regulators for book value. What best explains this disagreement?`, 
+              options: ["a. Investors seek relevance; regulators emphasize reliability and consistency.", "b. Regulators fear higher taxes under market value.", "c. Both parties prefer market value for comparability.", "d. Investors prioritize historical cost for conservatism."], 
+              answer: "a. Investors seek relevance; regulators emphasize reliability and consistency.", rationale: "Investors want to know what the asset is actually worth today (relevance). Regulators prefer historical cost (book value) because it is factual, objective, and cannot be easily manipulated (reliability)." },
+            { id: 32, module: "Multiple Choice", lo: "LO1", skill: "Conceptual", topic: "Liability Recognition", 
+              question: `A company signs a 3-year, $180 million contract to hire a CEO starting next year. Should this create a liability now?`, 
+              options: ["a. No, because the service has not yet been received; no present obligation exists.", "b. Yes, since it's a binding legal agreement.", "c. Yes, because the payment obligation exists.", "d. Only if disclosed in the proxy statement."], 
+              answer: "a. No, because the service has not yet been received; no present obligation exists.", rationale: "An executory contract (where neither party has performed their duties yet) does not create an accounting liability. The liability arises only as the CEO performs the service over the 3 years." },
+            { id: 33, module: "Multiple Choice", lo: "LO2", skill: "Conceptual", topic: "Current Liabilities", 
+              question: `Tesla receives $100,000 in customer deposits for cars not yet delivered. Why does Tesla classify this as a current liability?`, 
+              options: ["a. It represents a contractual receivable from customers.", "b. It is deferred revenue that reduces retained earnings.", "c. It represents an obligation to deliver cars, not yet revenue.", "d. It owes cash back to customers."], 
+              answer: "c. It represents an obligation to deliver cars, not yet revenue.", rationale: "The deposit represents unearned revenue. Tesla owes the customer the physical car (or a refund) in the near future, creating a current liability until the performance obligation is satisfied." },
+            { id: 34, module: "Multiple Choice", lo: "LO1", skill: "Conceptual", topic: "FSET Stock Issuance", 
+              question: `A company issues $100,000 in common stock. Using the FSET, which statement best explains the overall financial effect?`, 
+              options: ["a. Assets increase and revenue increases by $100,000.", "b. No effect on assets or equity because stock issuance is an internal transaction.", "c. Assets and liabilities both increase by $100,000.", "d. Assets increase and equity increases by $100,000 no effect on income."], 
+              answer: "d. Assets increase and equity increases by $100,000 no effect on income.", rationale: "Issuing stock brings in Cash (Asset increase) and increases Contributed Capital (Equity increase). Transactions with owners do not affect the income statement." },
+            { id: 35, module: "Multiple Choice", lo: "LO2", skill: "Conceptual", topic: "Sales on Account", 
+              question: `A company sells goods costing $3,000 for $5,000 on account. If the customer pays next period, which statement is most accurate?`, 
+              options: ["a. Liabilities increase until cash is received.", "b. Cash and income both increase immediately.", "c. Net income increases immediately; cash increases next period.", "d. Net income is unaffected until payment is collected."], 
+              answer: "c. Net income increases immediately; cash increases next period.", rationale: "Under accrual accounting, revenue ($5,000) and expenses ($3,000) are recognized when the sale occurs, increasing Net Income immediately. The Cash is not collected until the next period." },
+            { id: 36, module: "Multiple Choice", lo: "LO1", skill: "Conceptual", topic: "Accrual Omissions", 
+              question: `At year-end, employees have earned wages not yet paid. Failing to record this adjustment would:`, 
+              options: ["a. Have no effect until payment occurs.", "b. Understate liabilities and overstate net income", "c. Overstate liabilities and understate expenses.", "d. Overstate both liabilities and expenses."], 
+              answer: "b. Understate liabilities and overstate net income", rationale: "The adjustment requires increasing Wages Expense and Wages Payable. Skipping it leaves expenses too low (overstating Net Income) and liabilities too low (understating liabilities)." },
+            { id: 37, module: "Multiple Choice", lo: "LO4", skill: "Deep Thinking", topic: "Ratio Analysis Limitations", 
+              question: `Which statement best reflects a limitation of ratio analysis?`, 
+              options: ["a. Ratios adjust automatically for window dressing.", "b. Ratios are computed the same way across firms.", "c. Ratios are only useful when compared with industry peers and over time", "d. Ratios provide definitive answers for all financial questions."], 
+              answer: "c. Ratios are only useful when compared with industry peers and over time", rationale: "A ratio in isolation (like a 1.5 Current Ratio) is meaningless. It only gains value when benchmarked against competitors or the company's own historical trends." },
+            { id: 38, module: "Multiple Choice", lo: "LO4", skill: "Deep Thinking", topic: "ROE vs ROA", 
+              question: `If a firm's ROE > ROA, what is the most likely reason?`, 
+              options: ["a. Its assets are financed mostly by equity.", "b. The firm is under-leveraged.", "c. The firm is using debt effectively to enhance shareholder returns", "d. The firm's profit margin declined."], 
+              answer: "c. The firm is using debt effectively to enhance shareholder returns", rationale: "ROE = ROA * Financial Leverage. When a firm uses debt (leverage), it magnifies the return to equity holders, assuming the return on assets exceeds the cost of debt." },
+            { id: 39, module: "Multiple Choice", lo: "LO4", skill: "Deep Thinking", topic: "Margin vs Turnover", 
+              question: `A firm improves profit margin but asset turnover declines. What's the most reasonable interpretation?`, 
+              options: ["a. The firm is pricing products higher but using assets less efficiently.", "b. Both profitability and efficiency improved simultaneously", "c. The firm's ROE must decrease.", "d. The firm is selling fewer high-margin products, improving efficiency."], 
+              answer: "a. The firm is pricing products higher but using assets less efficiently.", rationale: "Profit Margin reflects pricing power and cost control. Asset Turnover reflects efficiency. If margin goes up but turnover goes down, they are likely charging more per item, but selling fewer items relative to their asset base." },
+            { id: 40, module: "Multiple Choice", lo: "LO4", skill: "Deep Thinking", topic: "ROE vs RNOA", 
+              question: `Which statement correctly describes the relationship between ROE and RNOA (Return on Net Operating Assets)?`, 
+              options: ["a. The two measures are unrelated.", "b. ROE usually exceeds RNOA when leverage amplifies returns", "c. RNOA always exceeds ROE because it excludes leverage.", "d. ROE equals RNOA only when a firm has negative net operating assets."], 
+              answer: "b. ROE usually exceeds RNOA when leverage amplifies returns", rationale: "Similar to ROA, RNOA focuses on operating performance. Because most firms have positive nonoperating (financial) leverage, this leverage typically pushes ROE higher than operating returns (RNOA)." },
+            { id: 41, module: "Multiple Choice", lo: "LO4", skill: "Conceptual", topic: "Tax Shield Adjustment", 
+              question: `Why do we add back the tax shield from nonoperating expenses when calculating NOPAT?`, 
+              options: ["a. To align reported taxes with cash taxes paid.", "b. To inflate the after-tax return for investors.", "c. Because we want to isolate taxes purely related to operations", "d. Because nonoperating income is not taxable."], 
+              answer: "c. Because we want to isolate taxes purely related to operations", rationale: "Interest expense (nonoperating) lowers a company's total tax bill. To find Net *Operating* Profit After Taxes (NOPAT), we must calculate what the tax bill *would have been* if the firm had no debt." },
+            { id: 42, module: "Multiple Choice", lo: "LO4", skill: "Deep Thinking", topic: "Sources of ROE", 
+              question: `Two firms have the same ROE, but Firm A's ROE comes mostly from operating returns (RNOA), while Firm B's comes from leverage. Which conclusion is most reasonable?`, 
+              options: ["a. Both firms have equivalent risk levels.", "b. Firm A is less risky and has more sustainable performance", "c. Firm A's ROE is artificially inflated.", "d. Firm B is safer due to higher leverage."], 
+              answer: "b. Firm A is less risky and has more sustainable performance", rationale: "RNOA comes from core business operations (selling products). Leverage involves taking on debt. A firm generating returns from its core business is inherently safer than a firm relying heavily on debt." },
+            { id: 43, module: "Multiple Choice", lo: "LO2", skill: "Deep Thinking", topic: "Revenue Risk Assessment", 
+              question: `Keurig shifted to recognizing revenue at shipment and booked customer incentives as operating expenses. The most accurate risk assessment is that this...`, 
+              options: ["a. increases revenue quality by accelerating cash collections", "b. only affects COGS, not revenue", "c. can inflate 'growth' while masking lower net sales, risking reversals later", "d. aligns perfectly with economic substance"], 
+              answer: "c. can inflate 'growth' while masking lower net sales, risking reversals later", rationale: "Recognizing revenue earlier (at shipment instead of delivery) and shifting incentives out of net sales into operating expenses artificially inflates top-line revenue growth, reducing earnings quality." },
+            { id: 44, module: "Multiple Choice", lo: "LO2", skill: "Conceptual", topic: "Multiple Obligations", 
+              question: `A SaaS contract includes a year of service ($1,200 upfront) plus a separate setup activity. Proper treatment is:`, 
+              options: ["a. Two obligations; recognize both ratably over the term", "b. One obligation; recognize all upfront", "c. Three obligations; recognize all at completion", "d. Two obligations; recognize setup when completed and service over time"], 
+              answer: "d. Two obligations; recognize setup when completed and service over time", rationale: "If the setup provides a distinct, separate benefit to the customer, it is recognized immediately upon completion, while the continuous SaaS service is recognized evenly over the 12-month term." },
+            { id: 45, module: "Multiple Choice", lo: "LO2", skill: "Conceptual", topic: "Hardware Revenue Deferral", 
+              question: `Apple allocates the transaction price to hardware, bundled cloud/services, and unspecified future software updates using relative SSPs. Why defer part of the revenue?`, 
+              options: ["a. Legal requirement to defer all electronics revenue", "b. Services/upgrades are POs not yet satisfied at sale", "c. To smooth earnings", "d. Because hardware has no SSP"], 
+              answer: "b. Services/upgrades are POs not yet satisfied at sale", rationale: "A phone sale includes implicit promises for future software updates. Apple must defer a portion of the initial cash and recognize it over time as it pushes updates to the device." },
+            { id: 46, module: "Multiple Choice", lo: "LO2", skill: "Conceptual", topic: "Gift Card Breakage", 
+              question: `When should revenue from gift card sales be recognized?`, 
+              options: ["a. Never-treat as liability permanently", "b. When redeemed (and proportionally for breakage when it's remote/estimable)", "c. On sale date", "d. As breakage is estimated only"], 
+              answer: "b. When redeemed (and proportionally for breakage when it's remote/estimable)", rationale: "Initial sale creates Deferred Revenue. Revenue is earned when the customer redeems the card, or when the likelihood of redemption becomes remote (breakage)." },
+            { id: 47, module: "Multiple Choice", lo: "LO3", skill: "Conceptual", topic: "Inflation and Inventory", 
+              question: `During inflationary periods, FIFO leads to:`, 
+              options: ["a. Higher COGS and lower gross profit", "b. Lower COGS and higher gross profit", "c. No impact on profitability", "d. Lower inventory and higher taxes"], 
+              answer: "b. Lower COGS and higher gross profit", rationale: "In inflation, older/cheaper costs are assigned to COGS under FIFO. Lower COGS leads to higher gross profit (and higher taxes)." },
+            { id: 48, module: "Multiple Choice", lo: "LO3", skill: "Deep Thinking", topic: "LIFO Liquidations", 
+              question: `A company using LIFO sells off old inventory layers accumulated at low cost. What's the likely effect?`, 
+              options: ["a. No income statement effect", "b. Lower COGS and lower gross profit", "c. Decrease in net income and cash taxes", "d. Increase in net income and higher tax liability"], 
+              answer: "d. Increase in net income and higher tax liability", rationale: "This is a LIFO liquidation. Old, cheap inventory costs hit the income statement, artificially dropping COGS, which boosts Net Income and triggers a massive tax bill." },
+            { id: 49, module: "Multiple Choice", lo: "LO3", skill: "Quantitative", topic: "LIFO Reserve Impact", 
+              question: `If a company's LIFO reserve increases by $1,000 and the tax rate is 25%, what is the effect on net income (FIFO basis)?`, 
+              options: ["a. No change", "b. Increase by $1,000", "c. Increase by $750", "d. Decrease by $250"], 
+              answer: "c. Increase by $750", rationale: "An increase in LIFO reserve means LIFO COGS is $1,000 higher than FIFO COGS. Therefore, switching to FIFO would lower COGS by $1,000, increasing Pretax Income by $1,000. After 25% tax ($250), Net Income is $750 higher." },
+            { id: 50, module: "Multiple Choice", lo: "LO4", skill: "Deep Thinking", topic: "Cash Flow and Inventory", 
+              question: `Pfizer's daily COGS = $68.36 million. If DIO increases by 44 days, what happens to cash flow?`, 
+              options: ["a. Cash decreases by $3 billion (tied up in inventory)", "b. Cash flow improves due to higher assets", "c. No change", "d. Cash increases by $3 billion"], 
+              answer: "a. Cash decreases by $3 billion (tied up in inventory)", rationale: "An increase in DIO means inventory is sitting on shelves longer. 44 days * $68.36M = ~$3 Billion in extra cash effectively trapped in unsold inventory." },
+            { id: 51, module: "Multiple Choice", lo: "LO4", skill: "Quantitative", topic: "Cash Conversion Cycle", 
+              question: `A company's Days Inventory Outstanding (DIO) = 60 days, Days Sales Outstanding (DSO) = 35 days, and Days Payable Outstanding (DPO) = 40 days.<br><br>What does the cash conversion cycle (CCC) represent, and what is its value?`, 
+              options: ["a. The total number of days inventory is held; CCC=60 days", "b. The average number of days between inventory purchase and cash collection from customers; CCC=55 days", "c. The average time to pay suppliers; CCC=40 days", "d. The time between customer payment and supplier payment; CCC=20 days"], 
+              answer: "b. The average number of days between inventory purchase and cash collection from customers; CCC=55 days", rationale: "CCC = DIO + DSO - DPO = 60 + 35 - 40 = 55 days. It measures the time cash is tied up in the core operations before being collected." },
+            { id: 52, module: "Multiple Choice", lo: "LO3", skill: "Conceptual", topic: "Capital vs Revenue Expenditure", 
+              question: `A manufacturing company spends $25,000 replacing a major machine component that extends its useful life by five years.<br><br>How should this be classified?`, 
+              options: ["a. Deferred expense", "b. Routine maintenance", "c. Revenue expenditure", "d. Capital expenditure"], 
+              answer: "d. Capital expenditure", rationale: "Because the repair extends the useful life beyond original estimates, it provides future economic benefits and must be capitalized to the balance sheet, not expensed immediately." },
+            { id: 53, module: "Multiple Choice", lo: "LO3", skill: "Conceptual", topic: "Capital vs Revenue Distinctions", 
+              question: `What distinguishes a capital expenditure from a revenue expenditure in financial reporting?`, 
+              options: ["a. Capital expenditures are capitalized and expensed over time", "b. Capital expenditures reduce retained earnings immediately", "c. Revenue expenditures are recorded as assets", "d. Capital expenditures are paid in cash; revenue expenditures are not"], 
+              answer: "a. Capital expenditures are capitalized and expensed over time", rationale: "Capital expenditures create an asset on the balance sheet which is gradually depreciated (expensed) over time. Revenue expenditures are expensed immediately on the income statement." },
+            { id: 54, module: "Multiple Choice", lo: "LO3", skill: "Conceptual", topic: "Estimates Revisions", 
+              question: `When a company revises the useful life of equipment, how is the change handled?`, 
+              options: ["a. Retrospectively restate prior years", "b. Prospectively apply new estimates to current and future periods", "c. Record as an error correction", "d. Adjust equity directly"], 
+              answer: "b. Prospectively apply new estimates to current and future periods", rationale: "Changes in accounting estimates (like useful life or salvage value) are handled prospectively. Prior periods are not restated." },
+            { id: 55, module: "Multiple Choice", lo: "LO3", skill: "Conceptual", topic: "Goodwill Intangibles", 
+              question: `How does goodwill differ from other identifiable intangible assets?`, 
+              options: ["a. Goodwill represents patents and trademarks only", "b. Goodwill always decreases annually with use", "c. Goodwill arises from acquisitions and is not amortized but tested for impairment", "d. Goodwill is internally generated and amortized"], 
+              answer: "c. Goodwill arises from acquisitions and is not amortized but tested for impairment", rationale: "Goodwill is only recorded when one company acquires another for a price higher than the fair value of net assets. It has an indefinite life, so it is tested for impairment rather than amortized." },
+            { id: 56, module: "Multiple Choice", lo: "LO5", skill: "Conceptual", topic: "Statement of Cash Flows", 
+              question: `What is the primary role of the statement of cash flows (SCF)?`, 
+              options: ["a. To explain the sources and uses of cash by activity type", "b. To measure changes in retained earnings", "c. To reconcile accrual revenues with accrual expenses", "d. To report profitability for the period"], 
+              answer: "a. To explain the sources and uses of cash by activity type", rationale: "The SCF categorizes cash flows into operating, investing, and financing activities to show exactly where cash came from and where it went." },
+            { id: 57, module: "Multiple Choice", lo: "LO5", skill: "Deep Thinking", topic: "Firm Life Cycle", 
+              question: `A company reports:<br>Operating cash flows: positive<br>Investing cash flows: negative<br>Financing cash flows: negative<br><br>Which life-cycle stage does this most likely represent?`, 
+              options: ["a. Decline", "b. Introduction", "c. Mature", "d. Growth"], 
+              answer: "c. Mature", rationale: "A mature firm generates strong cash from operations, uses some of it to reinvest in equipment (negative investing), and uses the rest to pay down debt or issue dividends (negative financing)." },
+            { id: 58, module: "Multiple Choice", lo: "LO5", skill: "Deep Thinking", topic: "Earnings Quality", 
+              question: `If a company's net income declines faster than its cash flow from operations, what can be inferred?`, 
+              options: ["a. Earnings manipulation is certain", "b. The company's profitability is improving", "c. Profitability is deteriorating faster than cash generation", "d. Cash flow is overstated"], 
+              answer: "c. Profitability is deteriorating faster than cash generation", rationale: "Net Income includes non-cash expenses like depreciation, or large write-offs/impairments. If NI crashes but CFO remains stable, the core cash engine of the business is holding up better than accounting profitability." },
+
+            // --- EXERCISES (20 Questions) ---
+            { id: 101, module: "Exercises", lo: "LO1", skill: "Quantitative", topic: "Accounting Equation Application", 
+              question: `The following information is available for Advanced Micro Devices (AMD) and Intel for a recent fiscal year.<br>• AMD's assets increased by $1,004 million and its liabilities increased by $334 million.<br>• Intel's assets increased by $4,714 million and its liabilities decreased by $830 million.<br><br>a. Complete the following table.<br><div class="overflow-x-auto"><table class="q-table whitespace-nowrap"><tr><th>(in $ millions)</th><th>Assets, beginning of year</th><th>Assets, end of year</th><th>Liabilities, beginning of year</th><th>Liabilities, end of year</th><th>Stockholders' Equity, end of year</th></tr><tr><td>AMD</td><td>$ <input type="text" class="smart-input" data-correct="3552" placeholder="0"></td><td>$ 4,556</td><td>$ 2,956</td><td>$ <input type="text" class="smart-input" data-correct="3290" placeholder="0"></td><td>$ <input type="text" class="smart-input" data-correct="1266" placeholder="0"></td></tr><tr><td>Intel</td><td>$ 123,249</td><td>$ <input type="text" class="smart-input" data-correct="127963" placeholder="0"></td><td>$ <input type="text" class="smart-input" data-correct="54230" placeholder="0"></td><td>$ 53,400</td><td>$ <input type="text" class="smart-input" data-correct="74563" placeholder="0"></td></tr></table></div><br>b. Calculate average assets for each company.<br><div class="overflow-x-auto"><table class="q-table whitespace-nowrap" style="width: 300px;"><tr><th>(in $ millions)</th><th>Average Assets</th></tr><tr><td>AMD</td><td>$ <input type="text" class="smart-input" data-correct="4054" placeholder="0"></td></tr><tr><td>Intel</td><td>$ <input type="text" class="smart-input" data-correct="125606" placeholder="0"></td></tr></table></div><br>c. Which company has the larger proportion of its assets financed by the company's owners at year-end? <br><select class="smart-input mt-2" data-correct="Intel"><option value="">- Select -</option><option value="AMD">AMD</option><option value="Intel">Intel</option></select>`,
+              answer: "The correctly filled tables are shown. Larger proportion financed by owners: Intel.",
+              rationale: "Assets = Liabilities + Equity. AMD Beginning Assets: 4556 - 1004 = 3552. AMD Ending Liab: 2956 + 334 = 3290. AMD Ending Eq = 4556 - 3290 = 1266. Intel Ending Assets: 123249 + 4714 = 127963. Intel Beg Liab = 53400 + 830 = 54230. Intel Ending Eq = 127963 - 53400 = 74563. Avg Assets = (Beg + End) / 2." },
+            
+            { id: 102, module: "Exercises", lo: "LO1", skill: "Quantitative", topic: "Construct Financial Statements", 
+              question: `Baiman Corporation commences operations at the beginning of January. It provides its services on credit and bills its customers $40,000 for January sales, which are unpaid at month-end. Its employees also earn January wages of $12,000 that are not paid until the first of February. Complete the following statements for the month-end of January.<br><br><div class="overflow-x-auto"><table class="q-table whitespace-nowrap" style="width: 400px;"><tr><th colspan="2">Income Statement</th></tr><tr><td>Sales</td><td>$ <input type="text" class="smart-input inline-block w-32" data-correct="40000" placeholder="0"></td></tr><tr><td>Wages expense</td><td><input type="text" class="smart-input inline-block w-32" data-correct="12000" placeholder="0"></td></tr><tr><td>Net income (loss)</td><td>$ <input type="text" class="smart-input inline-block w-32" data-correct="28000" placeholder="0"></td></tr></table><br><table class="q-table whitespace-nowrap" style="width: 400px;"><tr><th colspan="2">Balance Sheet</th></tr><tr><td>Cash</td><td>$ <input type="text" class="smart-input inline-block w-32" data-correct="0" placeholder="0"></td></tr><tr><td>Accounts receivable</td><td><input type="text" class="smart-input inline-block w-32" data-correct="40000" placeholder="0"></td></tr><tr><td>Total assets</td><td>$ <input type="text" class="smart-input inline-block w-32" data-correct="40000" placeholder="0"></td></tr><tr><td>Wages payable</td><td><input type="text" class="smart-input inline-block w-32" data-correct="12000" placeholder="0"></td></tr><tr><td>Retained earnings</td><td><input type="text" class="smart-input inline-block w-32" data-correct="28000" placeholder="0"></td></tr><tr><td>Total liabilities and equity</td><td>$ <input type="text" class="smart-input inline-block w-32" data-correct="40000" placeholder="0"></td></tr></table></div>`,
+              answer: "Income Statement: Sales 40,000; Wages Exp 12,000; NI = 28,000. Balance Sheet: Cash 0; AR 40,000; Assets = 40,000. Wages Pay 12,000; RE 28,000; L+E = 40,000.",
+              rationale: "Accrual basis requires recognizing revenue when billed ($40,000) and expenses when incurred ($12,000). Since no cash changed hands, AR and Wages Payable record the unpaid balances." },
+            
+            { id: 103, module: "Exercises", lo: "LO1", skill: "Quantitative", topic: "Identify BS and IS Accounts", 
+              question: `Following are selected accounts for Best Buy Inc. for a recent fiscal year.<br>a. Indicate whether each account appears on the balance sheet (B) or income statement (I).<br><div class="overflow-x-auto"><table class="q-table whitespace-nowrap"><tr><th>$ millions</th><th>Amount</th><th>Classification</th></tr><tr><td>Sales</td><td>$42,879</td><td><select class="smart-input" data-correct="Income Statement"><option value="">- Select -</option><option value="Balance Sheet">Balance Sheet</option><option value="Income Statement">Income Statement</option></select></td></tr><tr><td>Accumulated depreciation</td><td>6,690</td><td><select class="smart-input" data-correct="Balance Sheet"><option value="">- Select -</option><option value="Balance Sheet">Balance Sheet</option><option value="Income Statement">Income Statement</option></select></td></tr><tr><td>Depreciation expense</td><td>770</td><td><select class="smart-input" data-correct="Income Statement"><option value="">- Select -</option><option value="Balance Sheet">Balance Sheet</option><option value="Income Statement">Income Statement</option></select></td></tr><tr><td>Retained earnings</td><td>2,985</td><td><select class="smart-input" data-correct="Balance Sheet"><option value="">- Select -</option><option value="Balance Sheet">Balance Sheet</option><option value="Income Statement">Income Statement</option></select></td></tr><tr><td>Net income</td><td>1,464</td><td><select class="smart-input" data-correct="Income Statement"><option value="">- Select -</option><option value="Balance Sheet">Balance Sheet</option><option value="Income Statement">Income Statement</option></select></td></tr><tr><td>Property, plant, and equipment, net</td><td>2,510</td><td><select class="smart-input" data-correct="Balance Sheet"><option value="">- Select -</option><option value="Balance Sheet">Balance Sheet</option><option value="Income Statement">Income Statement</option></select></td></tr><tr><td>Selling, general, and administrative expense</td><td>8,015</td><td><select class="smart-input" data-correct="Income Statement"><option value="">- Select -</option><option value="Balance Sheet">Balance Sheet</option><option value="Income Statement">Income Statement</option></select></td></tr><tr><td>Accounts receivable</td><td>1,015</td><td><select class="smart-input" data-correct="Balance Sheet"><option value="">- Select -</option><option value="Balance Sheet">Balance Sheet</option><option value="Income Statement">Income Statement</option></select></td></tr><tr><td>Total liabilities</td><td>9,595</td><td><select class="smart-input" data-correct="Balance Sheet"><option value="">- Select -</option><option value="Balance Sheet">Balance Sheet</option><option value="Income Statement">Income Statement</option></select></td></tr><tr><td>Total stockholders' equity</td><td>3,306</td><td><select class="smart-input" data-correct="Balance Sheet"><option value="">- Select -</option><option value="Balance Sheet">Balance Sheet</option><option value="Income Statement">Income Statement</option></select></td></tr></table></div><br>b. Using the given data, compute total assets and total expenses.<br><div class="overflow-x-auto"><table class="q-table whitespace-nowrap" style="width: 350px;"><tr><td>Total Assets:</td><td>$ <input type="text" class="smart-input" data-correct="12901"></td></tr><tr><td>Total Expenses:</td><td>$ <input type="text" class="smart-input" data-correct="41415"></td></tr></table></div>`,
+              answer: "Total Assets: $12,901 | Total Expenses: $41,415",
+              rationale: "Total Assets = Liabilities ($9,595) + Equity ($3,306) = $12,901. Total Expenses = Sales ($42,879) - Net Income ($1,464) = $41,415." },
+            
+            { id: 104, module: "Exercises", lo: "LO1", skill: "Quantitative", topic: "Missing Retained Earnings", 
+              question: `Use knowledge of accounting relations to determine X, Y, and Z in the following table for Srivastava Company.<br><div class="overflow-x-auto"><table class="q-table whitespace-nowrap"><tr><th></th><th>Current Year</th><th>Prior Year</th></tr><tr><td>Beginning retained earnings</td><td>$189,089</td><td>$Y</td></tr><tr><td>Net income (loss)</td><td>X</td><td>48,192</td></tr><tr><td>Dividends</td><td>0</td><td>15,060</td></tr><tr><td>Ending retained earnings</td><td>$169,634</td><td>$Z</td></tr></table></div><br>X $<input type="text" class="smart-input w-48" data-correct="(19455)"><br>Y$ <input type="text" class="smart-input mt-1 w-48" data-correct="155957"><br>Z $ <input type="text" class="smart-input mt-1 w-48" data-correct="189089">`,
+              answer: `X = (19,455)<br>Y = 155,957<br>Z = 189,089`,
+              rationale: "Z (Prior Year End RE) = Current Year Beg RE = $189,089. Y (Prior Beg RE) = Z - NI + Div = 189,089 - 48,192 + 15,060 = $155,957. X (Current NI) = Current End RE - Current Beg RE + Div = 169,634 - 189,089 + 0 = $(19,455)." },
+
+            { id: 105, module: "Exercises", lo: "LO2", skill: "Quantitative", topic: "FSET Adjustments", 
+              question: `For each of the separate situations, prepare the necessary accounting adjustments using the financial statement effects template.<br>a. Unrecorded depreciation on equipment is $720.<br>b. The supplies account has a balance of $3,870. Supplies still available at the end of the period total $1,100.<br>c. Estimated utilities expense of $430 has been incurred, but no bill received/paid.<br>d. Adjust prepaid rent (rent for four periods was paid for $3,200).<br>e. Adjust unearned revenue ($1,872 received 9 months ago for a 1-year policy).<br>f. Accrue wages expense of $965.<br>g. Record interest income earned of $300.<br><br><div class="overflow-x-auto"><table class="q-table whitespace-nowrap"><tr><th rowspan="2">Transaction</th><th colspan="3">BALANCE SHEET</th><th colspan="2"></th><th colspan="3">INCOME STATEMENT</th></tr><tr><th>Cash Asset</th><th>Noncash Assets</th><th>Liabilities</th><th>Contributed Capital</th><th>Earned Capital</th><th>Revenues</th><th>Expenses</th><th>Net Income</th></tr><tr><td>a. Record depr. on equipment</td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="-720"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="-720"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="720"></td><td><input class="smart-input" data-correct="-720"></td></tr><tr><td>b. Adjust supplies</td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="-2770"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="-2770"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="2770"></td><td><input class="smart-input" data-correct="-2770"></td></tr><tr><td>c. Accrue utilities</td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="430"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="-430"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="430"></td><td><input class="smart-input" data-correct="-430"></td></tr><tr><td>d. Adjust prepaid rent</td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="-800"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="-800"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="800"></td><td><input class="smart-input" data-correct="-800"></td></tr><tr><td>e. Adjust unearned rev</td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="-1404"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="1404"></td><td><input class="smart-input" data-correct="1404"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="1404"></td></tr><tr><td>f. Accrue wages</td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="965"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="-965"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="965"></td><td><input class="smart-input" data-correct="-965"></td></tr><tr><td>g. Record interest</td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="300"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="300"></td><td><input class="smart-input" data-correct="300"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="300"></td></tr></table></div>`,
+              answer: `The correctly filled FSET is displayed via the Show Answer autofill logic.`,
+              rationale: "Each row balances the accounting equation. E.g., (b) uses $2,770 of supplies ($3,870-$1,100). (d) uses 1/4 of $3,200 prepaid rent = $800. (e) earns 9/12 of $1,872 = $1,404." },
+
+            { id: 106, module: "Exercises", lo: "LO1", skill: "Quantitative", topic: "FSET Transactions", 
+              question: `B. Fischer started Fischer Company on April 1. Record the transactions for April using the FSET.<br>1: Invested $9,000 cash for common stock.<br>2: Paid $2,850 cash for 6 months' lease on a van.<br>3: Borrowed $10,000 cash from a bank.<br>4: Purchased $5,500 cleaning equipment; paid $2,500 cash, rest on account.<br>5: Paid $4,300 cash for supplies.<br>7: Paid $350 cash for ads.<br>21: Billed customers $3,500.<br>23: Paid $3,000 cash toward April 4 equipment.<br>28: Collected $2,300 cash from customers.<br>29: Paid $1,000 cash dividends.<br>30: Paid $2,750 cash for April wages.<br>30: Paid $995 cash for gasoline used.<br><div class="overflow-x-auto"><table class="q-table whitespace-nowrap"><tr><th rowspan="2">Transaction</th><th colspan="3">BALANCE SHEET</th><th colspan="2"></th><th colspan="3">INCOME STATEMENT</th></tr><tr><th>Cash Asset</th><th>Noncash Assets</th><th>Liabilities</th><th>Contrib. Capital</th><th>Earned Capital</th><th>Revenues</th><th>Expenses</th><th>Net Income</th></tr><tr><td>April 1</td><td><input class="smart-input" data-correct="9000"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="9000"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td></tr><tr><td>April 2</td><td><input class="smart-input" data-correct="-2850"></td><td><input class="smart-input" data-correct="2850"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td></tr><tr><td>April 3</td><td><input class="smart-input" data-correct="10000"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="10000"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td></tr><tr><td>April 4</td><td><input class="smart-input" data-correct="-2500"></td><td><input class="smart-input" data-correct="5500"></td><td><input class="smart-input" data-correct="3000"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td></tr><tr><td>April 5</td><td><input class="smart-input" data-correct="-4300"></td><td><input class="smart-input" data-correct="4300"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td></tr><tr><td>April 7</td><td><input class="smart-input" data-correct="-350"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="-350"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="350"></td><td><input class="smart-input" data-correct="-350"></td></tr><tr><td>April 21</td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="3500"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="3500"></td><td><input class="smart-input" data-correct="3500"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="3500"></td></tr><tr><td>April 23</td><td><input class="smart-input" data-correct="-3000"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="-3000"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td></tr><tr><td>April 28</td><td><input class="smart-input" data-correct="2300"></td><td><input class="smart-input" data-correct="-2300"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td></tr><tr><td>April 29</td><td><input class="smart-input" data-correct="-1000"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="-1000"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td></tr><tr><td>April 30 (wages)</td><td><input class="smart-input" data-correct="-2750"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="-2750"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="2750"></td><td><input class="smart-input" data-correct="-2750"></td></tr><tr><td>April 30 (gas)</td><td><input class="smart-input" data-correct="-995"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="-995"></td><td><input class="smart-input" data-correct="0"></td><td><input class="smart-input" data-correct="995"></td><td><input class="smart-input" data-correct="-995"></td></tr></table></div>`,
+              answer: "The correctly filled FSET is displayed via the Show Answer autofill logic.",
+              rationale: "Each entry ensures Assets = Liabilities + Equity. Income items also decrease/increase Retained Earnings." },
+
+            { id: 107, module: "Exercises", lo: "LO4", skill: "Quantitative", topic: "Compute ROE & RNOA", 
+              question: `Compute the following measures for fiscal year FY3 for Seneca Foods Corporation.<br>Data: Net earnings = $33,138. Total equity = $583,464. (Assume Average Equity = $583,651). NOPAT (calculated from data) = $39,039. Average NOA = $902,189.<br><div class="overflow-x-auto"><table class="q-table whitespace-nowrap"><tr><th></th><th>Numerator</th><th>Denominator</th><th>Result</th></tr><tr><td>a. Return on equity</td><td>$ <input class="smart-input inline-block w-24" data-correct="33138"></td><td>$ <input class="smart-input inline-block w-24" data-correct="583651"></td><td><input class="smart-input inline-block w-20" data-correct="5.68"> %</td></tr><tr><td>b. Return on net operating assets</td><td>$ <input class="smart-input inline-block w-24" data-correct="39039"></td><td>$ <input class="smart-input inline-block w-24" data-correct="902189"></td><td><input class="smart-input inline-block w-20" data-correct="4.33"> %</td></tr></table></div><br>c. What is the nonoperating return component of ROE for fiscal year FY3? <input class="smart-input inline-block w-20 mt-1" data-correct="1.35"> %`,
+              answer: "ROE = 5.68% | RNOA = 4.33% | Nonoperating return = 1.35%",
+              rationale: "ROE = Net Earnings / Average Equity = 33,138 / 583,651 = 5.68%. RNOA = NOPAT / Average NOA = 39,039 / 902,189 = 4.33%. Nonoperating Return = ROE - RNOA = 5.68 - 4.33 = 1.35%." },
+            
+            { id: 108, module: "Exercises", lo: "LO4", skill: "Quantitative", topic: "DuPont Disaggregation", 
+              question: `Selected info for Facebook Inc: Net income = $22,112. Sales = $55,838. Average assets = $90,929. Average equity = $79,237.<br>a. Compute ROE and disaggregate into ROA and financial leverage.<br><div class="overflow-x-auto flex gap-4"><table class="q-table whitespace-nowrap" style="width: auto;"><tr><th>Numerator</th><th>Denominator</th><th>ROE</th></tr><tr><td>$ <input class="smart-input w-24" data-correct="22112"></td><td>$ <input class="smart-input w-24" data-correct="79237"></td><td><input class="smart-input w-16" data-correct="27.91"> %</td></tr></table><table class="q-table whitespace-nowrap" style="width: auto;"><tr><th>Numerator</th><th>Denominator</th><th>ROA</th></tr><tr><td>$ <input class="smart-input w-24" data-correct="22112"></td><td>$ <input class="smart-input w-24" data-correct="90929"></td><td><input class="smart-input w-16" data-correct="24.32"> %</td></tr></table><table class="q-table whitespace-nowrap" style="width: auto;"><tr><th>Numerator</th><th>Denominator</th><th>Financial Leverage</th></tr><tr><td>$ <input class="smart-input w-24" data-correct="90929"></td><td>$ <input class="smart-input w-24" data-correct="79237"></td><td><input class="smart-input w-16" data-correct="1.15"></td></tr></table></div><br>b. Disaggregate ROA into PM and AT.<br><div class="overflow-x-auto flex gap-4"><table class="q-table whitespace-nowrap" style="width: auto;"><tr><th>Numerator</th><th>Denominator</th><th>Profit Margin</th></tr><tr><td>$ <input class="smart-input w-24" data-correct="22112"></td><td>$ <input class="smart-input w-24" data-correct="55838"></td><td><input class="smart-input w-16" data-correct="39.60"> %</td></tr></table><table class="q-table whitespace-nowrap" style="width: auto;"><tr><th>Numerator</th><th>Denominator</th><th>Asset Turnover</th></tr><tr><td>$ <input class="smart-input w-24" data-correct="55838"></td><td>$ <input class="smart-input w-24" data-correct="90929"></td><td><input class="smart-input w-16" data-correct="0.61"></td></tr></table></div>`,
+              answer: "ROE = 27.91%. ROA = 24.32%. FL = 1.15. PM = 39.60%. AT = 0.61.",
+              rationale: "ROA = NI / Avg Assets. Financial Leverage = Avg Assets / Avg Equity. Profit Margin = NI / Rev. Asset Turnover = Rev / Avg Assets." },
+            
+            { id: 109, module: "Exercises", lo: "LO4", skill: "Quantitative", topic: "RNOA Components", 
+              question: `Home Depot reports NOPAT of $11,880.72M, Revenue of $108,203M, and Average NOA of $25,216.5M.<br>a. Compute RNOA.<br><div class="overflow-x-auto"><table class="q-table whitespace-nowrap" style="width: auto;"><tr><th>Numerator</th><th>Denominator</th><th>RNOA</th></tr><tr><td>$ <input class="smart-input w-24" data-correct="11880.72"></td><td>$ <input class="smart-input w-24" data-correct="25216.5"></td><td><input class="smart-input w-20" data-correct="47.11"> %</td></tr></table></div><br>b. Disaggregate RNOA into NOPM and NOAT.<br><div class="overflow-x-auto flex gap-4"><table class="q-table whitespace-nowrap" style="width: auto;"><tr><th>Numerator</th><th>Denominator</th><th>NOPM</th></tr><tr><td>$ <input class="smart-input w-24" data-correct="11880.72"></td><td>$ <input class="smart-input w-24" data-correct="108203"></td><td><input class="smart-input w-20" data-correct="10.98"> %</td></tr></table><table class="q-table whitespace-nowrap" style="width: auto;"><tr><th>Numerator</th><th>Denominator</th><th>NOAT</th></tr><tr><td>$ <input class="smart-input w-24" data-correct="108203"></td><td>$ <input class="smart-input w-24" data-correct="25216.5"></td><td><input class="smart-input w-20" data-correct="4.29"></td></tr></table></div>`,
+              answer: "RNOA = 47.11%. NOPM = 10.98%. NOAT = 4.29x.",
+              rationale: "RNOA = NOPAT / Average NOA = 11,880.72 / 25,216.5 = 47.11%. NOPM = NOPAT / Rev = 10.98%. NOAT = Rev / Average NOA = 4.29x." },
+            
+            { id: 110, module: "Exercises", lo: "LO4", skill: "Conceptual", topic: "Comparing NOPAT Metrics", 
+              question: `Compute NOPAT for Home Depot and Lowe's. Then indicate which of these two companies:<br><div class="overflow-x-auto"><table class="q-table whitespace-nowrap" style="max-width: 500px;"><tr><th>Indicate which of these two companies:</th><th>Company</th></tr><tr><td>1. Is more profitable (in $s).</td><td><select class="smart-input" data-correct="Home Depot"><option value="">- Select -</option><option value="Home Depot">Home Depot</option><option value="Lowe's">Lowe's</option></select></td></tr><tr><td>2. Produces the higher profit margin (in %).</td><td><select class="smart-input" data-correct="Home Depot"><option value="">- Select -</option><option value="Home Depot">Home Depot</option><option value="Lowe's">Lowe's</option></select></td></tr><tr><td>3. Uses its NOA more efficiently.</td><td><select class="smart-input" data-correct="Home Depot"><option value="">- Select -</option><option value="Home Depot">Home Depot</option><option value="Lowe's">Lowe's</option></select></td></tr><tr><td>4. Produces the higher return on NOA.</td><td><select class="smart-input" data-correct="Home Depot"><option value="">- Select -</option><option value="Home Depot">Home Depot</option><option value="Lowe's">Lowe's</option></select></td></tr></table></div>`,
+              answer: "Home Depot for all four metrics.",
+              rationale: "Home Depot generates vastly superior NOPAT ($11,880M vs $2,800M), has a higher NOPM (10.98% vs 3.93%), higher NOAT (4.29x vs 3.51x), and resulting higher RNOA (47.11% vs 13.78%)." },
+            
+            { id: 111, module: "Exercises", lo: "LO5", skill: "Quantitative", topic: "Aging of Accounts Receivable", 
+              question: `Collins Company analyzes its accounts receivable at December 31 and arrives at the age categories below along with the percentages that are estimated as uncollectible. The balance of the allowance for uncollectible accounts is $1,100 on December 31, before any adjustments.<br><br>
+              <div class="overflow-x-auto"><table class="q-table whitespace-nowrap" style="width: auto;">
+                <tr><th>Aging of Accounts</th><th>Accounts Receivable</th><th>Estimated Loss %</th></tr>
+                <tr><td>0-30 days past due</td><td>$110,000</td><td>1%</td></tr>
+                <tr><td>31-60 days past due</td><td>40,000</td><td>2%</td></tr>
+                <tr><td>61-120 days past due</td><td>27,000</td><td>5%</td></tr>
+                <tr><td>121-180 days past due</td><td>14,000</td><td>10%</td></tr>
+                <tr><td>Over 180 days past due</td><td>9,000</td><td>25%</td></tr>
+                <tr><td>Total</td><td>$200,000</td><td></td></tr>
+              </table></div><br>
+              a. What amount of bad debts expense will Collins report in its income statement for the year?<br>
+              Note: Round answers to the nearest dollar, if applicable.<br>
+              $ <input class="smart-input inline-block w-32" data-correct="5800"><br><br>
+              b. Use the financial statement effects template to record Collins's bad debts expense for the year.<br>
+              Note: Use negative signs with answers when appropriate.<br>
+              Note: If an answer field is not needed, leave it blank (not all answer fields will be used).<br>
+              <div class="overflow-x-auto"><table class="q-table whitespace-nowrap text-center">
+                <tr><th rowspan="2">Transaction</th><th colspan="3">BALANCE SHEET</th><th colspan="2"></th><th colspan="3">INCOME STATEMENT</th></tr>
+                <tr><th>Cash Asset</th><th>Noncash Assets</th><th>Liabilities</th><th>Contributed Capital</th><th>Earned Capital</th><th>Revenues</th><th>Expenses</th><th>Net Income</th></tr>
+                <tr>
+                    <td rowspan="2" class="text-left font-bold">Record bad debt expense</td>
+                    <td><input class="smart-input" data-correct=""></td>
+                    <td><input class="smart-input" data-correct="-5800"></td>
+                    <td><input class="smart-input" data-correct=""></td>
+                    <td><input class="smart-input" data-correct=""></td>
+                    <td><input class="smart-input" data-correct="-5800"></td>
+                    <td><input class="smart-input" data-correct=""></td>
+                    <td><input class="smart-input" data-correct="5800"></td>
+                    <td><input class="smart-input" data-correct="-5800"></td>
+                </tr>
+                <tr>
+                    <td><select class="smart-input" data-correct=""><option value="">-</option><option value="Cash">Cash</option></select></td>
+                    <td><select class="smart-input" data-correct="Allow Uncol Acct"><option value="">-</option><option value="Allow Uncol Acct">Allow Uncol Acct</option><option value="Accounts Receivable">Accounts Receivable</option></select></td>
+                    <td><select class="smart-input" data-correct=""><option value="">-</option></select></td>
+                    <td><select class="smart-input" data-correct=""><option value="">-</option></select></td>
+                    <td><select class="smart-input" data-correct="Ret Earn"><option value="">-</option><option value="Ret Earn">Ret Earn</option></select></td>
+                    <td><select class="smart-input" data-correct=""><option value="">-</option></select></td>
+                    <td><select class="smart-input" data-correct="Bad Debt Exp"><option value="">-</option><option value="Bad Debt Exp">Bad Debt Exp</option></select></td>
+                    <td></td>
+                </tr>
+              </table></div><br>
+              c. What is the balance of accounts receivable, net on its December 31 balance sheet?<br>
+              Note: Round answers to the nearest dollar, if applicable.<br>
+              $ <input class="smart-input inline-block w-32" data-correct="193100">`,
+              answer: `a. $5,800 <br>c. $193,100`,
+              rationale: "Required allowance = $110,000×1% + $40,000×2% + $27,000×5% + $14,000×10% + $9,000×25% = $6,900 total required allowance. Bad debt expense = Target Allowance ($6,900) - Unadjusted Balance ($1,100) = $5,800. Net AR = Gross AR ($200,000) - Target Allowance ($6,900) = $193,100." },
+            
+            { id: 112, module: "Exercises", lo: "LO5", skill: "Quantitative", topic: "AR Turnover for Competitors", 
+              question: `Procter & Gamble Company and Colgate-Palmolive Company report the following sales and accounts receivable balances. Compute AR turnover and DSO.<br><div class="overflow-x-auto flex gap-4"><table class="q-table whitespace-nowrap" style="width: auto;"><tr><th>$ millions</th><th>Numerator</th><th>Denominator</th><th>AR Turnover</th></tr><tr><td>Procter & Gamble</td><td>$ <input class="smart-input w-24" data-correct="66832"></td><td>$ <input class="smart-input w-24" data-correct="4640"></td><td><input class="smart-input w-16" data-correct="14.4"></td></tr><tr><td>Colgate-Palmolive</td><td><input class="smart-input w-24" data-correct="15544"></td><td><input class="smart-input w-24" data-correct="1440"></td><td><input class="smart-input w-16" data-correct="10.8"></td></tr></table><table class="q-table whitespace-nowrap" style="width: auto;"><tr><th>$ millions</th><th>DSO</th></tr><tr><td>Procter & Gamble</td><td><input class="smart-input w-16" data-correct="25"></td></tr><tr><td>Colgate-Palmolive</td><td><input class="smart-input w-16" data-correct="34"></td></tr></table></div><br>b. Which company collects its accounts receivable more quickly?<br><select class="smart-input w-64" data-correct="Procter & Gamble"><option value="">- Select -</option><option value="Procter & Gamble">Procter & Gamble</option><option value="Colgate-Palmolive">Colgate-Palmolive</option></select>`,
+              answer: "Procter & Gamble has 14.4x turnover (25 DSO). Colgate-Palmolive has 10.8x turnover (34 DSO). Procter & Gamble collects more quickly.",
+              rationale: "Average AR = (Beg + End) / 2. AR Turnover = Sales / Average AR. DSO = 365 / AR Turnover." },
+            
+            { id: 113, module: "Exercises", lo: "LO3", skill: "Quantitative", topic: "Inventory Costing Methods", 
+              question: `Chen Company has Beg Inv: 1000@$32. Purchases: 1800@$34, 800@$38, 1200@$41. Sold 2,800 units.<br><br>a. FIFO: COGS: $<input class="smart-input inline-block w-24" data-correct="93200"> | Ending Inventory:$ <input class="smart-input inline-block w-24" data-correct="79600"><br>b. LIFO: COGS: $<input class="smart-input inline-block w-24" data-correct="106800"> | Ending Inventory:$ <input class="smart-input inline-block w-24" data-correct="66000"><br>c. Average: COGS: $<input class="smart-input inline-block w-24" data-correct="100800"> | Ending Inventory:$ <input class="smart-input inline-block w-24" data-correct="72000"><br>d. Which method to:<br> 1. Reflect physical flow? <select class="smart-input inline-block w-24" data-correct="FIFO"><option value="">-Select-</option><option value="FIFO">FIFO</option><option value="LIFO">LIFO</option></select><br> 2. Minimize taxes? <select class="smart-input inline-block w-24" data-correct="LIFO"><option value="">-Select-</option><option value="FIFO">FIFO</option><option value="LIFO">LIFO</option></select><br> 3. Largest income? <select class="smart-input inline-block w-24" data-correct="FIFO"><option value="">-Select-</option><option value="FIFO">FIFO</option><option value="LIFO">LIFO</option></select>`,
+              answer: `a. FIFO: COGS: $93,200 | Ending Inventory: $79,600<br>b. LIFO: COGS: $106,800 | Ending Inventory: $66,000<br>c. Average: COGS: $100,800 | Ending Inventory: $72,000<br>d. 1. FIFO. 2. LIFO. 3. FIFO.`,
+              rationale: "FIFO assigns oldest costs ($32, $34) to COGS. LIFO assigns newest costs ($41, $38, $34) to COGS. In an inflationary environment, FIFO yields highest income; LIFO yields highest COGS, minimizing taxes." },
+            
+            { id: 114, module: "Exercises", lo: "LO3", skill: "Deep Thinking", topic: "Inventory Note Disclosure", 
+              question: `Deere reports Ending LIFO Inventory of $6,149M. Footnotes state that if FIFO were used, inventory would be $7,786M. What is the LIFO Reserve, and what is its cumulative effect on pretax income? <br><br>Cumulative effect on pre-tax income: $ <input class="smart-input inline-block w-32" data-correct="1637"> million`,
+              answer: `LIFO Reserve: $1,637M | Cumulative effect on pre-tax income: $1,637M.`,
+              rationale: "Reserve = FIFO - LIFO = 7786 - 6149 = 1637. Because LIFO assigns the most recent, higher costs to COGS, pretax income is suppressed by exactly the amount of the reserve over time." },
+            
+            { id: 115, module: "Exercises", lo: "LO3", skill: "Quantitative", topic: "Estimating Useful Life", 
+              question: `Tesla reports Total PPE of $32,589M, which includes Land (25% of the $7,751M Land and Buildings) and Construction in Progress of $4,263M. Accumulated Depreciation is $9,041M, and Current Year Depreciation Expense is $2,420M. Estimate the average useful life and percent used up.<br><div class="overflow-x-auto flex gap-4"><table class="q-table whitespace-nowrap" style="width: auto;"><tr><th>$ millions</th><th>Numerator</th><th>Denominator</th><th>Average Useful Life</th></tr><tr><td>Current year:</td><td>$ <input class="smart-input w-24" data-correct="26388"></td><td>$ <input class="smart-input w-24" data-correct="2420"></td><td><input class="smart-input w-20" data-correct="10.90"></td></tr></table><table class="q-table whitespace-nowrap" style="width: auto;"><tr><th>$ millions</th><th>Numerator</th><th>Denominator</th><th>Percent Used Up</th></tr><tr><td>Current year:</td><td>$ <input class="smart-input w-24" data-correct="9041"></td><td>$ <input class="smart-input w-24" data-correct="26388"></td><td><input class="smart-input w-20" data-correct="34.3"> %</td></tr></table></div>`,
+              answer: "Average Useful Life = 10.90 years. Percent Used Up = 34.3%",
+              rationale: "Depreciable asset cost = Total PPE ($32,589) - Land (0.25 * $7,751) - Construction in Progress ($4,263) ≈ $26,388M. Average Useful Life = Depreciable Asset Cost ($26,388M) / Depreciation Exp ($2,420M) = 10.90 years. Percent Used Up = Accumulated Depr ($9,041M) / Depreciable Asset Cost ($26,388M) = 34.3%." },
+            
+            { id: 116, module: "Exercises", lo: "LO3", skill: "Quantitative", topic: "Computing Depreciation", 
+              question: `A delivery van costing $37,000 is expected to have a $2,900 salvage value at the end of its useful life of five years. Compute the depreciation expense for the first two calendar years under straight-line.<br><br>First calendar year depreciation: $<input class="smart-input inline-block w-24" data-correct="6820"><br>Second calendar year depreciation:$ <input class="smart-input inline-block w-24" data-correct="6820">`,
+              answer: `First calendar year depreciation: $6,820<br>Second calendar year depreciation: $6,820`,
+              rationale: "Straight-Line = (Cost - Salvage) / Useful Life. ($37,000 - $2,900) / 5 = $34,100 / 5 = $6,820 per year." },
+            
+            { id: 117, module: "Exercises", lo: "LO4", skill: "Quantitative", topic: "PP&E Turnover", 
+              question: `Compute the PPE turnover for the current fiscal year for both companies.<br><div class="overflow-x-auto"><table class="q-table whitespace-nowrap" style="width: auto;"><tr><th>Numerator</th><th>Denominator</th><th>PPE Turnover</th></tr><tr><td>$ <input class="smart-input w-24" data-correct="70848"></td><td>$ <input class="smart-input w-24" data-correct="45043"></td><td><input class="smart-input w-16" data-correct="1.57"></td></tr><tr><td><input class="smart-input w-24" data-correct="15784"></td><td><input class="smart-input w-24" data-correct="2924"></td><td><input class="smart-input w-16" data-correct="5.40"></td></tr></table></div><br>Texas Instruments generates <select class="smart-input inline-block w-32" data-correct="more"><option value="">-Select-</option><option value="more">more</option><option value="less">less</option></select> revenue from its PPE than does Intel...`,
+              answer: `Intel PPE Turnover = 1.57x | Texas Instruments PPE Turnover = 5.40x. Texas Instruments generates [ more ] revenue from its PPE.`,
+              rationale: "PPE Turnover = Sales / Average PP&E. Intel = 70,848 / 45,043 = 1.57x. TI = 15,784 / 2,924 = 5.40x." },
+            
+            { id: 118, module: "Exercises", lo: "LO4", skill: "Quantitative", topic: "Gross Profit & DIO", 
+              question: `Compute AutoZone and O'Reilly's gross profit margin (in %) and days inventory outstanding for both years.<br>
+              <div class="overflow-x-auto">
+                <table class="q-table whitespace-nowrap" style="width: auto;">
+                  <tr><th>Gross Profit Margin (%)</th><th>Current Year</th><th>Prior Year</th></tr>
+                  <tr><td>AutoZone</td><td><input class="smart-input w-24" data-correct="53.2"> %</td><td><input class="smart-input w-24" data-correct="52.7"> %</td></tr>
+                  <tr><td>O'Reilly</td><td><input class="smart-input w-24" data-correct="52.8"> %</td><td><input class="smart-input w-24" data-correct="52.6"> %</td></tr>
+                </table>
+                <table class="q-table whitespace-nowrap mt-4" style="width: auto;">
+                  <tr><th>Days Inventory Outstanding (DIO)</th><th>Current Year</th><th>Prior Year</th></tr>
+                  <tr><td>AutoZone</td><td><input class="smart-input w-24" data-correct="272"></td><td><input class="smart-input w-24" data-correct="266"></td></tr>
+                  <tr><td>O'Reilly</td><td><input class="smart-input w-24" data-correct="252"></td><td><input class="smart-input w-24" data-correct="248"></td></tr>
+                </table>
+              </div><br>
+              <div class="space-y-2 mt-4 text-sm">
+                  <p>b. Which company has the higher gross profit margin? <select class="smart-input inline-block w-40" data-correct="AutoZone"><option value="">-Select-</option><option value="AutoZone">AutoZone</option><option value="O'Reilly">O'Reilly</option></select>. Did that company's margin improve or decline? <select class="smart-input inline-block w-40" data-correct="improve"><option value="">-Select-</option><option value="improve">Improve</option><option value="decline">Decline</option></select></p>
+                  <p>c. Which company has the lower days inventory outstanding? <select class="smart-input inline-block w-40" data-correct="O'Reilly"><option value="">-Select-</option><option value="AutoZone">AutoZone</option><option value="O'Reilly">O'Reilly</option></select>. Did that company's inventory turnover speed improve or decline? <select class="smart-input inline-block w-40" data-correct="decline"><option value="">-Select-</option><option value="improve">Improve</option><option value="decline">Decline</option></select></p>
+              </div>`,
+              answer: `AutoZone GPM: 53.2% (Current), 52.7% (Prior). O'Reilly GPM: 52.8% (Current), 52.6% (Prior). AutoZone DIO: 272 (Current), 266 (Prior). O'Reilly DIO: 252 (Current), 248 (Prior).`,
+              rationale: "Gross Profit Margin = (Sales - COGS) / Sales. DIO = 365 / (COGS / Average Inventory). AutoZone has the higher gross profit margin (and it improved). O'Reilly turns its inventory over more quickly (lower DIO), but their turnover speed actually declined year-over-year (DIO went from 248 to 252)." },
+            
+            { id: 119, module: "Exercises", lo: "LO5", skill: "Quantitative", topic: "Net Cash Flow (Indirect)", 
+              question: `Use the information to calculate the net cash flow from operating activities under the indirect method.<br><div class="overflow-x-auto"><table class="q-table whitespace-nowrap" style="width: 400px;"><tr><th colspan="2">Cash from operating activities</th></tr><tr><td>Net Income</td><td>$ <input class="smart-input w-24" data-correct="112000"></td></tr><tr><td colspan="2" class="font-semibold bg-slate-50">Add (Deduct) reconciling items:</td></tr><tr><td>Accounts receivable</td><td><input class="smart-input w-24" data-correct="-8000"></td></tr><tr><td>Inventory</td><td><input class="smart-input w-24" data-correct="6000"></td></tr><tr><td>Prepaid insurance</td><td><input class="smart-input w-24" data-correct="-2000"></td></tr><tr><td>Accounts payable</td><td><input class="smart-input w-24" data-correct="4000"></td></tr><tr><td>Wages payable</td><td><input class="smart-input w-24" data-correct="-4000"></td></tr><tr class="font-bold bg-slate-100"><td>Net cash flow</td><td>$ <input class="smart-input w-24 border-none bg-transparent" data-correct="108000"></td></tr></table></div>`,
+              answer: `Net cash flow = $ 108,000`,
+              rationale: "Start with NI (112k). Subtract AR increase (-8k). Add Inventory decrease (+6k). Subtract Prepaid increase (-2k). Add AP increase (+4k). Subtract Wages Pay decrease (-4k). 112 - 8 + 6 - 2 + 4 - 4 = $108,000." },
+            
+            { id: 120, module: "Exercises", lo: "LO5", skill: "Conceptual", topic: "Classification of Cash Flows", 
+              question: `Indicate whether the following are Operating, Investing, or Financing cash flows:<br><br>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex flex-col gap-1"><label class="text-sm font-medium text-slate-700">a) Cash receipts from customers</label><select class="smart-input" data-correct="Operating"><option value="">-Select-</option><option value="Operating">Operating</option><option value="Investing">Investing</option><option value="Financing">Financing</option></select></div>
+                <div class="flex flex-col gap-1"><label class="text-sm font-medium text-slate-700">b) Sale of long-term investments for cash</label><select class="smart-input" data-correct="Investing"><option value="">-Select-</option><option value="Operating">Operating</option><option value="Investing">Investing</option><option value="Financing">Financing</option></select></div>
+                <div class="flex flex-col gap-1"><label class="text-sm font-medium text-slate-700">c) Acquisition of PPE for cash</label><select class="smart-input" data-correct="Investing"><option value="">-Select-</option><option value="Operating">Operating</option><option value="Investing">Investing</option><option value="Financing">Financing</option></select></div>
+                <div class="flex flex-col gap-1"><label class="text-sm font-medium text-slate-700">d) Payment of income taxes</label><select class="smart-input" data-correct="Operating"><option value="">-Select-</option><option value="Operating">Operating</option><option value="Investing">Investing</option><option value="Financing">Financing</option></select></div>
+                <div class="flex flex-col gap-1"><label class="text-sm font-medium text-slate-700">e) Bonds payable issued for cash</label><select class="smart-input" data-correct="Financing"><option value="">-Select-</option><option value="Operating">Operating</option><option value="Investing">Investing</option><option value="Financing">Financing</option></select></div>
+                <div class="flex flex-col gap-1"><label class="text-sm font-medium text-slate-700">f) Payment of cash dividends declared prior</label><select class="smart-input" data-correct="Financing"><option value="">-Select-</option><option value="Operating">Operating</option><option value="Investing">Investing</option><option value="Financing">Financing</option></select></div>
+                <div class="flex flex-col gap-1"><label class="text-sm font-medium text-slate-700">g) Purchase of short-term investments</label><select class="smart-input" data-correct="Investing"><option value="">-Select-</option><option value="Operating">Operating</option><option value="Investing">Investing</option><option value="Financing">Financing</option></select></div>
+                <div class="flex flex-col gap-1"><label class="text-sm font-medium text-slate-700">h) Purchases of inventory for cash</label><select class="smart-input" data-correct="Operating"><option value="">-Select-</option><option value="Operating">Operating</option><option value="Investing">Investing</option><option value="Financing">Financing</option></select></div>
+              </div>`, 
+              answer: "a) Operating, b) Investing, c) Investing, d) Operating, e) Financing, f) Financing, g) Investing, h) Operating", 
+              rationale: "Operating: Customers, taxes, inventory. Investing: Long/short-term investments, PPE. Financing: Issuing bonds, paying dividends." }
+        ];
+
+        let currentFilterModule = 'all';
+        let currentFilterLO = 'all'; 
+        let answersVisible = false;
+        let flaggedQuestions = new Set();
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('absolute');
+            sidebar.classList.toggle('h-[calc(100vh-65px)]');
+            sidebar.classList.toggle('w-full');
+            sidebar.classList.toggle('z-50');
+            sidebar.style.top = "65px"; 
+        }
+        
+        function toggleFormulas() {
+            const modal = document.getElementById('formula-modal');
+            const isHidden = modal.classList.contains('hidden');
+            
+            if (isHidden) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.querySelector('.absolute.inset-0').classList.remove('opacity-0');
+                    modal.querySelector('.absolute.inset-0').classList.add('opacity-100');
+                }, 10);
+            } else {
+                modal.classList.add('hidden');
+            }
+            lucide.createIcons();
+        }
+
+        function filterModule(filter) {
+            currentFilterModule = filter;
+            
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.remove('active', 'bg-blue-50', 'text-blue-700', 'border-r-4', 'border-blue-500');
+                btn.classList.add('text-slate-600');
+            });
+
+            let btnId = 'btn-all';
+            if (filter === 'Multiple Choice') btnId = 'btn-mcq';
+            if (filter === 'Exercises') btnId = 'btn-exercises';
+            
+            const activeBtn = document.getElementById(btnId);
+            activeBtn.classList.add('active');
+
+            filterLO('all'); 
+        }
+
+        function filterLO(filterVal) {
+            currentFilterLO = filterVal;
+
+            document.querySelectorAll('.lo-pill').forEach(btn => {
+                btn.classList.remove('active', 'active-deep', 'active-quant', 'active-concept');
+            });
+
+            let btnId = 'lo-all';
+            if(filterVal === 'LO1') btnId = 'lo-1';
+            if(filterVal === 'LO2') btnId = 'lo-2';
+            if(filterVal === 'LO3') btnId = 'lo-3';
+            if(filterVal === 'LO4') btnId = 'lo-4';
+            if(filterVal === 'LO5') btnId = 'lo-5';
+            if(filterVal === 'Conceptual') btnId = 'lo-concept';
+            if(filterVal === 'Quantitative') btnId = 'lo-quant';
+            if(filterVal === 'Deep Thinking') btnId = 'lo-deep';
+            if(filterVal === 'Flagged') btnId = 'lo-flagged';
+
+            const activeBtn = document.getElementById(btnId);
+            if (activeBtn) {
+                if(filterVal === 'Deep Thinking') {
+                    activeBtn.classList.add('active-deep');
+                } else if (filterVal === 'Quantitative') {
+                    activeBtn.classList.add('active-quant');
+                } else if (filterVal === 'Conceptual') {
+                    activeBtn.classList.add('active-concept');
+                } else if (filterVal === 'Flagged') {
+                    activeBtn.classList.add('bg-amber-100', 'border-amber-300', 'text-amber-800');
+                    activeBtn.classList.remove('hover:bg-amber-50');
+                } else {
+                    activeBtn.classList.add('active');
+                }
+            }
+
+            const descriptions = {
+                'all': 'Showing all topics and question types across the selected section.',
+                'LO1': '<strong>Basics & Fin Statements:</strong> Accounting equation, prep order, linkages, SEC filings.',
+                'LO2': '<strong>Revenue & Receivables:</strong> Rev Rec principles, unearned rev, accruals, sales returns.',
+                'LO3': '<strong>Inventory & PP&E:</strong> LIFO/FIFO, LIFO reserve, depreciation, asset useful life.',
+                'LO4': '<strong>Financial Ratios:</strong> DuPont, ROE/ROA, Margins, Turnovers, Cash Conversion Cycle.',
+                'LO5': '<strong>Cash Flows:</strong> Direct/Indirect method, operating/investing/financing classifications.',
+                'Conceptual': 'Questions focusing on theory, definitions, and qualitative understanding.',
+                'Quantitative': 'Questions requiring calculations, ratio derivation, and numerical analysis.',
+                'Deep Thinking': 'Advanced questions requiring synthesis, interpretation, and critical reasoning.',
+                'Flagged': '<strong>Flagged for Review:</strong> Questions you have marked to revisit.'
+            };
+            
+            let iconCode = '<i data-lucide="info" class="w-5 h-5 text-blue-500"></i> ';
+            if(filterVal === 'Quantitative') iconCode = '<i data-lucide="calculator" class="w-5 h-5 text-sky-600"></i> ';
+            if(filterVal === 'Deep Thinking') iconCode = '<i data-lucide="brain" class="w-5 h-5 text-indigo-600"></i> ';
+            if(filterVal === 'Flagged') iconCode = '<i data-lucide="flag" class="w-5 h-5 text-amber-500"></i> ';
+
+            document.getElementById('filter-description').innerHTML = iconCode + (descriptions[filterVal] || '');
+
+            renderQuestions();
+        }
+
+        function toggleFlag(id) {
+            if(flaggedQuestions.has(id)) {
+                flaggedQuestions.delete(id);
+            } else {
+                flaggedQuestions.add(id);
+            }
+            
+            const btn = document.getElementById(`flag-btn-${id}`);
+            const icon = document.getElementById(`flag-icon-${id}`);
+            
+            if(btn && icon) {
+                if(flaggedQuestions.has(id)) {
+                    btn.classList.add('bg-amber-100', 'text-amber-600', 'border-amber-300');
+                    btn.classList.remove('bg-slate-50', 'text-slate-400', 'border-slate-200', 'hover:text-amber-500', 'hover:border-amber-300');
+                    icon.setAttribute('fill', 'currentColor');
+                } else {
+                    btn.classList.remove('bg-amber-100', 'text-amber-600', 'border-amber-300');
+                    btn.classList.add('bg-slate-50', 'text-slate-400', 'border-slate-200', 'hover:text-amber-500', 'hover:border-amber-300');
+                    icon.setAttribute('fill', 'none');
+                }
+            }
+            
+            // Re-render if currently viewing flagged questions
+            if(currentFilterLO === 'Flagged') {
+                renderQuestions();
+            }
+        }
+
+        // Global function attached to the window for inline MCQ onclick handling
+        window.handleOptionClick = function(el, qId, optIndex) {
+            const q = questions.find(x => x.id === qId);
+            if (!q) return;
+
+            const optionsForQ = document.querySelectorAll(`.q-${qId}-option`);
+            
+            if (q.isMultiSelect === true) {
+                el.classList.toggle('selected');
+                
+                if (q.correctIndices && q.correctIndices.includes(optIndex)) {
+                    if (el.classList.contains('selected')) {
+                        el.classList.add('correct-choice');
+                        el.classList.remove('incorrect-choice');
+                        showEncouragement();
+                    } else {
+                        el.classList.remove('correct-choice', 'incorrect-choice');
+                    }
+                } else {
+                    if (el.classList.contains('selected')) {
+                        el.classList.add('incorrect-choice');
+                        el.classList.remove('correct-choice');
+                    } else {
+                        el.classList.remove('correct-choice', 'incorrect-choice');
+                    }
+                }
+            } else {
+                // Single-select behavior (clear all specific question options first)
+                optionsForQ.forEach(opt => {
+                    opt.classList.remove('selected', 'correct-choice', 'incorrect-choice');
+                });
+                
+                el.classList.add('selected');
+                
+                // Directly match string
+                const isMatch = (q.options[optIndex] === q.answer);
+                if (isMatch) {
+                    el.classList.add('correct-choice');
+                    showEncouragement();
+                } else {
+                    el.classList.add('incorrect-choice');
+                }
+            }
+        };
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+            
+            let filteredQuestions = questions;
+            
+            if (currentFilterModule !== 'all') {
+                filteredQuestions = filteredQuestions.filter(q => q.module === currentFilterModule);
+            }
+
+            if (currentFilterLO === 'Flagged') {
+                filteredQuestions = filteredQuestions.filter(q => flaggedQuestions.has(q.id));
+            } else if (currentFilterLO !== 'all') {
+                filteredQuestions = filteredQuestions.filter(q => q.lo === currentFilterLO || q.skill === currentFilterLO);
+            }
+            
+            document.getElementById('filter-count').innerText = `Showing ${filteredQuestions.length} questions`;
+            
+            filteredQuestions.forEach((q) => {
+                const card = document.createElement('div');
+                card.className = "card bg-white rounded-2xl shadow-sm overflow-hidden";
+                card.id = `card-${q.id}`;
+                
+                let contentHtml = '';
+                
+                if (q.options && q.options.length > 0) {
+                    contentHtml = `<div class="mt-5 space-y-2">
+                        ${q.options.map((opt, i) => `
+                            <div class="option-btn mcq-option q-${q.id}-option p-3 rounded-xl border-2 text-slate-700 text-sm" 
+                                 onclick="handleOptionClick(this, ${q.id}, ${i})">
+                                ${opt}
+                            </div>
+                        `).join('')}
+                    </div>`;
+                }
+
+                let skillBadgeClass = '';
+                let skillIcon = '';
+                if(q.skill === 'Deep Thinking') {
+                    skillBadgeClass = 'badge-deep border';
+                    skillIcon = '<i data-lucide="brain" class="w-3 h-3 mr-1 inline"></i>';
+                } else if (q.skill === 'Quantitative') {
+                    skillBadgeClass = 'badge-quantitative border';
+                    skillIcon = '<i data-lucide="calculator" class="w-3 h-3 mr-1 inline"></i>';
+                } else {
+                    skillBadgeClass = 'badge-conceptual border';
+                    skillIcon = '<i data-lucide="book-open" class="w-3 h-3 mr-1 inline"></i>';
+                }
+
+                const flagClass = flaggedQuestions.has(q.id) ? 'bg-amber-100 text-amber-600 border-amber-300' : 'bg-slate-50 text-slate-400 border-slate-200 hover:text-amber-500 hover:border-amber-300';
+                const flagFill = flaggedQuestions.has(q.id) ? 'currentColor' : 'none';
+
+                card.innerHTML = `
+                    <div class="p-7">
+                        <div class="flex justify-between items-start mb-5">
+                            <div class="flex flex-wrap gap-2">
+                                <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-black uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200">
+                                    ${q.module}
+                                </span>
+                                <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-black uppercase tracking-wider bg-slate-50 text-slate-600 border border-slate-200">
+                                    ${q.lo}
+                                </span>
+                                <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-black uppercase tracking-wider ${skillBadgeClass}">
+                                    ${skillIcon}${q.skill}
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-2 flex-shrink-0 ml-2">
+                                <span class="text-xs font-black text-slate-400 tracking-widest bg-slate-50 px-2 py-1 rounded border border-slate-100">Q${q.id}</span>
+                                <button id="flag-btn-${q.id}" onclick="toggleFlag(${q.id})" class="p-1.5 rounded-md border ${flagClass} transition-colors" title="Flag for review">
+                                    <i id="flag-icon-${q.id}" data-lucide="flag" class="w-4 h-4" fill="${flagFill}"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">${q.topic}</h3>
+                        <div class="text-slate-800 font-medium text-base leading-relaxed overflow-x-auto">${q.question}</div>
+                        
+                        ${contentHtml}
+                        
+                        <div class="mt-8 pt-5 border-t border-slate-100 flex justify-between items-center">
+                            <button onclick="toggleAnswer(${q.id})" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-5 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                                <span>Show Answer</span>
+                                <i data-lucide="chevron-down" class="w-4 h-4 transition-transform" id="icon-${q.id}"></i>
+                            </button>
+                        </div>
+                        
+                        <div id="ans-${q.id}" class="answer-section bg-slate-50 rounded-xl px-6 border border-slate-200 hidden-initially">
+                            <div class="flex gap-4">
+                                <div class="flex-shrink-0 mt-0.5">
+                                    <div class="bg-green-100 p-1.5 rounded-full"><i data-lucide="check" class="w-5 h-5 text-green-600"></i></div>
+                                </div>
+                                <div class="w-full">
+                                    <div class="font-extrabold text-slate-800 mb-2">Answer</div>
+                                    <div class="text-slate-800 mb-5 overflow-x-auto text-sm font-medium bg-white p-4 rounded-lg border border-slate-200 shadow-sm">${q.answer}</div>
+                                    <div class="text-slate-600 text-sm leading-relaxed border-t border-slate-200 pt-3 pb-1">
+                                        <span class="font-bold text-slate-800 uppercase text-xs tracking-wider">Rationale:</span> <br/>${q.rationale}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            
+            if(answersVisible) {
+                 filteredQuestions.forEach((q) => {
+                    const answerDiv = document.getElementById(`ans-${q.id}`);
+                    const icon = document.getElementById(`icon-${q.id}`);
+                    const individualBtnSpan = answerDiv.previousElementSibling.querySelector('span');
+                    
+                    answerDiv.classList.remove('hidden-initially');
+                    answerDiv.classList.add('visible');
+                    
+                    if(icon) icon.style.transform = 'rotate(180deg)';
+                    if(individualBtnSpan) individualBtnSpan.textContent = "Hide Answer";
+                    
+                    autofillInputs(q.id, true);
+                 });
+            }
+
+            lucide.createIcons();
+            attachSmartInputListeners();
+        }
+
+        // Animated Encouragement Toasts
+        let lastToastTime = 0;
+        function showEncouragement() {
+            const now = Date.now();
+            if (now - lastToastTime < 2000) return; // Prevent spamming
+            lastToastTime = now;
+            
+            const phrases = ["Great job! 🎉", "Spot on! 🎯", "You got it! 🚀", "Perfect! 🌟", "Accounting rockstar! 📊", "Nailed it! 🔨", "Brilliant! 💡", "Excellent! 💯", "Keep it up! 🔥"];
+            const toast = document.createElement('div');
+            
+            toast.className = 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-6 py-3 rounded-2xl shadow-2xl font-bold flex items-center gap-3 border-2 border-emerald-300';
+            toast.style.animation = 'floatUp 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+            
+            toast.innerHTML = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span class="text-base">${phrases[Math.floor(Math.random() * phrases.length)]}</span>`;
+            
+            document.getElementById('toast-container').appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 2600);
+        }
+
+        function validateField(el) {
+            const val = el.value.trim().replace(/,/g, '');
+            const correctRaw = el.getAttribute('data-correct');
+            if(correctRaw === null || correctRaw === undefined) return;
+            const correct = correctRaw.trim();
+
+            if (val === "") {
+                el.classList.remove('correct', 'incorrect');
+                el.dataset.status = 'blank';
+                return;
+            }
+
+            let parsedValStr = val;
+            if (parsedValStr.startsWith('(') && parsedValStr.endsWith(')')) {
+                parsedValStr = '-' + parsedValStr.slice(1, -1);
+            }
+            
+            let correctStr = correct.replace(/,/g, '');
+            if (correctStr.startsWith('(') && correctStr.endsWith(')')) {
+                correctStr = '-' + correctStr.slice(1, -1);
+            }
+            
+            const numVal = parseFloat(parsedValStr);
+            const numCorrect = parseFloat(correctStr);
+            let isMatch = false;
+
+            if (!isNaN(numVal) && !isNaN(numCorrect)) {
+                if (Math.abs(numVal - numCorrect) < 0.05 || parsedValStr.toLowerCase() === correctStr.toLowerCase()) {
+                    isMatch = true;
+                }
+            } else {
+                isMatch = val.toLowerCase() === correct.toLowerCase();
+            }
+
+            el.classList.remove('correct', 'incorrect');
+            if (isMatch) {
+                el.classList.add('correct');
+                // Only show toast if user manually triggered it (not autofill)
+                if (el.dataset.status !== 'correct' && el.dataset.autofilling !== 'true') {
+                    showEncouragement();
+                }
+                el.dataset.status = 'correct';
+            } else {
+                el.classList.add('incorrect');
+                el.dataset.status = 'incorrect';
+            }
+        }
+
+        function attachSmartInputListeners() {
+            document.querySelectorAll('.smart-input').forEach(input => {
+                input.addEventListener('input', function(e) {
+                    e.target.classList.remove('correct', 'incorrect');
+                    e.target.dataset.status = 'typing';
+                });
+                
+                input.addEventListener('blur', function(e) {
+                    validateField(e.target);
+                });
+                
+                if (input.tagName === 'SELECT') {
+                    input.addEventListener('change', function(e) {
+                        validateField(e.target);
+                    });
+                }
+            });
+        }
+
+        function autofillInputs(id, fill) {
+            const card = document.getElementById(`card-${id}`);
+            if(!card) return;
+            
+            const inputs = card.querySelectorAll('.smart-input');
+            const mcqOptions = card.querySelectorAll(`.q-${id}-option`);
+            const q = questions.find(x => x.id === id);
+
+            // Handle Smart Inputs (Exercises)
+            inputs.forEach(input => {
+                if (fill) {
+                    input.dataset.autofilling = 'true'; // Suppress toast
+                    input.value = input.getAttribute('data-correct');
+                    // Even if blank is correct, we style it if there's an expected correct value
+                    if (input.value !== "") {
+                        input.classList.add('correct');
+                        input.classList.remove('incorrect');
+                    } else {
+                        input.classList.remove('correct', 'incorrect');
+                    }
+                    input.dataset.status = 'correct';
+                    setTimeout(() => { delete input.dataset.autofilling; }, 100);
+                } else {
+                    input.value = '';
+                    input.classList.remove('correct', 'incorrect');
+                    input.dataset.status = 'blank';
+                }
+            });
+
+            // Handle MCQ Options selection
+            if (q && q.module === "Multiple Choice") {
+                if (fill) {
+                    mcqOptions.forEach((opt, idx) => {
+                        opt.classList.remove('incorrect-choice');
+                        if (q.isMultiSelect) {
+                            if (q.correctIndices && q.correctIndices.includes(idx)) {
+                                opt.classList.add('correct-choice', 'selected');
+                            }
+                        } else {
+                            if (q.options.indexOf(q.answer) === idx) {
+                                opt.classList.add('correct-choice', 'selected');
+                            }
+                        }
+                    });
+                } else {
+                    mcqOptions.forEach(opt => {
+                        opt.classList.remove('correct-choice', 'incorrect-choice', 'selected');
+                    });
+                }
+            }
+        }
+
+        function toggleAnswer(id) {
+            const answerDiv = document.getElementById(`ans-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            const isVisible = answerDiv.classList.contains('visible');
+            const btnSpan = answerDiv.previousElementSibling.querySelector('span');
+            
+            answerDiv.classList.remove('hidden-initially');
+            
+            if (isVisible) {
+                answerDiv.classList.remove('visible');
+                icon.style.transform = 'rotate(0deg)';
+                btnSpan.textContent = "Show Answer";
+                autofillInputs(id, false);
+            } else {
+                answerDiv.classList.add('visible');
+                icon.style.transform = 'rotate(180deg)';
+                btnSpan.textContent = "Hide Answer";
+                autofillInputs(id, true);
+            }
+        }
+
+        function toggleAllAnswers() {
+            answersVisible = !answersVisible;
+            const btn = document.getElementById('toggleAllSideBtn');
+            
+            if (answersVisible) {
+                btn.innerHTML = '<i data-lucide="eye-off" class="w-5 h-5 text-blue-500"></i> <span>Hide All Answers</span>';
+            } else {
+                btn.innerHTML = '<i data-lucide="eye" class="w-5 h-5 text-blue-500"></i> <span>Show All Answers</span>';
+            }
+            lucide.createIcons();
+            
+            renderQuestions();
+        }
+
+        function downloadReport() {
+            let reportContent = "========================================\n";
+            reportContent += " FINANCIAL REPORTING STUDY REPORT\n";
+            reportContent += " Date: " + new Date().toLocaleString() + "\n";
+            reportContent += "========================================\n\n";
+            
+            reportContent += "--- FLAGGED QUESTIONS TO REVIEW ---\n\n";
+            
+            if (flaggedQuestions.size === 0) {
+                reportContent += "No questions were flagged for review! Great job!\n\n";
+            } else {
+                // Convert Set to Array and sort numerically
+                const flaggedArr = Array.from(flaggedQuestions).sort((a, b) => a - b);
+                
+                flaggedArr.forEach(qId => {
+                    const q = questions.find(x => x.id === qId);
+                    if (q) {
+                        reportContent += `[ Question ${q.id} ] - ${q.topic} (${q.module})\n`;
+                        
+                        // Strip HTML from question text
+                        const tempDiv = document.createElement("div");
+                        tempDiv.innerHTML = q.question.replace(/<br\s*[\/]?>/gi, "\n");
+                        let cleanQuestion = tempDiv.textContent || tempDiv.innerText || "";
+                        
+                        // Clean up extra whitespace/newlines
+                        cleanQuestion = cleanQuestion.replace(/\n\s*\n/g, '\n').trim();
+                        
+                        reportContent += cleanQuestion + "\n";
+                        
+                        reportContent += "\nCorrect Answer & Rationale:\n";
+                        
+                        const tempAns = document.createElement("div");
+                        tempAns.innerHTML = q.answer.replace(/<br\s*[\/]?>/gi, "\n");
+                        const cleanAns = tempAns.textContent || tempAns.innerText || "";
+                        reportContent += cleanAns.trim() + "\n";
+                        
+                        reportContent += "\nRationale: " + q.rationale + "\n\n";
+                        reportContent += "----------------------------------------\n\n";
+                    }
+                });
+            }
+            
+            reportContent += "\nKeep up the great work studying!";
+            
+            const blob = new Blob([reportContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "Financial_Reporting_Study_Report.txt";
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+        }
+
+        let calcInput = "";
+        
+        function toggleCalculator() {
+            const calc = document.getElementById('calculator-container');
+            calc.classList.toggle('hidden');
+        }
+
+        function updateDisplay() {
+            const display = document.getElementById('calc-display');
+            display.innerText = calcInput === "" ? "0" : calcInput;
+            display.scrollLeft = display.scrollWidth;
+        }
+
+        function appendNum(num) { calcInput += num; updateDisplay(); }
+
+        function appendOp(op) {
+            const lastChar = calcInput.slice(-1);
+            if (['+', '-', '*', '/'].includes(lastChar)) {
+                calcInput = calcInput.slice(0, -1) + op;
+            } else if (calcInput !== "") {
+                calcInput += op;
+            }
+            updateDisplay();
+        }
+
+        function backspace() { calcInput = calcInput.slice(0, -1); updateDisplay(); }
+        function clearCalc() { calcInput = ""; updateDisplay(); }
+
+        function calculate() {
+            try {
+                if (calcInput === "") return;
+                const result = eval(calcInput); 
+                
+                if (!isFinite(result) || isNaN(result)) {
+                    calcInput = "Error";
+                } else {
+                    calcInput = String(Math.round(result * 1000000) / 1000000);
+                }
+            } catch (e) {
+                calcInput = "Error";
+            }
+            updateDisplay();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('count-all').innerText = questions.length;
+            document.getElementById('count-mcq').innerText = questions.filter(q => q.module === 'Multiple Choice').length;
+            document.getElementById('count-exercises').innerText = questions.filter(q => q.module === 'Exercises').length;
+
+            renderQuestions();
+        });
+    </script>
+</body>
+</html>
