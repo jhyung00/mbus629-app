@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Restaurant Rescue: Arcade Edition</title>
+  <title>Restaurant Rescue: Financial Audit</title>
   
   <!-- React & ReactDOM -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -15,48 +15,49 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
   
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            sans: ['ESPeak', 'Arial', 'sans-serif'],
+            sans: ['Inter', 'Arial', 'sans-serif'],
             mono: ['JetBrains Mono', 'monospace'],
           },
           colors: {
-            base: {
-              950: '#00004f',
-              900: '#0a0a5c',
-              800: '#1a1a7a',
-              700: '#e5e7eb',
-              100: '#f3f4f6',
-              50: '#ffffff',
-            },
+            navy: '#00004f',
             accent: {
               pink: '#ffb3d9',
               hotpink: '#ff66a3',
-              cyan: '#00e5ff',
-              emerald: '#10b981',
-              rose: '#f43f5e',
-              amber: '#f59e0b',
-            },
-            navy: '#00004f'
+            }
           },
           animation: {
             'fade-in': 'fadeIn 0.5s ease-out forwards',
             'slide-up': 'slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
             'slide-right': 'slideRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
             'pulse-fast': 'pulseFast 1s infinite alternate',
-            'float': 'float 4s ease-in-out infinite',
+            'pulse-glow': 'pulseGlow 1.5s infinite alternate',
+            'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
+            'float': 'float 3s ease-in-out infinite',
+            'bounce-slow': 'bounce 3s infinite',
           },
           keyframes: {
             fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
             slideUp: { '0%': { opacity: '0', transform: 'translateY(40px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
             slideRight: { '0%': { opacity: '0', transform: 'translateX(-40px)' }, '100%': { opacity: '1', transform: 'translateX(0)' } },
             pulseFast: { '0%': { transform: 'scale(1)' }, '100%': { transform: 'scale(1.05)' } },
-            float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-12px)' } }
+            pulseGlow: { '0%': { boxShadow: '0 0 5px rgba(37,99,235,0.4)', transform: 'scale(1)' }, '100%': { boxShadow: '0 0 20px rgba(37,99,235,0.8)', transform: 'scale(1.02)' } },
+            shake: {
+              '10%, 90%': { transform: 'translate3d(-2px, 0, 0)' },
+              '20%, 80%': { transform: 'translate3d(4px, 0, 0)' },
+              '30%, 50%, 70%': { transform: 'translate3d(-6px, 0, 0)' },
+              '40%, 60%': { transform: 'translate3d(6px, 0, 0)' }
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-12px)' },
+            }
           }
         }
       }
@@ -64,53 +65,14 @@
   </script>
   
   <style>
-    @font-face {
-        font-display: swap;
-        font-family: ESPeak;
-        font-style: italic;
-        font-weight: 400;
-        src: url(/Marketsites/Frontend/assets/fonts/ESPeak-Italic.5d15f14….woff2) format("woff2");
-    }
-
-    :root {
-        --page-content-fade-animation-timeout: 800ms;
-        --page-content-fade-animation-duration: 250ms;
-    }
-
-    html {
-        overflow: visible;
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-        line-height: 1em;
-        background: #fff;
-    }
-
     body, html {
-        background: #fff;
+        background: #f8fafc;
         height: 100%;
         margin: 0;
         overflow-x: hidden;
-        font-smooth: always;
-        -webkit-font-smoothing: antialiased;
-        -moz-font-smoothing: antialiased;
-    }
-
-    body {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        font-family: ESPeak, Arial, sans-serif;
-        font-size: 1.25em;
-        font-weight: 400;
-        line-height: 28px;
-        min-width: 320px;
-        overflow-y: scroll !important;
-        -webkit-overflow-scrolling: touch;
         color: #00004f;
-        display: block;
-        transition: background-color 1s ease;
-    }
-
-    *, :after, :before {
-        box-sizing: inherit;
     }
 
     /* Dynamic Animated Background */
@@ -121,85 +83,88 @@
       background-size: cover;
       background-position: center;
       transition: background-image 1s ease-in-out;
-      opacity: 0.15;
-      filter: blur(10px);
+      filter: blur(12px) brightness(0.9);
+      opacity: 0.7;
     }
     
     .gradient-overlay {
       position: fixed;
       inset: 0;
       z-index: -1;
-      background: linear-gradient(-180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.95) 100%);
+      background: linear-gradient(-180deg, rgba(248, 250, 252, 0.8) 0%, rgba(248, 250, 252, 0.98) 100%);
     }
 
-    /* Crisp corporate panels overriding old dark glass */
+    /* Crisp corporate panels */
     .glass-panel {
       background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      border: 2px solid #00004f;
-      box-shadow: 8px 8px 0px rgba(0, 0, 79, 0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 2px solid #e2e8f0;
+      box-shadow: 0 15px 35px rgba(0, 0, 79, 0.1);
     }
 
     .glass-header {
       background: rgba(255, 255, 255, 0.98);
-      border-bottom: 2px solid #00004f;
+      border-bottom: 2px solid #e2e8f0;
       box-shadow: 0 4px 20px rgba(0,0,79,0.05);
     }
 
-    /* Window Opening Interactive Hover Effect */
+    /* Interactive Buttons */
     .btn-window {
         position: relative;
         overflow: hidden;
-        background-color: #00004f; /* Navy */
-        color: #ffb3d9; /* Pink text */
-        border: 2px solid #00004f;
+        background-color: #ffffff;
+        color: #00004f;
+        border: 2px solid #cbd5e1;
         z-index: 1;
-        transition: color 0.4s cubic-bezier(0.86, 0, 0.07, 1), transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .btn-window::before {
-        content: '';
-        position: absolute;
-        top: 0; bottom: 0; left: 0; right: 0;
-        background-color: #ffb3d9; /* Pink background reveals */
-        transform: scaleX(0); /* Starts closed from center */
-        transform-origin: center;
-        transition: transform 0.4s cubic-bezier(0.86, 0, 0.07, 1);
-        z-index: -1;
+        transition: all 0.2s ease;
     }
 
     .btn-window:hover:not(:disabled) {
-        color: #00004f; /* Text flips to Navy */
+        border-color: #00004f;
+        background-color: #f8fafc;
         cursor: pointer;
-        box-shadow: 0 10px 25px rgba(255, 179, 217, 0.4);
+        box-shadow: 0 8px 20px rgba(0, 0, 79, 0.1);
         transform: translateY(-2px);
     }
 
-    .btn-window:hover:not(:disabled)::before {
-        transform: scaleX(1); /* Window background opens out to cover button */
-    }
-
-    /* Selected state variations */
     .btn-window.selected-correct {
-        background-color: #10b981;
-        color: white;
+        background-color: #ecfdf5;
         border-color: #10b981;
     }
+    
     .btn-window.selected-wrong {
-        background-color: #f43f5e;
-        color: white;
+        background-color: #fff1f2;
         border-color: #f43f5e;
     }
 
     /* Scrollbar */
-    ::-webkit-scrollbar { width: 10px; height: 10px; }
-    ::-webkit-scrollbar-track { background: rgba(0,0,79,0.05); }
-    ::-webkit-scrollbar-thumb { background: rgba(0,0,79,0.2); border-radius: 10px; border: 2px solid transparent; background-clip: padding-box; }
-    ::-webkit-scrollbar-thumb:hover { background-color: rgba(0,0,79,0.4); }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+    ::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
     
-    /* Meter Transitions */
-    .meter-fill { transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.4s ease; }
+    .financial-table th, .financial-table td {
+        padding: 0.5rem 1rem;
+        text-align: right;
+    }
+    .financial-table th:first-child, .financial-table td:first-child {
+        text-align: left;
+    }
+    .financial-table .indent {
+        padding-left: 2rem;
+    }
+    .financial-table .total-row {
+        font-weight: 800;
+        border-top: 2px solid #00004f;
+        border-bottom: 4px double #00004f;
+    }
+
+    .text-gradient {
+        background: linear-gradient(135deg, #00004f 0%, #ff66a3 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
   </style>
 </head>
 <body class="antialiased">
@@ -212,184 +177,170 @@
 
     // --- ICONS (SVG) ---
     const Icons = {
-      Check: () => <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>,
-      X: () => <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>,
-      Clock: () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+      Check: () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>,
+      X: () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>,
+      Clock: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
       Briefcase: () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>,
-      ArrowRight: () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>,
-      Info: () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
-      Shield: () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>,
-      FileText: () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>,
-      TrendingUp: () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>,
-      Lock: () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>,
-      Unlock: () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" /></svg>,
-      ShoppingCart: () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+      ArrowRight: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>,
+      ArrowUpCircle: () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z" /></svg>,
+      ArrowDownCircle: () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 13l-3 3m0 0l-3-3m3 3V8m0 13a9 9 0 110-18 9 9 0 010-18z" /></svg>,
+      FileText: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>,
+      TrendingUp: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>,
+      Lock: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>,
+      Unlock: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" /></svg>,
+      ShoppingCart: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>,
+      Shield: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>,
+      PieChart: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" /><path strokeLinecap="round" strokeLinejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" /></svg>,
+      AlertTriangle: () => <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>,
+      Target: () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
     };
 
-    // --- GAME DATA WITH UPDATED IMAGES 1-12 ---
+    // --- GAME DATA: INVENTORY, RATIOS, & PP&E EDITION ---
     const levels = [
       {
-        id: 1, district: "Receiving Dock", title: "The Morning Delivery", concept: "Inventory & Expense Classification", 
+        id: 1, district: "Loading Dock", title: "The Capitalization Comedy", concept: "Inventory vs. Period Expense", 
         bgImage: "data/1.png",
-        scene: "A truck just unloaded a $10,000 shipment. The invoice breakdown is: $7,500 for raw salmon, $1,000 for custom chef aprons, and $1,500 for a massive batch of marketing flyers for an upcoming promo.",
-        tip: "Accounting Standard: Only capitalize costs directly linked to generating revenue via the product. Operating supplies are expensed.",
-        explanation: "Raw food is inventory (an asset) until sold. Aprons and flyers do not directly physically produce the food sold to customers, making them period operating expenses that must be recognized immediately.",
+        scene: "You purchased $6,000 worth of supplies on credit. The invoice clearly says: $5,000 for rare Alba truffles, and $1,000 for neon signs that say 'Our Chef is a Genius'.",
+        tip: "Accounting Standard: Only capitalize costs directly linked to the physical product intended for sale. Marketing signs are period expenses.",
+        explanation: "Truffles are Inventory (Assets). Ego-boosting neon signs are Marketing/Operating Expenses. Capitalizing the signs illegally inflates your Net Income.",
         choices: [
-          { text: "Capitalize $7,500 to Inventory; immediately expense the $2,500 for aprons and flyers.", correct: true, fb: "Clean ledger! You properly isolated true inventory from operating expenses.", effects: { cash: -4, profit: +6, rep: +2, ops: +7, acc: +100, bus: +45 } },
-          { text: "Capitalize the full $10,000 to Inventory to maximize the reported asset base this quarter.", correct: false, fb: "Assets are illegally bloated. You hid current expenses inside the inventory balance.", effects: { cash: -4, profit: -10, rep: -3, ops: -6, acc: +20, bus: -35 } },
-          { text: "Capitalize $8,500 (Food + Aprons) to Inventory; expense the $1,500 for flyers.", correct: false, fb: "Partial error. Uniforms are operational supplies, not inventory for resale.", effects: { cash: -4, profit: -4, rep: -1, ops: -2, acc: +40, bus: -15 } },
-          { text: "Expense the entire $10,000 immediately to simplify the ledger and act conservatively.", correct: false, fb: "Too conservative. You erased valuable assets that the kitchen still actively holds.", effects: { cash: -4, profit: -8, rep: 0, ops: -3, acc: +35, bus: -18 } }
+          { text: "Record $5,000 as Inventory, $1,000 as Operating Expense, and $6,000 to Accounts Payable.", correct: true, fb: "Clean ledger! You fed the guests and expensed the ego.", effects: { inventory: 5000, opEx: 1000, ap: 6000 } },
+          { text: "Capitalize the full $6,000 to Inventory and $6,000 to Accounts Payable.", correct: false, fb: "Asset Bloat! You can't cook a neon sign. You hid $1,000 of expenses.", effects: { inventory: 6000, ap: 6000 } },
+          { text: "Expense the entire $6,000 immediately to stay out of trouble.", correct: false, fb: "Overly Conservative! You erased perfectly good assets you haven't sold yet.", effects: { opEx: 6000, ap: 6000 } }
         ]
       },
       {
-        id: 2, district: "Cost Flow Kitchen", title: "Spiking Salmon Prices", concept: "FIFO Cost Analysis", 
+        id: 2, district: "Walk-in Fridge", title: "The Raccoon Incident", concept: "Lower of Cost or Market (Spoilage)", 
         bgImage: "data/2.png",
-        scene: "Global seafood prices are highly volatile. We purchased 100 lbs of Salmon at $10/lb on Monday, then 50 lbs at $16/lb on Thursday. We just sold 120 lbs total for a banquet.",
-        tip: "Accounting Standard: FIFO assumes the oldest costs (first in) are matched against current revenue (first out).",
-        explanation: "Under FIFO, the first 100 lbs sold are costed at $10/lb ($1000). The remaining 20 lbs sold are costed at $16/lb ($320). Total COGS = $1,320. Ending Inventory is 30 lbs at $16/lb ($480).",
+        scene: "Disaster! A suspiciously plump raccoon infiltrated the fridge and ate exactly $2,000 worth of premium beluga caviar. The caviar is gone.",
+        tip: "Accounting Standard: Conservatism requires assets to be written down immediately if their utility drops below historical cost (or if they are eaten by wildlife).",
+        explanation: "The inventory no longer exists. You must remove the asset and take an immediate hit to the Income Statement (COGS/Spoilage Expense), drastically lowering Gross Margin.",
         choices: [
-          { text: "Record COGS of $1,320 and Ending Inventory of $480.", correct: true, fb: "Perfect calculation! You aligned the cost flow with physical kitchen reality.", effects: { cash: 0, profit: +9, rep: +1, ops: +6, acc: +100, bus: +45 } },
-          { text: "Record COGS of $1,500 and Ending Inventory of $300 (LIFO approach).", correct: false, fb: "Wrong method. Leaves stale, undervalued inventory on the balance sheet and violates your FIFO policy.", effects: { cash: 0, profit: +2, rep: 0, ops: -4, acc: +45, bus: -10 } },
-          { text: "Record COGS of $1,440 and Ending Inventory of $360 (Weighted Average approach).", correct: false, fb: "Incorrect calculation. You homogenized the price spikes, losing visibility on specific lot costs.", effects: { cash: 0, profit: +4, rep: 0, ops: +1, acc: +60, bus: +6 } },
-          { text: "Record COGS of $1,200 and Ending Inventory of $600.", correct: false, fb: "Mathematical failure. You miscalculated the tiered cost layers entirely.", effects: { cash: 0, profit: -6, rep: -2, ops: -2, acc: +10, bus: -20 } }
+          { text: "Record $2,000 to COGS (Spoilage Expense) and reduce Inventory by $2,000.", correct: true, fb: "Tragic, but accurate. You cleared the phantom caviar from the balance sheet.", effects: { cogs: 2000, inventory: -2000 } },
+          { text: "Leave the $2,000 in Inventory until you catch the raccoon and sue it.", correct: false, fb: "Denial! You are overstating your assets to hide your operational failure.", effects: { } },
+          { text: "Reduce Inventory by $2,000 and reduce Revenue by $2,000.", correct: false, fb: "Wrong account! Spoilage doesn't erase past sales, it creates a new expense.", effects: { revenue: -2000, inventory: -2000 } }
         ]
       },
       {
-        id: 3, district: "Spoilage Shock", title: "The Broken Walk-In", concept: "Lower of Cost or Market", 
+        id: 3, district: "Dining Room", title: "The Billionaire's Banquet", concept: "Sales & Cost of Goods Sold", 
         bgImage: "data/3.png",
-        scene: "A refrigerator compressor failed overnight. Our imported truffles originally cost $4,000. They are safe to eat, but their quality degraded so much that their current replacement market value is only $1,500.",
-        tip: "Accounting Standard: Conservatism requires assets to be written down if their utility/market value drops below historical cost.",
-        explanation: "LCM rules dictate immediate recognition of the loss. The asset must be written down from $4,000 to $1,500, requiring a $2,500 impairment loss to be booked immediately.",
+        scene: "A tech billionaire buys out the restaurant, eats exactly $4,000 worth of wagyu steaks (your cost), and hands you $25,000 in cold, hard cash.",
+        tip: "Accounting Standard: The matching principle requires recording both the Revenue earned and the cost of generating that revenue (COGS) simultaneously.",
+        explanation: "To accurately reflect Gross Margin and properly calculate Turnover, you must record the massive cash received as Revenue, and simultaneously move the steaks from Inventory to COGS.",
         choices: [
-          { text: "Recognize a $2,500 loss immediately, reducing the inventory carrying value to $1,500.", correct: true, fb: "Loss recognized accurately. You protected the balance sheet from carrying unrecoverable value.", effects: { cash: -2, profit: -4, rep: +7, ops: +5, acc: +100, bus: +50 } },
-          { text: "Recognize a $1,500 loss immediately, reducing the inventory carrying value to $2,500.", correct: false, fb: "Math error. You subtracted the new value from the old value backwards, leaving an overstated asset.", effects: { cash: -2, profit: -2, rep: -3, ops: -2, acc: +30, bus: -15 } },
-          { text: "Keep the $4,000 historical cost on the books until the truffles are actually sold.", correct: false, fb: "Delayed reality. You are overstating assets and hiding the operational failure from investors.", effects: { cash: 0, profit: +4, rep: -7, ops: -5, acc: +20, bus: -28 } },
-          { text: "Write off the entire $4,000 batch immediately to ensure absolute compliance.", correct: false, fb: "Massive overreaction. You destroyed perfectly recoverable value that can still be legally sold.", effects: { cash: -6, profit: -8, rep: +2, ops: -2, acc: +45, bus: -22 } }
+          { text: "Increase Cash $25k, Increase Revenue $25k. Increase COGS $4k, Decrease Inventory $4k.", correct: true, fb: "Perfect execution. You matched the massive expense against the massive revenue.", effects: { cash: 25000, revenue: 25000, cogs: 4000, inventory: -4000 } },
+          { text: "Increase Cash $25k and Increase Revenue $25k. We'll count the steaks later.", correct: false, fb: "Missing COGS! Your Gross Margin is artificially inflated to 100%.", effects: { cash: 25000, revenue: 25000 } },
+          { text: "Increase Cash $25k, Increase Revenue $25k, and Increase Operating Expense $4k.", correct: false, fb: "Classification Error! Food costs hit COGS, not OpEx.", effects: { cash: 25000, revenue: 25000, opEx: 4000, inventory: -4000 } }
         ]
       },
       {
-        id: 4, district: "Table Turnover Rush", title: "Trapped in the Pantry", concept: "Days Inventory (DIO) Strategy", 
+        id: 4, district: "Event Desk", title: "The VIP Client", concept: "Days Sales Outstanding (DSO)", 
         bgImage: "data/4.png",
-        scene: "Cash is tight. Your Average Inventory is $40,000, and your Annual Cost of Goods Sold is $365,000. The CEO wants to know your DIO metric and your strategic response.",
-        tip: "Accounting Standard: DIO = Average Inventory / (Annual COGS / 365). Lower DIO means faster cash conversion.",
-        explanation: "DIO = $40k / ($365k / 365) = 40 days. For fresh food, holding inventory for 40 days is lethal. You must liquidate stagnant stock via promotions to free up working capital.",
+        scene: "A corporate client owes you $30,000 in Accounts Receivable. To speed up collection and drastically improve your DSO metric, you offer them a deal: pay $28,000 cash today and we call it even. They accept and pay today.",
+        tip: "Accounting Standard: Offering an early payment discount requires clearing the entire AR balance, recording the cash received, and booking the difference as an operational expense/discount.",
+        explanation: "Taking the $2k hit clears a massive receivable, drastically improving your cash position and Days Sales Outstanding (DSO).",
         choices: [
-          { text: "DIO is 40 days. This is dangerously high; run heavy menu promotions to liquidate stock fast.", correct: true, fb: "Excellent velocity. You correctly calculated DIO and converted stagnant inventory back into liquid cash.", effects: { cash: +8, profit: +5, rep: +2, ops: +8, acc: +100, bus: +55 } },
-          { text: "DIO is 40 days. This is dangerously high; halt all purchasing entirely until it hits 10 days.", correct: false, fb: "Reckless cuts. You identified the metric but destroyed the guest experience with severe menu stockouts.", effects: { cash: +5, profit: -6, rep: -6, ops: -8, acc: +60, bus: -14 } },
-          { text: "DIO is 9.1 days. We are turning food too fast and risk running out; increase purchasing.", correct: false, fb: "Calculation error (365/40). You misinterpreted the metric and almost bought more unneeded food.", effects: { cash: -8, profit: -4, rep: 0, ops: -4, acc: +10, bus: -25 } },
-          { text: "DIO is 10 days. This is an optimal metric; maintain standard purchasing routines.", correct: false, fb: "Complete analytical failure. You missed the math entirely and ignored the cash flow crisis.", effects: { cash: -6, profit: -5, rep: -2, ops: -5, acc: +15, bus: -30 } }
+          { text: "Increase Cash $28k, Decrease AR $30k, and Increase Operating Expense $2k.", correct: true, fb: "Smart liquidity move. You took a small hit to secure massive cash and improve DSO.", effects: { cash: 28000, ar: -30000, opEx: 2000 } },
+          { text: "Wait 90 days for the full $30,000.", correct: false, fb: "Cash flow failure! The client went bankrupt in day 60 and you collected nothing.", effects: { ar: -30000, opEx: 30000 } },
+          { text: "Increase Cash $28k and Decrease AR $28k.", correct: false, fb: "Ghost AR! You left $2,000 stranded on your balance sheet forever.", effects: { cash: 28000, ar: -28000 } }
         ]
       },
       {
-        id: 5, district: "Supplier Standoff", title: "The Vendor Discount", concept: "Payables Strategy (DPO)", 
+        id: 5, district: "The Freezers", title: "The Calamari Cartel", concept: "Days in Inventory (DII)", 
         bgImage: "data/5.png",
-        scene: "A premium wagyu supplier sent a $20,000 invoice with terms '2/10, Net 30'. Our internal cost of capital is 12%. The CFO asks if we should pay early or hold the cash.",
-        tip: "Accounting Standard: Foregoing a 2/10 Net 30 discount carries an effective annualized interest rate of approx. 37% (2% / 20 days remaining * 365).",
-        explanation: "The 37% annualized return of taking the 2% discount ($400) far exceeds the firm's 12% cost of capital. You should always take this discount if liquidity permits.",
+        scene: "A sketchy supplier offers you a 'lifetime supply' of frozen calamari for $15,000 cash. It will sit in your freezer for 3 years before you can use it all.",
+        tip: "Accounting Standard: Over-purchasing spikes your Inventory asset balance without increasing COGS, which severely bloats your Days in Inventory (DII) metric.",
+        explanation: "Buying massive bulk inventory destroys your inventory turnover velocity. The correct decision is to refuse the predatory 'deal' to protect liquidity and DII.",
         choices: [
-          { text: "Pay $19,600 on Day 10. The 37% annualized return beats our 12% cost of capital.", correct: true, fb: "Financial mastery! You captured a high-yield discount while managing precise liquidity timing.", effects: { cash: +4, profit: +8, rep: +5, ops: +5, acc: +100, bus: +60 } },
-          { text: "Pay $20,000 on Day 30 to maximize our Days Payable Outstanding (DPO) metric.", correct: false, fb: "Poor capital allocation. You stretched DPO but paid an implicit 37% interest rate to do so.", effects: { cash: -2, profit: -5, rep: 0, ops: -2, acc: +50, bus: -15 } },
-          { text: "Pay $19,600 on Day 30. Force the discount even though it is past the 10-day window.", correct: false, fb: "Ethical breach. The supplier rejected the short-payment and put your account on credit hold.", effects: { cash: 0, profit: -2, rep: -10, ops: -8, acc: +20, bus: -25 } },
-          { text: "Pay $20,000 on Day 1 to build maximum vendor goodwill for future negotiations.", correct: false, fb: "Terrible cash management. You drained reserves unnecessarily and lost the free 9 days of float.", effects: { cash: -8, profit: -3, rep: +6, ops: 0, acc: +30, bus: -10 } }
+          { text: "Decline politely. We only buy what we need to keep DII low.", correct: true, fb: "Excellent discipline. You protected your working capital and inventory metrics.", effects: {} },
+          { text: "Buy it all! Decrease Cash $15,000 and Increase Inventory $15,000.", correct: false, fb: "Freezer burn! You tied up all your cash in squid, destroying your DII.", effects: { cash: -15000, inventory: 15000 } },
+          { text: "Buy it and expense it immediately. Decrease Cash $15k, Increase OpEx $15k.", correct: false, fb: "GAAP Violation! You cannot expense 3 years of inventory on day one.", effects: { cash: -15000, opEx: 15000 } }
         ]
       },
       {
-        id: 6, district: "Cash Conversion Crisis", title: "The Liquidity Loop", concept: "Cash Conversion Cycle", 
+        id: 6, district: "Menu Board", title: "Lobster vs. Crab", concept: "Gross Margin Engineering", 
         bgImage: "data/6.png",
-        scene: "Our DIO is 15 days, DSO (receivables from corporate caterers) is 30 days, and DPO is 20 days. The board demands the Cash Conversion Cycle (CCC) be reduced below 20 days.",
-        tip: "Accounting Standard: CCC = DIO + DSO - DPO. It measures how many days cash is tied up in operations.",
-        explanation: "Current CCC = 15 + 30 - 20 = 25 days. The most sustainable way to drop it below 20 is to negotiate faster collection (DSO) from catering clients.",
+        scene: "Lobster prices spiked! You normally sell 100 Lobster Rolls for $5,000 Revenue. Using real lobster costs $4,000 in COGS (terrible margin). Using high-quality crab only costs $1,000 in COGS. Which strategic decision legally maximizes Gross Margin, and what is the recording?",
+        tip: "Accounting Standard: Gross Margin is Revenue minus COGS. Selling fake goods under a false name is illegal, but re-engineering the menu legally saves margins.",
+        explanation: "Renaming the item to 'Seafood Roll' allows you to use the $1,000 ingredient legally. Revenue stays at $5,000, and Gross Margin skyrockets.",
         choices: [
-          { text: "CCC is 25 days. Negotiate catering DSO down to 15 days to bring CCC to 10 days.", correct: true, fb: "Sustainable fix. You calculated CCC correctly and targeted the bloated receivables metric.", effects: { cash: +10, profit: +4, rep: +2, ops: +6, acc: +100, bus: +55 } },
-          { text: "CCC is 65 days (15+30+20). We must unilaterally delay vendor payments (DPO) to 50 days.", correct: false, fb: "Math error (added DPO instead of subtracting). You destroyed vendor relationships based on bad math.", effects: { cash: +2, profit: 0, rep: -10, ops: -7, acc: +10, bus: -30 } },
-          { text: "CCC is 5 days (30-15-10). We are already under the target; no action needed.", correct: false, fb: "Severe math failure. You reversed the formula entirely and ignored a board directive.", effects: { cash: -5, profit: -4, rep: -5, ops: -2, acc: +5, bus: -25 } },
-          { text: "CCC is 25 days. Double all menu prices instantly to flood the cycle with more cash.", correct: false, fb: "Margin delusion. You identified the CCC, but doubling prices killed volume and actual cash flow.", effects: { cash: -6, profit: -8, rep: -6, ops: -4, acc: +40, bus: -15 } }
+          { text: "Rename to 'Seafood Roll' using crab. Increase Cash & Rev $5k. Increase COGS & Decrease Inv $1k.", correct: true, fb: "Brilliant menu engineering! You preserved a massive 80% Gross Margin entirely legally.", effects: { cash: 5000, revenue: 5000, cogs: 1000, inventory: -1000 } },
+          { text: "Use Crab, label it 'Real Lobster'. Increase Cash/Rev $5k. Increase COGS $1k, Decrease Inv $1k.", correct: false, fb: "FRAUD! The SEC and the FDA both fine you simultaneously.", effects: { cash: 5000, revenue: 5000, cogs: 1000, inventory: -1000, isFraud: true } },
+          { text: "Use Real Lobster. Increase Cash & Rev $5k. Increase COGS & Decrease Inv $4k.", correct: false, fb: "Margin collapse! You barely made a profit and ruined your Gross Margin %.", effects: { cash: 5000, revenue: 5000, cogs: 4000, inventory: -4000 } }
         ]
       },
       {
-        id: 7, district: "Remodel the Kitchen", title: "The Blueprint Build", concept: "PP&E Capitalization", 
+        id: 7, district: "Back Office", title: "Father Time's Invoice", concept: "Periodic Depreciation", 
         bgImage: "data/7.png",
-        scene: "A new oven invoice arrived: $50,000 base price, $2,000 freight, $3,000 installation, $1,000 for initial staff training, and $4,000 for a 1st-year maintenance contract.",
-        tip: "Accounting Standard: Capitalize all costs strictly required to acquire the asset and prepare it for its intended use. Expense post-installation operational costs.",
-        explanation: "Capitalized Cost = $50k + $2k + $3k = $55,000. Training ($1k) and Maintenance ($4k) are operational period costs and must be expensed immediately.",
+        scene: "It is month-end. Your massive pizza oven is slowly wearing out. The auditor glares at you until you record the $2,000 monthly depreciation.",
+        tip: "Accounting Standard: The cost of a long-term asset is systematically allocated over its useful life via Depreciation Expense and Accumulated Depreciation (a contra-asset).",
+        explanation: "Depreciation is a non-cash expense. It lowers Net Income and increases Accumulated Depreciation, which reduces the Net Book Value of PP&E.",
         choices: [
-          { text: "Capitalize $55,000 to PP&E. Expense $5,000 immediately to the income statement.", correct: true, fb: "Clean capitalization. You correctly separated preparation costs from ongoing operational expenses.", effects: { cash: -8, profit: +6, rep: +1, ops: +9, acc: +100, bus: +50 } },
-          { text: "Capitalize the entire $60,000 to PP&E to smooth out expenses over the next five years.", correct: false, fb: "Asset padding. You illegally capitalized maintenance and training, inflating current-period net income.", effects: { cash: -8, profit: +10, rep: -4, ops: +3, acc: +20, bus: -25 } },
-          { text: "Capitalize $50,000 to PP&E. Expense the remaining $10,000 to the income statement.", correct: false, fb: "Under-capitalization. Freight and installation must be capitalized, not expensed.", effects: { cash: -8, profit: -6, rep: 0, ops: +2, acc: +40, bus: -15 } },
-          { text: "Expense the entire $60,000 immediately to minimize this year's taxable income.", correct: false, fb: "Severe understatement. You expensed a multi-year asset, devastating this month's net income.", effects: { cash: -8, profit: -12, rep: 0, ops: -4, acc: +10, bus: -30 } }
+          { text: "Increase Operating Expense (Depreciation) $2k and Increase Accumulated Depreciation $2k.", correct: true, fb: "Textbook recording. You recognized the wear-and-tear without touching the cash drawer.", effects: { opEx: 2000, accumDepr: 2000 } },
+          { text: "Decrease Cash $2k and Increase Operating Expense $2k.", correct: false, fb: "Cash flow hallucination! Depreciation is a non-cash expense.", effects: { cash: -2000, opEx: 2000 } },
+          { text: "Decrease PP&E $2k and Decrease Retained Earnings $2k directly.", correct: false, fb: "GAAP Violation! You bypassed the Income Statement completely.", effects: { ppe: -2000, opEx: 2000 } }
         ]
       },
       {
-        id: 8, district: "Asset Efficiency", title: "Sweating the Assets", concept: "PP&E Turnover & Average Life", 
+        id: 8, district: "The Roof", title: "Air-Drop Beef", concept: "Inventory Freight-In", 
         bgImage: "data/8.png",
-        scene: "The board is scrutinizing kitchen efficiency. Annual Sales are $1,200,000. Our Average Net PP&E is $300,000. Additionally, Gross PP&E is $500,000 with an annual Depreciation Expense of $50,000. Calculate our PP&E Turnover and Average Life.",
-        tip: "Accounting Standard: PP&E Turnover = Sales / Average Net PP&E. Average Life = Gross PP&E / Annual Depreciation Expense.",
-        explanation: "PP&E Turnover is $1.2M / $300k = 4.0x, meaning we generate $4 in sales for every $1 in net assets. Average Life is $500k / $50k = 10 years, estimating the total lifespan of our equipment.",
+        scene: "You ordered $3,000 of rare Kobe beef. To bypass traffic, the supplier charged an extra $500 for 'helicopter air-drop delivery'. You paid $3,500 cash total.",
+        tip: "Accounting Standard: 'Freight-In' (the cost to get inventory to your location) is capitalized as part of the Inventory's total cost.",
+        explanation: "The true cost of the beef isn't just the meat, it's getting it to the kitchen. The entire $3,500 is your Inventory asset.",
         choices: [
-          { text: "Turnover is 4.0x. Average Life is 10 years. Our kitchen assets are highly productive.", correct: true, fb: "Spot on! You accurately measured asset efficiency and estimated equipment lifespan.", effects: { cash: 0, profit: +4, rep: +5, ops: +5, acc: +100, bus: +55 } },
-          { text: "Turnover is 2.4x (using Gross PP&E) and Average Life is 6 years (using Net PP&E).", correct: false, fb: "Formula mix-up. Turnover uses Net PP&E, while Average Life relies on Gross PP&E.", effects: { cash: 0, profit: -2, rep: -3, ops: -2, acc: +40, bus: -15 } },
-          { text: "Turnover is 4.0x, but the Average Life is 6 years ($300k / $50k).", correct: false, fb: "Half right. You nailed Turnover, but used Net PP&E instead of Gross to find the Average Life.", effects: { cash: 0, profit: 0, rep: -2, ops: -1, acc: +60, bus: -10 } },
-          { text: "Turnover is 0.25x (Assets/Sales). Average Life is 10 years.", correct: false, fb: "Inverted Turnover. You calculated the capital intensity ratio, not the turnover multiple.", effects: { cash: 0, profit: -3, rep: -4, ops: 0, acc: +30, bus: -20 } }
+          { text: "Decrease Cash $3,500 and Increase Inventory $3,500.", correct: true, fb: "Correct! The helicopter ride made the beef more valuable on the balance sheet.", effects: { cash: -3500, inventory: 3500 } },
+          { text: "Decrease Cash $3,500, Increase Inventory $3,000, and Increase Operating Expense $500.", correct: false, fb: "Premature expense! Freight-in must be attached to the inventory cost until sold.", effects: { cash: -3500, inventory: 3000, opEx: 500 } },
+          { text: "Decrease Cash $3,000 and Increase Inventory $3,000. Ignore the helicopter.", correct: false, fb: "Math fail! You paid $3,500 but only recorded $3,000. Your cash won't reconcile.", effects: { cash: -3000, inventory: 3000 } }
         ]
       },
       {
-        id: 9, district: "Broken Location", title: "Scrapping the Oven", concept: "Disposal of PP&E", 
+        id: 9, district: "Salad Station", title: "Tomato Crisis", concept: "FIFO Cost Flow", 
         bgImage: "data/9.png",
-        scene: "An old prep table (Historical Cost: $15,000; Accumulated Depreciation: $12,000) is sold to a competitor for $2,000 cash to clear space.",
-        tip: "Accounting Standard: Book Value = Cost - Acc. Depr. Gain/Loss = Cash Received - Book Value. All original accounts must be cleared.",
-        explanation: "Book Value = $15k - $12k = $3,000. Cash Received = $2,000. We sold a $3k asset for $2k, resulting in a $1,000 Loss on Disposal.",
+        scene: "Prices spiked! You bought 100 tomatoes at $1 each last week, then 100 at $5 each yesterday. You just sold a mega-salad for $3,000 cash. To report the HIGHEST possible Gross Margin today, which costing method must you apply and what is the recording?",
+        tip: "Accounting Standard: FIFO matches the oldest costs against current revenue. In an inflationary environment, FIFO yields lower COGS and higher Gross Margin compared to LIFO.",
+        explanation: "By selecting FIFO, you use the older $1 tomatoes, leading to only $100 in COGS. This maximizes today's reported Gross Margin.",
         choices: [
-          { text: "Clear $15k asset and $12k Acc. Depr. Record $2k cash and a $1,000 Loss on Disposal.", correct: true, fb: "Perfect disposal entry. You cleared the ghost accounts and booked the true loss.", effects: { cash: +2, profit: -2, rep: +3, ops: +5, acc: +100, bus: +45 } },
-          { text: "Clear $3k Net Book Value, record $2k cash, and book a $1,000 Gain on Disposal.", correct: false, fb: "Directional error. Receiving less cash than book value creates a Loss, not a Gain.", effects: { cash: +2, profit: +2, rep: -3, ops: -2, acc: +30, bus: -20 } },
-          { text: "Leave the asset on the books but record the $2,000 cash as standard menu sales revenue.", correct: false, fb: "Revenue distortion. Selling equipment is not core operations and illegally inflates top-line sales.", effects: { cash: +2, profit: +4, rep: -5, ops: -4, acc: +10, bus: -25 } },
-          { text: "Clear $15k asset, $12k Acc. Depr, record $2k cash, and a $1,000 Gain on Disposal.", correct: false, fb: "Math mismatch. The journal entry wouldn't even balance with a Gain here.", effects: { cash: +2, profit: +2, rep: -2, ops: -2, acc: +20, bus: -15 } }
+          { text: "Use FIFO to match the oldest ($1) costs. Increase Cash & Rev $3k. Increase COGS $100, Decrease Inv $100.", correct: true, fb: "FIFO master! You matched the oldest costs to current revenues, securing massive profit.", effects: { cash: 3000, revenue: 3000, cogs: 100, inventory: -100 } },
+          { text: "Use LIFO to match the newest ($5) costs. Increase Cash & Rev $3k. Increase COGS $500, Decrease Inv $500.", correct: false, fb: "That's LIFO! While legal in some jurisdictions, it gave you the WORST possible Gross Margin today.", effects: { cash: 3000, revenue: 3000, cogs: 500, inventory: -500 } },
+          { text: "Use Weighted Average. Increase Cash & Rev $3k. Increase COGS $300, Decrease Inv $300.", correct: false, fb: "Average choice. It homogenized the price spikes, failing to maximize your Margin.", effects: { cash: 3000, revenue: 3000, cogs: 300, inventory: -300 } }
         ]
       },
       {
-        id: 10, district: "Impairment Alarm", title: "The Abandoned Downtown", concept: "Asset Impairment (GAAP)", 
+        id: 10, district: "Drive-Thru", title: "The Brick Wall", concept: "PP&E Impairment", 
         bgImage: "data/10.png",
-        scene: "A suburban location's Carrying Value is $600k. Expected future undiscounted cash flows are $550k. The current fair market value is $400k.",
-        tip: "Accounting Standard (2-Step Test): 1. Impaired if Cash Flows < Carrying Value. 2. Loss = Carrying Value - Fair Market Value.",
-        explanation: "Step 1: $550k < $600k, so it is impaired. Step 2: The impairment loss is Carrying Value ($600k) minus Fair Value ($400k) = $200,000.",
+        scene: "The city abruptly re-zoned your street and built a solid concrete median, completely blocking car access to your custom $15,000 drive-thru lane. The physical structure (PP&E) cannot be moved, sold, or repurposed.",
+        tip: "Accounting Standard: If an asset's carrying amount is entirely unrecoverable (expected future cash flows are $0), a permanent impairment loss must be recognized.",
+        explanation: "Because the drive-thru structure can no longer generate revenue, its Fair Value is $0. You must write down the PP&E entirely and record a $15,000 Impairment Expense.",
         choices: [
-          { text: "Asset is impaired ($550k < $600k). Record a $200,000 impairment loss to Fair Value.", correct: true, fb: "Painful but precise. You properly executed the 2-step GAAP impairment test.", effects: { cash: 0, profit: -8, rep: +6, ops: +4, acc: +100, bus: +55 } },
-          { text: "Asset is impaired. Record a $50,000 impairment loss ($600k Carrying - $550k Cash Flows).", correct: false, fb: "Wrong measurement. Loss is based on Fair Value ($400k), not the undiscounted cash flows.", effects: { cash: 0, profit: -2, rep: -4, ops: -2, acc: +40, bus: -15 } },
-          { text: "No impairment required. Expected cash flows ($550k) still exceed Fair Value ($400k).", correct: false, fb: "Failed Step 1. You compared cash flows to Fair Value instead of Carrying Value.", effects: { cash: 0, profit: +4, rep: -6, ops: -4, acc: +20, bus: -25 } },
-          { text: "Wait until the location is officially sold to record any loss, per the conservatism principle.", correct: false, fb: "Violation of GAAP. Impairment must be recognized in the period the value decline is identified.", effects: { cash: 0, profit: +5, rep: -8, ops: -5, acc: +10, bus: -30 } }
+          { text: "Decrease PP&E $15,000 and Increase Operating Expense (Impairment) $15,000.", correct: true, fb: "Brutal, but required. You admitted the loss and cleared the dead asset.", effects: { ppe: -15000, opEx: 15000 } },
+          { text: "Make no entry until you officially pay a crew to tear the structure down.", correct: false, fb: "Hiding bad news! The value is gone today, you can't delay the write-off.", effects: { } },
+          { text: "Increase Accounts Receivable $15,000 and Decrease PP&E $15,000.", correct: false, fb: "The city owes you nothing! You fabricated a receivable to hide an expense.", effects: { ar: 15000, ppe: -15000 } }
         ]
       },
       {
-        id: 11, district: "Store Closure Plan", title: "The Exit Strategy", concept: "Restructuring Provisions", 
+        id: 11, district: "Mail Room", title: "Vendor Standoff", concept: "Days Payable Outstanding (DPO)", 
         bgImage: "data/11.png",
-        scene: "Board approved a closure. Estimated costs: $40k employee severance, $25k lease termination penalty, and $35k in expected future operating losses while winding down.",
-        tip: "Accounting Standard: Only accrue direct, unavoidable costs of the exit plan (like severance/lease breaks). Future operating losses cannot be accrued early.",
-        explanation: "Severance ($40k) and Lease penalties ($25k) are direct/unavoidable and equal $65k. The expected future losses ($35k) must be recognized as they are incurred later.",
+        scene: "You owe a local farm $5,000 in Accounts Payable. They offer a 10% discount ($500) if you pay today. Otherwise, pay the full $5,000 in 30 days. You decide to pay today.",
+        tip: "Accounting Standard: Paying early reduces your Days Payable Outstanding (DPO) but captures a high-yield discount, which is booked as Other Income.",
+        explanation: "You clear the entire $5,000 liability, but only part with $4,500 in cash. The $500 difference is a massive financial gain. This action drops DPO but supercharges Net Income.",
         choices: [
-          { text: "Book a restructuring liability of exactly $65,000 (severance and lease penalties only).", correct: true, fb: "Tight scope. You correctly isolated direct exit obligations from future operational costs.", effects: { cash: -3, profit: -4, rep: +5, ops: +5, acc: +100, bus: +48 } },
-          { text: "Book a restructuring liability of $100,000 (all costs) to take a strategic 'big bath'.", correct: false, fb: "Big bath accounting! You illegally accrued future operating losses to manipulate later earnings.", effects: { cash: -3, profit: -10, rep: -6, ops: -2, acc: +20, bus: -24 } },
-          { text: "Book a liability of $40,000 for severance only. Lease penalties must be expensed as paid.", correct: false, fb: "Under-accrual. Lease termination penalties are legally binding and must be accrued now.", effects: { cash: -3, profit: -2, rep: -2, ops: -2, acc: +40, bus: -15 } },
-          { text: "Do not accrue any liability until the cash is physically paid out to employees and landlords.", correct: false, fb: "Too late. The obligation exists immediately upon the formal board approval and announcement.", effects: { cash: 0, profit: +4, rep: -5, ops: -4, acc: +15, bus: -20 } }
+          { text: "Decrease Cash $4,500, Decrease AP $5,000, and Record $500 Other Income.", correct: true, fb: "Financial mastery! You captured the deep discount and correctly balanced the books.", effects: { cash: -4500, ap: -5000, otherIncome: 500 } },
+          { text: "Decrease Cash $5,000 and Decrease AP $5,000.", correct: false, fb: "Missed value! You overpaid the vendor and lost free money.", effects: { cash: -5000, ap: -5000 } },
+          { text: "Decrease Cash $4,500 and Decrease AP $4,500.", correct: false, fb: "Imbalance! You left a ghost $500 payable on your books forever.", effects: { cash: -4500, ap: -4500 } }
         ]
       },
       {
-        id: 12, district: "Buy the Rival Bistro", title: "The Final Acquisition", concept: "Intangibles & Goodwill", 
+        id: 12, district: "The Cellar", title: "Missing Merlot", concept: "Inventory Shrinkage", 
         bgImage: "data/12.png",
-        scene: "Acquiring a rival bakery for $300,000 cash. Their identifiable assets have a fair value of $220,000. They also have assumed liabilities of $40,000. Calculate Goodwill.",
-        tip: "Accounting Standard: Goodwill = Purchase Price - Fair Value of Net Identifiable Assets (Assets minus Liabilities).",
-        explanation: "Net Identifiable Assets = $220k (Assets) - $40k (Liabilities) = $180k. Goodwill is the premium paid over Net Assets: $300k - $180k = $120,000.",
+        scene: "Month-end count! The ledger says we have $10,000 in wine. We only counted $8,000. The bartenders look suspiciously happy.",
+        tip: "Accounting Standard: When physical inventory is less than book inventory, the difference (shrinkage) must be expensed (typically to COGS) to reflect reality.",
+        explanation: "You lost $2,000 of wine. It's not an asset anymore. It must hit the Income Statement, reducing your Gross Margin.",
         choices: [
-          { text: "Record Net Assets of $180,000 and establish $120,000 in Goodwill.", correct: true, fb: "Masterful finish! You calculated net assets perfectly and recorded the residual premium as Goodwill.", effects: { cash: -8, profit: +8, rep: +9, ops: +8, acc: +120, bus: +70 } },
-          { text: "Record Net Assets of $220,000 and establish $80,000 in Goodwill.", correct: false, fb: "Valuation error. You forgot to subtract the $40k in assumed liabilities from the asset base.", effects: { cash: -8, profit: +4, rep: -3, ops: -2, acc: +40, bus: -15 } },
-          { text: "Record the entire $300,000 as a 'Bakery Asset' to avoid tracking intangibles.", correct: false, fb: "Lazy accounting. You completely failed to execute purchase price allocation.", effects: { cash: -8, profit: +2, rep: -5, ops: -4, acc: +15, bus: -25 } },
-          { text: "Record Net Assets of $180k; immediately expense the $120k premium to the income statement.", correct: false, fb: "Massive error. An acquisition premium represents an asset (Goodwill), not an immediate expense.", effects: { cash: -8, profit: -12, rep: -4, ops: -3, acc: +10, bus: -30 } }
+          { text: "Decrease Inventory $2,000 and Increase COGS (Shrinkage) $2,000.", correct: true, fb: "Sobering reality. You adjusted the books to match the physical count.", effects: { inventory: -2000, cogs: 2000 } },
+          { text: "Decrease Inventory $2,000 and Decrease Accounts Payable $2,000.", correct: false, fb: "Fraud! You can't just pretend you don't owe the vendor because the wine was stolen.", effects: { inventory: -2000, ap: -2000 } },
+          { text: "Leave Inventory at $10,000. The wine is just 'misplaced'.", correct: false, fb: "Denial! You are deliberately overstating your assets.", effects: { } }
         ]
       }
-    ];
-
-    const shopItems = [
-      {id:'memo', icon: <Icons.FileText />, name:'Consultant Memo', cost:15, desc:'Unlocks the executive hint for the current scenario.'},
-      {id:'insurance', icon: <Icons.Shield />, name:'Risk Hedge', cost:20, desc:'Automatically halves the negative cash or profit impact of your next error.'},
-      {id:'analyst', icon: <Icons.TrendingUp />, name:'Analyst Sprint', cost:10, desc:'Applies a bonus multiplier (+30 Pts) to your Business Score on the next correct choice.'}
     ];
 
     // --- MAIN REACT APP ---
@@ -397,103 +348,236 @@
       const [gameStarted, setGameStarted] = useState(false);
       const [teamData, setTeamData] = useState({ teamName: '', members: '' });
       
+      // Establishing a realistic highly profitable YTD baseline so that Turnover, DII, DSO, and DPO calculate perfectly.
+      // Net Income starts massively positive ($130,000) so flawless play keeps it there.
+      // Total Assets: 100k + 30k + 20k + 180k - 50k = 280,000
+      // Total Liab: 20k + 5k + 0 + 60k = 85,000
+      // Total Equity: 65,000 + 130,000 (NI) = 195,000  (L+E = 280,000) -> Perfectly Balanced.
+      const initialFs = {
+        assets: { cash: 100000, ar: 30000, inventory: 20000, ppe: 180000, accumDepr: 50000 }, 
+        liabilities: { ap: 20000, unearnedRev: 5000, interestPayable: 0, longTermDebt: 60000 }, 
+        equity: { paidInCapital: 65000, retainedEarnings: 130000 }, 
+        is: { revenue: 400000, cogs: 120000, opEx: 150000, otherIncome: 0, interestExpense: 0, taxExpense: 0 }
+      };
+
       const [state, setState] = useState({
         currentIndex: 0,
         viewingIndex: 0,
-        timeLeft: 120, 
-        cash: 70, profit: 58, reputation: 64, operations: 62,
-        accuracy: 0, business: 50,
-        inventory: { memo: 0, insurance: 0, analyst: 0 },
-        active: { insurance: false, analyst: false, usedMemo: false },
+        timeLeft: 90, 
+        fs: initialFs,
+        budget: 5000, 
+        inventory: { memo: 0, insurance: 0 },
+        active: { insurance: false, usedMemo: false },
         finished: false
       });
 
       const [levelData, setLevelData] = useState({});
       const [showShop, setShowShop] = useState(false);
+      const [showFinancials, setShowFinancials] = useState(false);
       const [logs, setLogs] = useState([]);
+      const [shake, setShake] = useState(false);
+      
+      // Emergency Loan Modal State
+      const [emergencyInfo, setEmergencyInfo] = useState(null);
       
       const [isSubmitting, setIsSubmitting] = useState(false);
       const [submitSuccess, setSubmitSuccess] = useState(false);
+      
+      // Audio State
+      const [audioAllowed, setAudioAllowed] = useState(false);
+      const audioCtxRef = useRef(null);
+      
+      const initAudio = () => {
+        if (!audioCtxRef.current) {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if(Ctx) audioCtxRef.current = new Ctx();
+        }
+        if (audioCtxRef.current && audioCtxRef.current.state === 'suspended') {
+            audioCtxRef.current.resume();
+        }
+        setAudioAllowed(true);
+      };
+
+      const sfx = {
+        playTone: (freq, type, duration, vol=0.05) => {
+            if(!audioCtxRef.current || !audioAllowed) return;
+            try {
+              const osc = audioCtxRef.current.createOscillator();
+              const gain = audioCtxRef.current.createGain();
+              osc.type = type;
+              osc.frequency.setValueAtTime(freq, audioCtxRef.current.currentTime);
+              gain.gain.setValueAtTime(vol, audioCtxRef.current.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.001, audioCtxRef.current.currentTime + duration);
+              osc.connect(gain);
+              gain.connect(audioCtxRef.current.destination);
+              osc.start();
+              osc.stop(audioCtxRef.current.currentTime + duration);
+            } catch(e) {}
+        },
+        click: () => sfx.playTone(600, 'sine', 0.1, 0.02),
+        success: () => {
+            sfx.playTone(440, 'square', 0.1, 0.02);
+            setTimeout(() => sfx.playTone(554, 'square', 0.1, 0.02), 100);
+            setTimeout(() => sfx.playTone(659, 'square', 0.2, 0.02), 200);
+        },
+        error: () => {
+            sfx.playTone(150, 'sawtooth', 0.3, 0.05);
+            setTimeout(() => sfx.playTone(130, 'sawtooth', 0.4, 0.05), 150);
+        },
+        buy: () => {
+            sfx.playTone(800, 'sine', 0.1, 0.03);
+            setTimeout(() => sfx.playTone(1200, 'sine', 0.3, 0.03), 100);
+        },
+        siren: () => {
+            for(let i=0; i<6; i++) {
+                setTimeout(() => sfx.playTone(800, 'square', 0.2, 0.05), i*400);
+                setTimeout(() => sfx.playTone(600, 'square', 0.2, 0.05), i*400 + 200);
+            }
+        }
+      };
 
       const currentLevel = levels[state.viewingIndex];
       const isReviewMode = state.viewingIndex < state.currentIndex;
-      
       const historyData = levelData[state.viewingIndex];
-      const feedback = historyData?.feedback;
-      const isCurrentAnswered = !!historyData;
-      
-      const answeredState = isReviewMode || isCurrentAnswered;
-      const totalScore = state.accuracy + state.business;
+      const answeredState = isReviewMode || !!historyData;
 
-      const addLog = (title, text) => {
-        setLogs(prev => [{ id: Date.now() + Math.random(), title, text, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) }, ...prev].slice(0, 15));
+      // Derived Metrics Calculation
+      const calcMetrics = (fs) => {
+        const gm = fs.is.revenue - fs.is.cogs;
+        const gmPercent = fs.is.revenue === 0 ? 0 : ((gm / fs.is.revenue) * 100).toFixed(1);
+        const netIncome = fs.is.revenue - fs.is.cogs - fs.is.opEx + fs.is.otherIncome - fs.is.interestExpense - fs.is.taxExpense;
+        const totalAssets = fs.assets.cash + fs.assets.ar + fs.assets.inventory + fs.assets.ppe - fs.assets.accumDepr;
+        const totalLiab = fs.liabilities.ap + fs.liabilities.unearnedRev + fs.liabilities.interestPayable + fs.liabilities.longTermDebt;
+        const totalEq = fs.equity.paidInCapital + netIncome; 
+        
+        // Days & Turnover formulas assuming data acts as an annualized snapshot
+        const turnover = fs.assets.inventory > 0 ? (fs.is.cogs / fs.assets.inventory).toFixed(2) : "N/A";
+        const dii = fs.is.cogs > 0 ? ((fs.assets.inventory / fs.is.cogs) * 365).toFixed(0) : "N/A";
+        const dso = fs.is.revenue > 0 ? ((fs.assets.ar / fs.is.revenue) * 365).toFixed(0) : "N/A";
+        const dpo = fs.is.cogs > 0 ? ((fs.liabilities.ap / fs.is.cogs) * 365).toFixed(0) : "N/A";
+        
+        // Cash Conversion Cycle
+        let ccc = "N/A";
+        if (dii !== "N/A" && dso !== "N/A" && dpo !== "N/A") {
+            ccc = (parseFloat(dii) + parseFloat(dso) - parseFloat(dpo)).toFixed(0);
+        }
+
+        return { gm, gmPercent, netIncome, totalAssets, totalLiab, totalEq, turnover, dii, dso, dpo, ccc };
       };
 
-      const applyEffectsAndSetState = (baseEffects, wasCorrect, prevState) => {
-        let finalEffects = { ...baseEffects };
-        let newActive = { ...prevState.active };
+      const metrics = calcMetrics(state.fs);
 
-        if (prevState.active.insurance && !wasCorrect) {
-          ['cash', 'profit'].forEach(k => { if (finalEffects[k] < 0) finalEffects[k] = Math.ceil(finalEffects[k] / 2); });
-          newActive.insurance = false;
-          addLog('Risk Hedge Active', 'Negative impacts mitigated.');
+      const triggerPenaltyShake = () => {
+        setShake(true);
+        setTimeout(() => setShake(false), 500);
+      };
+
+      const addLog = (title, text, isPenalty = false) => {
+        setLogs(prev => [{ id: Date.now() + Math.random(), title, text, isPenalty, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) }, ...prev].slice(0, 20));
+      };
+
+      const applyEffectsAndSetState = (effects, wasCorrect, prevState) => {
+        let fs = {
+          assets: { ...prevState.fs.assets },
+          liabilities: { ...prevState.fs.liabilities },
+          equity: { ...prevState.fs.equity },
+          is: { ...prevState.fs.is }
+        };
+
+        let active = { ...prevState.active };
+        let budgetDelta = wasCorrect ? 1500 : 0;
+        let finalEffects = { ...effects };
+
+        // Penalty Logic
+        if (!wasCorrect && active.insurance) {
+            addLog('Risk Hedge Triggered', 'Your expensive lawyers successfully argued with the SEC. No fine.', false);
+            active.insurance = false;
+        } else if (!wasCorrect && !active.insurance) {
+            finalEffects.opEx = (finalEffects.opEx || 0) + 15000;
+            finalEffects.cash = (finalEffects.cash || 0) - 15000;
+            triggerPenaltyShake();
+            addLog('SEC Audit Action', 'A SWAT team of accountants fast-ropes through the ceiling! $15,000 Fine!', true);
         }
 
-        if (prevState.active.analyst && wasCorrect) {
-          finalEffects.bus = (finalEffects.bus || 0) + 30;
-          newActive.analyst = false;
-          addLog('Analyst Sprint', 'Bonus synergy points awarded.');
-        } else if (prevState.active.analyst && !wasCorrect) {
-          newActive.analyst = false;
+        // BANKRUPTCY & EMERGENCY LOAN LOGIC
+        let projectedCash = fs.assets.cash + (finalEffects.cash || 0);
+        if (projectedCash < 0) {
+            let shortfall = Math.abs(projectedCash);
+            let loanAmount = shortfall + 5000; // Provide $5k breathing room
+            let loanFee = 2500; // Realistic but painful interest charge
+
+            finalEffects.cash = (finalEffects.cash || 0) + loanAmount;
+            finalEffects.longTermDebt = (finalEffects.longTermDebt || 0) + loanAmount; 
+            finalEffects.interestPayable = (finalEffects.interestPayable || 0) + loanFee; // Records liability properly to balance equation
+            finalEffects.interestExpense = (finalEffects.interestExpense || 0) + loanFee;
+            
+            triggerPenaltyShake();
+            sfx.siren();
+            addLog('EMERGENCY LOAN', `Cash collapsed! Forced to accept a $${loanAmount} bridge loan at high interest.`, true);
+            
+            setEmergencyInfo({ amount: loanAmount, fee: loanFee });
         }
 
-        const clamp = (n) => Math.max(0, Math.min(100, n));
+        // Apply Entries Safely
+        if (finalEffects.cash !== undefined) fs.assets.cash += finalEffects.cash;
+        if (finalEffects.ar !== undefined) fs.assets.ar += finalEffects.ar;
+        if (finalEffects.inventory !== undefined) fs.assets.inventory += finalEffects.inventory;
+        if (finalEffects.ppe !== undefined) fs.assets.ppe += finalEffects.ppe;
+        if (finalEffects.accumDepr !== undefined) fs.assets.accumDepr += finalEffects.accumDepr;
+
+        if (finalEffects.ap !== undefined) fs.liabilities.ap += finalEffects.ap;
+        if (finalEffects.unearnedRev !== undefined) fs.liabilities.unearnedRev += finalEffects.unearnedRev;
+        if (finalEffects.interestPayable !== undefined) fs.liabilities.interestPayable += finalEffects.interestPayable;
+        if (finalEffects.longTermDebt !== undefined) fs.liabilities.longTermDebt += finalEffects.longTermDebt;
+        if (finalEffects.paidInCapital !== undefined) fs.equity.paidInCapital += finalEffects.paidInCapital;
+
+        if (finalEffects.revenue !== undefined) fs.is.revenue += finalEffects.revenue;
+        if (finalEffects.cogs !== undefined) fs.is.cogs += finalEffects.cogs;
+        if (finalEffects.opEx !== undefined) fs.is.opEx += finalEffects.opEx;
+        if (finalEffects.otherIncome !== undefined) fs.is.otherIncome += finalEffects.otherIncome;
+        if (finalEffects.interestExpense !== undefined) fs.is.interestExpense += finalEffects.interestExpense;
+
+        const ni = fs.is.revenue - fs.is.cogs - fs.is.opEx + fs.is.otherIncome - fs.is.interestExpense - fs.is.taxExpense;
+        fs.equity.retainedEarnings = ni;
+
         setState({
-          ...prevState, active: newActive,
-          cash: clamp(prevState.cash + (finalEffects.cash || 0)),
-          profit: clamp(prevState.profit + (finalEffects.profit || 0)),
-          reputation: clamp(prevState.reputation + (finalEffects.rep || 0)),
-          operations: clamp(prevState.operations + (finalEffects.ops || 0)),
-          accuracy: prevState.accuracy + (finalEffects.acc || 0),
-          business: prevState.business + (finalEffects.bus || 0)
+          ...prevState,
+          fs, active,
+          budget: prevState.budget + budgetDelta
         });
+
         return finalEffects;
       };
 
       const handleTimeout = (currentState) => {
-        const effects = { cash: -5, profit: -5, rep: -10, ops: -10, acc: 0, bus: -20 };
+        const effects = { cash: -10000, opEx: 10000 }; 
+        sfx.error();
         applyEffectsAndSetState(effects, false, currentState);
         
         const timeoutFeedback = {
-          good: false, title: 'Analysis Timeout',
-          copy: 'Decision window closed. Operations descended into chaos.',
-          explanation: levels[currentState.viewingIndex].explanation,
+          good: false, title: 'Analysis Paralysis',
+          explanation: 'The auditor got bored and fined you $10,000 for wasting their time.',
           effects
         };
         
         setLevelData(prev => ({ ...prev, [currentState.viewingIndex]: { choiceIdx: -1, correct: false, feedback: timeoutFeedback } }));
-        addLog(`Phase ${levels[currentState.viewingIndex].id}: Timeout`, `Critical indecision caused operational delays.`);
+        addLog(`Phase ${levels[currentState.viewingIndex].id}: Timeout`, `Late penalty applied.`, true);
       };
 
-      // Improved Timer Logic to avoid React State conflicts
       useEffect(() => {
-        if (!gameStarted || state.finished || isReviewMode || isCurrentAnswered) return;
-        
-        if (state.timeLeft <= 0) {
-          handleTimeout(state);
-          return;
-        }
-
-        const timerId = setTimeout(() => {
-          setState(prev => ({ ...prev, timeLeft: Math.max(0, prev.timeLeft - 1) }));
-        }, 1000);
-        
+        if (!gameStarted || state.finished || isReviewMode || historyData || emergencyInfo) return; // Pause timer if emergency modal is open
+        if (state.timeLeft <= 0) { handleTimeout(state); return; }
+        const timerId = setTimeout(() => setState(prev => ({ ...prev, timeLeft: Math.max(0, prev.timeLeft - 1) })), 1000);
         return () => clearTimeout(timerId);
-      }, [gameStarted, state.finished, isReviewMode, isCurrentAnswered, state.timeLeft, state.viewingIndex]);
+      }, [gameStarted, state.finished, isReviewMode, historyData, state.timeLeft, state.viewingIndex, emergencyInfo]);
 
       const handleChoice = (choiceIdx) => {
-        if (isReviewMode || isCurrentAnswered) return;
+        if (isReviewMode || historyData) return;
         const choice = currentLevel.choices[choiceIdx];
+        
+        if (choice.correct) sfx.success();
+        else sfx.error();
+
         const finalEffects = applyEffectsAndSetState(choice.effects, choice.correct, state);
 
         const newFeedback = {
@@ -504,10 +588,11 @@
         };
 
         setLevelData(prev => ({ ...prev, [state.viewingIndex]: { choiceIdx, correct: choice.correct, feedback: newFeedback } }));
-        addLog(`Phase ${currentLevel.id} Resolved`, choice.correct ? 'Optimal strategy executed.' : 'Sub-optimal outcome recorded.');
+        addLog(`Recording Posted`, choice.correct ? 'Transaction properly recorded. Auditor nods approvingly.' : 'Incorrect recording! Sirens blare in the distance.');
       };
 
       const nextLevel = () => {
+        sfx.click();
         if (state.viewingIndex < state.currentIndex) {
             setState(prev => ({ ...prev, viewingIndex: prev.viewingIndex + 1 }));
             return;
@@ -515,34 +600,19 @@
         if (state.currentIndex + 1 >= levels.length) {
           setState(prev => ({ ...prev, finished: true }));
         } else {
-          setState(prev => ({ ...prev, currentIndex: prev.currentIndex + 1, viewingIndex: prev.currentIndex + 1, timeLeft: 120, active: { ...prev.active, usedMemo: false } }));
-        }
-      };
-
-      const formatTime = (seconds) => {
-        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-        const s = (seconds % 60).toString().padStart(2, '0');
-        return `${m}:${s}`;
-      };
-
-      const handleUseMemo = () => {
-        if (state.inventory.memo > 0 && !state.active.usedMemo && !answeredState) {
-          setState(prev => ({
-            ...prev,
-            inventory: { ...prev.inventory, memo: prev.inventory.memo - 1 },
-            active: { ...prev.active, usedMemo: true }
-          }));
-          addLog('Consultant Memo Used', 'Strategic hint unlocked for current phase.');
+          setState(prev => ({ ...prev, currentIndex: prev.currentIndex + 1, viewingIndex: prev.currentIndex + 1, timeLeft: 90, active: { ...prev.active, usedMemo: false } }));
         }
       };
 
       const submitToSheet = async () => {
+        sfx.click();
         setIsSubmitting(true);
         const data = new URLSearchParams();
         data.append("teamName", teamData.teamName);
-        data.append("role", teamData.members); 
-        data.append("score", totalScore);
-
+        data.append("role", teamData.members || "N/A"); 
+        // Appending CCC directly in the score string to ensure it gets recorded.
+        data.append("score", `NI: ${metrics.netIncome} | GM: ${metrics.gmPercent}% | CCC: ${metrics.ccc}`); 
+        
         try {
           await fetch(GOOGLE_SHEET_URL, {
             method: 'POST',
@@ -551,6 +621,7 @@
             body: data
           });
           setSubmitSuccess(true);
+          sfx.success();
         } catch(e) {
           console.error(e);
           alert("Network error. Please try submitting again.");
@@ -558,74 +629,121 @@
         setIsSubmitting(false);
       };
 
-      const renderMetric = (label, value) => {
-        let statusColor = "bg-slate-400";
-        if(value > 60) { statusColor = "bg-emerald-500"; }
-        else if(value > 30) { statusColor = "bg-amber-500"; }
-        else { statusColor = "bg-rose-500"; }
+      const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(val);
 
-        return (
-          <div className="flex-1 min-w-[120px]">
-            <div className="flex justify-between items-center text-xs font-bold text-navy mb-1.5 uppercase tracking-widest">
-              <span>{label}</span>
-              <span className="text-navy font-mono">{value}%</span>
-            </div>
-            <div className="h-2.5 bg-navy/10 rounded-full overflow-hidden shadow-inner border border-navy/20">
-              <div className={`h-full rounded-full meter-fill ${statusColor}`} style={{ width: `${value}%` }}></div>
-            </div>
+      const FinancialStatements = ({ fs, metrics }) => (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 text-sm font-sans">
+          <div className="bg-white rounded-xl border border-slate-300 shadow-sm overflow-hidden">
+            <div className="bg-navy text-white p-3 font-bold uppercase tracking-wider text-center">Income Statement</div>
+            <table className="w-full financial-table">
+              <tbody>
+                <tr><td>Revenue</td><td>{formatCurrency(fs.is.revenue)}</td></tr>
+                <tr><td>Cost of Goods Sold (COGS)</td><td className="text-rose-600">({formatCurrency(fs.is.cogs)})</td></tr>
+                <tr className="font-bold border-t border-slate-200"><td className="italic">Gross Margin</td><td>{formatCurrency(metrics.gm)}</td></tr>
+                <tr><td>Operating Expenses</td><td className="text-rose-600">({formatCurrency(fs.is.opEx)})</td></tr>
+                <tr><td>Other Income (Loss)</td><td className={fs.is.otherIncome < 0 ? 'text-rose-600' : 'text-emerald-600'}>{formatCurrency(fs.is.otherIncome)}</td></tr>
+                <tr><td>Interest Expense</td><td className="text-rose-600">({formatCurrency(fs.is.interestExpense)})</td></tr>
+                <tr className="total-row text-lg"><td className="uppercase">Net Income</td><td className={metrics.netIncome < 0 ? 'text-rose-600' : 'text-emerald-600'}>{formatCurrency(metrics.netIncome)}</td></tr>
+              </tbody>
+            </table>
           </div>
-        )
-      };
+
+          <div className="bg-white rounded-xl border border-slate-300 shadow-sm overflow-hidden">
+            <div className="bg-navy text-white p-3 font-bold uppercase tracking-wider text-center">Balance Sheet</div>
+            <table className="w-full financial-table">
+              <tbody>
+                <tr className="bg-slate-100 font-bold"><td colSpan="2">Assets</td></tr>
+                <tr className="indent"><td>Cash</td><td className={fs.assets.cash < 0 ? 'text-rose-600 font-bold' : ''}>{formatCurrency(fs.assets.cash)}</td></tr>
+                <tr className="indent"><td>Accounts Receivable</td><td>{formatCurrency(fs.assets.ar)}</td></tr>
+                <tr className="indent"><td>Inventory</td><td>{formatCurrency(fs.assets.inventory)}</td></tr>
+                <tr className="indent"><td>PP&E (Gross)</td><td>{formatCurrency(fs.assets.ppe)}</td></tr>
+                <tr className="indent"><td>Less: Accum. Depreciation</td><td className="text-rose-600">({formatCurrency(fs.assets.accumDepr)})</td></tr>
+                <tr className="font-bold border-t border-slate-200"><td>Total Assets</td><td>{formatCurrency(metrics.totalAssets)}</td></tr>
+                
+                <tr className="bg-slate-100 font-bold border-t-2 border-slate-300"><td colSpan="2">Liabilities</td></tr>
+                <tr className="indent"><td>Accounts Payable</td><td>{formatCurrency(fs.liabilities.ap)}</td></tr>
+                <tr className="indent"><td>Unearned Revenue</td><td>{formatCurrency(fs.liabilities.unearnedRev)}</td></tr>
+                <tr className="indent"><td>Interest Payable</td><td>{formatCurrency(fs.liabilities.interestPayable)}</td></tr>
+                <tr className="indent"><td>Long-Term Debt</td><td>{formatCurrency(fs.liabilities.longTermDebt)}</td></tr>
+                <tr className="font-bold border-t border-slate-200"><td>Total Liabilities</td><td>{formatCurrency(metrics.totalLiab)}</td></tr>
+
+                <tr className="bg-slate-100 font-bold border-t-2 border-slate-300"><td colSpan="2">Equity</td></tr>
+                <tr className="indent"><td>Paid-In Capital</td><td>{formatCurrency(fs.equity.paidInCapital)}</td></tr>
+                <tr className="indent"><td>Retained Earnings</td><td className={fs.equity.retainedEarnings < 0 ? 'text-rose-600' : ''}>{formatCurrency(fs.equity.retainedEarnings)}</td></tr>
+                <tr className="font-bold border-t border-slate-200"><td>Total Equity</td><td>{formatCurrency(metrics.totalEq)}</td></tr>
+                
+                <tr className="total-row text-base"><td className="uppercase">Total Liab. & Equity</td><td>{formatCurrency(metrics.totalLiab + metrics.totalEq)}</td></tr>
+              </tbody>
+            </table>
+            {metrics.totalAssets !== (metrics.totalLiab + metrics.totalEq) && (
+                <div className="bg-rose-500 text-white p-2 text-center font-bold text-xs uppercase animate-pulse mt-2">Critical Error: Balance Sheet Does Not Balance</div>
+            )}
+          </div>
+        </div>
+      );
 
       // --- LANDING PAGE ---
       if (!gameStarted) {
         return (
-          <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden" style={{ backgroundImage: 'url("data/1.png")', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-            <div className="absolute inset-0 bg-white/80 backdrop-blur-xl z-0"></div>
+          <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-slate-900">
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-navy to-indigo-950 z-0"></div>
             
-            <div className="glass-panel max-w-2xl w-full p-10 rounded-[2rem] relative z-10 animate-fade-in border-t border-l border-navy shadow-2xl">
+            {/* Animated Background Elements */}
+            <div className="absolute top-20 left-20 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-20 right-20 w-96 h-96 bg-accent-hotpink/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+            
+            <div className="glass-panel max-w-3xl w-full p-10 md:p-12 rounded-3xl relative z-10 animate-fade-in shadow-2xl border border-white/20 bg-white/95">
               
               <div className="text-center mb-10">
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-navy text-white mb-6 animate-float shadow-lg border-2 border-navy">
-                  <Icons.Briefcase />
+                <div className="inline-flex items-center justify-center w-24 h-24 rounded-2xl bg-navy text-white mb-6 shadow-2xl border-4 border-accent-pink animate-float">
+                  <Icons.PieChart />
                 </div>
-                <h1 className="text-5xl md:text-6xl font-bold text-navy mb-4 tracking-wider">Restaurant Rescue</h1>
-                <p className="text-navy/70 text-xl font-bold tracking-wide">The Arcade Accounting Simulator</p>
+                <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tight leading-none text-gradient drop-shadow-sm">
+                  Capital Carnage
+                </h1>
+                <p className="text-slate-500 text-xl font-bold uppercase tracking-widest">The Financial Accounting Audit</p>
               </div>
               
-              <div className="bg-navy/5 p-6 rounded-2xl border border-navy/20 mb-8 space-y-4">
-                <div className="flex items-start gap-4">
-                  <div className="mt-0.5 text-navy bg-navy/10 p-2 rounded-xl"><Icons.Clock /></div>
-                  <p className="text-sm text-navy/80 leading-relaxed font-semibold"><strong className="text-navy block mb-1">120-Second Analysis Window</strong> Make definitive financial choices before operations collapse. The clock is ticking!</p>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="mt-0.5 text-navy bg-navy/10 p-2 rounded-xl"><Icons.TrendingUp /></div>
-                  <p className="text-sm text-navy/80 leading-relaxed font-semibold"><strong className="text-navy block mb-1">Dynamic KPI Dashboards</strong> Keep your Cash, Profit, Reputation, and Operations out of the red zone.</p>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="mt-0.5 text-navy bg-navy/10 p-2 rounded-xl"><Icons.ShoppingCart /></div>
-                  <p className="text-sm text-navy/80 leading-relaxed font-semibold"><strong className="text-navy block mb-1">Consulting Marketplace</strong> Use accrued Business Points to buy strategic advantages and crucial hints.</p>
+              {/* MISSION DIRECTIVES */}
+              <div className="bg-slate-50 p-6 rounded-2xl border-2 border-slate-200 mb-10 shadow-inner">
+                <h2 className="text-center text-sm font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center justify-center gap-2">
+                  <Icons.Target /> Mission Directives
+                </h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-white p-4 rounded-xl border border-emerald-100 shadow-sm flex flex-col items-center text-center transform transition-transform hover:scale-105">
+                    <div className="text-emerald-500 mb-2 bg-emerald-50 p-2 rounded-full"><Icons.ArrowUpCircle /></div>
+                    <div className="font-black text-slate-800">Maximize Net Income</div>
+                    <div className="text-xs text-slate-500 font-medium mt-1">Make GAAP-compliant choices to boost bottom-line profits.</div>
+                  </div>
+                  
+                  <div className="bg-white p-4 rounded-xl border border-blue-100 shadow-sm flex flex-col items-center text-center transform transition-transform hover:scale-105">
+                    <div className="text-blue-500 mb-2 bg-blue-50 p-2 rounded-full"><Icons.TrendingUp /></div>
+                    <div className="font-black text-slate-800">Boost Gross Margin</div>
+                    <div className="text-xs text-slate-500 font-medium mt-1">Strategically manage inventory costs and menu engineering.</div>
+                  </div>
+                  
+                  <div className="bg-white p-4 rounded-xl border border-purple-100 shadow-sm flex flex-col items-center text-center transform transition-transform hover:scale-105">
+                    <div className="text-purple-500 mb-2 bg-purple-50 p-2 rounded-full"><Icons.ArrowDownCircle /></div>
+                    <div className="font-black text-slate-800">Minimize CCC</div>
+                    <div className="text-xs text-slate-500 font-medium mt-1">Reduce Cash Conversion Cycle by collecting fast and delaying payables.</div>
+                  </div>
                 </div>
               </div>
 
-              <div className="space-y-5 mb-10">
-                <div>
-                  <label className="text-xs font-black text-navy uppercase tracking-widest mb-2 block ml-2">Firm / Team Name</label>
-                  <input type="text" className="w-full bg-white border-2 border-navy/30 focus:border-navy rounded-2xl p-4 text-navy outline-none transition-all shadow-inner font-mono text-base focus:shadow-md" 
-                         value={teamData.teamName} onChange={e => setTeamData({...teamData, teamName: e.target.value})} placeholder="e.g. Apex Capital Group" />
-                </div>
-                <div>
-                  <label className="text-xs font-black text-navy uppercase tracking-widest mb-2 block ml-2">Managing Partners</label>
-                  <input type="text" className="w-full bg-white border-2 border-navy/30 focus:border-navy rounded-2xl p-4 text-navy outline-none transition-all shadow-inner font-mono text-base focus:shadow-md" 
-                         value={teamData.members} onChange={e => setTeamData({...teamData, members: e.target.value})} placeholder="Names of analysts" />
-                </div>
+              <div className="mb-8 space-y-4">
+                <input type="text" className="w-full bg-white border-2 border-slate-300 focus:border-navy focus:ring-4 focus:ring-navy/10 rounded-2xl p-5 text-navy outline-none transition-all font-mono text-lg shadow-inner font-bold placeholder-slate-400" 
+                       value={teamData.teamName} onChange={e => { sfx.click(); setTeamData({...teamData, teamName: e.target.value}); }} placeholder="Enter Firm / Team Name" />
+                       
+                <input type="text" className="w-full bg-white border-2 border-slate-300 focus:border-navy focus:ring-4 focus:ring-navy/10 rounded-2xl p-5 text-navy outline-none transition-all font-mono text-lg shadow-inner font-bold placeholder-slate-400" 
+                       value={teamData.members} onChange={e => { sfx.click(); setTeamData({...teamData, members: e.target.value}); }} placeholder="Partner Names (e.g. Alice, Bob)" />
               </div>
               
               <button 
-                disabled={!teamData.teamName || !teamData.members}
-                onClick={() => setGameStarted(true)} 
-                className="group text-2xl w-full bg-navy hover:bg-opacity-90 text-white py-5 rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:-translate-y-1 flex items-center justify-center gap-3 uppercase tracking-widest border-b-4 border-[#000022] active:border-b-0 active:translate-y-1 font-bold">
-                <span>Start Simulation</span>
+                disabled={!teamData.teamName}
+                onClick={() => { initAudio(); sfx.success(); setGameStarted(true); }} 
+                className="group w-full bg-navy hover:bg-[#000033] text-white py-6 rounded-2xl transition-all disabled:opacity-50 shadow-[0_10px_20px_rgba(0,0,79,0.3)] hover:shadow-[0_15px_30px_rgba(0,0,79,0.4)] flex items-center justify-center gap-3 font-black text-2xl tracking-widest uppercase border-b-4 border-[#000022] active:border-b-0 active:translate-y-1">
+                <span>Initiate Audit</span>
                 <Icons.ArrowRight />
               </button>
             </div>
@@ -636,30 +754,49 @@
       // --- END SCREEN ---
       if (state.finished) {
         return (
-          <div className="min-h-screen flex items-center justify-center p-6 bg-white relative overflow-hidden font-sans">
-             <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/40 via-white to-blue-50/40 z-0"></div>
-             <div className="glass-panel p-12 rounded-[2rem] max-w-2xl w-full text-center relative z-10 animate-fade-in shadow-2xl">
-                <div className="w-24 h-24 bg-emerald-500 text-white rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg border-2 border-emerald-600 animate-float">
-                  <Icons.Check />
+          <div className="min-h-screen p-6 relative overflow-auto font-sans bg-slate-900">
+             <div className="bg-layer" style={{ backgroundImage: 'url("data/12.png")' }}></div>
+             <div className="gradient-overlay" style={{ background: 'linear-gradient(-180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.98) 100%)' }}></div>
+             
+             <div className="max-w-5xl mx-auto glass-panel p-8 md:p-12 rounded-3xl animate-fade-in shadow-2xl mt-8 relative z-10">
+                <div className="text-center mb-10">
+                    <div className="inline-block bg-navy text-white px-6 py-2 rounded-full font-black text-sm tracking-widest uppercase mb-6 shadow-md">Final Assessment</div>
+                    <h2 className="text-5xl md:text-6xl font-black mb-4 text-navy">Audit Concluded</h2>
+                    <p className="text-slate-500 text-xl font-bold">Final Financial Results for <strong className="text-accent-hotpink bg-navy/5 px-2 py-1 rounded-lg border border-slate-200">{teamData.teamName}</strong></p>
                 </div>
-                <h2 className="text-5xl font-bold text-navy mb-4 tracking-wide">Simulation Complete</h2>
-                <p className="text-navy/70 text-xl mb-10 font-bold">Your firm successfully stabilized the financial architecture.</p>
                 
-                <div className="bg-navy/5 p-10 rounded-3xl border-2 border-navy/20 mb-10 shadow-inner">
-                  <div className="text-sm font-black text-navy uppercase tracking-widest mb-3">Final Corporate Score</div>
-                  <div className="text-8xl font-bold text-navy mb-4">{totalScore}</div>
-                  <div className="text-navy/80 font-mono bg-white inline-block px-4 py-2 rounded-xl border border-navy/20 font-bold">{teamData.teamName}</div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                  <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 p-8 rounded-2xl border-2 border-emerald-200 shadow-sm text-center transform hover:scale-[1.02] transition-transform">
+                    <div className="text-sm text-emerald-800 uppercase font-black tracking-widest mb-3">Final Net Income</div>
+                    <div className={`text-5xl lg:text-6xl font-black ${metrics.netIncome < 0 ? 'text-rose-600' : 'text-emerald-600'}`}>{formatCurrency(metrics.netIncome)}</div>
+                  </div>
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl border-2 border-blue-200 shadow-sm text-center transform hover:scale-[1.02] transition-transform">
+                    <div className="text-sm text-blue-800 uppercase font-black tracking-widest mb-3">Gross Margin</div>
+                    <div className="text-5xl lg:text-6xl font-black text-blue-600">{metrics.gmPercent}%</div>
+                  </div>
+                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-2xl border-2 border-purple-200 shadow-sm text-center transform hover:scale-[1.02] transition-transform">
+                    <div className="text-sm text-purple-800 uppercase font-black tracking-widest mb-3">Cash Conversion</div>
+                    <div className="text-5xl lg:text-6xl font-black text-purple-600">{metrics.ccc} <span className="text-xl">Days</span></div>
+                  </div>
+                </div>
+
+                <div className="mb-10">
+                    <FinancialStatements fs={state.fs} metrics={metrics} />
                 </div>
                 
                 {!submitSuccess ? (
-                  <button onClick={submitToSheet} disabled={isSubmitting} className="font-bold text-xl bg-navy hover:bg-opacity-90 text-white py-5 px-10 rounded-2xl w-full transition-all shadow-lg hover:-translate-y-1 uppercase tracking-widest border-b-4 border-[#000022] active:border-b-0 active:translate-y-1 disabled:opacity-50 disabled:cursor-wait">
-                    {isSubmitting ? 'Transmitting to Server...' : 'Export Audit Report & Submit'}
+                  <button onClick={submitToSheet} disabled={isSubmitting} className="mb-6 w-full bg-emerald-600 hover:bg-emerald-700 text-white py-6 rounded-2xl font-black text-2xl tracking-widest uppercase transition-all shadow-xl border-b-4 border-emerald-900 active:border-b-0 active:translate-y-1 disabled:opacity-50 disabled:cursor-wait flex justify-center gap-3">
+                    {isSubmitting ? 'Transmitting Data...' : 'Submit Audit Report to Instructor'}
                   </button>
                 ) : (
-                  <div className="bg-emerald-50 border-2 border-emerald-500 p-6 rounded-2xl text-emerald-600 font-bold text-2xl uppercase tracking-widest shadow-md animate-fade-in">
-                    Score Successfully Logged!
+                  <div className="bg-emerald-50 border-2 border-emerald-500 p-6 rounded-2xl text-emerald-600 font-bold text-2xl uppercase tracking-widest shadow-md animate-fade-in mb-6 text-center">
+                    Audit Successfully Submitted!
                   </div>
                 )}
+                
+                <button onClick={() => { sfx.click(); window.location.reload(); }} className="w-full bg-navy text-white py-4 rounded-2xl font-black text-lg tracking-widest uppercase hover:bg-[#000033] transition-all shadow-md">
+                  Restart Simulation
+                </button>
              </div>
           </div>
         )
@@ -667,123 +804,152 @@
 
       // --- MAIN GAME UI ---
       return (
-        <div className="h-screen flex flex-col relative overflow-hidden text-sm md:text-base">
+        <div className={`h-screen flex flex-col relative overflow-hidden text-sm md:text-base ${shake ? 'animate-shake' : ''}`}>
+          {/* DYNAMIC BACKGROUND */}
           <div className="bg-layer" style={{ backgroundImage: `url("${currentLevel?.bgImage || 'data/1.png'}")` }}></div>
           <div className="gradient-overlay"></div>
-
-          {/* TOP NAVIGATION DASHBOARD */}
-          <header className="glass-header flex flex-col lg:flex-row justify-between items-center px-6 py-4 z-20 gap-4 shrink-0">
+          
+          {/* TOP DASHBOARD */}
+          <header className="glass-header flex flex-col lg:flex-row justify-between items-center px-4 md:px-6 py-4 z-20 gap-4 shrink-0 relative">
             <div className="flex items-center gap-4 w-full lg:w-auto">
-              <div className={`hidden md:flex w-14 h-14 bg-navy rounded-2xl items-center justify-center border-2 border-navy text-white shadow-lg`}>
-                <Icons.Briefcase />
+              <div className="w-12 h-12 bg-navy rounded-xl flex items-center justify-center text-white shadow-lg border border-navy/20">
+                <Icons.PieChart />
               </div>
               <div>
-                <h1 className="text-navy font-bold tracking-wider text-2xl drop-shadow-sm">Restaurant Rescue</h1>
-                <div className="text-xs text-navy/70 font-mono mt-1 font-bold">
-                  PHASE {state.viewingIndex + 1}/12 • {teamData.teamName}
-                  {isReviewMode && <span className="ml-3 text-white font-black bg-rose-500 px-2 py-0.5 rounded-md border-b-2 border-rose-700 shadow-md">REVIEW MODE</span>}
+                <h1 className="text-navy font-black text-2xl leading-tight tracking-tight">Capital Carnage</h1>
+                <div className="text-[11px] text-slate-500 font-mono font-bold uppercase tracking-widest mt-1">
+                  Phase {state.viewingIndex + 1}/12 • {teamData.teamName}
+                  {isReviewMode && <span className="ml-3 text-white font-black bg-rose-500 px-2 py-0.5 rounded border border-rose-700 shadow-sm">REVIEW</span>}
                 </div>
               </div>
             </div>
 
-            <div className="flex gap-4 md:gap-8 w-full lg:w-auto overflow-x-auto pb-2 lg:pb-0 hide-scrollbar">
-              {renderMetric("Cash", state.cash)}
-              {renderMetric("Profit", state.profit)}
-              {renderMetric("Reputation", state.reputation)}
-              {renderMetric("Operations", state.operations)}
+            {/* LIVE METRICS */}
+            <div className="flex gap-2 md:gap-4 overflow-x-auto pb-2 lg:pb-0 w-full lg:w-auto hide-scrollbar">
+              <div className="bg-white/80 backdrop-blur border-2 border-slate-200 px-3 py-2.5 rounded-xl shadow-sm min-w-[100px]">
+                <div className="text-[10px] uppercase font-black text-slate-500 mb-1 tracking-widest">Net Income</div>
+                <div className={`font-mono font-black text-lg ${metrics.netIncome < 0 ? 'text-rose-600' : 'text-emerald-600'}`}>{formatCurrency(metrics.netIncome)}</div>
+              </div>
+              <div className="bg-white/80 backdrop-blur border-2 border-slate-200 px-3 py-2.5 rounded-xl shadow-sm min-w-[90px]">
+                <div className="text-[10px] uppercase font-black text-slate-500 mb-1 tracking-widest">Margin</div>
+                <div className="font-mono font-black text-lg text-blue-600">{metrics.gmPercent}%</div>
+              </div>
+              <div className="bg-white/80 backdrop-blur border-2 border-slate-200 px-3 py-2.5 rounded-xl shadow-sm min-w-[80px]">
+                <div className="text-[10px] uppercase font-black text-slate-500 mb-1 tracking-widest">Days Inv</div>
+                <div className="font-mono font-black text-lg text-purple-600">{metrics.dii}</div>
+              </div>
+              <div className="bg-white/80 backdrop-blur border-2 border-slate-200 px-3 py-2.5 rounded-xl shadow-sm min-w-[80px]">
+                <div className="text-[10px] uppercase font-black text-slate-500 mb-1 tracking-widest">Days Rec</div>
+                <div className="font-mono font-black text-lg text-purple-600">{metrics.dso}</div>
+              </div>
+              <div className="bg-white/80 backdrop-blur border-2 border-slate-200 px-3 py-2.5 rounded-xl shadow-sm min-w-[80px]">
+                <div className="text-[10px] uppercase font-black text-slate-500 mb-1 tracking-widest">Days Pay</div>
+                <div className="font-mono font-black text-lg text-purple-600">{metrics.dpo}</div>
+              </div>
+              <div className="bg-white/80 backdrop-blur border-2 border-slate-200 px-3 py-2.5 rounded-xl shadow-sm min-w-[80px]">
+                <div className="text-[10px] uppercase font-black text-slate-500 mb-1 tracking-widest">CCC</div>
+                <div className="font-mono font-black text-lg text-purple-800">{metrics.ccc}</div>
+              </div>
+              <div className="bg-white/80 backdrop-blur border-2 border-slate-200 px-3 py-2.5 rounded-xl shadow-sm min-w-[100px] relative overflow-hidden">
+                <div className="text-[10px] uppercase font-black text-slate-500 mb-1 tracking-widest">Cash</div>
+                <div className={`font-mono font-black text-lg ${state.fs.assets.cash < 5000 ? 'text-rose-600 animate-pulse' : 'text-slate-800'}`}>{formatCurrency(state.fs.assets.cash)}</div>
+                {state.fs.assets.cash < 5000 && <div className="absolute bottom-0 left-0 right-0 h-1 bg-rose-500 animate-pulse"></div>}
+              </div>
             </div>
 
-            <div className="flex items-center gap-5 shrink-0 bg-white/90 p-2.5 rounded-2xl border-2 border-navy/20 shadow-sm">
-              <div className="flex flex-col items-end px-3">
-                <span className={`text-[11px] font-black uppercase tracking-widest text-navy/70`}>Net Score</span>
-                <span className="text-3xl font-bold text-navy">{totalScore}</span>
-              </div>
-              <div className="h-10 w-px bg-navy/20 hidden md:block"></div>
-              <div className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-mono font-black text-xl min-w-[120px] justify-center transition-all duration-300 ${state.timeLeft <= 15 && !answeredState ? 'bg-rose-500 text-white animate-pulse-fast border-b-4 border-rose-700' : 'bg-navy text-white border-b-4 border-[#000022]'}`}>
+            <div className="flex items-center gap-4 shrink-0 bg-white p-2 border-2 border-slate-200 rounded-2xl shadow-sm">
+              {/* FLASHING LIVE STATEMENTS BUTTON */}
+              <button onClick={() => { sfx.click(); setShowFinancials(true); }} className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 px-5 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest transition-all animate-pulse-glow border-2 border-blue-400 relative">
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-accent-hotpink rounded-full border border-white animate-ping"></span>
+                <Icons.FileText /> Live Statements
+              </button>
+              <div className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-mono font-black text-xl min-w-[100px] justify-center transition-colors border-b-4 ${state.timeLeft <= 15 && !answeredState ? 'bg-rose-500 text-white border-rose-700 animate-pulse-fast shadow-md' : 'bg-slate-100 text-slate-700 border-slate-300'}`}>
                 <Icons.Clock />
-                {isReviewMode ? '--:--' : formatTime(state.timeLeft)}
+                {isReviewMode ? '--:--' : `00:${state.timeLeft.toString().padStart(2, '0')}`}
               </div>
             </div>
           </header>
 
-          {/* MAIN GRID LAYOUT */}
+          {/* MAIN GRID */}
           <main className="flex-1 max-w-[1800px] w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 overflow-hidden z-10 relative">
             
-            {/* LEFT COLUMN: SCENARIO BRIEFING */}
+            {/* LEFT COLUMN: SCENARIO */}
             <div className="lg:col-span-7 flex flex-col gap-6 overflow-y-auto pr-2 pb-10">
               
-              <div className={`glass-panel rounded-[2rem] p-6 md:p-8 animate-slide-up flex-shrink-0 relative overflow-hidden`}>
-                <div className="flex items-center justify-between mb-6 relative z-10">
-                  <div className={`text-xs font-black text-navy uppercase tracking-widest bg-navy/5 px-4 py-2 rounded-full border-2 border-navy/20 flex items-center gap-2`}>
-                    <div className={`w-2 h-2 rounded-full bg-navy animate-pulse-fast`}></div>
-                    {currentLevel.district}
-                  </div>
-                  {state.viewingIndex > 0 && (
-                    <button onClick={() => {if(state.viewingIndex > 0) setState(prev => ({ ...prev, viewingIndex: prev.viewingIndex - 1 }))}} className="text-xs font-black flex items-center gap-1 text-navy/60 hover:text-navy transition-colors uppercase tracking-widest bg-white px-4 py-2 rounded-xl border-2 border-navy/20 hover:border-navy shadow-sm">
-                      <svg className="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                      Previous Phase
-                    </button>
-                  )}
-                </div>
-                
-                <h2 className="text-4xl md:text-5xl font-bold text-navy mb-4 tracking-wide leading-tight relative z-10">{currentLevel.title}</h2>
-                <div className={`font-bold mb-6 flex items-center gap-2 text-sm uppercase tracking-widest relative z-10 text-navy/70`}>
-                  <Icons.FileText /> Subject: {currentLevel.concept}
-                </div>
+              <div className={`glass-panel rounded-3xl p-6 md:p-8 flex-shrink-0 animate-slide-up relative overflow-hidden`}>
+                <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="text-xs font-black text-navy uppercase tracking-widest bg-navy/5 px-4 py-2 rounded-lg border-2 border-navy/10 inline-flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-accent-hotpink animate-pulse"></div>
+                        {currentLevel.district}
+                      </div>
+                      {state.viewingIndex > 0 && (
+                        <button onClick={() => { sfx.click(); setState(prev => ({ ...prev, viewingIndex: prev.viewingIndex - 1 })); }} className="text-xs font-black text-slate-500 hover:text-navy uppercase tracking-widest bg-white px-4 py-2 rounded-lg border-2 border-slate-200 shadow-sm transition flex items-center gap-2">
+                          <svg className="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg> Previous
+                        </button>
+                      )}
+                    </div>
+                    
+                    <h2 className="text-4xl md:text-5xl font-black text-navy mb-4 tracking-tight leading-tight">{currentLevel.title}</h2>
+                    <div className="font-bold mb-6 text-sm uppercase tracking-widest text-slate-500 flex items-center gap-2">
+                      <Icons.FileText /> Subject: {currentLevel.concept}
+                    </div>
 
-                <div className={`w-full h-48 md:h-64 rounded-2xl overflow-hidden relative mb-8 border-2 border-navy shadow-lg group z-10`}>
-                  <img src={currentLevel.bgImage} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out" alt="Scenario Env" />
-                </div>
+                    {/* IMMERSIVE SCENARIO IMAGE */}
+                    <div className={`w-full h-64 md:h-[360px] lg:h-[400px] rounded-2xl overflow-hidden relative mb-8 border-4 border-white shadow-xl group z-10`}>
+                      <img src={currentLevel.bgImage} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out" alt="Scenario Env" />
+                      <div className="absolute inset-0 ring-1 ring-inset ring-black/10 rounded-2xl"></div>
+                    </div>
 
-                <div className="bg-white/90 p-6 rounded-2xl border-2 border-navy/20 text-navy text-lg leading-relaxed shadow-sm backdrop-blur-md relative z-10 font-medium">
-                  {currentLevel.scene}
-                </div>
+                    <div className="bg-white/80 p-6 rounded-2xl border-2 border-slate-200 text-slate-800 text-lg leading-relaxed shadow-sm font-semibold mb-6">
+                      {currentLevel.scene}
+                    </div>
 
-                {/* CONSULTANT HINT */}
-                <div className="mt-6 relative z-10">
-                  {!state.active.usedMemo && !answeredState ? (
-                    <div className="bg-navy/5 border-2 border-navy/20 p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 backdrop-blur-sm">
-                      <div className="flex items-center gap-4">
-                        <div className="text-navy/50 bg-white p-3 rounded-xl border border-navy/20"><Icons.Lock /></div>
-                        <div>
-                          <div className="font-black text-navy text-sm uppercase tracking-wider">Executive Hint Locked</div>
-                          <div className="text-navy/60 font-bold text-xs mt-1">Reveal the underlying accounting standard.</div>
+                    {/* HINT */}
+                    {!state.active.usedMemo && !answeredState ? (
+                      <div className="bg-navy p-5 rounded-2xl flex items-center justify-between gap-4 shadow-inner">
+                        <div className="flex items-center gap-4 text-white">
+                          <div className="bg-white/20 p-3 rounded-xl"><Icons.Lock /></div>
+                          <div>
+                            <div className="font-black text-sm uppercase tracking-widest mb-1">GAAP Hint Locked</div>
+                            <div className="text-white/60 text-xs font-bold">Uncover the accounting standard rule.</div>
+                          </div>
                         </div>
+                        <button onClick={() => {
+                            sfx.click();
+                            if(state.inventory.memo > 0) {
+                                sfx.buy();
+                                setState(prev => ({...prev, inventory: {...prev.inventory, memo: prev.inventory.memo - 1}, active: {...prev.active, usedMemo: true}}));
+                            } else {
+                                sfx.error();
+                            }
+                        }} className={`text-xs font-black uppercase tracking-widest px-6 py-3 rounded-xl transition-all border-b-4 ${state.inventory.memo > 0 ? 'bg-accent-hotpink text-navy border-[#cc0052] hover:translate-y-[-2px] active:translate-y-[2px] active:border-b-0' : 'bg-slate-700 text-slate-500 border-slate-800 cursor-not-allowed'}`}>
+                          Unlock (Own: {state.inventory.memo})
+                        </button>
                       </div>
-                      <button 
-                        onClick={handleUseMemo}
-                        className={`shrink-0 font-black text-sm uppercase tracking-widest px-6 py-4 rounded-xl transition-all flex items-center gap-2 border-b-4 ${state.inventory.memo > 0 ? `bg-accent-hotpink text-navy border-[#cc0052] hover:bg-opacity-90 hover:translate-y-[-2px] active:translate-y-[2px] active:border-b-0` : 'bg-gray-200 text-gray-500 border-gray-300 cursor-not-allowed'}`}
-                      >
-                        {state.inventory.memo > 0 ? (
-                          <>Unlock Hint <span className="bg-white/30 px-2 py-0.5 rounded font-mono text-xs ml-2 shadow-sm">x{state.inventory.memo}</span></>
-                        ) : (
-                          <>No Memos Owned</>
-                        )}
-                      </button>
-                    </div>
-                  ) : (
-                    <div className={`bg-navy/5 border-2 border-navy p-6 rounded-2xl animate-fade-in backdrop-blur-md`}>
-                      <div className={`flex items-center gap-2 mb-3 font-black text-sm uppercase tracking-widest text-navy`}>
-                        <Icons.Unlock /> Executive Summary Revealed
+                    ) : (
+                      <div className="bg-indigo-50 border-2 border-indigo-200 p-6 rounded-2xl animate-fade-in shadow-sm">
+                        <div className="flex items-center gap-2 mb-3 font-black text-xs uppercase tracking-widest text-indigo-800">
+                          <Icons.Unlock /> Accounting Standard
+                        </div>
+                        <p className="text-indigo-900 text-base font-bold leading-relaxed">{currentLevel.tip}</p>
                       </div>
-                      <p className="text-navy text-base leading-relaxed font-bold">{currentLevel.tip}</p>
-                    </div>
-                  )}
+                    )}
                 </div>
               </div>
 
-              {/* EVENT LOG */}
-              <div className="glass-panel rounded-3xl p-6 animate-slide-up hidden lg:flex flex-col max-h-[250px] flex-shrink-0 relative overflow-hidden">
-                 <div className={`text-xs font-black uppercase tracking-widest mb-4 flex items-center gap-2 text-navy`}>
-                   <div className="w-3 h-3 rounded-full bg-navy animate-pulse-fast"></div> System Audit Trail
+              {/* LOGS */}
+              <div className="glass-panel rounded-3xl p-6 hidden lg:flex flex-col h-56 flex-shrink-0 relative overflow-hidden">
+                 <div className="text-xs font-black uppercase tracking-widest mb-4 text-navy flex items-center gap-2">
+                   <div className="w-3 h-3 rounded-full bg-accent-hotpink animate-pulse-fast"></div> Ledger Audit Trail
                  </div>
-                 <div className="flex-1 overflow-y-auto space-y-3 pr-2 scroll-smooth font-mono text-sm">
-                    {logs.length === 0 ? <div className="text-navy/50 italic font-bold">No actions recorded in current session.</div> : null}
+                 <div className="flex-1 overflow-y-auto space-y-3 pr-2 font-mono text-sm">
+                    {logs.length === 0 ? <div className="text-slate-400 italic font-bold">Awaiting first transaction...</div> : null}
                     {logs.map(log => (
-                      <div key={log.id} className={`border-l-4 border-navy pl-4 py-2 animate-fade-in bg-navy/5 rounded-r-xl shadow-sm`}>
-                        <span className="text-navy/50 font-black text-[10px] mr-2 block mb-1">{log.time}</span>
-                        <strong className="text-navy">{log.title}</strong>
-                        <span className="text-navy/80 block text-xs mt-1">{log.text}</span>
+                      <div key={log.id} className={`p-3 rounded-xl border-l-4 shadow-sm animate-fade-in ${log.isPenalty ? 'bg-rose-50 border-rose-500 text-rose-800' : 'bg-white border-navy text-navy'}`}>
+                        <span className="opacity-50 font-black text-[10px] mr-3">{log.time}</span>
+                        <strong className="tracking-wide">{log.title}:</strong>
+                        <span className="opacity-80 ml-2 font-semibold">{log.text}</span>
                       </div>
                     ))}
                  </div>
@@ -791,185 +957,164 @@
 
             </div>
 
-            {/* RIGHT COLUMN: ACTIONS & DECISIONS */}
+            {/* RIGHT COLUMN: ACTIONS */}
             <div className="lg:col-span-5 flex flex-col gap-5 overflow-y-auto pr-2 pb-10">
               
-              {/* ACTION HEADER & INVENTORY BAR */}
-              <div className="flex flex-col gap-3 shrink-0 animate-slide-up">
-                <div className="flex justify-between items-center bg-white/95 p-5 rounded-2xl border-2 border-navy shadow-md backdrop-blur-md">
+              <div className="shrink-0 animate-slide-up">
+                {/* PROMINENT SHOP BUTTON */}
+                <button onClick={() => { sfx.click(); setShowShop(true); }} className="mb-4 w-full group flex items-center justify-between bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white px-6 py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">
+                  <div className="flex items-center gap-3"><span className="bg-white/20 p-2 rounded-lg"><Icons.Briefcase /></span> Buy Consulting Services</div>
+                  <span className="font-mono bg-white/20 px-3 py-1.5 rounded-lg border border-white/40 flex items-center gap-2 shadow-inner">Budget: {formatCurrency(state.budget)}</span>
+                </button>
+
+                <div className="flex justify-between items-center glass-panel p-5 rounded-2xl">
                   <div className="flex items-center gap-3">
-                    <div className={`w-4 h-4 rounded-full border-2 border-navy ${answeredState ? 'bg-slate-400' : `bg-accent-hotpink animate-pulse`}`}></div>
+                    <div className={`w-4 h-4 rounded-full border-2 border-white shadow-sm ${answeredState ? 'bg-slate-300' : 'bg-accent-hotpink animate-pulse'}`}></div>
                     <span className="text-base font-black uppercase tracking-widest text-navy">
-                      {answeredState ? 'Analysis Complete' : 'Awaiting Directive'}
+                      {answeredState ? 'Recording Posted' : 'Submit Recording'}
                     </span>
                   </div>
-                  
-                  {/* Shop Trigger Button */}
-                  <button onClick={() => setShowShop(true)} className="group flex items-center gap-3 bg-white border-2 border-navy hover:bg-navy hover:text-white text-navy px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-sm hover:shadow-md hover:-translate-y-1 active:translate-y-0">
-                    <span className="flex items-center gap-1 transition-colors"><Icons.ShoppingCart /> Shop</span>
-                    <span className="text-navy bg-navy/10 group-hover:bg-white/20 group-hover:text-white font-mono px-2 py-1 rounded-lg border border-navy/20 flex items-center gap-1">
-                      {state.business} pts
-                    </span>
-                  </button>
-                </div>
-
-                {/* Mini Active Inventory Bar */}
-                <div className="flex gap-2 text-xs font-bold uppercase tracking-wider">
-                  {state.active.insurance && (
-                    <div className="bg-emerald-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm border-b-2 border-emerald-700 animate-pulse-fast">
-                      <Icons.Shield /> Risk Hedge Active
-                    </div>
-                  )}
-                  {state.active.analyst && (
-                    <div className="bg-blue-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm border-b-2 border-blue-700 animate-pulse-fast">
-                      <Icons.TrendingUp /> Sprint Active
-                    </div>
-                  )}
                 </div>
               </div>
 
-              {/* CHOICES */}
+              {state.active.insurance && (
+                <div className="bg-emerald-500 text-white border border-emerald-600 px-5 py-3 rounded-2xl text-sm font-black uppercase tracking-widest flex items-center gap-3 shadow-lg animate-pulse-fast border-b-4">
+                  <Icons.Shield /> Risk Hedge Active (Protects against SEC Fine)
+                </div>
+              )}
+
               <div className="flex flex-col gap-4 shrink-0">
                 {currentLevel.choices.map((choice, idx) => {
                   const isSelected = historyData?.choiceIdx === idx;
+                  let btnClass = "btn-window w-full text-left p-6 font-bold text-base leading-relaxed rounded-2xl outline-none flex gap-4 items-center ";
                   
-                  let btnClass = "btn-window w-full text-left p-6 font-bold text-[16px] leading-relaxed rounded-2xl outline-none flex gap-4 items-center ";
-                  
-                  if (!answeredState) {
-                    btnClass += "cursor-pointer";
-                  } else if (isSelected) {
-                    btnClass += choice.correct ? " selected-correct scale-[1.02]" : " selected-wrong scale-[1.02]";
-                  } else {
-                    btnClass += " opacity-40 grayscale cursor-not-allowed border-navy bg-white text-navy";
-                  }
+                  if (!answeredState) btnClass += "cursor-pointer";
+                  else if (isSelected) btnClass += choice.correct ? " selected-correct scale-[1.02]" : " selected-wrong scale-[1.02]";
+                  else btnClass += " opacity-50 grayscale cursor-not-allowed bg-slate-50";
 
                   return (
                     <button key={idx} disabled={answeredState} onClick={() => handleChoice(idx)} className={btnClass} style={{animationDelay: `${idx * 0.1}s`}}>
-                      <div className="flex gap-4 items-center relative z-10 w-full">
-                        <div className="flex-shrink-0">
-                          {isSelected && choice.correct && <div className="text-white bg-emerald-500 p-1.5 rounded-full shadow-lg border-2 border-white/20"><Icons.Check /></div>}
-                          {isSelected && !choice.correct && <div className="text-white bg-rose-500 p-1.5 rounded-full shadow-lg border-2 border-white/20"><Icons.X /></div>}
-                          {!isSelected && <div className={`w-7 h-7 rounded-full border-4 border-current transition-colors shadow-inner`}></div>}
-                        </div>
-                        <span className="transition-colors z-10 relative">
-                          {choice.text}
-                        </span>
+                      <div className="flex-shrink-0">
+                        {isSelected && choice.correct ? <div className="text-white bg-emerald-500 p-1.5 rounded-full shadow-md"><Icons.Check /></div> :
+                         isSelected && !choice.correct ? <div className="text-white bg-rose-500 p-1.5 rounded-full shadow-md"><Icons.X /></div> :
+                         <div className="w-7 h-7 rounded-full border-4 border-slate-300 shadow-inner"></div>}
                       </div>
+                      <span className="z-10">{choice.text}</span>
                     </button>
                   );
                 })}
               </div>
 
-              {/* FEEDBACK PANEL */}
-              {feedback && (
-                <div className={`mt-2 p-6 rounded-3xl border-2 backdrop-blur-xl animate-slide-right flex-shrink-0 shadow-xl ${feedback.good ? 'bg-emerald-50 border-emerald-500' : 'bg-rose-50 border-rose-500'}`}>
-                  <div className="flex items-start gap-4 mb-6">
-                    <div className={`mt-1 p-2 rounded-xl border-2 text-white shadow-sm ${feedback.good ? 'bg-emerald-500 border-emerald-200' : 'bg-rose-500 border-rose-200'}`}>
-                      {feedback.good ? <Icons.Check /> : <Icons.X />}
-                    </div>
-                    <div>
-                      <h3 className={`text-3xl font-bold mb-2 ${feedback.good ? 'text-emerald-800' : 'text-rose-800'}`}>{feedback.title}</h3>
-                      <p className="text-navy text-base leading-relaxed font-bold">{feedback.explanation}</p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-5 gap-3 mt-6 bg-white p-5 rounded-2xl border-2 border-navy/10 shadow-sm">
-                    <div className="text-center">
-                      <div className="text-[11px] text-navy/50 uppercase tracking-widest font-black mb-1">Cash</div>
-                      <div className={`font-mono font-black text-xl ${feedback.effects.cash > 0 ? 'text-emerald-500' : feedback.effects.cash < 0 ? 'text-rose-500' : 'text-navy/40'}`}>
-                        {feedback.effects.cash > 0 ? '+'+feedback.effects.cash : feedback.effects.cash}
-                      </div>
-                    </div>
-                    <div className="text-center border-l-2 border-navy/10">
-                      <div className="text-[11px] text-navy/50 uppercase tracking-widest font-black mb-1">Profit</div>
-                      <div className={`font-mono font-black text-xl ${feedback.effects.profit > 0 ? 'text-emerald-500' : feedback.effects.profit < 0 ? 'text-rose-500' : 'text-navy/40'}`}>
-                        {feedback.effects.profit > 0 ? '+'+feedback.effects.profit : feedback.effects.profit}
-                      </div>
-                    </div>
-                    <div className="text-center border-l-2 border-navy/10">
-                      <div className="text-[11px] text-navy/50 uppercase tracking-widest font-black mb-1">Rep</div>
-                      <div className={`font-mono font-black text-xl ${feedback.effects.rep > 0 ? 'text-emerald-500' : feedback.effects.rep < 0 ? 'text-rose-500' : 'text-navy/40'}`}>
-                        {feedback.effects.rep > 0 ? '+'+feedback.effects.rep : feedback.effects.rep}
-                      </div>
-                    </div>
-                    <div className="text-center border-l-2 border-navy/10">
-                      <div className="text-[11px] text-navy/50 uppercase tracking-widest font-black mb-1">Ops</div>
-                      <div className={`font-mono font-black text-xl ${feedback.effects.ops > 0 ? 'text-emerald-500' : feedback.effects.ops < 0 ? 'text-rose-500' : 'text-navy/40'}`}>
-                        {feedback.effects.ops > 0 ? '+'+feedback.effects.ops : feedback.effects.ops}
-                      </div>
-                    </div>
-                    <div className="text-center border-l-2 border-navy/10 bg-amber-50 rounded-lg -m-2 p-2 ml-1 border border-amber-200">
-                      <div className="text-[11px] text-amber-600 uppercase tracking-widest font-black mb-1">Bus Pts</div>
-                      <div className="font-mono font-black text-xl text-amber-500">
-                        {feedback.effects.bus > 0 ? '+'+feedback.effects.bus : feedback.effects.bus}
-                      </div>
-                    </div>
-                  </div>
+              {/* FEEDBACK */}
+              {historyData && (
+                <div className={`mt-2 p-6 rounded-2xl border-2 shadow-lg animate-slide-up ${historyData.feedback.good ? 'bg-emerald-50 border-emerald-400' : 'bg-rose-50 border-rose-400'}`}>
+                  <h3 className={`text-2xl font-black mb-3 flex items-center gap-3 ${historyData.feedback.good ? 'text-emerald-800' : 'text-rose-800'}`}>
+                    <div className={`p-2 rounded-xl text-white ${historyData.feedback.good ? 'bg-emerald-500' : 'bg-rose-500'}`}>{historyData.feedback.good ? <Icons.Check/> : <Icons.X/>}</div> 
+                    {historyData.feedback.title}
+                  </h3>
+                  <p className="text-slate-800 text-base font-bold leading-relaxed">{historyData.feedback.explanation}</p>
                 </div>
               )}
 
-              {/* NEXT BUTTON */}
+              {/* NEXT */}
               {answeredState && (
-                <button onClick={nextLevel} className={`mt-4 w-full bg-navy text-white font-bold text-2xl py-6 rounded-2xl transition-all flex items-center justify-center gap-3 shrink-0 animate-slide-up hover:-translate-y-1 active:translate-y-1 uppercase tracking-widest border-b-4 border-[#000022] active:border-b-0 shadow-lg hover:shadow-xl`}>
-                  {isReviewMode ? 'Return to Active Phase' : 'Proceed to Next Phase'}
-                  <Icons.ArrowRight />
+                <button onClick={nextLevel} className="mt-4 w-full bg-navy text-white font-black text-xl tracking-widest uppercase py-6 rounded-2xl hover:bg-[#000033] transition-all flex items-center justify-center gap-3 shadow-xl border-b-4 border-[#000022] active:border-b-0 active:translate-y-1">
+                  {isReviewMode ? 'Return to Active Scenario' : 'Next Scenario'} <Icons.ArrowRight />
                 </button>
               )}
 
             </div>
           </main>
 
-          {/* SHOP MODAL */}
-          {showShop && (
-            <div className="fixed inset-0 bg-white/90 flex items-center justify-center p-4 z-50 backdrop-blur-md animate-fade-in">
-              <div className="bg-white p-8 md:p-10 rounded-[2rem] max-w-3xl w-full border-4 border-navy shadow-2xl relative overflow-hidden">
-
-                <button onClick={() => setShowShop(false)} className="absolute top-6 right-6 text-navy/50 hover:text-navy transition-colors bg-white p-2.5 rounded-full border-2 border-navy/20 hover:border-navy active:scale-90">
-                  <Icons.X />
-                </button>
+          {/* EMERGENCY LOAN MODAL */}
+          {emergencyInfo && (
+            <div className="fixed inset-0 bg-rose-950/90 flex items-center justify-center p-4 z-[60] backdrop-blur-md animate-fade-in">
+              <div className="bg-slate-900 p-8 md:p-10 rounded-3xl max-w-lg w-full border-4 border-rose-500 shadow-[0_0_60px_rgba(225,29,72,0.6)] relative text-center transform scale-100 animate-[pulseFast_0.5s_infinite_alternate]">
+                <div className="mx-auto bg-rose-500 text-white w-20 h-20 rounded-full flex items-center justify-center mb-6 shadow-lg border-4 border-slate-900 -mt-16">
+                  <Icons.AlertTriangle />
+                </div>
+                <h2 className="text-3xl font-black text-rose-500 mb-2 uppercase tracking-widest">Emergency Loan</h2>
+                <h3 className="text-xl font-bold text-white mb-6">Bridge Capital Inc.</h3>
                 
-                <h2 className="text-4xl font-bold text-navy mb-3 flex items-center gap-4">
-                  <span className="text-navy bg-accent-hotpink p-3 rounded-2xl border-2 border-navy shadow-sm"><Icons.ShoppingCart /></span> 
-                  Consulting Services
-                </h2>
-                <p className="text-navy/70 text-base mb-8 font-bold">Acquire strategic advantages using firm capital to survive the audit.</p>
+                <p className="text-slate-300 text-base mb-6 font-medium leading-relaxed">
+                  Your cash balance completely collapsed! To keep the restaurant doors open, you've been forced to accept an emergency bridge loan with brutally high interest conditions.
+                </p>
                 
-                <div className="bg-navy/5 p-5 rounded-2xl border-2 border-navy/20 mb-8 inline-flex items-center gap-5 shadow-inner">
-                  <span className="text-sm uppercase tracking-widest font-black text-navy/60">Available Capital</span>
-                  <span className="text-4xl font-bold text-amber-500">{state.business} pts</span>
+                <div className="bg-rose-950/50 p-5 rounded-2xl border border-rose-800 mb-8 space-y-3 shadow-inner text-left">
+                  <div className="flex justify-between items-center text-rose-200">
+                    <span className="font-bold">Emergency Funds Received:</span>
+                    <span className="font-mono text-xl font-black text-white">{formatCurrency(emergencyInfo.amount)}</span>
+                  </div>
+                  <div className="h-px bg-rose-800/50"></div>
+                  <div className="flex justify-between items-center text-rose-200">
+                    <span className="font-bold">Default Interest Charge:</span>
+                    <span className="font-mono text-xl font-black text-rose-500">-{formatCurrency(emergencyInfo.fee)}</span>
+                  </div>
                 </div>
                 
-                <div className="grid gap-5">
-                  {shopItems.map(item => {
-                    const canAfford = state.business >= item.cost;
-                    return (
-                    <div key={item.id} className="bg-white border-2 border-navy/20 p-5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between group hover:border-navy transition-all hover:bg-navy/5 shadow-sm hover:shadow-md">
-                      <div className="flex items-start gap-5 mb-4 md:mb-0">
-                        <div className="mt-1 text-navy bg-white p-3 rounded-xl border-2 border-navy/20 shadow-sm">{item.icon}</div>
-                        <div>
-                          <div className="font-bold text-navy text-2xl mb-2 flex items-center gap-3 tracking-wide">
-                            {item.name}
-                            {state.inventory[item.id] > 0 ? <span className="text-[11px] bg-accent-hotpink text-navy px-3 py-1 rounded-lg font-sans uppercase tracking-widest font-black shadow-sm border-b-2 border-navy">Owned: {state.inventory[item.id]}</span> : null}
-                          </div>
-                          <div className="text-sm text-navy/70 font-bold">{item.desc}</div>
-                        </div>
-                      </div>
-                      <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-3 shrink-0 md:ml-6 bg-navy/5 md:bg-transparent p-4 md:p-0 rounded-xl border-2 md:border-none border-navy/10">
-                        <div className="text-base font-bold text-amber-600">Cost: {item.cost}</div>
-                        <button 
-                          onClick={() => {
-                            if (canAfford) {
-                              setState(prev => ({...prev, business: prev.business - item.cost, inventory: {...prev.inventory, [item.id]: prev.inventory[item.id] + 1}}));
-                              addLog('Procurement', `Acquired ${item.name}.`);
-                            }
-                          }}
-                          disabled={!canAfford} 
-                          className={`text-sm font-black uppercase tracking-widest px-6 py-3 rounded-xl transition-all border-b-4 ${canAfford ? 'bg-amber-500 text-white border-amber-700 hover:bg-amber-400 hover:translate-y-[-2px] active:translate-y-[2px] active:border-b-0 shadow-sm' : 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'}`}>
-                          {canAfford ? 'Purchase' : 'Insufficient'}
-                        </button>
-                      </div>
+                <button onClick={() => { sfx.click(); setEmergencyInfo(null); }} className="w-full bg-rose-600 text-white py-5 rounded-xl font-black text-lg tracking-widest uppercase hover:bg-rose-700 transition-all shadow-lg border-b-4 border-rose-900 active:border-b-0 active:translate-y-1">
+                  Reluctantly Accept Terms
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* FINANCIAL STATEMENTS MODAL */}
+          {showFinancials && (
+            <div className="fixed inset-0 bg-navy/80 flex items-center justify-center p-4 z-50 backdrop-blur-md animate-fade-in">
+              <div className="bg-slate-50 p-8 rounded-3xl max-w-5xl w-full border-4 border-white shadow-2xl relative max-h-[90vh] flex flex-col">
+                <div className="flex justify-between items-center mb-8 shrink-0">
+                    <h2 className="text-3xl font-black text-navy flex items-center gap-3"><Icons.FileText /> Live Financial Statements</h2>
+                    <button onClick={() => { sfx.click(); setShowFinancials(false); }} className="bg-white p-3 rounded-full border-2 border-slate-200 hover:border-navy text-slate-500 hover:text-navy transition-all shadow-sm"><Icons.X /></button>
+                </div>
+                <div className="overflow-y-auto flex-1 pr-4">
+                    <FinancialStatements fs={state.fs} metrics={metrics} />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* SHOP MODAL */}
+          {showShop && (
+            <div className="fixed inset-0 bg-navy/80 flex items-center justify-center p-4 z-50 backdrop-blur-md animate-fade-in">
+              <div className="bg-white p-8 md:p-10 rounded-3xl max-w-2xl w-full border-4 border-white shadow-2xl relative">
+                <button onClick={() => { sfx.click(); setShowShop(false); }} className="absolute top-6 right-6 bg-slate-100 p-3 rounded-full text-slate-500 hover:text-navy hover:bg-slate-200 transition-all"><Icons.X /></button>
+                <h2 className="text-3xl font-black text-navy mb-3 flex items-center gap-3">
+                  <span className="bg-accent-hotpink text-white p-2 rounded-xl"><Icons.Briefcase /></span> Consulting Services
+                </h2>
+                <p className="text-slate-500 text-base font-bold mb-8">Spend firm budget to acquire strategic advantages.</p>
+                
+                <div className="bg-navy/5 p-5 rounded-2xl border-2 border-navy/10 mb-8 flex items-center justify-between shadow-inner">
+                  <span className="text-sm font-black text-navy/60 uppercase tracking-widest">Available Budget</span>
+                  <span className="text-3xl font-mono font-black text-emerald-600 bg-white px-4 py-1 rounded-xl shadow-sm border border-emerald-100">{formatCurrency(state.budget)}</span>
+                </div>
+                
+                <div className="space-y-5">
+                  <div className="border-2 border-slate-200 p-5 rounded-2xl flex justify-between items-center hover:border-navy transition-colors">
+                    <div>
+                        <div className="font-black text-xl text-navy mb-1">GAAP Memo</div>
+                        <div className="text-sm text-slate-500 font-bold">Unlocks the accounting standard hint for a scenario.</div>
+                        <div className="text-sm font-black mt-3 text-indigo-600 bg-indigo-50 inline-block px-3 py-1 rounded-lg">Cost: $1,500 | Owned: {state.inventory.memo}</div>
                     </div>
-                  )})}
+                    <button onClick={() => { if(state.budget >= 1500) { sfx.buy(); setState(p => ({...p, budget: p.budget - 1500, inventory: {...p.inventory, memo: p.inventory.memo + 1}})); } else { sfx.error(); } }} disabled={state.budget < 1500} className="bg-navy text-white px-6 py-3 rounded-xl text-sm font-black uppercase tracking-widest disabled:opacity-50 hover:bg-[#000033] border-b-4 border-[#000022] active:border-b-0 active:translate-y-1 transition-all">Purchase</button>
+                  </div>
+                  
+                  <div className="border-2 border-slate-200 p-5 rounded-2xl flex justify-between items-center hover:border-navy transition-colors">
+                    <div>
+                        <div className="font-black text-xl text-navy mb-1">Risk Hedge</div>
+                        <div className="text-sm text-slate-500 font-bold">Bypasses the $15,000 SEC fine on your next incorrect choice.</div>
+                        <div className="text-sm font-black mt-3 text-indigo-600 bg-indigo-50 inline-block px-3 py-1 rounded-lg">Cost: $3,000 | Owned: {state.inventory.insurance}</div>
+                    </div>
+                    <button onClick={() => { if(state.budget >= 3000) { sfx.buy(); setState(p => ({...p, budget: p.budget - 3000, inventory: {...p.inventory, insurance: p.inventory.insurance + 1}})); } else { sfx.error(); } }} disabled={state.budget < 3000} className="bg-navy text-white px-6 py-3 rounded-xl text-sm font-black uppercase tracking-widest disabled:opacity-50 hover:bg-[#000033] border-b-4 border-[#000022] active:border-b-0 active:translate-y-1 transition-all">Purchase</button>
+                  </div>
+
+                  <div className="border-2 border-emerald-200 bg-emerald-50 p-5 rounded-2xl flex justify-between items-center">
+                    <div>
+                        <div className="font-black text-xl text-emerald-900 mb-1">Activate Risk Hedge</div>
+                        <div className="text-sm text-emerald-700 font-bold">Consume 1 Risk Hedge to protect your next action.</div>
+                    </div>
+                    <button onClick={() => { if(state.inventory.insurance > 0 && !state.active.insurance) { sfx.click(); setState(p => ({...p, inventory: {...p.inventory, insurance: p.inventory.insurance - 1}, active: {...p.active, insurance: true}})); } else { sfx.error(); } }} disabled={state.inventory.insurance === 0 || state.active.insurance} className="bg-emerald-600 text-white px-6 py-3 rounded-xl text-sm font-black uppercase tracking-widest disabled:opacity-50 hover:bg-emerald-500 border-b-4 border-emerald-800 active:border-b-0 active:translate-y-1 transition-all shadow-md">Activate</button>
+                  </div>
                 </div>
               </div>
             </div>
