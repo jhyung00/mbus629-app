@@ -235,7 +235,7 @@
 
         // --- COMPONENTS ---
 
-        const GameButton = ({ onClick, children, variant = "primary", className = "", disabled = false }) => {
+        const GameButton = ({ onClick, children, variant = "primary", className = "", disabled = false, type = "button" }) => {
             const base = "font-black rounded-xl border-[3px] border-game-dark transition-all flex items-center justify-center gap-2 px-4 py-2";
             const activeHover = disabled ? "opacity-50 cursor-not-allowed bg-slate-300 text-slate-500" : "hover:-translate-y-1 hover:shadow-game-lg active:translate-x-1 active:translate-y-1 active:shadow-none shadow-game";
             
@@ -247,7 +247,7 @@
                 purple: "bg-game-purple text-white"
             };
 
-            return <button onClick={onClick} disabled={disabled} className={`${base} ${disabled ? 'opacity-50 cursor-not-allowed bg-slate-300 text-slate-500' : variants[variant] + ' ' + activeHover} ${className}`}>{children}</button>;
+            return <button type={type} onClick={onClick} disabled={disabled} className={`${base} ${disabled ? 'opacity-50 cursor-not-allowed bg-slate-300 text-slate-500' : variants[variant] + ' ' + activeHover} ${className}`}>{children}</button>;
         };
 
         const SmartInput = ({ id, value, correctValue, isPct, onChange, instructorMode }) => {
@@ -368,57 +368,15 @@
 
         // --- INSTRUCTOR TOOLBAR ---
         const InstructorToolbar = ({ onAutoFill, onClear }) => {
-            const [showHashGen, setShowHashGen] = useState(false);
-            const [genName, setGenName] = useState("");
-            const [genScore, setGenScore] = useState("");
-            const [generatedHash, setGeneratedHash] = useState("");
-            const [showVerifier, setShowVerifier] = useState(false);
-            const [verifyInput, setVerifyInput] = useState("");
-            const [verifyResult, setVerifyResult] = useState(null);
-
-            const handleGen = () => { setGeneratedHash(generateHash({ studentName: genName, score: parseInt(genScore), timestamp: new Date().toISOString(), salt: "INSTRUCTOR_GENERATED" })); };
-            const handleVerify = () => { setVerifyResult(verifyHash(verifyInput)); };
-
             return (
                 <div className="fixed top-0 left-0 w-full bg-game-purple text-white z-40 border-b-4 border-game-dark shadow-game animate-slide-down">
                     <div className="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
                         <div className="flex items-center gap-2 font-black text-xl tracking-wider"><Unlock size={24} className="text-yellow-300"/> GAMEMASTER MODE</div>
                         <div className="flex items-center gap-3">
-                            <button onClick={onAutoFill} className="px-3 py-2 bg-white text-game-dark hover:bg-yellow-300 rounded-lg border-2 border-game-dark font-black text-xs flex items-center gap-2 shadow-[2px_2px_0px_#0f172a] active:translate-y-1 active:shadow-none transition-all"><Check size={16} strokeWidth={3}/> Auto-Fill</button>
-                            <button onClick={onClear} className="px-3 py-2 bg-game-red text-white hover:bg-red-400 rounded-lg border-2 border-game-dark font-black text-xs flex items-center gap-2 shadow-[2px_2px_0px_#0f172a] active:translate-y-1 active:shadow-none transition-all"><Trash2 size={16} strokeWidth={3}/> Wipe</button>
-                            <div className="h-8 w-1 bg-game-dark mx-2 rounded-full opacity-50"></div>
-                            <button onClick={() => setShowHashGen(true)} className="px-3 py-2 bg-indigo-900 text-white hover:bg-indigo-800 rounded-lg border-2 border-game-dark font-black text-xs flex items-center gap-2 shadow-[2px_2px_0px_#0f172a] active:translate-y-1 active:shadow-none transition-all"><Key size={16} strokeWidth={3}/> Hash Gen</button>
-                            <button onClick={() => setShowVerifier(true)} className="px-3 py-2 bg-emerald-600 text-white hover:bg-emerald-500 rounded-lg border-2 border-game-dark font-black text-xs flex items-center gap-2 shadow-[2px_2px_0px_#0f172a] active:translate-y-1 active:shadow-none transition-all"><ShieldCheck size={16} strokeWidth={3}/> Verify Tool</button>
+                            <button type="button" onClick={onAutoFill} className="px-3 py-2 bg-white text-game-dark hover:bg-yellow-300 rounded-lg border-2 border-game-dark font-black text-xs flex items-center gap-2 shadow-[2px_2px_0px_#0f172a] active:translate-y-1 active:shadow-none transition-all"><Check size={16} strokeWidth={3}/> Auto-Fill</button>
+                            <button type="button" onClick={onClear} className="px-3 py-2 bg-game-red text-white hover:bg-red-400 rounded-lg border-2 border-game-dark font-black text-xs flex items-center gap-2 shadow-[2px_2px_0px_#0f172a] active:translate-y-1 active:shadow-none transition-all"><Trash2 size={16} strokeWidth={3}/> Wipe</button>
                         </div>
                     </div>
-                    {showHashGen && (
-                        <Modal title="Generate Hash" onClose={() => setShowHashGen(false)}>
-                            <div className="space-y-4">
-                                <input placeholder="Agent Name" className="w-full p-3 border-[3px] border-game-dark rounded-xl font-bold font-mono" value={genName} onChange={e=>setGenName(e.target.value)} />
-                                <input placeholder="Score (0-100)" type="number" className="w-full p-3 border-[3px] border-game-dark rounded-xl font-bold font-mono" value={genScore} onChange={e=>setGenScore(e.target.value)} />
-                                <GameButton onClick={handleGen} className="w-full text-lg">Generate Code</GameButton>
-                                {generatedHash && <div className="bg-game-light p-4 rounded-xl border-2 border-game-dark break-all text-xs font-mono font-bold shadow-inner">{generatedHash}</div>}
-                            </div>
-                        </Modal>
-                    )}
-                    {showVerifier && (
-                        <Modal title="Verify Hash" onClose={() => setShowVerifier(false)}>
-                            <div className="space-y-4">
-                                <textarea placeholder="Paste Hash string here..." className="w-full p-3 border-[3px] border-game-dark rounded-xl font-mono text-sm h-32" value={verifyInput} onChange={e=>setVerifyInput(e.target.value)} />
-                                <GameButton onClick={handleVerify} className="w-full text-lg">Analyze Integrity</GameButton>
-                                {verifyResult ? (
-                                    <div className="bg-game-green text-white border-2 border-game-dark p-4 rounded-xl text-sm space-y-2 font-mono shadow-game-sm">
-                                        <div className="flex items-center gap-2 font-black text-lg"><CheckCircle size={20} strokeWidth={3}/> VALID SIGNATURE</div>
-                                        <div><span className="opacity-80">Agent:</span> {verifyResult.studentName}</div>
-                                        <div><span className="opacity-80">Score:</span> {verifyResult.score}</div>
-                                        <div><span className="opacity-80">Time:</span> {new Date(verifyResult.timestamp).toLocaleString()}</div>
-                                    </div>
-                                ) : verifyInput && (
-                                    <div className="bg-game-red text-white border-2 border-game-dark p-4 rounded-xl text-sm font-black flex items-center gap-2 shadow-game-sm"><AlertCircle size={20} strokeWidth={3}/> CORRUPT OR INVALID HASH</div>
-                                )}
-                            </div>
-                        </Modal>
-                    )}
                 </div>
             );
         };
@@ -531,7 +489,16 @@
 
             const handleSheetInput = (key, val) => { setSheetInputs(prev => ({ ...prev, [key]: val })); };
 
-            const handleAutoFill = () => { /* Kept for prop structure */ };
+            const handleAutoFill = () => {
+                const autoAnswers = {};
+                const autoLifecycle = {};
+                CASES.forEach(c => {
+                    autoAnswers[c.id] = c.category;
+                    autoLifecycle[c.id] = c.correctPatternId;
+                });
+                setAnswers(autoAnswers);
+                setLifecycleAnswers(autoLifecycle);
+            };
 
             const confirmClear = () => {
                 setSheetInputs({}); setAnswers({}); setLifecycleAnswers({}); setTeacherMode(false); setShowClearConfirm(false);
@@ -543,8 +510,14 @@
                     setTeacherMode(true);
                     setShowTeacherAuth(false);
                     setTeacherPassInput('');
+                    
+                    // Optional QoL: If they login from the welcome screen, skip right in.
+                    if (gameState === 'welcome') {
+                        setStudentName('GAMEMASTER');
+                        setGameState('playing');
+                    }
                 } else {
-                    alert("Access Denied");
+                    alert("Access Denied: Incorrect Password");
                 }
             };
 
@@ -621,7 +594,7 @@
                             <Modal title="Gamemaster Access" onClose={() => setShowTeacherAuth(false)}>
                                 <form onSubmit={handleTeacherLogin} className="space-y-4">
                                     <input type="password" autoFocus placeholder="Enter Override Code" className="w-full p-3 border-[3px] border-game-dark rounded-xl font-mono font-black" value={teacherPassInput} onChange={e=>setTeacherPassInput(e.target.value)} />
-                                    <div className="flex justify-end gap-3"><GameButton variant="secondary" onClick={()=>setShowTeacherAuth(false)}>Abort</GameButton><GameButton variant="purple" onClick={handleTeacherLogin}>Override</GameButton></div>
+                                    <div className="flex justify-end gap-3"><GameButton type="button" variant="secondary" onClick={()=>setShowTeacherAuth(false)}>Abort</GameButton><GameButton type="submit" variant="purple">Override</GameButton></div>
                                 </form>
                             </Modal>
                         )}
@@ -629,18 +602,9 @@
                 );
             }
 
-            const LifecycleView = () => {
-                const [selections, setSelections] = useState(lifecycleAnswers);
-                const [feedback, setFeedback] = useState({});
-                
+            const LifecycleView = ({ teacherMode }) => {
                 const handleSelect = (caseId, patternId) => {
-                    const newSelections = { ...selections, [caseId]: patternId };
-                    setSelections(newSelections);
-                    setLifecycleAnswers(newSelections);
-                    const correctPattern = CASES.find(c => c.id === caseId).correctPatternId;
-                    const feedbackText = CASES.find(c => c.id === caseId).lifecycleFeedback;
-                    if (patternId === correctPattern) setFeedback(prev => ({ ...prev, [caseId]: feedbackText }));
-                    else setFeedback(prev => ({ ...prev, [caseId]: "INCORRECT: Analyze the +/- signs in the matrix again." }));
+                    setLifecycleAnswers(prev => ({ ...prev, [caseId]: patternId }));
                 };
 
                 return (
@@ -675,7 +639,11 @@
                             {/* Interactive Selection Panel */}
                             <div className="lg:col-span-8 space-y-6">
                                 {CASES.map(c => {
-                                    const isCorrect = feedback[c.id]?.includes("Correct");
+                                    const selected = lifecycleAnswers[c.id];
+                                    const isCorrect = selected === c.correctPatternId;
+                                    const showFeedback = !!selected;
+                                    const feedbackText = isCorrect ? c.lifecycleFeedback : "INCORRECT: Analyze the +/- signs in the matrix again.";
+
                                     return (
                                     <div key={c.id} className={`game-card p-6 transition-colors ${isCorrect ? 'bg-emerald-50 border-emerald-500' : ''}`}>
                                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
@@ -686,15 +654,22 @@
                                                     <p className="text-sm font-bold text-game-blue bg-blue-100 px-2 py-0.5 rounded border border-blue-300 inline-block mt-1">Alias: {answers[c.id] || "Unknown"}</p>
                                                 </div>
                                             </div>
-                                            <select className="w-full sm:w-auto p-3 border-4 border-game-dark rounded-xl font-black text-sm outline-none focus:ring-4 ring-game-blue cursor-pointer shadow-game-sm bg-white" onChange={(e) => handleSelect(c.id, e.target.value)} value={selections[c.id] || ""}>
-                                                <option value="" disabled>Assign Lifecycle Phase...</option>
-                                                {PATTERNS.map(p => <option key={p.id} value={p.id}>{p.label}</option>)}
-                                            </select>
+                                            <div className="w-full sm:w-auto flex flex-col items-end">
+                                                <select className="w-full sm:w-auto p-3 border-4 border-game-dark rounded-xl font-black text-sm outline-none focus:ring-4 ring-game-blue cursor-pointer shadow-game-sm bg-white" onChange={(e) => handleSelect(c.id, e.target.value)} value={selected || ""}>
+                                                    <option value="" disabled>Assign Lifecycle Phase...</option>
+                                                    {PATTERNS.map(p => <option key={p.id} value={p.id}>{p.label}</option>)}
+                                                </select>
+                                                {teacherMode && (
+                                                    <div className="mt-2 text-[10px] font-black text-white bg-game-purple px-2 py-1 rounded shadow-game-sm border-2 border-game-dark uppercase tracking-widest flex items-center gap-1">
+                                                        <Key size={12}/> KEY: {PATTERNS.find(p=>p.id===c.correctPatternId).label}
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                        {selections[c.id] && (
+                                        {showFeedback && (
                                             <div className={`mt-4 p-4 rounded-xl border-[3px] font-bold text-sm flex items-start gap-3 ${isCorrect ? 'bg-emerald-100 border-emerald-600 text-emerald-900 shadow-[4px_4px_0px_#059669]' : 'bg-red-100 border-red-600 text-red-900 shadow-[4px_4px_0px_#dc2626] animate-pulse'}`}>
                                                 {isCorrect ? <CheckCircle size={24} className="shrink-0 mt-0.5"/> : <AlertCircle size={24} className="shrink-0 mt-0.5"/>}
-                                                <span className="leading-relaxed">{feedback[c.id]}</span>
+                                                <span className="leading-relaxed">{feedbackText}</span>
                                             </div>
                                         )}
                                     </div>
@@ -716,7 +691,7 @@
                     {teacherMode && <InstructorToolbar onAutoFill={handleAutoFill} onClear={() => setShowClearConfirm(true)} />}
                     {showClearConfirm && (
                         <Modal title="System Wipe" onClose={() => setShowClearConfirm(false)}>
-                            <div className="space-y-6"><p className="font-bold text-slate-700">WARNING: This will purge all current session data. Irreversible action.</p><div className="flex gap-3 justify-end"><GameButton variant="secondary" onClick={() => setShowClearConfirm(false)}>Cancel</GameButton><GameButton variant="danger" onClick={confirmClear}>Wipe Data</GameButton></div></div>
+                            <div className="space-y-6"><p className="font-bold text-slate-700">WARNING: This will purge all current session data. Irreversible action.</p><div className="flex gap-3 justify-end"><GameButton type="button" variant="secondary" onClick={() => setShowClearConfirm(false)}>Cancel</GameButton><GameButton type="button" variant="danger" onClick={confirmClear}>Wipe Data</GameButton></div></div>
                         </Modal>
                     )}
                     
@@ -744,7 +719,7 @@
 
                     {/* Content Area */}
                     <div className="flex-grow overflow-y-auto">
-                        {isPhase2 ? <LifecycleView /> : (
+                        {isPhase2 ? <LifecycleView teacherMode={teacherMode} /> : (
                             <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 pt-8">
                                 {!selectedCaseId ? (
                                     <div className="space-y-8 animate-fade-in">
@@ -787,6 +762,14 @@
                                             <div className="space-y-6">
                                                 <div className="game-card p-6 sticky top-28 bg-white border-4 border-game-dark shadow-game-lg">
                                                     <h3 className="font-black text-xl text-game-dark mb-6 flex items-center gap-3 border-b-4 border-game-blue pb-3"><Search size={24} strokeWidth={3}/> IDENTIFY SUBJECT</h3>
+                                                    
+                                                    {teacherMode && (
+                                                        <div className="mb-4 bg-game-purple text-white p-3 rounded-xl border-2 border-game-dark text-sm font-bold shadow-game-sm animate-pop-in">
+                                                            <div className="flex items-center gap-2 font-black mb-1 text-yellow-300"><Key size={16}/> GAMEMASTER KEY</div>
+                                                            Company: {CASES.find(c=>c.id===selectedCaseId).category}
+                                                        </div>
+                                                    )}
+
                                                     <div className="space-y-3">
                                                         {SUSPECTS.map(company => (
                                                             <button key={company} onClick={() => setAnswers({...answers, [selectedCaseId]: company})} className={`w-full text-left p-4 rounded-xl border-[3px] font-black transition-all ${answers[selectedCaseId] === company ? 'bg-game-blue text-white border-game-dark shadow-[4px_4px_0px_#0f172a] transform scale-[1.02]' : 'bg-game-light border-slate-300 hover:border-game-dark hover:shadow-[4px_4px_0px_#0f172a] hover:-translate-y-1 text-slate-600'}`}>{company}</button>
@@ -796,7 +779,7 @@
                                                         {!hintsRevealed[selectedCaseId] ? (
                                                             <button onClick={() => setHintsRevealed({...hintsRevealed, [selectedCaseId]: true})} className="w-full py-4 text-sm font-black text-game-yellow bg-yellow-50 hover:bg-yellow-100 rounded-xl border-[3px] border-dashed border-game-yellow flex items-center justify-center gap-2 hover:-translate-y-1 transition-transform"><HelpCircle size={20} strokeWidth={3}/> DEPLOY INTEL HINT</button>
                                                         ) : (
-                                                            <div className="bg-yellow-100 p-4 rounded-xl border-[3px] border-game-yellow text-sm text-yellow-900 font-bold shadow-inner">
+                                                            <div className="bg-yellow-100 p-4 rounded-xl border-[3px] border-game-yellow text-sm text-yellow-900 font-bold shadow-inner animate-pop-in">
                                                                 <span className="font-black flex items-center gap-2 mb-2"><Key size={16}/> DECRYPTED HINT:</span>
                                                                 {CASES.find(c => c.id === selectedCaseId).hint}
                                                             </div>
@@ -818,6 +801,15 @@
                         <div className="text-xs font-mono font-bold text-slate-400 tracking-widest flex items-center gap-2"><Lock size={12}/> CONFIDENTIAL // LEVEL 5 ACCESS ONLY</div>
                         {!teacherMode && (<button onClick={() => setShowTeacherAuth(true)} className="flex items-center gap-2 text-xs font-black text-slate-400 hover:text-yellow-400 transition-colors px-3 py-1.5 rounded-lg border border-transparent hover:border-slate-600 uppercase tracking-widest"><Key size={14} strokeWidth={3}/> Gamemaster</button>)}
                     </div>
+
+                    {showTeacherAuth && gameState !== 'welcome' && (
+                        <Modal title="Gamemaster Access" onClose={() => setShowTeacherAuth(false)}>
+                            <form onSubmit={handleTeacherLogin} className="space-y-4">
+                                <input type="password" autoFocus placeholder="Enter Override Code" className="w-full p-3 border-[3px] border-game-dark rounded-xl font-mono font-black" value={teacherPassInput} onChange={e=>setTeacherPassInput(e.target.value)} />
+                                <div className="flex justify-end gap-3"><GameButton type="button" variant="secondary" onClick={()=>setShowTeacherAuth(false)}>Abort</GameButton><GameButton type="submit" variant="purple">Override</GameButton></div>
+                            </form>
+                        </Modal>
+                    )}
                 </div>
             );
         }
