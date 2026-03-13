@@ -4,22 +4,41 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Class 8: Statement of Cash Flows</title>
+<!-- Fonts: Gamified Theme -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
     :root {
-        --bg-color: #fffbf3;
-        --card-bg: #ffffff;
-        --text-main: #041330;
-        --accent: #265cff;
-        --accent-dim: rgba(38, 92, 255, 0.1);
-        --border: #e0e0e0;
-        --success: #059669;
-        --error: #dc2626;
-        --fin-chart: #f59e0b;
+        /* Gamified Theme Colors */
+        --color-background: #ffffff;
+        --color-newday: #f1f5f9; 
+        --color-primary: #0f172a; /* Deep Slate - for borders and text */
+        --color-secondary: #3b82f6; /* Bright Blue */
+        --color-accent: #8b5cf6; /* Purple */
+        --color-text: #1e293b; 
+        --color-text-muted: #64748b; 
+        
+        /* Status Colors */
+        --danger: #ef4444; 
+        --danger-bg: #fee2e2;
+        --success: #10b981; 
+        --success-bg: #d1fae5;
+        --warning: #f59e0b; 
+        --warning-bg: #fef3c7;
+        
+        /* Gamified UI Elements */
+        --radius: 16px;
+        --border-game: 3px solid var(--color-primary);
+        --shadow-game: 5px 5px 0px rgba(15, 23, 42, 1);
+        --shadow-game-sm: 3px 3px 0px rgba(15, 23, 42, 1);
+        
+        --header-font: 'Nunito', sans-serif;
+        --body-font: 'Nunito', sans-serif;
+        --mono-font: 'JetBrains Mono', monospace;
         
         /* Presentation Scale - ADJUSTED SMALLER */
         --h1-size: 4.8vmin;
@@ -29,22 +48,24 @@
         --table-size: 1.7vmin;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
         margin: 0;
         padding: 0;
-        font-family: 'Inter', sans-serif;
-        background-color: var(--bg-color);
-        color: var(--text-main);
+        font-family: var(--body-font);
+        background-color: #cbd5e1;
+        color: var(--color-text);
         height: 100vh;
         width: 100vw;
         overflow: hidden;
         background-image: 
-            linear-gradient(to right, rgba(38, 92, 255, 0.05) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(38, 92, 255, 0.05) 1px, transparent 1px);
+            radial-gradient(var(--color-secondary) 1.5px, transparent 1.5px),
+            radial-gradient(var(--color-secondary) 1.5px, transparent 1.5px);
         background-size: 40px 40px;
-        
+        background-position: 0 0, 20px 20px;
+        background-attachment: fixed;
+        -webkit-font-smoothing: antialiased;
         display: flex;
         flex-direction: column;
     }
@@ -66,6 +87,7 @@
         overflow-y: auto;
         animation: fadeEnter 0.3s ease-out;
         flex-direction: column;
+        background-color: var(--color-newday);
         
         /* Center Alignment Logic */
         justify-content: center; 
@@ -101,57 +123,70 @@
         to { opacity: 1; transform: translateY(0); }
     }
 
-    h1 { font-size: var(--h1-size); font-weight: 800; margin: 0 0 1.5vmin 0; color: var(--text-main); line-height: 1.1; }
-    h2 { font-size: var(--h2-size); color: var(--accent); margin: 0 0 1.5vmin 0; font-weight: 600; line-height: 1.2; }
+    h1, h2, h3 { font-family: var(--header-font); color: var(--color-primary); margin-bottom: 1rem; line-height: 1.2; font-weight: 900;}
+    h1 { font-size: var(--h1-size); letter-spacing: -0.02em; }
+    h2 { font-size: var(--h2-size); position: relative; display: inline-block; border-bottom: 4px solid var(--color-secondary); padding-bottom: 5px; }
     h3 { font-size: calc(var(--h2-size) * 0.8); margin: 1vmin 0; }
-    p, li { font-size: var(--p-size); line-height: 1.5; margin-bottom: 1.5vmin; text-align: left; }
     
-    ul, ol { text-align: left; display: inline-block; }
+    p, li { font-size: var(--p-size); line-height: 1.7; font-weight: 600; margin-bottom: 1.5vmin; text-align: left; }
+    
+    ul, ol { text-align: left; display: inline-block; padding-left: 20px; }
     .slide > ul, .slide > ol { display: table; margin: 0 auto; }
 
-    .mono { font-family: 'JetBrains Mono', monospace; font-size: var(--mono-size); color: var(--accent); text-transform: uppercase; display: block; margin-bottom: 1vmin; letter-spacing: 0.05em;}
+    .mono { font-family: var(--mono-font); font-weight: 800; background: var(--color-background); border: 2px solid var(--color-primary); padding: 2px 6px; border-radius: 6px; color: var(--color-primary); font-size: var(--mono-size); box-shadow: 2px 2px 0px rgba(15, 23, 42, 1); white-space: nowrap; display: inline-block; margin-bottom: 1.5vmin; }
+
+    .text-accent { color: var(--color-accent); font-weight: 800; }
+    .text-success { color: var(--success); font-weight: 800; }
+    .text-danger { color: var(--danger); font-weight: 800; }
+    .text-warning { color: var(--warning); font-weight: 800; }
+    .text-color-text-muted { color: var(--color-text-muted); }
 
     .card {
-        background: var(--card-bg);
-        border: 2px solid var(--border);
+        background: var(--color-background);
         padding: 3vmin;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border-radius: var(--radius);
+        border: var(--border-game);
+        box-shadow: var(--shadow-game-sm);
+        transition: all 0.2s ease;
         height: fit-content;
         width: 100%;
         text-align: left;
     }
+    .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-game); }
+    .card-highlight { background-color: var(--warning-bg); border-left: 8px solid var(--warning); }
+    .card-data { background-color: var(--color-background); border-left: 8px solid var(--color-secondary); }
 
     /* Scrollable Data Box */
     .data-panel {
         height: 85vh; 
         overflow-y: auto;
-        border: 2px solid var(--text-main);
+        border: var(--border-game);
+        border-radius: var(--radius);
         padding: 2vmin;
-        background: #fff;
+        background: var(--color-background);
         font-size: var(--table-size); 
-        box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+        box-shadow: var(--shadow-game-sm);
         text-align: left;
     }
 
     /* Tables */
-    table { width: 100%; border-collapse: collapse; font-size: var(--table-size); background: white; font-family: 'JetBrains Mono', monospace; margin-bottom: 1.5vmin; border: 1px solid var(--border); }
-    th, td { padding: 1vmin; border-bottom: 1px solid #eee; text-align: right; }
-    th { background: var(--accent-dim); color: var(--accent); font-weight: 600; text-align: center; position: sticky; top: 0; z-index: 5;}
-    td:first-child { text-align: left; font-weight: 600; color: var(--text-main); }
-    .highlight-row { background: #f0f9ff; font-weight: 700; color: var(--accent); }
-    .highlight-cell { background: #fef3c7; font-weight: 900; border: 2px solid var(--fin-chart); color: var(--text-main); }
+    table { width: 100%; border-collapse: collapse; font-size: var(--table-size); background: white; font-family: var(--mono-font); margin-bottom: 1.5vmin; border: 2px solid var(--color-primary); border-radius: 8px; overflow: hidden; }
+    th, td { padding: 1.2vmin; border-bottom: 2px solid var(--color-newday); text-align: right; color: var(--color-primary); font-weight: 600; }
+    th { background: var(--color-primary); color: white; font-weight: 800; text-align: center; position: sticky; top: 0; z-index: 5;}
+    td:first-child { text-align: left; font-weight: 800; color: var(--color-primary); }
+    tr:hover td { background: var(--color-newday); }
+    .highlight-row td { background: var(--color-newday); font-weight: 900; border-top: 3px solid var(--color-primary); }
     
     /* Cheatsheet Table Specifics */
-    .cheatsheet-table { width: 100%; margin-top: 1vmin; border: 2px solid var(--text-main); }
-    .cheatsheet-table th { background: #e0e7ff; color: var(--text-main); }
-    .cheatsheet-table td { font-weight: bold; text-align: center; }
+    .cheatsheet-table { width: 100%; margin-top: 1vmin; border: 2px solid var(--color-primary); }
+    .cheatsheet-table th { background: var(--color-primary); color: white; }
+    .cheatsheet-table td { font-weight: 800; text-align: center; }
 
     /* Nav Bar */
     .nav-bar {
         height: 70px;
-        background: white;
-        border-top: 2px solid var(--border);
+        background: var(--color-background);
+        border-top: var(--border-game);
         display: flex;
         justify-content: space-between; 
         align-items: center;
@@ -163,97 +198,104 @@
     }
     
     .nav-btn {
-        background: var(--text-main);
+        background-color: var(--color-secondary);
         color: white;
-        border: none;
+        border: var(--border-game);
         padding: 10px 20px;
-        border-radius: 6px;
-        font-family: 'JetBrains Mono';
-        font-weight: bold;
+        border-radius: 12px;
         cursor: pointer;
         font-size: 1.8vmin;
-        transition: background 0.2s;
+        transition: all 0.1s ease;
+        font-family: var(--body-font);
+        font-weight: 800;
+        box-shadow: 3px 3px 0px rgba(15, 23, 42, 1);
+        display: inline-block;
+        text-align: center;
     }
-    .nav-btn:hover { background: var(--accent); }
+    .nav-btn:hover { background-color: #2563eb; transform: translate(-2px, -2px); box-shadow: var(--shadow-game); }
+    .nav-btn:active { transform: translate(3px, 3px); box-shadow: 0px 0px 0px rgba(15, 23, 42, 1); }
     
-    .progress { font-family: 'JetBrains Mono'; font-size: 2.5vmin; color: var(--accent); font-weight:bold; }
+    .progress { font-family: var(--mono-font); font-size: 2.5vmin; color: var(--color-primary); font-weight:900; margin: 0 15px;}
 
     /* Floating Arrow Buttons */
     .arrow-btn {
         position: fixed; top: 50%; transform: translateY(-50%);
         width: 70px; height: 70px;
-        background: white; border: 2px solid var(--border); border-radius: 50%;
+        background: white; border: var(--border-game); border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
         cursor: pointer; z-index: 150;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.2s;
-        font-size: 35px; color: var(--accent); opacity: 0.3; 
+        box-shadow: var(--shadow-game-sm); transition: all 0.2s;
+        font-size: 35px; color: var(--color-primary); opacity: 0.5; 
     }
-    .arrow-btn:hover { background: var(--accent); color: white; border-color: var(--accent); opacity: 1; }
+    .arrow-btn:hover { background: var(--color-secondary); color: white; border-color: var(--color-primary); opacity: 1; transform: translateY(-50%) translate(-2px, -2px); box-shadow: var(--shadow-game); }
     .arrow-prev { left: 20px; }
     .arrow-next { right: 20px; }
 
     /* TOC Overlay */
     .toc-overlay {
         position: fixed; top: 0; left: 0; height: 100%; width: 100%;
-        background: rgba(0,0,0,0.5); z-index: 2000;
+        background: rgba(15, 23, 42, 0.7); z-index: 2000;
         display: none; opacity: 0; transition: opacity 0.3s;
     }
     .toc-sidebar {
-        position: absolute; top: 0; left: 0; height: 100%; width: 350px;
-        background: white; box-shadow: 5px 0 20px rgba(0,0,0,0.2);
+        position: absolute; top: 0; left: 0; height: 100%; width: 400px;
+        background: var(--color-background); box-shadow: 5px 0 20px rgba(0,0,0,0.2);
         padding: 2rem; overflow-y: auto;
         transform: translateX(-100%); transition: transform 0.3s;
         display: flex; flex-direction: column;
+        border-right: var(--border-game);
     }
     .toc-open .toc-overlay { display: block; opacity: 1; }
     .toc-open .toc-sidebar { transform: translateX(0); }
     
     .toc-item {
-        padding: 12px; border-bottom: 1px solid #eee;
-        cursor: pointer; font-family: 'Inter', sans-serif; font-size: 1.8vmin;
-        color: #555;
+        padding: 12px 15px; margin-bottom: 8px; border: 2px solid transparent; border-radius: 8px;
+        cursor: pointer; font-family: var(--body-font); font-size: 1.8vmin; font-weight: 700;
+        color: var(--color-text-muted); transition: all 0.2s;
     }
-    .toc-item:hover { background: var(--accent-dim); color: var(--accent); font-weight: bold;}
-    .toc-item.active { border-left: 4px solid var(--accent); background: #f8fafc; color: var(--text-main); font-weight: bold;}
+    .toc-item:hover { background: var(--color-newday); color: var(--color-primary); border-color: var(--color-primary); box-shadow: 2px 2px 0px var(--color-primary); transform: translate(-2px, -2px); }
+    .toc-item.active { background: var(--color-accent); color: white; border-color: var(--color-primary); box-shadow: 2px 2px 0px var(--color-primary); }
 
     /* Intel Boxes */
     .hierarchy-container { display: flex; flex-direction: column; align-items: center; gap: 2vmin; margin-top: 1vmin; width: 100%; }
     .h-box { 
-        border: 3px solid #ccc; padding: 2vmin; background: white; text-align: center; border-radius: 8px; min-width: 22vmin; flex: 1;
-        display: flex; flex-direction: column; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        border: var(--border-game); padding: 2vmin; background: white; text-align: center; border-radius: var(--radius); min-width: 22vmin; flex: 1;
+        display: flex; flex-direction: column; justify-content: center; box-shadow: var(--shadow-game-sm);
     }
-    .h-box h4 { margin: 0; font-size: 2vmin; text-transform: uppercase; color: #666; }
-    .h-box .val { font-size: 3.5vmin; font-weight: 800; margin: 0.5vmin 0; }
-    .h-box .desc { font-size: 1.8vmin; opacity: 0.8; }
+    .h-box h4 { margin: 0; font-size: 2vmin; text-transform: uppercase; color: var(--color-text-muted); font-weight: 800; font-family: var(--body-font); }
+    .h-box .val { font-size: 3.5vmin; font-weight: 900; margin: 0.5vmin 0; font-family: var(--mono-font); color: var(--color-primary); }
+    .h-box .desc { font-size: 1.8vmin; opacity: 0.8; font-weight: 700;}
     .h-row { display: flex; gap: 2vmin; justify-content: center; width: 90%; }
     
-    .use { border-color: var(--error); background: #fef2f2; }
-    .source { border-color: var(--success); background: #f0fdf4; }
-    .neutral { border-color: var(--accent); background: #f0f9ff; }
+    .use { border-color: var(--danger); background: var(--danger-bg); }
+    .source { border-color: var(--success); background: var(--success-bg); }
+    .neutral { border-color: var(--color-secondary); background: #eff6ff; }
 
     /* Interactive Reveal */
     .reveal-box {
-        background: white; border: 2px dashed var(--accent); padding: 2vmin;
-        cursor: pointer; text-align: center; border-radius: 6px; margin-bottom: 2vmin;
-        font-size: var(--p-size);
+        background: white; border: 2px dashed var(--color-primary); padding: 2vmin;
+        cursor: pointer; text-align: center; border-radius: var(--radius); margin-bottom: 2vmin;
+        font-size: var(--p-size); font-weight: 800; transition: all 0.2s;
     }
-    .reveal-box:hover { background: var(--accent-dim); }
-    .reveal-box .hidden-content { display: none; font-weight: bold; color: var(--success); margin-top: 1vmin; font-size: 3vmin; }
-    .reveal-box.open { border-style: solid; border-color: var(--success); }
+    .reveal-box:hover { background: var(--color-newday); }
+    .reveal-box .hidden-content { display: none; font-weight: 900; color: var(--success); margin-top: 1vmin; font-size: 3vmin; font-family: var(--mono-font); }
+    .reveal-box.open { border-style: solid; border-color: var(--color-primary); box-shadow: var(--shadow-game-sm); background: white; }
     .reveal-box.open .hidden-content { display: block; }
     
     /* Click-to-Reveal Row */
     .click-row {
         cursor: pointer;
         background: white;
-        border: 1px solid var(--border);
+        border: 2px solid var(--color-primary);
         padding: 2vmin;
         margin-bottom: 1.5vmin;
-        transition: all 0.3s;
-        border-left: 6px solid #ccc;
+        transition: all 0.2s;
+        border-left: 8px solid var(--color-primary);
+        border-radius: 8px;
+        box-shadow: 2px 2px 0px var(--color-primary);
     }
-    .click-row:hover { background-color: #f8fafc; border-left-color: var(--accent); }
-    .click-row .details { display: none; margin-top: 1.5vmin; color: #555; font-size: 2.2vmin; border-top: 1px dashed #eee; padding-top: 1vmin;}
+    .click-row:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0px var(--color-primary); background: var(--color-newday); }
+    .click-row .details { display: none; margin-top: 1.5vmin; color: var(--color-text-muted); font-size: 2.2vmin; border-top: 2px dashed var(--border); padding-top: 1vmin;}
     .click-row.revealed { border-left-color: var(--success); }
     .click-row.revealed .details { display: block; }
     
@@ -263,43 +305,60 @@
 
     /* Summary Reveal Items */
     .summary-item { 
-        opacity: 0.3; transform: translateX(0); transition: all 0.3s ease; margin-bottom: 3vmin;
-        background: white; padding: 3vmin; border-left: 6px solid #ccc; color: #999; cursor: pointer; text-align: left;
+        opacity: 0.4; transform: translateX(0); transition: all 0.3s ease; margin-bottom: 3vmin;
+        background: white; padding: 3vmin; border: 2px solid transparent; border-left: 8px solid var(--color-text-muted); color: var(--color-text-muted); cursor: pointer; text-align: left; border-radius: 8px; font-weight: 700;
     }
-    .summary-item.visible { opacity: 1; border-left-color: var(--accent); color: var(--text-main); font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .summary-item.visible { opacity: 1; border-color: var(--color-primary); border-left-color: var(--color-secondary); color: var(--color-primary); font-weight: 800; box-shadow: var(--shadow-game-sm); }
 
     /* Poll Overlay */
     .poll-overlay {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(255,255,255,0.95);
+        background: rgba(15, 23, 42, 0.8);
         backdrop-filter: blur(5px);
         z-index: 2000;
         display: none;
         flex-direction: column; justify-content: center; align-items: center;
     }
     .poll-box {
-        background: white; padding: 4vmin; border: 4px solid var(--accent);
-        box-shadow: 0 20px 60px rgba(0,0,0,0.2); width: 70%; text-align: center; border-radius: 12px;
+        background: var(--color-background); padding: 4vmin; border: var(--border-game);
+        box-shadow: var(--shadow-game); width: 70%; text-align: center; border-radius: var(--radius);
     }
     .poll-option {
-        padding: 3vmin; margin: 1.5vmin 0; border: 2px solid #ddd; background: white; cursor: pointer; font-size: 3vmin; width: 100%; display: block; border-radius: 8px;
+        padding: 3vmin; margin: 1.5vmin 0; border: 2px solid var(--color-primary); background: white; cursor: pointer; font-size: 3vmin; width: 100%; display: block; border-radius: 12px; font-weight: 800; color: var(--color-primary); box-shadow: 2px 2px 0px var(--color-primary); transition: all 0.2s;
     }
-    .poll-option:hover { border-color: var(--accent); }
-    .poll-option.correct { background: var(--success); color: white; border-color: var(--success); }
-    .poll-option.wrong { background: var(--error); color: white; border-color: var(--error); }
+    .poll-option:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0px var(--color-primary); background: var(--color-newday); }
+    .poll-option.correct { background: var(--success-bg); color: var(--success); border-color: var(--success); box-shadow: 2px 2px 0px var(--success); }
+    .poll-option.wrong { background: var(--danger-bg); color: var(--danger); border-color: var(--danger); box-shadow: 2px 2px 0px var(--danger); }
 
     /* Flip Card */
-    .flip-container { perspective: 1000px; width: 100%; height: 250px; cursor: pointer; margin: 0 auto; }
+    .flip-grid { display: grid; gap: 2rem; perspective: 1000px; }
+    .flip-container { perspective: 1000px; width: 100%; cursor: pointer; margin: 0 auto; }
+    .flip-card { background-color: transparent; perspective: 1000px; cursor: pointer; width: 100%; height: 100%; }
     .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
-    .flip-container.flipped .flip-inner { transform: rotateY(180deg); }
-    .flip-front, .flip-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border: 2px solid var(--accent); border-radius: 8px; padding: 20px; text-align: center; font-size: 3vmin; background: white; flex-direction: column; }
-    .flip-back { background: var(--accent); color: white; transform: rotateY(180deg); }
+    .flip-container.flipped .flip-inner, .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+    .flip-front, .flip-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border: var(--border-game); border-radius: var(--radius); padding: 20px; text-align: center; font-size: 3vmin; background: white; flex-direction: column; box-shadow: var(--shadow-game-sm); font-weight: 800; }
+    .flip-back { background: var(--color-accent); color: white; transform: rotateY(180deg); }
+    .flip-back p { color: white; text-align: center; }
+
+    /* Click Label specific to flips */
+    .click-label {
+        color: var(--color-primary);
+        background-color: white;
+        padding: 6px 12px;
+        border-radius: 8px;
+        border: 2px solid var(--color-primary);
+        box-shadow: 2px 2px 0px rgba(15, 23, 42, 1);
+        font-family: var(--mono-font);
+        font-size: 0.9rem;
+        font-weight: 800;
+        margin-top: 10px;
+    }
 
     /* Quiz */
-    .quiz-question { margin-bottom: 4vmin; background: white; padding: 3vmin; border-radius: 8px; border: 1px solid var(--border); text-align: left; }
-    .quiz-opt { display: block; margin: 1.5vmin 0; font-size: 3vmin; cursor: pointer; padding: 1vmin; }
-    .quiz-opt:hover { background: var(--accent-dim); }
-    .quiz-opt input { margin-right: 15px; transform: scale(1.5); }
+    .quiz-question { margin-bottom: 4vmin; background: white; padding: 3vmin; border-radius: var(--radius); border: var(--border-game); box-shadow: var(--shadow-game-sm); text-align: left; }
+    .quiz-opt { display: block; margin: 1.5vmin 0; font-size: 2.5vmin; cursor: pointer; padding: 1.5vmin; border: 2px solid transparent; border-radius: 8px; font-weight: 700; transition: all 0.2s; }
+    .quiz-opt:hover { background: var(--color-newday); border-color: var(--color-primary); }
+    .quiz-opt input { margin-right: 15px; transform: scale(1.5); accent-color: var(--color-secondary); }
 
 </style>
 </head>
@@ -307,9 +366,9 @@
 
 <div id="toc-container" class="toc-overlay">
     <div class="toc-sidebar">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2 style="margin:0; font-size:24px;">Content</h2>
-            <button onclick="toggleTOC()" class="nav-btn">X</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom: 3px solid var(--color-primary); padding-bottom: 10px;">
+            <h2 style="margin:0; font-size:24px; border:none;">Course Map</h2>
+            <button onclick="toggleTOC()" class="nav-btn"><i class="fas fa-times"></i></button>
         </div>
         <div id="toc-list">
             </div>
@@ -320,117 +379,135 @@
 
     <div id="poll-layer" class="poll-overlay">
         <div class="poll-box">
-            <h2 id="poll-q">Question</h2>
+            <h2 id="poll-q" style="border:none;">Question</h2>
             <div id="poll-opts"></div>
             <button class="nav-btn" style="margin-top:20px; font-size:3vmin; padding: 2vmin 4vmin;" onclick="closePoll()">Continue</button>
         </div>
     </div>
 
-    <div class="arrow-btn arrow-prev" onclick="prevSlide()">&#8592;</div>
-    <div class="arrow-btn arrow-next" onclick="nextSlide()">&#8594;</div>
+    <div class="arrow-btn arrow-prev" onclick="prevSlide()"><i class="fas fa-chevron-left"></i></div>
+    <div class="arrow-btn arrow-next" onclick="nextSlide()"><i class="fas fa-chevron-right"></i></div>
 
+    <!-- 0 -->
     <div class="slide active">
         <span class="mono">Class 8 / Financial Analysis</span>
         <h1>Statement of Cash Flows & Earnings Quality</h1>
         <p style="font-size:3.5vmin; text-align:center;">Focus: Indirect Method Mechanics & Analysis</p>
-        <div class="card" style="text-align:center; padding:5vmin; margin-top:4vmin; width: 80%;">
-            <div style="font-size:12vmin; font-weight:800; color:var(--accent); line-height: 1;">SCF</div>
-            <p style="font-size:3.5vmin; text-align:center; margin-top: 2vmin;">"Profit is Opinion.<br>Cash is Fact."</p>
+        <div class="card" style="text-align:center; padding:5vmin; margin-top:4vmin; width: 80%; margin-left:auto; margin-right:auto;">
+            <div style="font-size:12vmin; font-weight:900; color:var(--color-secondary); line-height: 1;">SCF</div>
+            <p style="font-size:3.5vmin; text-align:center; margin-top: 2vmin; font-weight:800;">"Profit is Opinion.<br>Cash is Fact."</p>
         </div>
     </div>
 
+    <!-- 1 -->
     <div class="slide slide-full">
         <span class="mono">Navigation</span>
         <h1>Table of Contents</h1>
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr; align-items: stretch;">
             <div class="card click-row" style="text-align: center;" onclick="jumpToSlide(2)">
                 <h3 style="margin:0;">1. Intro & Framework</h3>
-                <p style="font-size: 1.8vmin; color: #555; margin-top:1vmin;">Objectives, Why SCF Matters, Equation</p>
+                <p style="font-size: 1.8vmin; color: var(--color-text-muted); margin-top:1vmin;">Objectives, Why SCF Matters, Equation</p>
             </div>
             <div class="card click-row" style="text-align: center;" onclick="jumpToSlide(6)">
                 <h3 style="margin:0;">2. The 3 Activities</h3>
-                <p style="font-size: 1.8vmin; color: #555; margin-top:1vmin;">Operating, Investing, Financing & Life Cycles</p>
+                <p style="font-size: 1.8vmin; color: var(--color-text-muted); margin-top:1vmin;">Operating, Investing, Financing & Life Cycles</p>
             </div>
             <div class="card click-row" style="text-align: center;" onclick="jumpToSlide(14)">
                 <h3 style="margin:0;">3. Indirect Method</h3>
-                <p style="font-size: 1.8vmin; color: #555; margin-top:1vmin;">The 4 Steps, Non-Cash & Working Capital</p>
+                <p style="font-size: 1.8vmin; color: var(--color-text-muted); margin-top:1vmin;">The 4 Steps, Non-Cash & Working Capital</p>
             </div>
             <div class="card click-row" style="text-align: center;" onclick="jumpToSlide(25)">
                 <h3 style="margin:0;">4. Java House Case</h3>
-                <p style="font-size: 1.8vmin; color: #555; margin-top:1vmin;">Full SCF Build, Activity Reconciliation</p>
+                <p style="font-size: 1.8vmin; color: var(--color-text-muted); margin-top:1vmin;">Full SCF Build, Activity Reconciliation</p>
             </div>
             <div class="card click-row" style="text-align: center;" onclick="jumpToSlide(34)">
                 <h3 style="margin:0;">5. Earnings Quality</h3>
-                <p style="font-size: 1.8vmin; color: #555; margin-top:1vmin;">OCF/CapEx, FCF, The EBITDA Trap, Intel</p>
+                <p style="font-size: 1.8vmin; color: var(--color-text-muted); margin-top:1vmin;">OCF/CapEx, FCF, The EBITDA Trap, Intel</p>
             </div>
-            <div class="card click-row" style="text-align: center;" onclick="jumpToSlide(45)">
+            <div class="card click-row" style="text-align: center;" onclick="jumpToSlide(44)">
                 <h3 style="margin:0;">6. Final Assessment</h3>
-                <p style="font-size: 1.8vmin; color: #555; margin-top:1vmin;">10-Question Self-Check Quiz</p>
+                <p style="font-size: 1.8vmin; color: var(--color-text-muted); margin-top:1vmin;">10-Question Self-Check Quiz</p>
             </div>
         </div>
     </div>
 
-    <div class="slide">
-        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
-            <div>
-                <span class="mono">Roadmap</span>
-                <h2>Today's Agenda</h2>
-                <ul>
-                    <li><strong>Framework:</strong> 3 Pillars (Operating, Investing, Financing).</li>
-                    <li><strong>Mechanics:</strong> Indirect Method (Reconciling Net Income).</li>
-                    <li><strong>Case Study:</strong> Java House (Full Build).</li>
-                    <li><strong>Analysis:</strong> Earnings Quality (Intel) & Life Cycle.</li>
-                </ul>
+    <!-- 2 -->
+    <div class="slide slide-full">
+        <span class="mono">Roadmap</span>
+        <h2>Today's Agenda</h2>
+        <div class="card mt-4 max-w-3xl mx-auto text-center" style="max-width: 800px;">
+            <ul class="text-xl space-y-4 inline-block text-left">
+                <li><strong>Framework:</strong> 3 Pillars (Operating, Investing, Financing).</li>
+                <li><strong>Mechanics:</strong> Indirect Method (Reconciling Net Income).</li>
+                <li><strong>Case Study:</strong> Java House (Full Build).</li>
+                <li><strong>Analysis:</strong> Earnings Quality (Intel) & Life Cycle.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="slide slide-full">
+        <h2>Why SCF Matters</h2>
+        <p class="text-center text-xl mb-8">The Income Statement uses <strong>Accrual Accounting</strong> (matching revenues/expenses) but ignores cash timing. This can obscure a company's true health. The Statement of Cash Flows reveals:</p>
+        
+        <div class="flip-grid mt-4" style="grid-template-columns: repeat(3, 1fr); width: 100%;">
+            <div class="flip-card" onclick="this.classList.toggle('flipped')" style="height: 250px;">
+                <div class="flip-inner">
+                    <div class="flip-front" style="background-color: var(--color-secondary);">
+                        <h3 class="text-white">Liquidity</h3>
+                        <p class="click-label mt-4">(Click to Reveal)</p>
+                    </div>
+                    <div class="flip-back">
+                        <h3 class="text-color-secondary border-b-2 border-color-secondary pb-2">Liquidity</h3>
+                        <p class="font-bold mt-4 text-color-primary">Can we pay our short-term bills today?</p>
+                    </div>
+                </div>
             </div>
-            <div class="card" style="text-align:center;">
-                <h3>Interactive Check</h3>
-                <p style="text-align:center;">Click the box below to test interactivity:</p>
-                <div class="reveal-box" onclick="this.classList.toggle('open')">
-                    <div class="question">Click Me</div>
-                    <div class="hidden-content">Good to go!</div>
+            
+            <div class="flip-card" onclick="this.classList.toggle('flipped')" style="height: 250px;">
+                <div class="flip-inner">
+                    <div class="flip-front" style="background-color: var(--warning);">
+                        <h3 class="text-white">Solvency</h3>
+                        <p class="click-label mt-4">(Click to Reveal)</p>
+                    </div>
+                    <div class="flip-back">
+                        <h3 class="text-warning border-b-2 border-warning pb-2">Solvency</h3>
+                        <p class="font-bold mt-4 text-color-primary">Can we service our long-term debt?</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flip-card" onclick="this.classList.toggle('flipped')" style="height: 250px;">
+                <div class="flip-inner">
+                    <div class="flip-front" style="background-color: var(--color-accent);">
+                        <h3 class="text-white">Earnings Quality</h3>
+                        <p class="click-label mt-4">(Click to Reveal)</p>
+                    </div>
+                    <div class="flip-back">
+                        <h3 class="text-accent border-b-2 border-accent pb-2">Earnings Quality</h3>
+                        <p class="font-bold mt-4 text-color-primary text-base">Is our Net Income backed by hard cash or just accounting adjustments?</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="slide slide-full">
-        <h2>Why SCF Matters</h2>
-        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
-            <div>
-                <p>The Income Statement uses <strong>Accrual Accounting</strong> (matching revenues/expenses) but ignores cash timing. This can obscure a company's true health.</p>
-                <p>The Statement of Cash Flows reveals:</p>
-                <ul>
-                    <li><strong>Liquidity:</strong> Can we pay our short-term bills today?</li>
-                    <li><strong>Solvency:</strong> Can we service our long-term debt?</li>
-                    <li><strong>Earnings Quality:</strong> Is our Net Income backed by hard cash or just accounting adjustments?</li>
-                </ul>
-            </div>
-            <div class="card">
-                <h3>4 Dimensions of Insight</h3>
-                <ol>
-                    <li>Activity Type (Operating, Investing, Financing)</li>
-                    <li>Liquidity Role in Operations</li>
-                    <li>Detail (Depreciation, Gains, Stock Comp)</li>
-                    <li>Earnings Quality Assessment</li>
-                </ol>
-            </div>
-        </div>
-    </div>
-
+    <!-- 4 -->
     <div class="slide slide-full">
         <h1>The Fundamental Equation</h1>
         <div class="card" style="text-align:center; padding:5vmin; margin-top:2vmin; width:90%; display:inline-block;">
-            <p class="mono" style="font-size:3vmin;">Beginning Cash Balance (Prior Year BS)</p>
-            <p style="font-size:5vmin; font-weight:bold; color:var(--accent);">+ Net Change in Cash (The SCF)</p>
-            <hr style="border:1px solid #ccc; margin:2vmin 0;">
-            <p class="mono" style="font-size:3vmin;"><strong>= Ending Cash Balance (Current Year BS)</strong></p>
+            <p class="mono" style="font-size:3vmin; white-space: normal;">Beginning Cash Balance (Prior Year BS)</p>
+            <p style="font-size:5vmin; font-weight:900; color:var(--color-secondary);">+ Net Change in Cash (The SCF)</p>
+            <hr style="border-top:3px dashed var(--color-primary); margin:2vmin 0;">
+            <p class="mono" style="font-size:3vmin; white-space: normal;"><strong>= Ending Cash Balance (Current Year BS)</strong></p>
         </div>
     </div>
 
+    <!-- 5 -->
     <div class="slide slide-full">
         <span class="mono">Real World Data</span>
         <h1>Microsoft: Balance Sheet</h1>
-        <p style="text-align:center;"><strong>Goal:</strong> Explain the $16.4 Billion decrease in cash.</p>
+        <p style="text-align:center; font-weight:800;"><strong>Goal:</strong> Explain the $16.4 Billion decrease in cash.</p>
         <table>
             <thead>
                 <tr>
@@ -445,7 +522,7 @@
                     <td>Cash and Cash Equivalents</td>
                     <td>$18,315</td>
                     <td>$34,704</td>
-                    <td style="color:var(--error); font-weight:bold;">($16,389)</td>
+                    <td class="text-danger">($16,389)</td>
                 </tr>
                 <tr>
                     <td>Short-term Investments</td>
@@ -463,6 +540,7 @@
         </table>
     </div>
 
+    <!-- 6 -->
     <div class="slide">
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
             <div>
@@ -470,18 +548,18 @@
                 <p>We classify all cash transactions into three buckets:</p>
                 <div class="reveal-box" onclick="this.classList.toggle('open')">
                     <div class="question">Operating (O)</div>
-                    <div class="hidden-content">Day-to-day business activities (Sales, Wages, Inventory, Interest)</div>
+                    <div class="hidden-content text-success">Day-to-day business (Sales, Wages, Inventory, Interest)</div>
                 </div>
                 <div class="reveal-box" onclick="this.classList.toggle('open')">
                     <div class="question">Investing (I)</div>
-                    <div class="hidden-content">Buying/Selling Long-term Assets (PP&E, Investments)</div>
+                    <div class="hidden-content text-warning">Long-term Assets (PP&E, Investments)</div>
                 </div>
                 <div class="reveal-box" onclick="this.classList.toggle('open')">
                     <div class="question">Financing (F)</div>
-                    <div class="hidden-content">Funding the business (Debt, Equity, Dividends Paid)</div>
+                    <div class="hidden-content text-accent">Funding the business (Debt, Equity, Dividends Paid)</div>
                 </div>
             </div>
-            <div class="card">
+            <div class="card card-data">
                 <h3>Rule of Thumb</h3>
                 <p><strong>Operating:</strong> Items found on the Income Statement.</p>
                 <p><strong>Investing:</strong> Items related to Long-term Assets.</p>
@@ -490,20 +568,22 @@
         </div>
     </div>
 
+    <!-- 7 -->
     <div class="slide slide-full">
         <h1>Drill: Classify These Activities</h1>
         <p style="text-align:center;">Click to check your understanding.</p>
         <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:4vmin; width: 100%;">
-            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Pay Dividends</div><div class="hidden-content" style="color:var(--fin-chart)">Financing</div></div>
-            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Pay Interest</div><div class="hidden-content" style="color:var(--success)">Operating*</div></div>
-            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Sell Equipment</div><div class="hidden-content" style="color:var(--accent)">Investing</div></div>
-            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Issue Stock</div><div class="hidden-content" style="color:var(--fin-chart)">Financing</div></div>
-            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Buy Inventory</div><div class="hidden-content" style="color:var(--success)">Operating</div></div>
-            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Collect Loan Principal</div><div class="hidden-content" style="color:var(--accent)">Investing</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Pay Dividends</div><div class="hidden-content text-accent">Financing</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Pay Interest</div><div class="hidden-content text-success">Operating*</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Sell Equipment</div><div class="hidden-content text-warning">Investing</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Issue Stock</div><div class="hidden-content text-accent">Financing</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Buy Inventory</div><div class="hidden-content text-success">Operating</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Collect Loan Principal</div><div class="hidden-content text-warning">Investing</div></div>
         </div>
-        <p style="font-size:2vmin; margin-top:2vmin; text-align:center;">*Note: Interest Paid is Operating under US GAAP.</p>
+        <p style="font-size:2vmin; margin-top:2vmin; text-align:center;" class="text-color-text-muted">*Note: Interest Paid is Operating under US GAAP.</p>
     </div>
 
+    <!-- 8 -->
     <div class="slide slide-full">
         <h1>Life Cycle Patterns</h1>
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
@@ -518,104 +598,109 @@
             </div>
             <table>
                 <tr><th>Stage</th><th>Ops</th><th>Inv</th><th>Fin</th></tr>
-                <tr><td>Intro</td><td style="color:var(--error)">-</td><td style="color:var(--error)">-</td><td style="color:var(--success)">+</td></tr>
-                <tr><td>Growth</td><td>+/-</td><td style="color:var(--error)">-</td><td style="color:var(--success)">+</td></tr>
-                <tr><td>Maturity</td><td style="color:var(--success)">+</td><td style="color:var(--error)">-</td><td style="color:var(--error)">-</td></tr>
-                <tr><td>Decline</td><td style="color:var(--error)">-</td><td style="color:var(--success)">+</td><td style="color:var(--error)">-</td></tr>
+                <tr><td>Intro</td><td class="text-danger">-</td><td class="text-danger">-</td><td class="text-success">+</td></tr>
+                <tr><td>Growth</td><td>+/-</td><td class="text-danger">-</td><td class="text-success">+</td></tr>
+                <tr><td>Maturity</td><td class="text-success">+</td><td class="text-danger">-</td><td class="text-danger">-</td></tr>
+                <tr><td>Decline</td><td class="text-danger">-</td><td class="text-success">+</td><td class="text-danger">-</td></tr>
             </table>
         </div>
     </div>
 
+    <!-- 9 -->
     <div class="slide slide-full">
         <h1>General Life Cycle Patterns</h1>
         
-        <div style="height:55vh; width:90%; margin:2vmin auto; position:relative; background:white; border:2px solid #333;">
-            <div style="position:absolute; top:10px; right:10px; background:white; padding:5px 10px; border:1px solid #ccc; font-size:1.5vmin; font-family:'JetBrains Mono'; z-index:10; display:flex; flex-direction:column;">
-                <span style="color:#f59e0b">● Revenues</span>
-                <span style="color:var(--accent)">● Net Income</span>
+        <div style="height:55vh; width:90%; margin:2vmin auto; position:relative; background:white; border:var(--border-game); border-radius: var(--radius); box-shadow: var(--shadow-game);">
+            <div style="position:absolute; top:10px; right:10px; background:white; padding:10px; border:2px solid var(--color-primary); border-radius:8px; font-size:1.5vmin; font-family:var(--mono-font); font-weight:800; z-index:10; display:flex; flex-direction:column; box-shadow: 2px 2px 0px var(--color-primary);">
+                <span style="color:var(--color-secondary)">● Revenues</span>
+                <span style="color:var(--color-primary)">● Net Income</span>
                 <span style="color:var(--success)">● OCF (Ops)</span>
-                <span style="color:var(--error)">● Investing</span>
-                <span style="color:#8b5cf6">● Financing</span>
+                <span style="color:var(--danger)">● Investing</span>
+                <span style="color:var(--color-accent)">● Financing</span>
             </div>
 
             <svg viewBox="0 0 100 60" style="width:100%; height:100%; overflow:visible;">
-                <line x1="25" y1="0" x2="25" y2="60" stroke="#eee" stroke-width="0.5" stroke-dasharray="2"/>
-                <line x1="50" y1="0" x2="50" y2="60" stroke="#eee" stroke-width="0.5" stroke-dasharray="2"/>
-                <line x1="75" y1="0" x2="75" y2="60" stroke="#eee" stroke-width="0.5" stroke-dasharray="2"/>
+                <line x1="25" y1="0" x2="25" y2="60" stroke="#cbd5e1" stroke-width="0.5" stroke-dasharray="2"/>
+                <line x1="50" y1="0" x2="50" y2="60" stroke="#cbd5e1" stroke-width="0.5" stroke-dasharray="2"/>
+                <line x1="75" y1="0" x2="75" y2="60" stroke="#cbd5e1" stroke-width="0.5" stroke-dasharray="2"/>
                 
-                <text x="12" y="58" font-size="2" text-anchor="middle">Introduction</text>
-                <text x="37" y="58" font-size="2" text-anchor="middle">Growth</text>
-                <text x="62" y="58" font-size="2" text-anchor="middle">Maturity</text>
-                <text x="87" y="58" font-size="2" text-anchor="middle">Decline</text>
+                <text x="12" y="58" font-size="2" font-weight="800" fill="var(--color-primary)" text-anchor="middle">Introduction</text>
+                <text x="37" y="58" font-size="2" font-weight="800" fill="var(--color-primary)" text-anchor="middle">Growth</text>
+                <text x="62" y="58" font-size="2" font-weight="800" fill="var(--color-primary)" text-anchor="middle">Maturity</text>
+                <text x="87" y="58" font-size="2" font-weight="800" fill="var(--color-primary)" text-anchor="middle">Decline</text>
                 
-                <line x1="0" y1="30" x2="100" y2="30" stroke="#333" stroke-width="1"/>
-                <text x="-3" y="30" font-size="2">0</text>
+                <line x1="0" y1="30" x2="100" y2="30" stroke="var(--color-primary)" stroke-width="1"/>
+                <text x="-3" y="30" font-size="2" font-weight="800">0</text>
 
-                <path d="M0,45 Q25,25 50,10 T100,20" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
-
-                <path d="M0,40 Q25,35 50,20 T100,35" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
-
+                <path d="M0,45 Q25,25 50,10 T100,20" fill="none" stroke="var(--color-secondary)" stroke-width="1.5"/>
+                <path d="M0,40 Q25,35 50,20 T100,35" fill="none" stroke="var(--color-primary)" stroke-width="1.5"/>
                 <path d="M0,38 Q25,32 50,15 T100,32" fill="none" stroke="var(--success)" stroke-width="1.5" stroke-dasharray="2"/>
-
-                <path d="M0,42 Q25,48 50,45 T100,25" fill="none" stroke="var(--error)" stroke-width="1.5" stroke-dasharray="2"/>
-
-                <path d="M0,20 Q25,25 50,40 T100,35" fill="none" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="2"/>
+                <path d="M0,42 Q25,48 50,45 T100,25" fill="none" stroke="var(--danger)" stroke-width="1.5" stroke-dasharray="2"/>
+                <path d="M0,20 Q25,25 50,40 T100,35" fill="none" stroke="var(--color-accent)" stroke-width="1.5" stroke-dasharray="2"/>
             </svg>
         </div>
     </div>
 
+    <!-- 10 -->
     <div class="slide slide-full">
         <h1>Real World Example: Coca-Cola</h1>
-        <p style="text-align:center;"><strong>CFO (Green):</strong> Consistent "Cash Machine". <strong>CFI (Red):</strong> Reinvesting. <strong>CFF (Blue):</strong> Paying Shareholders.</p>
+        <p style="text-align:center;"><strong>CFO (Green):</strong> Consistent "Cash Machine". <strong>CFI (Red):</strong> Reinvesting. <strong>CFF (Purple):</strong> Paying Shareholders.</p>
         
-        <div style="height:55vh; width:90%; margin:2vmin auto; position:relative; background:white; border:2px solid #333;">
-            <div style="position:absolute; top:10px; right:10px; background:white; padding:5px 10px; border:1px solid #ccc; font-size:1.5vmin; font-family:'JetBrains Mono'; z-index:10; display:flex; flex-direction:column;">
+        <div style="height:55vh; width:90%; margin:2vmin auto; position:relative; background:white; border:var(--border-game); border-radius:var(--radius); box-shadow:var(--shadow-game);">
+            <div style="position:absolute; top:10px; right:10px; background:white; padding:10px; border:2px solid var(--color-primary); border-radius:8px; font-size:1.5vmin; font-family:var(--mono-font); font-weight:800; z-index:10; display:flex; flex-direction:column; box-shadow: 2px 2px 0px var(--color-primary);">
                 <span style="color:var(--success)">● CFO</span>
-                <span style="color:var(--error)">● CFI</span>
-                <span style="color:var(--accent)">● CFF</span>
+                <span style="color:var(--danger)">● CFI</span>
+                <span style="color:var(--color-accent)">● CFF</span>
             </div>
 
             <svg viewBox="0 0 100 60" style="width:100%; height:100%; overflow:visible;">
-                <line x1="0" y1="10" x2="100" y2="10" stroke="#eee" stroke-width="0.5"/>
-                <line x1="0" y1="20" x2="100" y2="20" stroke="#eee" stroke-width="0.5"/>
-                <line x1="0" y1="30" x2="100" y2="30" stroke="#333" stroke-width="1"/> <line x1="0" y1="40" x2="100" y2="40" stroke="#eee" stroke-width="0.5"/>
-                <line x1="0" y1="50" x2="100" y2="50" stroke="#eee" stroke-width="0.5"/>
+                <line x1="0" y1="10" x2="100" y2="10" stroke="#cbd5e1" stroke-width="0.5"/>
+                <line x1="0" y1="20" x2="100" y2="20" stroke="#cbd5e1" stroke-width="0.5"/>
+                <line x1="0" y1="30" x2="100" y2="30" stroke="var(--color-primary)" stroke-width="1"/> 
+                <line x1="0" y1="40" x2="100" y2="40" stroke="#cbd5e1" stroke-width="0.5"/>
+                <line x1="0" y1="50" x2="100" y2="50" stroke="#cbd5e1" stroke-width="0.5"/>
 
-                <text x="-5" y="10" font-size="1.5">$10B</text>
-                <text x="-5" y="20" font-size="1.5">$5B</text>
-                <text x="-5" y="30" font-size="1.5">0</text>
-                <text x="-5" y="40" font-size="1.5">-$5B</text>
-                <text x="-5" y="50" font-size="1.5">-$10B</text>
+                <text x="-5" y="10" font-size="1.5" font-weight="800">$10B</text>
+                <text x="-5" y="20" font-size="1.5" font-weight="800">$5B</text>
+                <text x="-5" y="30" font-size="1.5" font-weight="800">0</text>
+                <text x="-5" y="40" font-size="1.5" font-weight="800">-$5B</text>
+                <text x="-5" y="50" font-size="1.5" font-weight="800">-$10B</text>
 
                 <polyline points="0,15 10,12 20,14 30,18 40,16 50,14 60,12 70,11 80,9 90,10 100,11" 
                           fill="none" stroke="var(--success)" stroke-width="1.5"/>
 
                 <polyline points="0,32 10,34 20,35 30,36 40,33 50,20 60,32 70,35 80,31 90,34 100,33" 
-                          fill="none" stroke="var(--error)" stroke-width="1.5"/>
+                          fill="none" stroke="var(--danger)" stroke-width="1.5"/>
 
                 <polyline points="0,35 10,38 20,37 30,42 40,40 50,45 60,42 70,44 80,48 90,46 100,49" 
-                          fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+                          fill="none" stroke="var(--color-accent)" stroke-width="1.5"/>
                 
-                <text x="0" y="63" font-size="1.5">2013</text>
-                <text x="50" y="63" font-size="1.5">2018</text>
-                <text x="100" y="63" font-size="1.5">2022</text>
+                <text x="0" y="63" font-size="1.5" font-weight="800">2013</text>
+                <text x="50" y="63" font-size="1.5" font-weight="800">2018</text>
+                <text x="100" y="63" font-size="1.5" font-weight="800">2022</text>
             </svg>
         </div>
     </div>
 
+    <!-- 11 -->
     <div class="slide slide-full">
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
             <div>
                 <h2>Presentation Methods of Cash Flow from Operating Activities</h2>
-                <p><strong>Indirect Method (98%):</strong> Starts with Net Income and adjusts. Shows the difference between profit and cash. Used by Microsoft, Intel, Apple.</p>
+                <div class="card card-data">
+                    <p><strong>Indirect Method (98%):</strong> Starts with Net Income and adjusts. Shows the difference between profit and cash. Used by Microsoft, Intel, Apple.</p>
+                </div>
             </div>
             <div>
                 <h2>Direct Method (2%)</h2>
-                <p>Lists actual cash receipts and payments. Intuitive but rare.</p>
+                <div class="card">
+                    <p>Lists actual cash receipts and payments. Intuitive but rare.</p>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- 12 -->
     <div class="slide slide-full">
         <h1>Microsoft: Indirect Method (2023)</h1>
         <table>
@@ -632,8 +717,9 @@
         </table>
     </div>
 
+    <!-- 13 -->
     <div class="slide slide-full">
-        <span class="mono">Rare Example</span>
+        <span class="mono text-warning bg-warning-bg">Rare Example</span>
         <h1>CVS Health: Direct Method (2023)</h1>
         <table>
             <thead><tr><th>Activity</th><th>Amount (M)</th></tr></thead>
@@ -648,6 +734,7 @@
         </table>
     </div>
 
+    <!-- 14 -->
     <div class="slide slide-full">
         <h1>Indirect Method: The 4 Steps</h1>
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
@@ -665,10 +752,10 @@
                     <div class="flip-inner">
                         <div class="flip-front">
                             <h3>Formula: NI ± Adj = OCF</h3>
-                            <p>(Click for Example)</p>
+                            <p class="mono border-none shadow-none mt-4">(Click for Example)</p>
                         </div>
                         <div class="flip-back">
-                            <h3>Why?</h3>
+                            <h3 style="color:white; border-bottom: 2px solid white;">Why?</h3>
                             <p>Net Income ($100) minus Depreciation ($20) = $80 profit, but cash didn't leave. So we start at $80 and add back $20 to get true cash of $100.</p>
                         </div>
                     </div>
@@ -677,20 +764,55 @@
         </div>
     </div>
 
+    <!-- 15 -->
     <div class="slide">
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
             <div>
                 <h2>Step 2: Non-Cash Items</h2>
-                <p><strong>Expenses (e.g., Depreciation):</strong> Reduced NI, didn't use cash. <span style="color:var(--success); font-weight:bold;">ADD BACK</span>.</p>
-                <p><strong>Revenues (e.g., Unrealized Gains):</strong> Increased NI, no cash received. <span style="color:var(--error); font-weight:bold;">SUBTRACT</span>.</p>
+                <p><strong>Expenses (e.g., Depreciation):</strong> Reduced NI, didn't use cash. <span class="mono text-success bg-success-bg border-success ml-2">ADD BACK</span></p>
+                <p><strong>Revenues (e.g., Unrealized Gains):</strong> Increased NI, no cash received. <span class="mono text-danger bg-danger-bg border-danger ml-2">SUBTRACT</span></p>
             </div>
             <div class="card">
-                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Depreciation Expense</div><div class="hidden-content" style="color:var(--success)">ADD BACK</div></div>
-                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Unrealized Gain on Stock</div><div class="hidden-content" style="color:var(--error)">SUBTRACT</div></div>
+                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Depreciation Expense</div><div class="hidden-content text-success">ADD BACK</div></div>
+                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Unrealized Gain on Stock</div><div class="hidden-content text-danger">SUBTRACT</div></div>
             </div>
         </div>
     </div>
 
+    <!-- 16 NEW -->
+    <div class="slide slide-full">
+        <h1>Example (Depreciation Non-Cash)</h1>
+        <p>Sales $1,000 cash. Expenses $700 ($500 cash, $200 depreciation).</p>
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:4vmin; width: 100%;">
+            <div class="card">
+                <h3>Income Statement</h3>
+                <p>Sales: $1,000</p>
+                <p>Cash Exp: ($500)</p>
+                <p>Depr Exp: ($200)</p>
+                <hr style="border-top:2px dashed var(--color-primary); margin: 10px 0;">
+                <p><strong>NI: $300</strong></p>
+            </div>
+            <div class="card">
+                <h3>Cash Flow Calculation</h3>
+                <p>Cash Sales: $1,000</p>
+                <p>Cash Exp: ($500)</p>
+                <hr style="border-top:2px dashed var(--color-primary); margin: 10px 0; margin-top:35px;">
+                <p><strong>CFO: $500</strong></p>
+            </div>
+            <div class="card card-highlight">
+                <h3 class="text-warning">Reconciliation</h3>
+                <p>Start: $300 (NI)</p>
+                <div class="reveal-box" style="margin:0; padding:1vmin;" onclick="this.classList.toggle('open')">
+                    <div class="question">Plug?</div>
+                    <div class="hidden-content text-success" style="font-size:2vmin;">+ Add: $200 (Depr)</div>
+                </div>
+                <hr style="border-top:2px dashed var(--color-primary); margin: 10px 0;">
+                <p><strong>CFO: $500</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 17 -->
     <div class="slide">
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
             <div>
@@ -700,104 +822,95 @@
                 <p>So, we remove the Gain from Operating to avoid double counting.</p>
             </div>
             <div class="card">
-                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Gain on Sale ($500)</div><div class="hidden-content" style="color:var(--error)">SUBTRACT (Ops)</div></div>
-                <p style="margin-top:2vmin; font-size:2.5vmin;">Total Investing Inflow = Book Value + Gain</p>
+                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Gain on Sale ($500)</div><div class="hidden-content text-danger">SUBTRACT (Ops)</div></div>
+                <p style="margin-top:2vmin; font-size:2.5vmin; font-weight:800; text-align:center; background:var(--color-newday); padding:10px; border-radius:8px;">Total Investing Inflow = Book Value + Gain</p>
             </div>
         </div>
     </div>
 
+    <!-- 18 NEW -->
+    <div class="slide slide-full">
+        <h1>Example (Gain on Sale)</h1>
+        <p>Sales $1,000 cash. Cash Expenses $500. Sold old machine for $400 cash (Book value $300, so $100 Gain).</p>
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:4vmin; width: 100%;">
+            <div class="card">
+                <h3>Income Statement</h3>
+                <p>Sales: $1,000</p>
+                <p>Cash Exp: ($500)</p>
+                <p>Gain on Sale: $100</p>
+                <hr style="border-top:2px dashed var(--color-primary); margin: 10px 0;">
+                <p><strong>NI: $600</strong></p>
+            </div>
+            <div class="card">
+                <h3>Cash Flow Calculation</h3>
+                <p>Cash Sales: $1,000</p>
+                <p>Cash Exp: ($500)</p>
+                <hr style="border-top:2px dashed var(--color-primary); margin: 10px 0; margin-top:35px;">
+                <p><strong>CFO: $500</strong></p>
+                <p class="text-color-text-muted mt-4" style="font-size:1.5vmin;">*The $400 cash from machine sale is an Investing Inflow.</p>
+            </div>
+            <div class="card card-highlight">
+                <h3 class="text-warning">Reconciliation</h3>
+                <p>Start: $600 (NI)</p>
+                <div class="reveal-box" style="margin:0; padding:1vmin;" onclick="this.classList.toggle('open')">
+                    <div class="question">Plug?</div>
+                    <div class="hidden-content text-danger" style="font-size:2vmin;">- Sub: $100 (Gain)</div>
+                </div>
+                <hr style="border-top:2px dashed var(--color-primary); margin: 10px 0;">
+                <p><strong>CFO: $500</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 19 -->
     <div class="slide slide-full">
         <h1>Step 4: Working Capital Adjustments</h1>
         <div class="slide-grid">
-            <div class="card" style="background:#f0f9ff;">
-                <h3 style="text-align:center; color:var(--accent);">ASSETS (Inv, A/R)</h3>
-                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">INCREASE ↑</div><div class="hidden-content" style="color:var(--error)">SUBTRACT</div></div>
-                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">DECREASE ↓</div><div class="hidden-content" style="color:var(--success)">ADD</div></div>
-                <p style="text-align:center;"><strong>Inverse</strong></p>
+            <div class="card" style="background:#eff6ff;">
+                <h3 style="text-align:center; color:var(--color-secondary); border-bottom: 2px solid var(--color-secondary);">ASSETS (Inv, A/R)</h3>
+                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">INCREASE ↑</div><div class="hidden-content text-danger">SUBTRACT</div></div>
+                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">DECREASE ↓</div><div class="hidden-content text-success">ADD</div></div>
+                <p style="text-align:center; font-weight:900;">Inverse Direction</p>
             </div>
-            <div class="card" style="background:#fff7ed;">
-                <h3 style="text-align:center; color:var(--fin-chart);">LIABILITIES (A/P)</h3>
-                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">INCREASE ↑</div><div class="hidden-content" style="color:var(--success)">ADD</div></div>
-                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">DECREASE ↓</div><div class="hidden-content" style="color:var(--error)">SUBTRACT</div></div>
-                <p style="text-align:center;"><strong>Direct</strong></p>
+            <div class="card" style="background:var(--warning-bg);">
+                <h3 style="text-align:center; color:var(--warning); border-bottom: 2px solid var(--warning);">LIABILITIES (A/P)</h3>
+                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">INCREASE ↑</div><div class="hidden-content text-success">ADD</div></div>
+                <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">DECREASE ↓</div><div class="hidden-content text-danger">SUBTRACT</div></div>
+                <p style="text-align:center; font-weight:900;">Same Direction</p>
             </div>
         </div>
     </div>
 
-    <div class="slide">
-        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
-            <div>
-                <h2>Why? Current Assets</h2>
-                <p><strong>Asset Increase = Cash Outflow</strong></p>
-                <p>If Inventory goes UP, you spent cash to buy it.</p>
-                <p>If A/R goes UP, you recorded revenue but didn't get cash.</p>
-            </div>
-            <div class="card"><div style="font-size:10vmin; text-align:center; color:var(--accent);">↔</div><div class="stat-caption" style="text-align: center;">Opposite Direction</div></div>
-        </div>
-    </div>
-
-    <div class="slide">
-        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
-            <div>
-                <h2>Why? Current Liabilities</h2>
-                <p><strong>Liability Increase = Cash Inflow</strong></p>
-                <p>If A/P goes UP, you bought something but <em>kept</em> your cash. It's like an interest-free loan (Source).</p>
-            </div>
-            <div class="card"><div style="font-size:10vmin; text-align:center; color:var(--accent);">=</div><div class="stat-caption" style="text-align: center;">Same Direction</div></div>
-        </div>
-    </div>
-
+    <!-- 20 -->
     <div class="slide slide-full">
-        <h1>Reference: Working Capital Cheatsheet</h1>
-        <table>
-            <thead><tr><th>Balance Sheet Account</th><th>Increase In Account</th><th>Decrease In Account</th></tr></thead>
-            <tbody>
-                <tr><td>Current Assets (A/R, Inv, Prepaid)</td><td style="color:var(--error); font-weight:bold;">Cash Outflow (Subtract)</td><td style="color:var(--success); font-weight:bold;">Cash Inflow (Add)</td></tr>
-                <tr><td>Current Liabilities (A/P, Tax Pay)</td><td style="color:var(--success); font-weight:bold;">Cash Inflow (Add)</td><td style="color:var(--error); font-weight:bold;">Cash Outflow (Subtract)</td></tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="slide slide-full">
-        <h1>Drill: Adjustments</h1>
-        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:4vmin; width: 100%;">
-            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Inventory Increase</div><div class="hidden-content" style="color:var(--error)">Subtract</div></div>
-            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">A/P Decrease</div><div class="hidden-content" style="color:var(--error)">Subtract</div></div>
-            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Prepaid Rent Decrease</div><div class="hidden-content" style="color:var(--success)">Add</div></div>
-            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Wages Payable Increase</div><div class="hidden-content" style="color:var(--success)">Add</div></div>
-            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">A/R Increase</div><div class="hidden-content" style="color:var(--error)">Subtract</div></div>
-            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Taxes Payable Decrease</div><div class="hidden-content" style="color:var(--error)">Subtract</div></div>
-        </div>
-    </div>
-
-    <div class="slide slide-full">
-        <h1>Example 1</h1>
+        <h1>Example 1 (All Cash)</h1>
         <p>You operate a lemonade stand. You made $1,000 sales all in cash. You spent $700 cash during the period to generate this sales.</p>
         <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:4vmin; width: 100%;">
             <div class="card">
                 <h3>Income Statement</h3>
                 <p>Sales: $1,000</p>
                 <p>Exp: ($700)</p>
-                <hr>
+                <hr style="border-top:2px dashed var(--color-primary); margin: 10px 0;">
                 <p><strong>NI: $300</strong></p>
             </div>
             <div class="card">
                 <h3>Cash Flow Calculation</h3>
                 <p>Sales: $1,000</p>
                 <p>Exp: ($700)</p>
-                <hr>
+                <hr style="border-top:2px dashed var(--color-primary); margin: 10px 0;">
                 <p><strong>CFO: $300</strong></p>
             </div>
             <div class="card" style="border-color:var(--success);">
-                <h3>Reconciliation</h3>
+                <h3 class="text-success">Reconciliation</h3>
                 <p>Start: $300 (NI)</p>
                 <p>Adj: 0</p>
-                <hr>
+                <hr style="border-top:2px dashed var(--color-primary); margin: 10px 0;">
                 <p><strong>CFO: $300</strong></p>
             </div>
         </div>
     </div>
 
+    <!-- 21 -->
     <div class="slide slide-full">
         <h1>Example 2 (A/R)</h1>
         <p>You made $1,000 sales, with $800 cash and $200 accounts receivable. You spent $700 cash.</p>
@@ -806,39 +919,40 @@
                 <h3>Income Statement</h3>
                 <p>Sales: $1,000</p>
                 <p>Exp: ($700)</p>
-                <hr>
+                <hr style="border-top:2px dashed var(--color-primary); margin: 10px 0;">
                 <p><strong>NI: $300</strong></p>
             </div>
             <div class="card">
                 <h3>Cash Flow Calculation</h3>
                 <p>Cash Sales: $800</p>
                 <p>Cash Exp: ($700)</p>
-                <hr>
+                <hr style="border-top:2px dashed var(--color-primary); margin: 10px 0;">
                 <p><strong>CFO: $100</strong></p>
             </div>
             <div class="card" style="border-color:var(--success);">
-                <h3>Reconciliation</h3>
+                <h3 class="text-success">Reconciliation</h3>
                 <p>Start: $300 (NI)</p>
-                <div class="reveal-box" style="margin:0;" onclick="this.classList.toggle('open')">
+                <div class="reveal-box" style="margin:0; padding: 1vmin;" onclick="this.classList.toggle('open')">
                     <div class="question">Plug?</div>
-                    <div class="hidden-content" style="color:var(--error)">- Sub: $200 (Inc A/R)</div>
+                    <div class="hidden-content text-danger" style="font-size:2vmin;">- Sub: $200 (Inc A/R)</div>
                 </div>
-                <hr>
+                <hr style="border-top:2px dashed var(--color-primary); margin: 10px 0;">
                 <p><strong>CFO: $100</strong></p>
             </div>
         </div>
-        <div style="margin-top:2vmin; font-size:1.5vmin; background:#f8fafc; padding:1vmin; border:1px solid #ccc;">
-            <strong>Reference: Working Capital Cheatsheet</strong>
-            <table class="cheatsheet-table" style="margin:0;">
+        <div class="card mt-4" style="background:var(--color-newday); padding:1.5vmin;">
+            <strong class="text-color-primary">Reference: Working Capital Cheatsheet</strong>
+            <table class="cheatsheet-table" style="margin:0; margin-top:1vmin;">
                 <thead><tr><th>Balance Sheet Account</th><th>Increase</th><th>Decrease</th></tr></thead>
                 <tbody>
-                    <tr><td>Current Assets (A/R, Inv)</td><td style="color:var(--error)">Subtract (Outflow)</td><td style="color:var(--success)">Add (Inflow)</td></tr>
-                    <tr><td>Current Liabilities (A/P)</td><td style="color:var(--success)">Add (Inflow)</td><td style="color:var(--error)">Subtract (Outflow)</td></tr>
+                    <tr><td>Current Assets (A/R, Inv)</td><td class="text-danger">Subtract (Outflow)</td><td class="text-success">Add (Inflow)</td></tr>
+                    <tr><td>Current Liabilities (A/P)</td><td class="text-success">Add (Inflow)</td><td class="text-danger">Subtract (Outflow)</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
+    <!-- 22 -->
     <div class="slide slide-full">
         <h1>Example 3 (A/P)</h1>
         <p>Sales $1,000 cash. Expenses $700 ($500 cash, $200 promised to be paid in a week).</p>
@@ -847,43 +961,69 @@
                 <h3>Income Statement</h3>
                 <p>Sales: $1,000</p>
                 <p>Exp: ($700)</p>
-                <hr>
+                <hr style="border-top:2px dashed var(--color-primary); margin: 10px 0;">
                 <p><strong>NI: $300</strong></p>
             </div>
             <div class="card">
                 <h3>Cash Flow Calculation</h3>
                 <p>Cash Sales: $1,000</p>
                 <p>Cash Exp: ($500)</p>
-                <hr>
+                <hr style="border-top:2px dashed var(--color-primary); margin: 10px 0;">
                 <p><strong>CFO: $500</strong></p>
             </div>
             <div class="card" style="border-color:var(--success);">
-                <h3>Reconciliation</h3>
+                <h3 class="text-success">Reconciliation</h3>
                 <p>Start: $300 (NI)</p>
-                <div class="reveal-box" style="margin:0;" onclick="this.classList.toggle('open')">
+                <div class="reveal-box" style="margin:0; padding:1vmin;" onclick="this.classList.toggle('open')">
                     <div class="question">Plug?</div>
-                    <div class="hidden-content" style="color:var(--success)">+ Add: $200 (Inc A/P)</div>
+                    <div class="hidden-content text-success" style="font-size:2vmin;">+ Add: $200 (Inc A/P)</div>
                 </div>
-                <hr>
+                <hr style="border-top:2px dashed var(--color-primary); margin: 10px 0;">
                 <p><strong>CFO: $500</strong></p>
             </div>
         </div>
-        <div style="margin-top:2vmin; font-size:1.5vmin; background:#f8fafc; padding:1vmin; border:1px solid #ccc;">
-            <strong>Reference: Working Capital Cheatsheet</strong>
-            <table class="cheatsheet-table" style="margin:0;">
+        <div class="card mt-4" style="background:var(--color-newday); padding:1.5vmin;">
+            <strong class="text-color-primary">Reference: Working Capital Cheatsheet</strong>
+            <table class="cheatsheet-table" style="margin:0; margin-top:1vmin;">
                 <thead><tr><th>Balance Sheet Account</th><th>Increase</th><th>Decrease</th></tr></thead>
                 <tbody>
-                    <tr><td>Current Assets (A/R, Inv)</td><td style="color:var(--error)">Subtract (Outflow)</td><td style="color:var(--success)">Add (Inflow)</td></tr>
-                    <tr><td>Current Liabilities (A/P)</td><td style="color:var(--success)">Add (Inflow)</td><td style="color:var(--error)">Subtract (Outflow)</td></tr>
+                    <tr><td>Current Assets (A/R, Inv)</td><td class="text-danger">Subtract (Outflow)</td><td class="text-success">Add (Inflow)</td></tr>
+                    <tr><td>Current Liabilities (A/P)</td><td class="text-success">Add (Inflow)</td><td class="text-danger">Subtract (Outflow)</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
+    <!-- 23 -->
+    <div class="slide slide-full">
+        <h1>Reference: Working Capital Cheatsheet</h1>
+        <table class="cheatsheet-table" style="font-size: 2.5vmin;">
+            <thead><tr><th>Balance Sheet Account</th><th>Increase In Account</th><th>Decrease In Account</th></tr></thead>
+            <tbody>
+                <tr><td>Current Assets (A/R, Inv, Prepaid)</td><td class="text-danger bg-danger-bg">Cash Outflow (Subtract)</td><td class="text-success bg-success-bg">Cash Inflow (Add)</td></tr>
+                <tr><td>Current Liabilities (A/P, Tax Pay)</td><td class="text-success bg-success-bg">Cash Inflow (Add)</td><td class="text-danger bg-danger-bg">Cash Outflow (Subtract)</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 24 -->
+    <div class="slide slide-full">
+        <h1>Drill: Adjustments</h1>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:4vmin; width: 100%;">
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Inventory Increase</div><div class="hidden-content text-danger">Subtract</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">A/P Decrease</div><div class="hidden-content text-danger">Subtract</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Prepaid Rent Decrease</div><div class="hidden-content text-success">Add</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Wages Payable Increase</div><div class="hidden-content text-success">Add</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">A/R Increase</div><div class="hidden-content text-danger">Subtract</div></div>
+            <div class="reveal-box" onclick="this.classList.toggle('open')"><div class="question">Taxes Payable Decrease</div><div class="hidden-content text-danger">Subtract</div></div>
+        </div>
+    </div>
+
+    <!-- 25 -->
     <div class="slide">
         <div class="slide-grid">
             <div class="data-panel">
-                <h3>Income Statement 2025</h3>
+                <h3 class="border-b-2 border-color-primary pb-2 mb-2">Income Statement 2025</h3>
                 <table>
                     <tr><td>Sales</td><td>$250,000</td></tr>
                     <tr><td>Cost of Goods Sold</td><td>(148,000)</td></tr>
@@ -895,7 +1035,7 @@
                     <tr><td>Gain on Sale of Land</td><td>8,000</td></tr>
                     <tr class="highlight-row"><td><strong>Net Income</strong></td><td><strong>$32,000</strong></td></tr>
                 </table>
-                <h3>Balance Sheet Changes</h3>
+                <h3 class="border-b-2 border-color-primary pb-2 mb-2 mt-4">Balance Sheet Changes</h3>
                 <table>
                     <tr><th>Assets</th><th>2025</th><th>2024</th></tr>
                     <tr><td>Cash</td><td>24,000</td><td>10,000</td></tr>
@@ -913,8 +1053,8 @@
                     <tr><td>Common Stock</td><td>216,000</td><td>140,000</td></tr>
                     <tr><td>Retained Earnings</td><td>75,000</td><td>56,000</td></tr>
                 </table>
-                <h3>Additional Data</h3>
-                <ol>
+                <h3 class="border-b-2 border-color-primary pb-2 mb-2 mt-4">Additional Data</h3>
+                <ol style="font-weight:700;">
                     <li>Purchased LT investments for cash ($15,000).</li>
                     <li>Purchased equipment for $5,000 cash.</li>
                     <li>Sold land costing $20,000 for $28,000 cash.</li>
@@ -928,17 +1068,18 @@
             <div>
                 <h2>Case Study: Java House</h2>
                 <p>We will build the full SCF using the data on the left.</p>
-                <div class="card">
+                <div class="card card-data">
                     <p>Refer to the Income Statement and Balance Sheet changes shown here for every step of the calculation.</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 26 -->
     <div class="slide">
         <div class="slide-grid">
             <div class="data-panel">
-                <h3>Income Statement 2025</h3>
+                <h3 class="border-b-2 border-color-primary pb-2 mb-2">Income Statement 2025</h3>
                 <table>
                     <tr><td>Sales</td><td>$250,000</td></tr>
                     <tr><td>Cost of Goods Sold</td><td>(148,000)</td></tr>
@@ -950,7 +1091,7 @@
                     <tr><td>Gain on Sale of Land</td><td>8,000</td></tr>
                     <tr class="highlight-row"><td><strong>Net Income</strong></td><td><strong>$32,000</strong></td></tr>
                 </table>
-                <h3>Balance Sheet Changes</h3>
+                <h3 class="border-b-2 border-color-primary pb-2 mb-2 mt-4">Balance Sheet Changes</h3>
                 <table>
                     <tr><th>Assets</th><th>2025</th><th>2024</th></tr>
                     <tr><td>Cash</td><td>24,000</td><td>10,000</td></tr>
@@ -968,8 +1109,8 @@
                     <tr><td>Common Stock</td><td>216,000</td><td>140,000</td></tr>
                     <tr><td>Retained Earnings</td><td>75,000</td><td>56,000</td></tr>
                 </table>
-                <h3>Additional Data</h3>
-                <ol>
+                <h3 class="border-b-2 border-color-primary pb-2 mb-2 mt-4">Additional Data</h3>
+                <ol style="font-weight:700;">
                     <li>Purchased LT investments for cash ($15,000).</li>
                     <li>Purchased equipment for $5,000 cash.</li>
                     <li>Sold land costing $20,000 for $28,000 cash.</li>
@@ -993,10 +1134,11 @@
         </div>
     </div>
 
+    <!-- 27 -->
     <div class="slide">
         <div class="slide-grid">
             <div class="data-panel">
-                <h3>Income Statement 2025</h3>
+                <h3 class="border-b-2 border-color-primary pb-2 mb-2">Income Statement 2025</h3>
                 <table>
                     <tr><td>Sales</td><td>$250,000</td></tr>
                     <tr><td>Cost of Goods Sold</td><td>(148,000)</td></tr>
@@ -1008,7 +1150,7 @@
                     <tr><td>Gain on Sale of Land</td><td>8,000</td></tr>
                     <tr class="highlight-row"><td><strong>Net Income</strong></td><td><strong>$32,000</strong></td></tr>
                 </table>
-                <h3>Balance Sheet Changes</h3>
+                <h3 class="border-b-2 border-color-primary pb-2 mb-2 mt-4">Balance Sheet Changes</h3>
                 <table>
                     <tr><th>Assets</th><th>2025</th><th>2024</th></tr>
                     <tr><td>Cash</td><td>24,000</td><td>10,000</td></tr>
@@ -1026,8 +1168,8 @@
                     <tr><td>Common Stock</td><td>216,000</td><td>140,000</td></tr>
                     <tr><td>Retained Earnings</td><td>75,000</td><td>56,000</td></tr>
                 </table>
-                <h3>Additional Data</h3>
-                <ol>
+                <h3 class="border-b-2 border-color-primary pb-2 mb-2 mt-4">Additional Data</h3>
+                <ol style="font-weight:700;">
                     <li>Purchased LT investments for cash ($15,000).</li>
                     <li>Purchased equipment for $5,000 cash.</li>
                     <li>Sold land costing $20,000 for $28,000 cash.</li>
@@ -1045,17 +1187,18 @@
                 <div class="card">
                     <table>
                         <tr><td>...previous...</td><td></td></tr>
-                        <tr class="highlight-row"><td>- Gain on Sale</td><td>(8,000)</td></tr>
+                        <tr class="highlight-row"><td>- Gain on Sale</td><td class="text-danger">(8,000)</td></tr>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 28 -->
     <div class="slide">
         <div class="slide-grid">
             <div class="data-panel">
-                <h3>Income Statement 2025</h3>
+                <h3 class="border-b-2 border-color-primary pb-2 mb-2">Income Statement 2025</h3>
                 <table>
                     <tr><td>Sales</td><td>$250,000</td></tr>
                     <tr><td>Cost of Goods Sold</td><td>(148,000)</td></tr>
@@ -1067,7 +1210,7 @@
                     <tr><td>Gain on Sale of Land</td><td>8,000</td></tr>
                     <tr class="highlight-row"><td><strong>Net Income</strong></td><td><strong>$32,000</strong></td></tr>
                 </table>
-                <h3>Balance Sheet Changes</h3>
+                <h3 class="border-b-2 border-color-primary pb-2 mb-2 mt-4">Balance Sheet Changes</h3>
                 <table>
                     <tr><th>Assets</th><th>2025</th><th>2024</th></tr>
                     <tr><td>Cash</td><td>24,000</td><td>10,000</td></tr>
@@ -1085,8 +1228,8 @@
                     <tr><td>Common Stock</td><td>216,000</td><td>140,000</td></tr>
                     <tr><td>Retained Earnings</td><td>75,000</td><td>56,000</td></tr>
                 </table>
-                <h3>Additional Data</h3>
-                <ol>
+                <h3 class="border-b-2 border-color-primary pb-2 mb-2 mt-4">Additional Data</h3>
+                <ol style="font-weight:700;">
                     <li>Purchased LT investments for cash ($15,000).</li>
                     <li>Purchased equipment for $5,000 cash.</li>
                     <li>Sold land costing $20,000 for $28,000 cash.</li>
@@ -1100,34 +1243,36 @@
             <div>
                 <h2>Operating: Working Capital</h2>
                 <ul>
-                    <li>A/R Inc ($5k) ➔ <span style="color:var(--error)">Subtract</span></li>
-                    <li>Inv Dec ($6k) ➔ <span style="color:var(--success)">Add</span></li>
-                    <li>Prep Inc ($13k) ➔ <span style="color:var(--error)">Subtract</span></li>
-                    <li>A/P Dec ($9k) ➔ <span style="color:var(--error)">Subtract</span></li>
-                    <li>Tax Inc ($2k) ➔ <span style="color:var(--success)">Add</span></li>
+                    <li>A/R Inc ($5k) ➔ <span class="text-danger">Subtract</span></li>
+                    <li>Inv Dec ($6k) ➔ <span class="text-success">Add</span></li>
+                    <li>Prep Inc ($13k) ➔ <span class="text-danger">Subtract</span></li>
+                    <li>A/P Dec ($9k) ➔ <span class="text-danger">Subtract</span></li>
+                    <li>Tax Inc ($2k) ➔ <span class="text-success">Add</span></li>
                 </ul>
-                <div class="card">
-                    <p style="font-weight:bold;">Net Working Capital Adj: $(19,000)</p>
+                <div class="card card-highlight mt-4">
+                    <p style="font-weight:900; margin:0;" class="text-warning">Net Working Capital Adj: $(19,000)</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 29 -->
     <div class="slide slide-full">
         <h1>Java House: Operating Summary</h1>
         <table>
             <tr><td>Net Income</td><td>32,000</td></tr>
             <tr><td>+ Non-Cash (Dep/Stock)</td><td>12,000</td></tr>
-            <tr><td>- Gain</td><td>(8,000)</td></tr>
-            <tr><td>- Net Working Capital</td><td>(19,000)</td></tr>
-            <tr class="highlight-row"><td><strong>CFO</strong></td><td><strong>$17,000</strong></td></tr>
+            <tr><td>- Gain</td><td class="text-danger">(8,000)</td></tr>
+            <tr><td>- Net Working Capital</td><td class="text-danger">(19,000)</td></tr>
+            <tr class="highlight-row"><td><strong>CFO</strong></td><td class="text-success"><strong>$17,000</strong></td></tr>
         </table>
     </div>
 
+    <!-- 30 -->
     <div class="slide">
         <div class="slide-grid">
             <div class="data-panel">
-                <h3>Income Statement 2025</h3>
+                <h3 class="border-b-2 border-color-primary pb-2 mb-2">Income Statement 2025</h3>
                 <table>
                     <tr><td>Sales</td><td>$250,000</td></tr>
                     <tr><td>Cost of Goods Sold</td><td>(148,000)</td></tr>
@@ -1139,7 +1284,7 @@
                     <tr><td>Gain on Sale of Land</td><td>8,000</td></tr>
                     <tr class="highlight-row"><td><strong>Net Income</strong></td><td><strong>$32,000</strong></td></tr>
                 </table>
-                <h3>Balance Sheet Changes</h3>
+                <h3 class="border-b-2 border-color-primary pb-2 mb-2 mt-4">Balance Sheet Changes</h3>
                 <table>
                     <tr><th>Assets</th><th>2025</th><th>2024</th></tr>
                     <tr><td>Cash</td><td>24,000</td><td>10,000</td></tr>
@@ -1157,8 +1302,8 @@
                     <tr><td>Common Stock</td><td>216,000</td><td>140,000</td></tr>
                     <tr><td>Retained Earnings</td><td>75,000</td><td>56,000</td></tr>
                 </table>
-                <h3>Additional Data</h3>
-                <ol>
+                <h3 class="border-b-2 border-color-primary pb-2 mb-2 mt-4">Additional Data</h3>
+                <ol style="font-weight:700;">
                     <li>Purchased LT investments for cash ($15,000).</li>
                     <li>Purchased equipment for $5,000 cash.</li>
                     <li>Sold land costing $20,000 for $28,000 cash.</li>
@@ -1171,35 +1316,36 @@
             </div>
             <div>
                 <h2>Investing Activities</h2>
-                <div class="card">
+                <div class="card bg-color-background p-4 border-none shadow-none">
                     <div class="click-row" onclick="this.classList.add('revealed')">
                         <p><strong>1. Purchase of Investments:</strong></p>
-                        <p class="details">Balance Sheet shows increase of $15,000. Additional data #1 confirms cash purchase. ➔ Outflow (15,000).</p>
+                        <p class="details">Balance Sheet shows increase of $15,000. Additional data #1 confirms cash purchase. ➔ Outflow <span class="text-danger">(15,000)</span>.</p>
                     </div>
                     <div class="click-row" onclick="this.classList.add('revealed')">
                         <p><strong>2. Purchase of Equipment:</strong></p>
-                        <p class="details">Additional data #2 says $5,000 cash purchase. ➔ Outflow (5,000).</p>
+                        <p class="details">Additional data #2 says $5,000 cash purchase. ➔ Outflow <span class="text-danger">(5,000)</span>.</p>
                     </div>
                     <div class="click-row" onclick="this.classList.add('revealed')">
                         <p><strong>3. Sale of Land:</strong></p>
-                        <p class="details">Additional data #3 says Land sold for $28,000 cash. ➔ Inflow 28,000.</p>
+                        <p class="details">Additional data #3 says Land sold for $28,000 cash. ➔ Inflow <span class="text-success">28,000</span>.</p>
                     </div>
                     
                     <table style="margin-top:2vmin;">
-                        <tr class="hidden-row" style="display:table-row;"><td>Purchase Investments (#1)</td><td>(15,000)</td></tr>
-                        <tr class="hidden-row" style="display:table-row;"><td>Purchase Equipment (#2)</td><td>(5,000)</td></tr>
-                        <tr class="hidden-row" style="display:table-row;"><td>Sale of Land (#3)</td><td>28,000</td></tr>
-                        <tr class="highlight-row"><td><strong>Net Investing</strong></td><td><strong>8,000</strong></td></tr>
+                        <tr class="hidden-row" style="display:table-row;"><td>Purchase Investments (#1)</td><td class="text-danger">(15,000)</td></tr>
+                        <tr class="hidden-row" style="display:table-row;"><td>Purchase Equipment (#2)</td><td class="text-danger">(5,000)</td></tr>
+                        <tr class="hidden-row" style="display:table-row;"><td>Sale of Land (#3)</td><td class="text-success">28,000</td></tr>
+                        <tr class="highlight-row"><td><strong>Net Investing</strong></td><td class="text-success"><strong>8,000</strong></td></tr>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 31 -->
     <div class="slide">
         <div class="slide-grid">
             <div class="data-panel">
-                <h3>Income Statement 2025</h3>
+                <h3 class="border-b-2 border-color-primary pb-2 mb-2">Income Statement 2025</h3>
                 <table>
                     <tr><td>Sales</td><td>$250,000</td></tr>
                     <tr><td>Cost of Goods Sold</td><td>(148,000)</td></tr>
@@ -1211,7 +1357,7 @@
                     <tr><td>Gain on Sale of Land</td><td>8,000</td></tr>
                     <tr class="highlight-row"><td><strong>Net Income</strong></td><td><strong>$32,000</strong></td></tr>
                 </table>
-                <h3>Balance Sheet Changes</h3>
+                <h3 class="border-b-2 border-color-primary pb-2 mb-2 mt-4">Balance Sheet Changes</h3>
                 <table>
                     <tr><th>Assets</th><th>2025</th><th>2024</th></tr>
                     <tr><td>Cash</td><td>24,000</td><td>10,000</td></tr>
@@ -1229,8 +1375,8 @@
                     <tr><td>Common Stock</td><td>216,000</td><td>140,000</td></tr>
                     <tr><td>Retained Earnings</td><td>75,000</td><td>56,000</td></tr>
                 </table>
-                <h3>Additional Data</h3>
-                <ol>
+                <h3 class="border-b-2 border-color-primary pb-2 mb-2 mt-4">Additional Data</h3>
+                <ol style="font-weight:700;">
                     <li>Purchased LT investments for cash ($15,000).</li>
                     <li>Purchased equipment for $5,000 cash.</li>
                     <li>Sold land costing $20,000 for $28,000 cash.</li>
@@ -1243,62 +1389,66 @@
             </div>
             <div>
                 <h2>Financing Activities</h2>
-                <div class="card">
+                <div class="card bg-color-background p-4 border-none shadow-none">
                     <div class="click-row" onclick="this.classList.add('revealed')">
                         <p><strong>1. Debt Repayment:</strong></p>
-                        <p class="details">LT Debt decreased $12,000. Data #6 confirms repayment. ➔ Outflow (12,000).</p>
+                        <p class="details">LT Debt decreased $12,000. Data #6 confirms repayment. ➔ Outflow <span class="text-danger">(12,000)</span>.</p>
                     </div>
                     <div class="click-row" onclick="this.classList.add('revealed')">
                         <p><strong>2. Stock Issuance:</strong></p>
-                        <p class="details">Common Stock increased $76,000. Data #7 says $14,000 was cash issuance. ➔ Inflow 14,000.</p>
+                        <p class="details">Common Stock increased $76,000. Data #7 says $14,000 was cash issuance. ➔ Inflow <span class="text-success">14,000</span>.</p>
                     </div>
                     <div class="click-row" onclick="this.classList.add('revealed')">
                         <p><strong>3. Dividends:</strong></p>
-                        <p class="details">Beg RE (56k) + NI (32k) - End RE (75k) = Divs (13k). Data #8 confirms. ➔ Outflow (13,000).</p>
+                        <p class="details">Beg RE (56k) + NI (32k) - End RE (75k) = Divs (13k). Data #8 confirms. ➔ Outflow <span class="text-danger">(13,000)</span>.</p>
                     </div>
 
                     <table style="margin-top:2vmin;">
-                        <tr><td>Issue Common Stock (#7)</td><td>14,000</td></tr>
-                        <tr><td>Repay Long-term Debt (#6)</td><td>(12,000)</td></tr>
-                        <tr><td>Pay Cash Dividends (#8)</td><td>(13,000)</td></tr>
-                        <tr class="highlight-row"><td><strong>Net Financing</strong></td><td><strong>(11,000)</strong></td></tr>
+                        <tr><td>Issue Common Stock (#7)</td><td class="text-success">14,000</td></tr>
+                        <tr><td>Repay Long-term Debt (#6)</td><td class="text-danger">(12,000)</td></tr>
+                        <tr><td>Pay Cash Dividends (#8)</td><td class="text-danger">(13,000)</td></tr>
+                        <tr class="highlight-row"><td><strong>Net Financing</strong></td><td class="text-danger"><strong>(11,000)</strong></td></tr>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 32 -->
     <div class="slide slide-full">
         <h1>Java House: Reconciliation</h1>
         <div class="card" style="text-align:center; padding:5vmin; width:60%; margin:0 auto;">
             <p>Operating: $17,000</p>
             <p>Investing: $8,000</p>
             <p>Financing: ($11,000)</p>
-            <hr style="width:50%; margin:2vmin auto;">
-            <p style="font-weight:bold; color:var(--accent);">Net Change: +$14,000</p>
+            <hr style="width:50%; margin:2vmin auto; border-top: 3px dashed var(--color-primary);">
+            <p style="font-weight:900; color:var(--color-secondary); font-size: 3vmin;">Net Change: +$14,000</p>
             <p>Beg Cash: $10,000</p>
-            <p style="font-weight:bold;">End Cash: $24,000</p>
-            <p style="color:var(--success)">MATCHES B/S!</p>
+            <p style="font-weight:900; font-size: 3vmin;">End Cash: $24,000</p>
+            <p class="text-success bg-success-bg border-2 border-success rounded-xl inline-block px-4 py-2 mt-4 font-black">MATCHES B/S!</p>
         </div>
     </div>
 
+    <!-- 33 -->
     <div class="slide">
         <div class="slide-grid">
-            <div class="data-panel">
-                <p><strong>#4:</strong> Acquired $60k patent by issuing stock.</p>
+            <div class="data-panel" style="display:flex; align-items:center; justify-content:center; flex-direction:column; background:var(--warning-bg);">
+                <i class="fas fa-search fa-4x text-warning mb-4"></i>
+                <p style="font-size:2.5vmin; font-weight:800; text-align:center;"><strong>#4:</strong> Acquired $60k patent by issuing stock.</p>
             </div>
             <div>
                 <h2>Non-Cash Disclosure</h2>
                 <p>Java House acquired a Patent ($60k) by issuing Stock.</p>
                 <p>This transaction does not touch cash, so it goes in a <strong>Footnote</strong> at the bottom.</p>
-                <div class="card">
-                    <p class="mono">Disclosure:</p>
-                    <p>"Non-cash investing/financing: Issued stock for patent $60,000"</p>
+                <div class="card card-highlight">
+                    <p class="mono shadow-none border-transparent bg-warning-bg text-warning" style="padding:0;">Disclosure:</p>
+                    <p class="mt-2" style="font-style:italic;">"Non-cash investing/financing: Issued stock for patent $60,000"</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 34 -->
     <div class="slide">
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
             <div>
@@ -1309,7 +1459,7 @@
                 <table style="margin-top:2vmin; font-size:1.5vmin;">
                     <tr><th>Item</th><th>Amount (B)</th></tr>
                     <tr><td>Operating Cash Flow</td><td>$87.6</td></tr>
-                    <tr><td>Additions to PP&E</td><td>($28.1)</td></tr>
+                    <tr><td>Additions to PP&E</td><td class="text-danger">($28.1)</td></tr>
                 </table>
             </div>
             <div class="card">
@@ -1317,12 +1467,13 @@
                 <ul>
                     <li><strong>Ratio > 1:</strong> Conservative/Healthy. Self-funding growth.</li>
                     <li><strong>Ratio < 1:</strong> May rely on external debt/equity to grow. Earnings might be artificial if OCF is consistently low.</li>
-                    <li><strong>Ratio dropping rapidly:</strong> <strong style="color:var(--error)">Red Flag</strong> - Deteriorating efficiency or aggressive capitalization.</li>
+                    <li><strong>Ratio dropping rapidly:</strong> <strong class="text-danger bg-danger-bg px-2 rounded border border-danger">Red Flag</strong> - Deteriorating efficiency or aggressive capitalization.</li>
                 </ul>
             </div>
         </div>
     </div>
 
+    <!-- 35 -->
     <div class="slide slide-full">
         <h1>The EBITDA Trap</h1>
         <p>Two companies, identical EBITDA, very different cash realities.</p>
@@ -1333,7 +1484,7 @@
                     <tr class="highlight-row"><td>EBITDA</td><td>$120</td></tr>
                     <tr><td>Interest/Tax</td><td>(25)</td></tr>
                     <tr><td>Working Cap</td><td>0</td></tr>
-                    <tr style="color:var(--success); font-weight:bold;"><td>CFO</td><td>$95</td></tr>
+                    <tr><td class="text-success"><strong>CFO</strong></td><td class="text-success"><strong>$95</strong></td></tr>
                 </table>
             </div>
             <div class="card">
@@ -1342,66 +1493,50 @@
                     <tr class="highlight-row"><td>EBITDA</td><td>$120</td></tr>
                     <tr><td>Interest/Tax</td><td>(55)</td></tr>
                     <tr><td>Working Cap</td><td>(50)</td></tr>
-                    <tr style="color:var(--error); font-weight:bold;"><td>CFO</td><td>$15</td></tr>
+                    <tr><td class="text-danger"><strong>CFO</strong></td><td class="text-danger"><strong>$15</strong></td></tr>
                 </table>
             </div>
         </div>
     </div>
 
+    <!-- 36 -->
     <div class="slide slide-full">
         <h1>Free Cash Flow (FCF)</h1>
-        <div class="card" style="font-size:3vmin; line-height:1.6;">
-            <p>Free cash flow is defined as <strong>Operating Cash Flow minus Capital Expenditures (CapEx)</strong>.</p>
+        <div class="card card-data" style="font-size:3vmin; line-height:1.6;">
+            <p>Free cash flow is defined as <strong class="text-color-secondary border-b-4 border-color-secondary">Operating Cash Flow minus Capital Expenditures (CapEx)</strong>.</p>
             <p>It is widely considered the "Golden Metric" in valuation because it represents the cash that a company is able to generate after laying out the money required to maintain or expand its asset base. This is the cash available for discretionary distribution to investors (both debt and equity holders) without jeopardizing the ongoing business operations.</p>
         </div>
     </div>
 
-    <div class="slide">
-        <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
-            <div>
-                <h2>Earnings vs Cash Flow</h2>
-                <p><strong>FASB Core Proposition (1978):</strong> Earnings predict future cash flows better than current cash flows.</p>
-                <p>Research by Ball & Nikolaev confirms that Operating Earnings (accrual-based) consistently outperform Cash Flow models in predicting future performance.</p>
-            </div>
-            <div class="card">
-                <div class="flip-container" onclick="this.classList.toggle('flipped')">
-                    <div class="flip-inner">
-                        <div class="flip-front">
-                            <h3>Why?</h3>
-                            <p>(Click to reveal)</p>
-                        </div>
-                        <div class="flip-back">
-                            <p>Accruals smooth out "lumpy" timing mismatches (like buying inventory in Q1 for sales in Q2).</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <!-- 37 -->
     <div class="slide">
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
             <div>
                 <h2>Earnings Quality Ratio</h2>
-                <p class="mono">Net Income / CFO</p>
-                <ul>
+                <p class="mono text-2xl px-4 py-2">Net Income / CFO</p>
+                <ul class="mt-4">
                     <li>Ratio > 1: Conservative.</li>
                     <li>Ratio < 1: Earnings might be artificial.</li>
-                    <li>Ratio dropping rapidly: <strong>Red Flag.</strong></li>
+                    <li>Ratio dropping rapidly: <strong class="text-danger bg-danger-bg px-2 rounded border border-danger">Red Flag.</strong></li>
                 </ul>
             </div>
-            <div class="card">
-                <div style="font-size:8vmin; text-align:center; color:var(--accent);">1.0</div>
-                <div class="stat-caption" style="text-align:center;">Target</div>
+            <div class="card flex-center flex-col" style="justify-content:center;">
+                <div style="font-size:12vmin; text-align:center; color:var(--color-secondary); font-weight:900; font-family:var(--mono-font);">1.0</div>
+                <div class="stat-caption text-color-text-muted font-bold" style="text-align:center; text-transform:uppercase; letter-spacing:2px;">Target Baseline</div>
             </div>
         </div>
     </div>
 
+    <!-- 38 -->
     <div class="slide slide-full">
-        <h1>Intel Case Study</h1>
-        <p>Analyzing Earnings Quality Deterioration (2021-2023).</p>
+        <div class="flex-center flex-col text-center" style="height:100%; justify-content:center; align-items:center;">
+            <i class="fas fa-microchip fa-5x text-color-primary mb-6"></i>
+            <h1 style="border:none;">Intel Case Study</h1>
+            <p class="text-xl">Analyzing Earnings Quality Deterioration (2021-2023).</p>
+        </div>
     </div>
 
+    <!-- 39 -->
     <div class="slide slide-full">
         <h1>Intel 2023: Income Sources</h1>
         <div class="hierarchy-container">
@@ -1409,7 +1544,7 @@
                 <h4>Net Income</h4><div class="val">$1,675 M</div>
             </div>
             
-            <div style="font-size:3vmin;">⬆</div>
+            <div style="font-size:3vmin; color:var(--color-primary); font-weight:900;">⬆</div>
             
             <div class="h-row">
                 <div class="h-box use"><h4>Operating Income</h4><div class="val">$93 M</div><div class="desc">Core Profitability</div></div>
@@ -1417,14 +1552,14 @@
                 <div class="h-box source"><h4>Tax Benefit</h4><div class="val">$913 M</div><div class="desc">Tax Credit</div></div>
             </div>
             
-            <div style="font-size:3vmin;">⬆</div>
+            <div style="font-size:3vmin; color:var(--color-primary); font-weight:900;">⬆</div>
             
             <div class="h-row">
                 <div class="h-box neutral"><h4>Gross Margin</h4><div class="val">$21,711 M</div></div>
                 <div class="h-box use"><h4>Op Expenses</h4><div class="val">($21,618 M)</div></div>
             </div>
             
-            <div style="font-size:3vmin;">⬆</div>
+            <div style="font-size:3vmin; color:var(--color-primary); font-weight:900;">⬆</div>
             
             <div class="h-row">
                 <div class="h-box source"><h4>Sales Revenue</h4><div class="val">$54,228 M</div></div>
@@ -1433,6 +1568,7 @@
         </div>
     </div>
 
+    <!-- 40 -->
     <div class="slide slide-full">
         <h1>Intel Deterioration: 2022 ➔ 2023</h1>
         <div class="hierarchy-container">
@@ -1457,17 +1593,18 @@
                 <div class="h-box use"><h4>Cost Sales</h4><div class="val">-3,671 (-10%)</div></div>
             </div>
             
-            <div class="flip-container" style="margin-top:2vmin;" onclick="this.classList.toggle('flipped')">
+            <div class="flip-container mt-4" style="height:120px;" onclick="this.classList.toggle('flipped')">
                 <div class="flip-inner">
-                    <div class="flip-front" style="background:var(--error); color:white; border:none;">Click for Bottom Line Analysis</div>
-                    <div class="flip-back" style="background:var(--text-main); font-size:2vmin;">
-                        Intel’s income deterioration was driven mainly by lower sales + higher operating expenses, plus a big drop in nonoperating income, while a larger tax benefit only partially cushioned the decline.
+                    <div class="flip-front bg-danger text-white border-danger shadow-none">Click for Bottom Line Analysis</div>
+                    <div class="flip-back" style="background:var(--color-primary); font-size:2vmin; border:none; color:white;">
+                        <p class="text-white m-0">Intel’s income deterioration was driven mainly by lower sales + higher operating expenses, plus a big drop in nonoperating income, while a larger tax benefit only partially cushioned the decline.</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 41 -->
     <div class="slide slide-full">
         <h1>Intel: 3-Year Trend</h1>
         <table style="text-align: center;">
@@ -1475,12 +1612,13 @@
             <tbody>
                 <tr><td>2021</td><td>$19,868</td><td>$29,991</td><td>0.66</td></tr>
                 <tr><td>2022</td><td>$8,017</td><td>$15,433</td><td>0.52</td></tr>
-                <tr class="highlight-row"><td>2023</td><td>$1,675</td><td>$11,471</td><td><strong>0.15</strong></td></tr>
+                <tr class="highlight-row"><td>2023</td><td>$1,675</td><td>$11,471</td><td class="text-danger"><strong>0.15</strong></td></tr>
             </tbody>
         </table>
-        <p style="color:var(--error);">Ratio of 0.15 indicates massive deterioration in earnings quality.</p>
+        <p class="text-danger bg-danger-bg p-4 rounded-xl border-2 border-danger text-center font-bold mt-6 inline-block mx-auto">Ratio of 0.15 indicates massive deterioration in earnings quality.</p>
     </div>
 
+    <!-- 42 -->
     <div class="slide">
         <div class="slide-grid" style="grid-template-columns: 1fr 1fr;">
             <div>
@@ -1492,61 +1630,71 @@
                     <li>CFO is positive only because they stopped paying suppliers (A/P Spike).</li>
                 </ul>
             </div>
-            <div class="card"><div style="font-size:8vmin; text-align:center;">🚩</div></div>
+            <div class="card flex-center"><div style="font-size:12vmin; text-align:center; filter: drop-shadow(5px 5px 0px rgba(15, 23, 42, 1));">🚩</div></div>
         </div>
     </div>
 
+    <!-- 43 -->
     <div class="slide slide-full">
-        <h1>Module Summary</h1>
-        <div class="card" style="font-size:2.5vmin; line-height:1.6;">
+        <h1 class="text-center border-none text-5xl mb-6">Module Summary</h1>
+        <div class="card bg-color-background shadow-none border-none p-0" style="font-size:2.5vmin; line-height:1.6;">
             <div class="summary-item" onclick="this.classList.add('visible')">1. We began by establishing that cash is the lifeblood of a business, while profit is an accounting construct. The Statement of Cash Flows (SCF) bridges this gap by reconciling Net Income to Cash Flow through three key activities: Operating, Investing, and Financing. (Click next)</div>
             <div class="summary-item" onclick="this.classList.add('visible')">2. Using the Indirect Method, we learned to adjust Net Income by adding back non-cash expenses like depreciation and reversing accounting gains/losses to avoid double counting. We applied specific rules to working capital: current asset increases consume cash, while liability increases provide cash.</div>
             <div class="summary-item" onclick="this.classList.add('visible')">3. Finally, we assessed Earnings Quality. High-quality earnings are sustainable and backed by cash flow. Cases like Intel demonstrate that even profitable companies can have deteriorating quality if profits are driven by tax benefits rather than core operations.</div>
         </div>
     </div>
 
+    <!-- 44 -->
     <div class="slide slide-full">
-        <h1>Final Assessment</h1>
-        <p>10 Questions to test your mastery.</p>
-        <button class="nav-btn" style="width:200px; margin-top:2vmin;" onclick="nextSlide()">Start Quiz</button>
+        <div class="flex-center flex-col text-center">
+            <div class="card max-w-xl p-12">
+                <i class="fas fa-trophy fa-4x text-warning mb-6"></i>
+                <h1 class="border-none text-4xl">Final Assessment</h1>
+                <p class="text-color-text-muted mb-8">10 Questions to test your mastery.</p>
+                <button class="nav-btn w-full text-xl py-4" onclick="nextSlide()">Start Quiz</button>
+            </div>
+        </div>
     </div>
 
-    <div class="slide slide-full" style="overflow-y:auto; justify-content: flex-start;">
+    <!-- 45 -->
+    <div class="slide slide-full" style="overflow-y:auto; justify-content: flex-start; padding-top: 4vmin;">
         <h1>Self-Check Quiz</h1>
-        <div id="quiz-container" style="text-align:left; max-width:1000px; margin:0 auto; padding-bottom:50px;">
+        <div id="quiz-container" style="text-align:left; max-width:1000px; margin:0 auto; padding-bottom:50px; width: 100%;">
             </div>
-        <button class="nav-btn" onclick="checkQuiz()" style="margin-top:2vmin; width:100%;">Submit Answers</button>
-        <div id="score-display" style="font-size:4vmin; font-weight:bold; margin-top:2vmin; color:var(--accent); text-align:center;"></div>
+        <button class="nav-btn" onclick="checkQuiz()" style="margin-top:2vmin; width:100%; max-width: 1000px; padding: 15px; font-size: 2vmin;">Submit Answers</button>
+        <div id="score-display" style="font-size:4vmin; font-weight:900; margin-top:2vmin; color:var(--color-primary); text-align:center; font-family: var(--mono-font);"></div>
     </div>
 
 </div>
 
 <div class="nav-bar">
-    <button class="nav-btn" onclick="prevSlide()">PREV</button>
+    <button class="nav-btn shadow-[2px_2px_0px_#0f172a]" onclick="prevSlide()"><i class="fas fa-chevron-left"></i> PREV</button>
     <div style="display:flex; align-items:center; gap:20px;">
-        <button class="nav-btn" onclick="toggleTOC()">MENU</button>
-        <div class="progress"><span id="current">1</span> / 52</div>
+        <button class="nav-btn shadow-[2px_2px_0px_#0f172a]" style="background:transparent; color:var(--color-primary); border-color:var(--color-primary);" onclick="toggleTOC()"><i class="fas fa-bars"></i> MENU</button>
+        <div class="progress" id="slide-indicator">1 / 46</div>
     </div>
-    <button class="nav-btn" onclick="nextSlide()">NEXT</button>
+    <button class="nav-btn shadow-[2px_2px_0px_#0f172a]" onclick="nextSlide()">NEXT <i class="fas fa-chevron-right"></i></button>
 </div>
 
 <script>
     let currentSlide = 0;
     const slides = document.querySelectorAll('.slide');
     const totalSlides = slides.length;
-    const currentEl = document.getElementById('current');
+    const currentEl = document.getElementById('slide-indicator');
 
     function updateSlide() {
         slides.forEach(s => s.classList.remove('active'));
         if (slides[currentSlide]) {
             slides[currentSlide].classList.add('active');
-            currentEl.innerText = (currentSlide + 1) + " / " + totalSlides;
+            currentEl.textContent = (currentSlide + 1) + " / " + totalSlides;
         }
         
-        // Trigger Polls (Indices updated to account for new TOC slide)
-        if (currentSlide === 15) showPoll(0); // After Step 2
-        if (currentSlide === 25) showPoll(1); // After Java Intro
-        if (currentSlide === 35) showPoll(2); // After EBITDA
+        // Trigger Polls based on new logical topic sequence
+        if (currentSlide === 8) showPoll(0); // Entering Life Cycle -> Checks Activity Types from prior slide
+        if (currentSlide === 17) showPoll(1); // Entering Step 3 -> Checks Depr from Step 2
+        if (currentSlide === 25) showPoll(2); // Entering Case Study -> Checks Working Capital (Inv)
+        if (currentSlide === 36) showPoll(3); // Entering FCF -> Checks EBITDA Trap
+        if (currentSlide === 43) showPoll(4); // Entering Summary -> Checks Red Flags
         
         // Update TOC Active State dynamically
         updateTOCActive();
@@ -1596,9 +1744,9 @@
     // Generate TOC
     function generateTOC() {
         const tocList = document.getElementById('toc-list');
-        if (!tocList) return; // Safety check
+        if (!tocList) return; 
         
-        tocList.innerHTML = ''; // Clear to prevent duplicates
+        tocList.innerHTML = ''; 
         slides.forEach((slide, index) => {
             // Find a Title
             let title = "Slide " + (index + 1);
@@ -1610,7 +1758,6 @@
             
             const item = document.createElement('div');
             item.className = 'toc-item';
-            // Initial active check handled by updateTOCActive
             item.innerText = (index + 1) + ". " + title;
             item.onclick = () => jumpToSlide(index);
             tocList.appendChild(item);
@@ -1623,10 +1770,10 @@
     });
 
     const polls = [
+        { q: "Issuing Stock is what type of activity?", o: ["Operating", "Investing", "Financing"], c: 2 },
         { q: "Indirect Method Step 2: What do we do with Depreciation?", o: ["Subtract", "Add Back", "Ignore"], c: 1 },
         { q: "If Inventory decreases, what is the adjustment to Net Income?", o: ["Add (Inflow)", "Subtract (Outflow)", "No Effect"], c: 0 },
         { q: "True or False: EBITDA allows for fair comparisons between companies in completely different industries?", o: ["True", "False"], c: 1 },
-        { q: "Issuing Stock is what type of activity?", o: ["Operating", "Investing", "Financing"], c: 2 },
         { q: "What is a Red Flag regarding NI vs CFO?", o: ["NI is high but CFO is low/negative", "NI is lower than CFO", "Both are growing"], c: 0 }
     ];
 
@@ -1674,12 +1821,12 @@
         { q: "10. FCF Formula?", a: ["NI - Div", "OCF - CapEx"], c: 1 }
     ];
 
-    // Initialize Quiz - Added Safety Check
+    // Initialize Quiz
     const quizDiv = document.getElementById('quiz-container');
     if (quizDiv) {
-        let quizHTML = ''; // Build string first to minimize DOM interactions
+        let quizHTML = ''; 
         quizData.forEach((item, i) => {
-            let html = `<div class="quiz-question"><p style="font-weight:bold; font-size:3vmin;">${item.q}</p>`;
+            let html = `<div class="quiz-question"><p style="font-weight:900; font-size:2.5vmin; color:var(--color-primary); margin-bottom: 10px;">${item.q}</p>`;
             item.a.forEach((ans, j) => {
                 html += `<label class="quiz-opt"><input type="radio" name="q${i}" value="${j}"> ${ans}</label>`;
             });
@@ -1693,12 +1840,36 @@
         let score = 0;
         quizData.forEach((item, i) => {
             const s = document.querySelector(`input[name="q${i}"]:checked`);
-            if (s && parseInt(s.value) === item.c) score++;
+            const parent = document.querySelectorAll('.quiz-question')[i];
+            const opts = parent.querySelectorAll('.quiz-opt');
+            
+            opts.forEach(opt => {
+                opt.style.pointerEvents = 'none'; // disable after submit
+            });
+
+            if (s) {
+                if(parseInt(s.value) === item.c) {
+                    score++;
+                    s.parentElement.style.backgroundColor = 'var(--success-bg)';
+                    s.parentElement.style.borderColor = 'var(--success)';
+                    s.parentElement.style.color = 'var(--success)';
+                } else {
+                    s.parentElement.style.backgroundColor = 'var(--danger-bg)';
+                    s.parentElement.style.borderColor = 'var(--danger)';
+                    s.parentElement.style.color = 'var(--danger)';
+                    opts[item.c].style.borderColor = 'var(--success)';
+                    opts[item.c].style.color = 'var(--success)';
+                }
+            } else {
+                 opts[item.c].style.borderColor = 'var(--success)';
+                 opts[item.c].style.color = 'var(--success)';
+            }
         });
+        
         const scoreDisplay = document.getElementById('score-display');
         if (scoreDisplay) scoreDisplay.innerText = `Score: ${score} / 10`;
         
-        if (typeof confetti === 'function') {
+        if (typeof confetti === 'function' && score > 5) {
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
         }
     }
