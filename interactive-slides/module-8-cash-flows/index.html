@@ -360,6 +360,105 @@
     .quiz-opt:hover { background: var(--color-newday); border-color: var(--color-primary); }
     .quiz-opt input { margin-right: 15px; transform: scale(1.5); accent-color: var(--color-secondary); }
 
+    /* --- ADDED MOBILE FRIENDLY MEDIA QUERIES --- */
+    @media (max-width: 768px) {
+        :root {
+            /* Increase relative font sizes to remain readable on small screens */
+            --h1-size: 7vw;
+            --h2-size: 6vw;
+            --p-size: 4vw;
+            --mono-size: 3.5vw;
+            --table-size: 3.5vw;
+        }
+
+        .slide {
+            padding: 5vw 4vw;
+        }
+
+        /* Stack all grids vertically instead of side-by-side */
+        .slide-grid, .flip-grid, div[style*="grid-template-columns"] {
+            grid-template-columns: 1fr !important;
+            gap: 4vw !important;
+        }
+
+        /* Ensure hierarchy Intel charts flow vertically */
+        .h-row {
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .h-box {
+            width: 100% !important;
+        }
+
+        /* Prevent the data panel from eating the entire stacked screen height */
+        .data-panel {
+            height: 40vh;
+        }
+
+        /* Responsive sidebar for Table of Contents */
+        .toc-sidebar {
+            width: 85%;
+            padding: 1rem;
+        }
+
+        /* Adjust Navigation / Arrows */
+        .arrow-btn {
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+        }
+
+        .arrow-prev { left: 10px; }
+        .arrow-next { right: 10px; }
+
+        .nav-bar {
+            padding: 0 3vw;
+        }
+
+        .nav-btn {
+            padding: 8px 12px;
+            font-size: 3.5vw;
+        }
+
+        .progress {
+            font-size: 4vw;
+        }
+
+        /* Enable horizontal scrolling on standard tables if they overflow */
+        table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        
+        /* Clear any hardcoded inline width boundaries */
+        div[style*="width: 80%"], 
+        div[style*="width: 60%"], 
+        div[style*="width: 50%"] {
+            width: 100% !important;
+        }
+        
+        /* Make sure SVGs fit screen container */
+        svg {
+            max-width: 100%;
+        }
+        
+        /* Poll adjustment for mobile readability */
+        .poll-box {
+            width: 90%;
+        }
+        
+        .poll-option {
+            font-size: 4.5vw;
+        }
+        
+        /* Adjust hidden text sizes */
+        .reveal-box .hidden-content {
+            font-size: 5vw !important;
+        }
+    }
 </style>
 </head>
 <body>
@@ -748,7 +847,7 @@
                 </ol>
             </div>
             <div class="card" style="display:flex; align-items:center; justify-content:center;">
-                <div class="flip-container" onclick="this.classList.toggle('flipped')">
+                <div class="flip-container" style="height: 250px;" onclick="this.classList.toggle('flipped')">
                     <div class="flip-inner">
                         <div class="flip-front">
                             <h3>Formula: NI ± Adj = OCF</h3>
@@ -1608,7 +1707,7 @@
     <div class="slide slide-full">
         <h1>Intel: 3-Year Trend</h1>
         <table style="text-align: center;">
-            <thead><tr><th style="text-align: center;">Year</th><th style="text-align: center;">Net Income</th><th style="text-align: center;">CFO</th><th style="text-align: center;">Ratio</th></tr></thead>
+            <thead><tr><th style="text-align: left;">Year</th><th style="text-align: right;">Net Income</th><th style="text-align: right;">CFO</th><th style="text-align: right;">Ratio</th></tr></thead>
             <tbody>
                 <tr><td>2021</td><td>$19,868</td><td>$29,991</td><td>0.66</td></tr>
                 <tr><td>2022</td><td>$8,017</td><td>$15,433</td><td>0.52</td></tr>
@@ -1809,16 +1908,16 @@
     }
 
     const quizData = [
-        { q: "1. Starting point for Indirect Method?", a: ["Sales", "Net Income", "End Cash"], c: 1 },
-        { q: "2. Depreciation Adjustment?", a: ["Add", "Subtract", "Ignore"], c: 0 },
-        { q: "3. Sell Equip for Cash?", a: ["Ops", "Inv", "Fin"], c: 1 },
-        { q: "4. A/P Increase?", a: ["Source (+)", "Use (-)"], c: 0 },
-        { q: "5. A/R Decrease?", a: ["Source (+)", "Use (-)"], c: 0 },
-        { q: "6. Interest Paid?", a: ["Ops", "Inv", "Fin"], c: 0 },
-        { q: "7. Dividends Paid?", a: ["Ops", "Inv", "Fin"], c: 2 },
-        { q: "8. Gain on Sale?", a: ["Add", "Subtract"], c: 1 },
-        { q: "9. High Quality Ratio?", a: ["< 0.5", "> 1.0"], c: 1 },
-        { q: "10. FCF Formula?", a: ["NI - Div", "OCF - CapEx"], c: 1 }
+        { q: "1. What is the starting point for calculating cash flows using the Indirect Method?", a: ["Sales Revenue", "Net Income", "Ending Cash Balance"], c: 1 },
+        { q: "2. How is a Depreciation Expense adjusted when calculating operating cash flows?", a: ["Added back to Net Income", "Subtracted from Net Income", "Ignored entirely"], c: 0 },
+        { q: "3. Selling equipment for cash is classified as which type of activity?", a: ["Operating Activity", "Investing Activity", "Financing Activity"], c: 1 },
+        { q: "4. How does an increase in Accounts Payable impact your cash flow?", a: ["It is a source of cash (+)", "It is a use of cash (-)"], c: 0 },
+        { q: "5. How does a decrease in Accounts Receivable impact your cash flow?", a: ["It is a source of cash (+)", "It is a use of cash (-)"], c: 0 },
+        { q: "6. Paying interest on debt is classified as which type of cash flow activity?", a: ["Operating Activity", "Investing Activity", "Financing Activity"], c: 0 },
+        { q: "7. Paying dividends to shareholders is classified as which type of cash flow activity?", a: ["Operating Activity", "Investing Activity", "Financing Activity"], c: 2 },
+        { q: "8. How do you adjust for a Gain on Sale in the operating activities section?", a: ["Add it to Net Income", "Subtract it from Net Income"], c: 1 },
+        { q: "9. What indicates a high Earnings Quality Ratio (NI/CFO)?", a: ["A ratio less than 0.5", "A ratio greater than 1.0"], c: 1 },
+        { q: "10. What is the standard formula for calculating Free Cash Flow (FCF)?", a: ["Net Income minus Dividends", "Operating Cash Flow minus Capital Expenditures"], c: 1 }
     ];
 
     // Initialize Quiz
