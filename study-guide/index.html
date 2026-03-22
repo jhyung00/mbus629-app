@@ -370,11 +370,11 @@
 
     <div id="calculator-container" class="fixed bottom-8 right-8 z-50 hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)]">
         <div class="bg-slate-800 p-5 rounded-3xl border border-slate-600 w-80">
-            <div class="flex justify-between items-center mb-4">
-                <span class="text-slate-300 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-                    <i data-lucide="calculator" class="w-4 h-4"></i> Calculator
+            <div id="calc-drag-handle" class="flex justify-between items-center mb-4 cursor-move active:cursor-grabbing pb-2 border-b border-slate-700">
+                <span class="text-slate-300 text-xs font-bold uppercase tracking-widest flex items-center gap-2 select-none pointer-events-none">
+                    <i data-lucide="grip-horizontal" class="w-4 h-4"></i> Calculator
                 </span>
-                <button onclick="toggleCalculator()" class="text-slate-400 hover:text-white bg-slate-700 p-1 rounded-full transition-colors"><i data-lucide="x" class="w-4 h-4"></i></button>
+                <button onclick="toggleCalculator()" class="text-slate-400 hover:text-white bg-slate-700 p-1 rounded-full transition-colors relative z-10"><i data-lucide="x" class="w-4 h-4"></i></button>
             </div>
             <div class="bg-slate-100 rounded-xl mb-4 p-4 text-right text-3xl font-mono h-16 flex items-center justify-end overflow-hidden text-slate-900 border-2 border-slate-300 shadow-inner" id="calc-display">0</div>
             <div class="grid grid-cols-4 gap-2.5">
@@ -677,7 +677,18 @@
               rationale: "RNOA = NOPAT / Average NOA = 11,880.72 / 25,216.5 = 47.11%. NOPM = NOPAT / Rev = 10.98%. NOAT = Rev / Average NOA = 4.29x." },
             
             { id: 110, module: "Exercises", lo: "LO4", skill: "Conceptual", topic: "Comparing NOPAT Metrics", 
-              question: `Compute NOPAT for Home Depot and Lowe's. Then indicate which of these two companies:<br><div class="overflow-x-auto"><table class="q-table whitespace-nowrap" style="max-width: 500px;"><tr><th>Indicate which of these two companies:</th><th>Company</th></tr><tr><td>1. Is more profitable (in $s).</td><td><select class="smart-input" data-correct="Home Depot"><option value="">- Select -</option><option value="Home Depot">Home Depot</option><option value="Lowe's">Lowe's</option></select></td></tr><tr><td>2. Produces the higher profit margin (in %).</td><td><select class="smart-input" data-correct="Home Depot"><option value="">- Select -</option><option value="Home Depot">Home Depot</option><option value="Lowe's">Lowe's</option></select></td></tr><tr><td>3. Uses its NOA more efficiently.</td><td><select class="smart-input" data-correct="Home Depot"><option value="">- Select -</option><option value="Home Depot">Home Depot</option><option value="Lowe's">Lowe's</option></select></td></tr><tr><td>4. Produces the higher return on NOA.</td><td><select class="smart-input" data-correct="Home Depot"><option value="">- Select -</option><option value="Home Depot">Home Depot</option><option value="Lowe's">Lowe's</option></select></td></tr></table></div>`,
+              question: `<p class="mb-3 font-medium text-slate-700">Use the following information for Home Depot and Lowe's to compute NOPAT and RNOA. Assume a statutory tax rate of 22%.</p>
+              <div class="overflow-x-auto mb-5">
+                <table class="q-table whitespace-nowrap" style="width: auto;">
+                  <tr><th>$ millions</th><th>Home Depot</th><th>Lowe's</th></tr>
+                  <tr><td>Sales</td><td>$108,203</td><td>$71,309</td></tr>
+                  <tr><td>Net income</td><td>11,121</td><td>2,314</td></tr>
+                  <tr><td>Net nonoperating expense (NNE)</td><td>974</td><td>623</td></tr>
+                  <tr><td>Average NOA</td><td>25,216.5</td><td>20,319</td></tr>
+                </table>
+              </div>
+              <p class="mb-3 font-medium text-slate-700">Compute NOPAT for Home Depot and Lowe's. Then indicate which of these two companies:</p>
+              <div class="overflow-x-auto"><table class="q-table whitespace-nowrap" style="max-width: 500px;"><tr><th>Indicate which of these two companies:</th><th>Company</th></tr><tr><td>1. Is more profitable (in $s).</td><td><select class="smart-input" data-correct="Home Depot"><option value="">- Select -</option><option value="Home Depot">Home Depot</option><option value="Lowe's">Lowe's</option></select></td></tr><tr><td>2. Produces the higher profit margin (in %).</td><td><select class="smart-input" data-correct="Home Depot"><option value="">- Select -</option><option value="Home Depot">Home Depot</option><option value="Lowe's">Lowe's</option></select></td></tr><tr><td>3. Uses its NOA more efficiently.</td><td><select class="smart-input" data-correct="Home Depot"><option value="">- Select -</option><option value="Home Depot">Home Depot</option><option value="Lowe's">Lowe's</option></select></td></tr><tr><td>4. Produces the higher return on NOA.</td><td><select class="smart-input" data-correct="Home Depot"><option value="">- Select -</option><option value="Home Depot">Home Depot</option><option value="Lowe's">Lowe's</option></select></td></tr></table></div>`,
               answer: "Home Depot for all four metrics.",
               rationale: "Home Depot generates vastly superior NOPAT ($11,880M vs $2,800M), has a higher NOPM (10.98% vs 3.93%), higher NOAT (4.29x vs 3.51x), and resulting higher RNOA (47.11% vs 13.78%)." },
             
@@ -1338,6 +1349,7 @@
             }, 100);
         }
 
+        // --- Dragging & Calculator Logic ---
         let calcInput = "";
         
         function toggleCalculator() {
@@ -1381,6 +1393,110 @@
             }
             updateDisplay();
         }
+
+        // Calculator Draggable Functionality
+        const calcContainer = document.getElementById('calculator-container');
+        const dragHandle = document.getElementById('calc-drag-handle');
+        
+        let isDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+
+        dragHandle.addEventListener("mousedown", dragStart);
+        document.addEventListener("mouseup", dragEnd);
+        document.addEventListener("mousemove", drag);
+
+        dragHandle.addEventListener("touchstart", dragStart, {passive: false});
+        document.addEventListener("touchend", dragEnd);
+        document.addEventListener("touchmove", drag, {passive: false});
+
+        function dragStart(e) {
+            if (e.type === "touchstart") {
+                initialX = e.touches[0].clientX - xOffset;
+                initialY = e.touches[0].clientY - yOffset;
+            } else {
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+            }
+
+            // Only drag if clicking the handle area, not buttons
+            if (e.target.closest('#calc-drag-handle') && e.target.tagName !== 'BUTTON' && !e.target.closest('button')) {
+                isDragging = true;
+            }
+        }
+
+        function dragEnd(e) {
+            initialX = currentX;
+            initialY = currentY;
+            isDragging = false;
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+                
+                if (e.type === "touchmove") {
+                    currentX = e.touches[0].clientX - initialX;
+                    currentY = e.touches[0].clientY - initialY;
+                } else {
+                    currentX = e.clientX - initialX;
+                    currentY = e.clientY - initialY;
+                }
+
+                xOffset = currentX;
+                yOffset = currentY;
+
+                setTranslate(currentX, currentY, calcContainer);
+            }
+        }
+
+        function setTranslate(xPos, yPos, el) {
+            el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+        }
+
+        // Calculator Keyboard Functionality
+        document.addEventListener('keydown', (e) => {
+            const calcContainer = document.getElementById('calculator-container');
+            
+            // Only capture keystrokes if the calculator is open
+            if (!calcContainer.classList.contains('hidden')) {
+                // Check if user is typing in a valid form input
+                const isInputActive = document.activeElement && 
+                    (document.activeElement.tagName === 'INPUT' || 
+                     document.activeElement.tagName === 'TEXTAREA' || 
+                     document.activeElement.tagName === 'SELECT');
+                
+                if (e.key === 'Enter') {
+                    // Allow normal 'Enter' in textareas, otherwise run calculation
+                    if (!isInputActive || document.activeElement.tagName !== 'TEXTAREA') {
+                        e.preventDefault();
+                        calculate();
+                    }
+                } else if (!isInputActive) {
+                    // Capture normal math keys only if no input field is active
+                    if (e.key === 'Backspace') {
+                        e.preventDefault();
+                        backspace();
+                    } else if (e.key === 'Escape') {
+                        e.preventDefault();
+                        toggleCalculator();
+                    } else if (e.key === 'c' || e.key === 'C') {
+                        e.preventDefault();
+                        clearCalc();
+                    } else if (['0','1','2','3','4','5','6','7','8','9','.'].includes(e.key)) {
+                        e.preventDefault();
+                        appendNum(e.key);
+                    } else if (['+','-','*','/'].includes(e.key)) {
+                        e.preventDefault();
+                        appendOp(e.key);
+                    }
+                }
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('count-all').innerText = questions.length;
