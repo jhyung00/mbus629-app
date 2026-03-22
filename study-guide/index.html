@@ -662,7 +662,30 @@
               rationale: "Each entry ensures Assets = Liabilities + Equity. Income items also decrease/increase Retained Earnings." },
 
             { id: 107, module: "Exercises", lo: "LO4", skill: "Quantitative", topic: "Compute ROE & RNOA", 
-              question: `Compute the following measures for fiscal year FY3 for Seneca Foods Corporation.<br>Data: Net earnings = $33,138. Total equity = $583,464. (Assume Average Equity = $583,651). NOPAT (calculated from data) = $39,039. Average NOA = $902,189.<br><div class="overflow-x-auto"><table class="q-table whitespace-nowrap"><tr><th></th><th>Numerator</th><th>Denominator</th><th>Result</th></tr><tr><td>a. Return on equity</td><td>$ <input class="smart-input inline-block w-24" data-correct="33138"></td><td>$ <input class="smart-input inline-block w-24" data-correct="583651"></td><td><input class="smart-input inline-block w-20" data-correct="5.68"> %</td></tr><tr><td>b. Return on net operating assets</td><td>$ <input class="smart-input inline-block w-24" data-correct="39039"></td><td>$ <input class="smart-input inline-block w-24" data-correct="902189"></td><td><input class="smart-input inline-block w-20" data-correct="4.33"> %</td></tr></table></div><br>c. What is the nonoperating return component of ROE for fiscal year FY3? <input class="smart-input inline-block w-20 mt-1" data-correct="1.35"> %`,
+              question: `<p class="mb-3 font-medium text-slate-700">The following data are from three recent fiscal years (FY) for Seneca Foods Corporation. Use this information to answer the requirements. Assume the statutory tax rate is 22%.</p>
+              <div class="overflow-x-auto mb-5">
+                <table class="q-table whitespace-nowrap" style="width: auto;">
+                  <tr><th>Selected information ($ thousands)</th><th>FY3</th><th>FY2</th><th>FY1</th></tr>
+                  <tr><td>Net sales</td><td>$1,509,352</td><td>$1,385,280</td><td></td></tr>
+                  <tr><td>Operating revenues</td><td>1,509,352</td><td>1,385,280</td><td></td></tr>
+                  <tr><td>Operating expenses</td><td>1,456,416</td><td>1,322,710</td><td></td></tr>
+                  <tr><td>Nonoperating expenses</td><td>14,325</td><td>5,641</td><td></td></tr>
+                  <tr><td>Nonoperating revenues</td><td>6,759</td><td>9,302</td><td></td></tr>
+                  <tr><td>Tax expense</td><td>12,232</td><td>15,224</td><td></td></tr>
+                  <tr><td>Net earnings</td><td>33,138</td><td>51,007</td><td></td></tr>
+                  <tr><td>Operating assets</td><td>$1,227,044</td><td>$930,147</td><td>$840,855</td></tr>
+                  <tr><td>Operating liabilities</td><td>167,739</td><td>185,074</td><td>162,122</td></tr>
+                  <tr><td>Nonoperating liabilities</td><td>492,455</td><td>178,119</td><td>169,411</td></tr>
+                  <tr><td>Nonoperating assets</td><td>16,614</td><td>16,883</td><td>68,493</td></tr>
+                  <tr><td>Total equity</td><td>583,464</td><td>583,837</td><td>577,815</td></tr>
+                </table>
+              </div>
+              <p class="mb-3 font-medium text-slate-700">Compute the following measures for fiscal year FY3. Round intermediate calculations to the nearest whole dollar and your final answers to two decimal places.</p>
+              <div class="space-y-4 text-slate-800">
+                <div><span class="font-bold">a.</span> Return on equity: <input class="smart-input inline-block w-24" data-correct="5.68"> %</div>
+                <div><span class="font-bold">b.</span> Return on net operating assets: <input class="smart-input inline-block w-24" data-correct="4.33"> %</div>
+                <div><span class="font-bold">c.</span> What is the nonoperating return component of ROE for fiscal year FY3? <input class="smart-input inline-block w-24" data-correct="1.35"> %</div>
+              </div>`,
               answer: "ROE = 5.68% | RNOA = 4.33% | Nonoperating return = 1.35%",
               rationale: "ROE = Net Earnings / Average Equity = 33,138 / 583,651 = 5.68%. RNOA = NOPAT / Average NOA = 39,039 / 902,189 = 4.33%. Nonoperating Return = ROE - RNOA = 5.68 - 4.33 = 1.35%." },
             
@@ -671,20 +694,49 @@
               answer: "ROE = 27.91%. ROA = 24.32%. FL = 1.15. PM = 39.60%. AT = 0.61.",
               rationale: "ROA = NI / Avg Assets. Financial Leverage = Avg Assets / Avg Equity. Profit Margin = NI / Rev. Asset Turnover = Rev / Avg Assets." },
             
-            { id: 109, module: "Exercises", lo: "LO4", skill: "Quantitative", topic: "RNOA Components", 
-              question: `Home Depot reports NOPAT of $11,880.72M, Revenue of $108,203M, and Average NOA of $25,216.5M.<br>a. Compute RNOA.<br><div class="overflow-x-auto"><table class="q-table whitespace-nowrap" style="width: auto;"><tr><th>Numerator</th><th>Denominator</th><th>RNOA</th></tr><tr><td>$ <input class="smart-input w-24" data-correct="11880.72"></td><td>$ <input class="smart-input w-24" data-correct="25216.5"></td><td><input class="smart-input w-20" data-correct="47.11"> %</td></tr></table></div><br>b. Disaggregate RNOA into NOPM and NOAT.<br><div class="overflow-x-auto flex gap-4"><table class="q-table whitespace-nowrap" style="width: auto;"><tr><th>Numerator</th><th>Denominator</th><th>NOPM</th></tr><tr><td>$ <input class="smart-input w-24" data-correct="11880.72"></td><td>$ <input class="smart-input w-24" data-correct="108203"></td><td><input class="smart-input w-20" data-correct="10.98"> %</td></tr></table><table class="q-table whitespace-nowrap" style="width: auto;"><tr><th>Numerator</th><th>Denominator</th><th>NOAT</th></tr><tr><td>$ <input class="smart-input w-24" data-correct="108203"></td><td>$ <input class="smart-input w-24" data-correct="25216.5"></td><td><input class="smart-input w-20" data-correct="4.29"></td></tr></table></div>`,
+            { id: 109, module: "Exercises", lo: "LO4", skill: "Quantitative", topic: "Compute RNOA with Disaggregation", 
+              question: `<p class="mb-3 font-medium text-slate-700">Refer to the balance sheet and income statement information below for Home Depot.</p>
+              <div class="flex flex-wrap gap-6 mb-5">
+                  <div class="overflow-x-auto">
+                    <table class="q-table whitespace-nowrap" style="width: auto;">
+                      <tr><th colspan="3" class="text-center bg-slate-100">Balance Sheet</th></tr>
+                      <tr><th>$ millions</th><th>Feb. 3, 2019</th><th>Jan. 28, 2018</th></tr>
+                      <tr><td>Operating assets</td><td>$42,225</td><td>$40,934</td></tr>
+                      <tr><td>Nonoperating assets</td><td>1,778</td><td>3,595</td></tr>
+                      <tr><td class="font-bold border-t-2 border-slate-300">Total assets</td><td class="font-bold border-t-2 border-slate-300">$44,003</td><td class="font-bold border-t-2 border-slate-300">$44,529</td></tr>
+                      <tr><td>Operating liabilities</td><td>$16,679</td><td>$16,047</td></tr>
+                      <tr><td>Nonoperating liabilities</td><td>29,202</td><td>27,028</td></tr>
+                      <tr><td class="font-bold border-t-2 border-slate-300">Total liabilities</td><td class="font-bold border-t-2 border-slate-300">$45,881</td><td class="font-bold border-t-2 border-slate-300">$43,075</td></tr>
+                    </table>
+                  </div>
+                  <div class="overflow-x-auto">
+                    <table class="q-table whitespace-nowrap" style="width: auto;">
+                      <tr><th colspan="2" class="text-center bg-slate-100">Income Statement</th></tr>
+                      <tr><th>$ millions</th><th>For Year Ended Feb. 3, 2019</th></tr>
+                      <tr><td>Net sales</td><td>$108,203</td></tr>
+                      <tr><td>Operating expense before tax</td><td>92,673</td></tr>
+                      <tr><td class="font-bold">Net operating profit before tax (NOPBT)</td><td class="font-bold">15,530</td></tr>
+                      <tr><td>Other expense</td><td>974</td></tr>
+                      <tr><td class="font-bold">Income before tax</td><td class="font-bold">14,556</td></tr>
+                      <tr><td>Tax expense</td><td>3,435</td></tr>
+                      <tr><td class="font-bold border-t-2 border-slate-300">Net income</td><td class="font-bold border-t-2 border-slate-300">$11,121</td></tr>
+                    </table>
+                  </div>
+              </div>
+              <p class="mb-3 font-medium text-slate-700">a. Compute return on net operating assets (RNOA). Assume a statutory tax rate of 22%.</p>
+              <div class="mb-4 text-slate-800">RNOA: <input class="smart-input inline-block w-24" data-correct="47.11"> %</div>
+              <p class="mb-3 font-medium text-slate-700">b. Disaggregate RNOA into components of profitability (NOPM) and productivity (NOAT). Assume a statutory tax rate of 22%.</p>
+              <div class="text-slate-800">NOPM: <input class="smart-input inline-block w-24" data-correct="10.98"> % &nbsp;&nbsp;×&nbsp;&nbsp; NOAT: <input class="smart-input inline-block w-24" data-correct="4.29"></div>`,
               answer: "RNOA = 47.11%. NOPM = 10.98%. NOAT = 4.29x.",
               rationale: "RNOA = NOPAT / Average NOA = 11,880.72 / 25,216.5 = 47.11%. NOPM = NOPAT / Rev = 10.98%. NOAT = Rev / Average NOA = 4.29x." },
             
             { id: 110, module: "Exercises", lo: "LO4", skill: "Conceptual", topic: "Comparing NOPAT Metrics", 
-              question: `<p class="mb-3 font-medium text-slate-700">Use the following information for Home Depot and Lowe's to compute NOPAT and RNOA. Assume a statutory tax rate of 22%.</p>
+              question: `<p class="mb-3 font-medium text-slate-700">Selected income statement information for 2018 is presented below for Home Depot Inc. and Lowe's Companies Inc. Assume the statutory tax rate is 22%.</p>
               <div class="overflow-x-auto mb-5">
                 <table class="q-table whitespace-nowrap" style="width: auto;">
-                  <tr><th>$ millions</th><th>Home Depot</th><th>Lowe's</th></tr>
-                  <tr><td>Sales</td><td>$108,203</td><td>$71,309</td></tr>
-                  <tr><td>Net income</td><td>11,121</td><td>2,314</td></tr>
-                  <tr><td>Net nonoperating expense (NNE)</td><td>974</td><td>623</td></tr>
-                  <tr><td>Average NOA</td><td>25,216.5</td><td>20,319</td></tr>
+                  <tr><th>Company ($ millions)</th><th>Ticker</th><th>Sales</th><th>NOPBT</th><th>Nonoperating Expense</th><th>Tax Expense</th><th>Average Net Operating Assets</th></tr>
+                  <tr><td>Home Depot</td><td>HD</td><td>$108,203</td><td>$15,530</td><td>$974</td><td>$3,435</td><td>$25,217</td></tr>
+                  <tr><td>Lowe's</td><td>LOW</td><td>71,309</td><td>4,018</td><td>624</td><td>1,080</td><td>20,326</td></tr>
                 </table>
               </div>
               <p class="mb-3 font-medium text-slate-700">Compute NOPAT for Home Depot and Lowe's. Then indicate which of these two companies:</p>
@@ -746,7 +798,31 @@
               rationale: "Average AR = (Beg + End) / 2. AR Turnover = Sales / Average AR. DSO = 365 / AR Turnover." },
             
             { id: 113, module: "Exercises", lo: "LO3", skill: "Quantitative", topic: "Inventory Costing Methods", 
-              question: `Chen Company has Beg Inv: 1000@$32. Purchases: 1800@$34, 800@$38, 1200@$41. Sold 2,800 units.<br><br>a. FIFO: COGS: $<input class="smart-input inline-block w-24" data-correct="93200"> | Ending Inventory:$ <input class="smart-input inline-block w-24" data-correct="79600"><br>b. LIFO: COGS: $<input class="smart-input inline-block w-24" data-correct="106800"> | Ending Inventory:$ <input class="smart-input inline-block w-24" data-correct="66000"><br>c. Average: COGS: $<input class="smart-input inline-block w-24" data-correct="100800"> | Ending Inventory:$ <input class="smart-input inline-block w-24" data-correct="72000"><br>d. Which method to:<br> 1. Reflect physical flow? <select class="smart-input inline-block w-24" data-correct="FIFO"><option value="">-Select-</option><option value="FIFO">FIFO</option><option value="LIFO">LIFO</option></select><br> 2. Minimize taxes? <select class="smart-input inline-block w-24" data-correct="LIFO"><option value="">-Select-</option><option value="FIFO">FIFO</option><option value="LIFO">LIFO</option></select><br> 3. Largest income? <select class="smart-input inline-block w-24" data-correct="FIFO"><option value="">-Select-</option><option value="FIFO">FIFO</option><option value="LIFO">LIFO</option></select>`,
+              question: `<p class="mb-3 font-medium text-slate-700">At the beginning of the current period, Chen Company carried 1,000 units of its product with a unit cost of $32. A summary of purchases during the current period follows. Also, during the current period, Chen sold 2,800 units.</p>
+              <div class="overflow-x-auto mb-5">
+                <table class="q-table whitespace-nowrap" style="width: auto;">
+                  <tr><th></th><th>Units</th><th>Unit Cost</th><th>Cost</th></tr>
+                  <tr><td>Beginning Inventory</td><td>1,000</td><td>$32</td><td>$32,000</td></tr>
+                  <tr><td>Purchases: #1</td><td>1,800</td><td>34</td><td>61,200</td></tr>
+                  <tr><td>#2</td><td>800</td><td>38</td><td>30,400</td></tr>
+                  <tr><td>#3</td><td>1,200</td><td>41</td><td>49,200</td></tr>
+                </table>
+              </div>
+              <p class="mb-3 font-medium text-slate-700">Determine the cost of goods sold and ending inventory using (1) FIFO, (2) LIFO, and (3) average cost.</p>
+              <div class="overflow-x-auto mb-5">
+                <table class="q-table whitespace-nowrap text-center" style="width: auto;">
+                  <tr><th></th><th>Cost of Goods Sold</th><th>Ending Inventory</th></tr>
+                  <tr><td class="text-left font-bold">a. FIFO</td><td>$ <input class="smart-input w-24" data-correct="93200"></td><td>$ <input class="smart-input w-24" data-correct="79600"></td></tr>
+                  <tr><td class="text-left font-bold">b. LIFO</td><td>$ <input class="smart-input w-24" data-correct="106800"></td><td>$ <input class="smart-input w-24" data-correct="66000"></td></tr>
+                  <tr><td class="text-left font-bold">c. Average Cost</td><td>$ <input class="smart-input w-24" data-correct="100800"></td><td>$ <input class="smart-input w-24" data-correct="72000"></td></tr>
+                </table>
+              </div>
+              <p class="mb-3 font-medium text-slate-700">d. Which method is most likely to:</p>
+              <div class="space-y-2 text-sm font-medium text-slate-700">
+                <div>1. Reflect the actual physical flow of goods? <select class="smart-input inline-block w-24" data-correct="FIFO"><option value="">-Select-</option><option value="FIFO">FIFO</option><option value="LIFO">LIFO</option><option value="Average">Average</option></select></div>
+                <div>2. Minimize income taxes in an inflationary environment? <select class="smart-input inline-block w-24" data-correct="LIFO"><option value="">-Select-</option><option value="FIFO">FIFO</option><option value="LIFO">LIFO</option><option value="Average">Average</option></select></div>
+                <div>3. Report the largest retained earnings in an inflationary environment? <select class="smart-input inline-block w-24" data-correct="FIFO"><option value="">-Select-</option><option value="FIFO">FIFO</option><option value="LIFO">LIFO</option><option value="Average">Average</option></select></div>
+              </div>`,
               answer: `a. FIFO: COGS: $93,200 | Ending Inventory: $79,600<br>b. LIFO: COGS: $106,800 | Ending Inventory: $66,000<br>c. Average: COGS: $100,800 | Ending Inventory: $72,000<br>d. 1. FIFO. 2. LIFO. 3. FIFO.`,
               rationale: "FIFO assigns oldest costs ($32, $34) to COGS. LIFO assigns newest costs ($41, $38, $34) to COGS. In an inflationary environment, FIFO yields highest income; LIFO yields highest COGS, minimizing taxes." },
             
@@ -766,7 +842,34 @@
               rationale: "Straight-Line = (Cost - Salvage) / Useful Life. ($37,000 - $2,900) / 5 = $34,100 / 5 = $6,820 per year." },
             
             { id: 117, module: "Exercises", lo: "LO4", skill: "Quantitative", topic: "PP&E Turnover", 
-              question: `Texas Instruments Inc. and Intel Corporation report the following information.<br><br><div class="overflow-x-auto mb-4"><table class="q-table whitespace-nowrap" style="width: auto;"><tr><th></th><th colspan="2">Intel Corporation</th><th colspan="2">Texas Instruments</th></tr><tr><th>millions</th><th>Sales</th><th>Plant, Property and Equipment, Net</th><th>Sales</th><th>Plant, Property and Equipment, Net</th></tr><tr><td>Current fiscal year</td><td>$70,848</td><td>$48,976</td><td>$15,784</td><td>$3,183</td></tr><tr><td>Prior fiscal year</td><td>62,761</td><td>41,109</td><td>14,961</td><td>2,664</td></tr></table></div>a. Compute the PPE turnover for the current fiscal year for both companies.<br><div class="overflow-x-auto"><table class="q-table whitespace-nowrap" style="width: auto;"><tr><th>Numerator</th><th>Denominator</th><th>PPE Turnover</th></tr><tr><td>$ <input class="smart-input w-24" data-correct="70848"></td><td>$ <input class="smart-input w-24" data-correct="45043"></td><td><input class="smart-input w-16" data-correct="1.57"></td></tr><tr><td><input class="smart-input w-24" data-correct="15784"></td><td><input class="smart-input w-24" data-correct="2924"></td><td><input class="smart-input w-16" data-correct="5.40"></td></tr></table></div><br>Texas Instruments generates <select class="smart-input inline-block w-32" data-correct="more"><option value="">-Select-</option><option value="more">more</option><option value="less">less</option></select> revenue from its PPE than does Intel...`,
+              question: `<p class="mb-3 font-medium text-slate-700">Texas Instruments Inc. and Intel Corporation report the following information.</p>
+              <div class="overflow-x-auto mb-5">
+                <table class="q-table whitespace-nowrap" style="width: auto;">
+                  <tr><th></th><th colspan="2" class="text-center">Intel Corporation</th><th colspan="2" class="text-center">Texas Instruments</th></tr>
+                  <tr><th>millions</th><th>Sales</th><th>Plant, Property and Equipment, Net</th><th>Sales</th><th>Plant, Property and Equipment, Net</th></tr>
+                  <tr><td>Current fiscal year</td><td>$70,848</td><td>$48,976</td><td>$15,784</td><td>$3,183</td></tr>
+                  <tr><td>Prior fiscal year</td><td>62,761</td><td>41,109</td><td>14,961</td><td>2,664</td></tr>
+                </table>
+              </div>
+              <p class="mb-3 font-medium text-slate-700">a. Compute the PPE turnover for the current fiscal year for both companies.</p>
+              <div class="overflow-x-auto mb-4">
+                <table class="q-table whitespace-nowrap" style="width: auto;">
+                  <tr><th></th><th>Numerator</th><th>Denominator</th><th>PPE Turnover</th></tr>
+                  <tr>
+                    <td class="font-bold bg-slate-50">Intel Corporation</td>
+                    <td>$ <input class="smart-input w-24" data-correct="70848"></td>
+                    <td>$ <input class="smart-input w-24" data-correct="45043"></td>
+                    <td><input class="smart-input w-16" data-correct="1.57"></td>
+                  </tr>
+                  <tr>
+                    <td class="font-bold bg-slate-50">Texas Instruments</td>
+                    <td>$ <input class="smart-input w-24" data-correct="15784"></td>
+                    <td>$ <input class="smart-input w-24" data-correct="2924"></td>
+                    <td><input class="smart-input w-16" data-correct="5.40"></td>
+                  </tr>
+                </table>
+              </div>
+              <p class="font-medium text-slate-700">Texas Instruments generates <select class="smart-input inline-block w-32" data-correct="more"><option value="">-Select-</option><option value="more">more</option><option value="less">less</option></select> revenue from its PPE than does Intel.</p>`,
               answer: `Intel PPE Turnover = 1.57x | Texas Instruments PPE Turnover = 5.40x. Texas Instruments generates [ more ] revenue from its PPE.`,
               rationale: "PPE Turnover = Sales / Average PP&E. Intel = 70,848 / 45,043 = 1.57x. TI = 15,784 / 2,924 = 5.40x." },
             
@@ -1355,6 +1458,12 @@
         function toggleCalculator() {
             const calc = document.getElementById('calculator-container');
             calc.classList.toggle('hidden');
+            if(!calc.classList.contains('hidden') && !calc.style.left) {
+                calc.style.bottom = '2rem';
+                calc.style.right = '2rem';
+                calc.style.left = 'auto';
+                calc.style.top = 'auto';
+            }
         }
 
         function updateDisplay() {
@@ -1399,12 +1508,7 @@
         const dragHandle = document.getElementById('calc-drag-handle');
         
         let isDragging = false;
-        let currentX;
-        let currentY;
-        let initialX;
-        let initialY;
-        let xOffset = 0;
-        let yOffset = 0;
+        let dragStartX, dragStartY, initialLeft, initialTop;
 
         dragHandle.addEventListener("mousedown", dragStart);
         document.addEventListener("mouseup", dragEnd);
@@ -1415,85 +1519,85 @@
         document.addEventListener("touchmove", drag, {passive: false});
 
         function dragStart(e) {
+            if (!e.target.closest('#calc-drag-handle') || e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                return;
+            }
+            
+            isDragging = true;
+            
+            const rect = calcContainer.getBoundingClientRect();
+            initialLeft = rect.left;
+            initialTop = rect.top;
+            
             if (e.type === "touchstart") {
-                initialX = e.touches[0].clientX - xOffset;
-                initialY = e.touches[0].clientY - yOffset;
+                dragStartX = e.touches[0].clientX;
+                dragStartY = e.touches[0].clientY;
             } else {
-                initialX = e.clientX - xOffset;
-                initialY = e.clientY - yOffset;
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
             }
 
-            // Only drag if clicking the handle area, not buttons
-            if (e.target.closest('#calc-drag-handle') && e.target.tagName !== 'BUTTON' && !e.target.closest('button')) {
-                isDragging = true;
-            }
+            calcContainer.style.bottom = 'auto';
+            calcContainer.style.right = 'auto';
+            calcContainer.style.left = initialLeft + 'px';
+            calcContainer.style.top = initialTop + 'px';
+            calcContainer.style.transform = 'none'; 
         }
 
         function dragEnd(e) {
-            initialX = currentX;
-            initialY = currentY;
             isDragging = false;
         }
 
         function drag(e) {
-            if (isDragging) {
-                e.preventDefault();
-                
-                if (e.type === "touchmove") {
-                    currentX = e.touches[0].clientX - initialX;
-                    currentY = e.touches[0].clientY - initialY;
-                } else {
-                    currentX = e.clientX - initialX;
-                    currentY = e.clientY - initialY;
-                }
-
-                xOffset = currentX;
-                yOffset = currentY;
-
-                setTranslate(currentX, currentY, calcContainer);
+            if (!isDragging) return;
+            e.preventDefault();
+            
+            let currentX, currentY;
+            if (e.type === "touchmove") {
+                currentX = e.touches[0].clientX;
+                currentY = e.touches[0].clientY;
+            } else {
+                currentX = e.clientX;
+                currentY = e.clientY;
             }
-        }
 
-        function setTranslate(xPos, yPos, el) {
-            el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+            const dx = currentX - dragStartX;
+            const dy = currentY - dragStartY;
+
+            calcContainer.style.left = (initialLeft + dx) + 'px';
+            calcContainer.style.top = (initialTop + dy) + 'px';
         }
 
         // Calculator Keyboard Functionality
         document.addEventListener('keydown', (e) => {
             const calcContainer = document.getElementById('calculator-container');
             
-            // Only capture keystrokes if the calculator is open
             if (!calcContainer.classList.contains('hidden')) {
-                // Check if user is typing in a valid form input
                 const isInputActive = document.activeElement && 
                     (document.activeElement.tagName === 'INPUT' || 
                      document.activeElement.tagName === 'TEXTAREA' || 
                      document.activeElement.tagName === 'SELECT');
-                
+                     
+                if (isInputActive) return;
+
                 if (e.key === 'Enter') {
-                    // Allow normal 'Enter' in textareas, otherwise run calculation
-                    if (!isInputActive || document.activeElement.tagName !== 'TEXTAREA') {
-                        e.preventDefault();
-                        calculate();
-                    }
-                } else if (!isInputActive) {
-                    // Capture normal math keys only if no input field is active
-                    if (e.key === 'Backspace') {
-                        e.preventDefault();
-                        backspace();
-                    } else if (e.key === 'Escape') {
-                        e.preventDefault();
-                        toggleCalculator();
-                    } else if (e.key === 'c' || e.key === 'C') {
-                        e.preventDefault();
-                        clearCalc();
-                    } else if (['0','1','2','3','4','5','6','7','8','9','.'].includes(e.key)) {
-                        e.preventDefault();
-                        appendNum(e.key);
-                    } else if (['+','-','*','/'].includes(e.key)) {
-                        e.preventDefault();
-                        appendOp(e.key);
-                    }
+                    e.preventDefault();
+                    calculate();
+                } else if (e.key === 'Backspace') {
+                    e.preventDefault();
+                    backspace();
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    toggleCalculator();
+                } else if (e.key === 'c' || e.key === 'C') {
+                    e.preventDefault();
+                    clearCalc();
+                } else if (['0','1','2','3','4','5','6','7','8','9','.'].includes(e.key)) {
+                    e.preventDefault();
+                    appendNum(e.key);
+                } else if (['+','-','*','/'].includes(e.key)) {
+                    e.preventDefault();
+                    appendOp(e.key);
                 }
             }
         });
